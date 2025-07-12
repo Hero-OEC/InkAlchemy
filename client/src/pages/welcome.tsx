@@ -3,8 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button-variations";
 import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ContentCard } from "@/components/content-card";
 import { Input } from "@/components/form-inputs";
-import { Sword, Zap, Plus, FolderOpen } from "lucide-react";
+import { Sword, Zap, Plus, FolderOpen, Book } from "lucide-react";
 import { useLocation } from "wouter";
 import type { Project, InsertProject } from "@shared/schema";
 
@@ -167,50 +168,18 @@ export default function Welcome() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project) => (
-                <Card 
-                  key={project.id} 
-                  className="bg-white border-brand-200 hover:border-brand-300 hover:shadow-md transition-all duration-200 cursor-pointer group"
+                <ContentCard
+                  key={project.id}
+                  id={project.id}
+                  title={project.name}
+                  type="project"
+                  subtype={project.genre || "story"}
+                  description={project.description || "No description provided"}
+                  icon={project.genre === "Fantasy" ? Sword : project.genre === "Sci-Fi" ? Zap : Book}
+                  createdAt={new Date(project.createdAt)}
+                  lastEditedAt={project.lastEditedAt ? new Date(project.lastEditedAt) : undefined}
                   onClick={() => handleOpenProject(project.id)}
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-brand-400 rounded-lg flex items-center justify-center text-white">
-                          {project.genre === "Fantasy" ? (
-                            <Sword className="w-6 h-6" />
-                          ) : project.genre === "Sci-Fi" ? (
-                            <Zap className="w-6 h-6" />
-                          ) : (
-                            <span className="font-bold text-lg">
-                              {project.name.charAt(0)}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <CardTitle className="text-brand-900 group-hover:text-brand-700 transition-colors">
-                            {project.name}
-                          </CardTitle>
-                          {project.genre && (
-                            <div className="inline-block px-2 py-1 bg-brand-100 text-brand-700 text-xs rounded-full mt-1">
-                              {project.genre}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-brand-600 text-sm mb-4 line-clamp-2">
-                      {project.description || "No description provided"}
-                    </p>
-                    <div className="text-xs text-brand-500">
-                      Last updated: {project.lastEditedAt ? 
-                        new Date(project.lastEditedAt).toLocaleDateString() : 
-                        new Date(project.createdAt).toLocaleDateString()
-                      }
-                    </div>
-                  </CardContent>
-                </Card>
+                />
               ))}
             </div>
           )}
