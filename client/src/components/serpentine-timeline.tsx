@@ -467,13 +467,13 @@ export function SerpentineTimeline({
 
       {/* Timeline Container */}
       <div 
-        className="relative bg-background rounded-lg overflow-x-auto"
+        className="relative bg-background rounded-lg overflow-x-auto px-8 py-6"
         style={{ width: maxWidth, maxWidth: maxWidth }}
       >
         <div 
-          className="relative"
+          className="relative mx-auto"
           style={{ 
-            width: maxWidth, 
+            width: `calc(${maxWidth} - 64px)`, 
             height: `${Math.ceil(groupedEvents.length / eventsPerRow) * 150 + 160}px`,
             minHeight: "400px"
           }}
@@ -487,7 +487,7 @@ export function SerpentineTimeline({
               d={(() => {
                 if (groupedEvents.length === 0) return "";
                 
-                const containerWidth = parseInt(maxWidth.replace('px', ''));
+                const containerWidth = parseInt(maxWidth.replace('px', '')) - 64; // Account for px-8 padding (32px each side)
                 const margin = Math.max(60, containerWidth * 0.08);
                 const usableWidth = containerWidth - (margin * 2);
                 const verticalSpacing = 150;
