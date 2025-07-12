@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
+import SerpentineTimeline from "@/components/serpentine-timeline";
 import { Edit, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles } from "lucide-react";
-import type { Project, Character, MagicSystem } from "@shared/schema";
+import type { Project, Character, MagicSystem, Event, Location, Relationship } from "@shared/schema";
 
 const CHARACTER_TYPE_CONFIG = {
   protagonist: { icon: Crown, label: "Protagonist", bgColor: "bg-brand-500", textColor: "text-white" },
@@ -32,6 +33,22 @@ export default function CharacterDetails() {
 
   const { data: magicSystems = [] } = useQuery<MagicSystem[]>({
     queryKey: [`/api/projects/${projectId}/magic-systems`],
+  });
+
+  const { data: events = [] } = useQuery<Event[]>({
+    queryKey: [`/api/projects/${projectId}/events`],
+  });
+
+  const { data: characters = [] } = useQuery<Character[]>({
+    queryKey: [`/api/projects/${projectId}/characters`],
+  });
+
+  const { data: locations = [] } = useQuery<Location[]>({
+    queryKey: [`/api/projects/${projectId}/locations`],
+  });
+
+  const { data: relationships = [] } = useQuery<Relationship[]>({
+    queryKey: [`/api/projects/${projectId}/relationships`],
   });
 
   if (!character) {
@@ -93,7 +110,7 @@ export default function CharacterDetails() {
                 </div>
               </div>
             </div>
-            <Button variant="outline" onClick={handleEdit} className="flex items-center gap-2">
+            <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
               <Edit size={16} />
               Edit Character
             </Button>
@@ -106,7 +123,7 @@ export default function CharacterDetails() {
           <div className="lg:col-span-1">
             <div className="bg-brand-100 border border-brand-200 rounded-xl p-6 mb-6">
               {/* Character Image */}
-              <div className="aspect-square w-full bg-brand-50 rounded-lg overflow-hidden border-2 border-brand-200 mb-4">
+              <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-4">
                 {character.imageUrl ? (
                   <img 
                     src={character.imageUrl} 
@@ -123,12 +140,12 @@ export default function CharacterDetails() {
               {/* Basic Info */}
               <div className="space-y-3">
                 <div>
-                  <span className="text-sm font-medium text-brand-600">Type:</span>
-                  <span className="ml-2 text-brand-900 capitalize">{character.type}</span>
+                  <span className="text-sm font-medium text-brand-600">Age:</span>
+                  <span className="ml-2 text-brand-900">{character.age || "Unknown"}</span>
                 </div>
                 <div>
-                  <span className="text-sm font-medium text-brand-600">Created:</span>
-                  <span className="ml-2 text-brand-900">{new Date(character.createdAt).toLocaleDateString()}</span>
+                  <span className="text-sm font-medium text-brand-600">Race:</span>
+                  <span className="ml-2 text-brand-900">{character.race || "Unknown"}</span>
                 </div>
               </div>
             </div>
@@ -224,9 +241,65 @@ export default function CharacterDetails() {
               {activeTab === "timeline" && (
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-3">Character Timeline</h3>
-                  <div className="text-brand-600">
-                    <p>Character timeline events will be displayed here.</p>
-                    <p className="text-sm mt-2">This will show events where this character is involved.</p>
+                  <div className="bg-brand-50 border border-brand-200 rounded-lg p-4">
+                    {(() => {
+                      // Filter events where this character is involved
+                      const characterEvents = events.filter(event => {
+                        const eventRelationships = relationships.filter(rel => 
+                          rel.fromElementType === 'event' && 
+                          rel.fromElementId === event.id &&
+                          rel.toElementType === 'character' &&
+                          rel.toElementId === character.id
+                        );
+                        return eventRelationships.length > 0;
+                      });
+
+                      // Process events with relationships to add character and location data
+                      const processedEvents = characterEvents.map(event => {
+                        const eventRelationships = relationships.filter(rel => 
+                          rel.fromElementType === 'event' && rel.fromElementId === event.id
+                        );
+                        
+                        const eventCharacters = eventRelationships
+                          .filter(rel => rel.toElementType === 'character')
+                          .map(rel => characters.find(char => char.id === rel.toElementId))
+                          .filter(Boolean) as Character[];
+                        
+                        const eventLocation = event.locationId 
+                          ? locations.find(loc => loc.id === event.locationId)
+                          : undefined;
+
+                        return {
+                          ...event,
+                          characters: eventCharacters,
+                          location: eventLocation
+                        };
+                      });
+
+                      if (processedEvents.length === 0) {
+                        return (
+                          <div className="text-center py-8">
+                            <p className="text-brand-600">No timeline events found for this character.</p>
+                            <p className="text-sm text-brand-500 mt-2">
+                              Create events and link them to this character to see their timeline.
+                            </p>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <SerpentineTimeline
+                          events={processedEvents}
+                          characters={characters}
+                          locations={locations}
+                          onEventClick={(event) => setLocation(`/projects/${projectId}/events/${event.id}`)}
+                          onEventEdit={(event) => setLocation(`/projects/${projectId}/events/${event.id}/edit`)}
+                          eventsPerRow={3}
+                          maxWidth="800px"
+                          responsive={false}
+                        />
+                      );
+                    })()}
                   </div>
                 </div>
               )}

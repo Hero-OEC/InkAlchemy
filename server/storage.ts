@@ -126,6 +126,8 @@ export class MemStorage implements IStorage {
         appearance: "Auburn hair, green eyes, tall and graceful",
         personality: "Determined, curious, brave but sometimes reckless",
         background: "Orphaned at young age, raised by village elders",
+        age: "19",
+        race: "Human",
         imageUrl: null,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -141,6 +143,8 @@ export class MemStorage implements IStorage {
         appearance: "Long white beard, piercing blue eyes, weathered face",
         personality: "Wise, patient, mysterious",
         background: "Guardian of ancient secrets for centuries",
+        age: "150",
+        race: "Elf",
         imageUrl: null,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -156,6 +160,8 @@ export class MemStorage implements IStorage {
         appearance: "Tall, gaunt, always in dark robes",
         personality: "Cunning, ruthless, charismatic",
         background: "Former student turned to dark magic",
+        age: "45",
+        race: "Human",
         imageUrl: null,
         createdAt: new Date(),
         updatedAt: new Date()
