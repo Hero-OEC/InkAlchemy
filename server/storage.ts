@@ -113,6 +113,113 @@ export class MemStorage implements IStorage {
     };
     this.projects.set(1, defaultProject);
 
+    // Add sample characters for the default project
+    const defaultCharacters: Character[] = [
+      {
+        id: 1,
+        projectId: 1,
+        name: "Aria Stormwind",
+        prefix: "",
+        suffix: "",
+        type: "protagonist",
+        description: "A young mage discovering her true power",
+        appearance: "Auburn hair, green eyes, tall and graceful",
+        personality: "Determined, curious, brave but sometimes reckless",
+        background: "Orphaned at young age, raised by village elders",
+        imageUrl: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 2,
+        projectId: 1,
+        name: "Master Theron",
+        prefix: "Master",
+        suffix: "",
+        type: "ally",
+        description: "Ancient mage and mentor to Aria",
+        appearance: "Long white beard, piercing blue eyes, weathered face",
+        personality: "Wise, patient, mysterious",
+        background: "Guardian of ancient secrets for centuries",
+        imageUrl: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 3,
+        projectId: 1,
+        name: "Lord Malachar",
+        prefix: "Lord",
+        suffix: "the Shadowbane",
+        type: "villain",
+        description: "Dark sorcerer seeking to corrupt the realm",
+        appearance: "Tall, gaunt, always in dark robes",
+        personality: "Cunning, ruthless, charismatic",
+        background: "Former student turned to dark magic",
+        imageUrl: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    // Add sample locations for the default project
+    const defaultLocations: Location[] = [
+      {
+        id: 1,
+        projectId: 1,
+        name: "Silverbrook Village",
+        type: "settlement",
+        description: "A peaceful village nestled in the mountains",
+        size: "small",
+        population: "200",
+        government: "Elder Council",
+        economy: "Farming and mining",
+        culture: "Traditional mountain folk",
+        geography: "Mountainous region with streams",
+        climate: "Temperate, cold winters",
+        parentLocationId: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 2,
+        projectId: 1,
+        name: "The Ancient Grove",
+        type: "natural",
+        description: "A mystical forest where ancient magic lingers",
+        size: "large",
+        population: "0",
+        government: "None",
+        economy: "None",
+        culture: "Sacred to druids",
+        geography: "Dense old-growth forest",
+        climate: "Mild and misty",
+        parentLocationId: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 3,
+        projectId: 1,
+        name: "Shadowspire Tower",
+        type: "fortress",
+        description: "Dark tower serving as Malachar's stronghold",
+        size: "medium",
+        population: "50",
+        government: "Dictatorship",
+        economy: "Raiding and dark magic",
+        culture: "Cult of shadow",
+        geography: "Isolated mountain peak",
+        climate: "Perpetually stormy",
+        parentLocationId: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    defaultCharacters.forEach(char => this.characters.set(char.id, char));
+    defaultLocations.forEach(loc => this.locations.set(loc.id, loc));
+
     // Add sample events for the default project
     const defaultEvents: Event[] = [
       {
@@ -126,7 +233,7 @@ export class MemStorage implements IStorage {
         type: "discovery",
         stage: "editing",
         importance: "high",
-        locationId: null,
+        locationId: 2, // The Ancient Grove
         order: 1,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -151,14 +258,14 @@ export class MemStorage implements IStorage {
         id: 3,
         projectId: 1,
         title: "Meeting the Mentor",
-        description: "The protagonist meets their guide and teacher",
+        description: "The protagonist meets their guide and teacher who reveals ancient secrets",
         year: 1,
         month: 1,
         day: 20,
         type: "meeting",
         stage: "complete",
         importance: "high",
-        locationId: null,
+        locationId: 1, // Silverbrook Village
         order: 0,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -190,7 +297,7 @@ export class MemStorage implements IStorage {
         type: "battle",
         stage: "first-draft",
         importance: "critical",
-        locationId: null,
+        locationId: 3, // Shadowspire Tower
         order: 4,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -198,7 +305,73 @@ export class MemStorage implements IStorage {
     ];
 
     defaultEvents.forEach(event => this.events.set(event.id, event));
-    this.currentId = 6;
+
+    // Add sample relationships to connect characters to events
+    const defaultRelationships: Relationship[] = [
+      {
+        id: 1,
+        projectId: 1,
+        fromElementType: "event",
+        fromElementId: 3, // Meeting the Mentor
+        toElementType: "character", 
+        toElementId: 1, // Aria Stormwind
+        relationshipType: "participant",
+        description: "Aria participates in this event",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 2,
+        projectId: 1,
+        fromElementType: "event",
+        fromElementId: 3, // Meeting the Mentor
+        toElementType: "character",
+        toElementId: 2, // Master Theron
+        relationshipType: "participant",
+        description: "Theron participates in this event",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 3,
+        projectId: 1,
+        fromElementType: "event",
+        fromElementId: 1, // The Great Discovery
+        toElementType: "character",
+        toElementId: 1, // Aria Stormwind
+        relationshipType: "participant",
+        description: "Aria discovers her power",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 4,
+        projectId: 1,
+        fromElementType: "event",
+        fromElementId: 5, // The Final Confrontation
+        toElementType: "character",
+        toElementId: 1, // Aria Stormwind
+        relationshipType: "participant",
+        description: "Aria participates in final battle",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 5,
+        projectId: 1,
+        fromElementType: "event",
+        fromElementId: 5, // The Final Confrontation
+        toElementType: "character",
+        toElementId: 3, // Lord Malachar
+        relationshipType: "participant",
+        description: "Malachar is the antagonist in final battle",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    defaultRelationships.forEach(rel => this.relationships.set(rel.id, rel));
+    this.currentId = 20;
   }
 
   // Projects

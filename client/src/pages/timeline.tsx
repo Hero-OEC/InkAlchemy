@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
-import { Event, Character, Location } from "@shared/schema";
+import { Event, Character, Location, Relationship } from "@shared/schema";
 import SerpentineTimeline from "../components/serpentine-timeline";
 import { Calendar, Plus } from "lucide-react";
 import { useState } from "react";
@@ -32,13 +32,26 @@ export default function TimelinePage() {
     enabled: !!id
   });
 
+  // Fetch relationships to connect characters to events
+  const { data: relationships = [], isLoading: relationshipsLoading } = useQuery<Relationship[]>({
+    queryKey: ["/api/projects", id, "relationships"],
+    enabled: !!id
+  });
+
   // Create enriched events with related data
   const enrichedEvents: TimelineEvent[] = events.map(event => {
     const location = event.locationId ? locations.find(loc => loc.id === event.locationId) : undefined;
     
-    // For now, we'll need to implement character relationships later
-    // This would require a relationship system to link characters to events
-    const relatedCharacters: Character[] = [];
+    // Find characters related to this event through relationships
+    const eventCharacterRelationships = relationships.filter(rel => 
+      rel.fromElementType === "event" && 
+      rel.fromElementId === event.id && 
+      rel.toElementType === "character"
+    );
+    
+    const relatedCharacters = eventCharacterRelationships
+      .map(rel => characters.find(char => char.id === rel.toElementId))
+      .filter((char): char is Character => char !== undefined);
 
     return {
       ...event,
@@ -58,7 +71,7 @@ export default function TimelinePage() {
     console.log("Edit event:", event);
   };
 
-  if (eventsLoading || charactersLoading || locationsLoading) {
+  if (eventsLoading || charactersLoading || locationsLoading || relationshipsLoading) {
     return (
       <div className="max-w-7xl mx-auto p-6">
         <div className="animate-pulse">
