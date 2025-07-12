@@ -175,10 +175,10 @@ export default function Dashboard() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'create': return 'text-brand-700 bg-brand-200';
-      case 'edit': return 'text-brand-600 bg-brand-100';
-      case 'delete': return 'text-brand-800 bg-brand-300';
-      default: return 'text-brand-600 bg-brand-100';
+      case 'create': return 'text-white bg-brand-600';
+      case 'edit': return 'text-white bg-brand-700';
+      case 'delete': return 'text-white bg-brand-800';
+      default: return 'text-white bg-brand-600';
     }
   };
 
@@ -212,8 +212,8 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-brand-900">{stats.events}</p>
                 </div>
                 <div className="flex-shrink-0 ml-4">
-                  <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-brand-700" />
                   </div>
                 </div>
               </div>
@@ -226,8 +226,8 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-brand-900">{stats.characters}</p>
                 </div>
                 <div className="flex-shrink-0 ml-4">
-                  <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center">
-                    <Users className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
+                    <Users className="w-6 h-6 text-brand-700" />
                   </div>
                 </div>
               </div>
@@ -240,8 +240,8 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-brand-900">{stats.locations}</p>
                 </div>
                 <div className="flex-shrink-0 ml-4">
-                  <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-brand-700" />
                   </div>
                 </div>
               </div>
@@ -254,8 +254,8 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-brand-900">{stats.magicSystems}</p>
                 </div>
                 <div className="flex-shrink-0 ml-4">
-                  <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-brand-700" />
                   </div>
                 </div>
               </div>
