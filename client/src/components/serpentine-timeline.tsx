@@ -495,7 +495,7 @@ function useResponsiveTimeline(responsive: boolean, overrideEventsPerRow?: numbe
 
     if (screenSize.width < 768) return 2; // Mobile: 2 per row
     if (screenSize.width < 1200) return 3; // Tablet: 3 per row  
-    return 4; // Desktop: 4 per row
+    return 5; // Desktop: 5 per row
   }, [responsive, overrideEventsPerRow, screenSize.width]);
 
   const maxWidth = useMemo(() => {
