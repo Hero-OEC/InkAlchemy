@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useRef, useEffect } from "react";
 import { ChevronDown, Eye, EyeOff, Search, X } from "lucide-react";
 import { cn } from "../lib/utils";
 
@@ -192,12 +192,29 @@ export function Select({
   className
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const selectRef = useRef<HTMLDivElement>(null);
   const selectedOption = options.find(option => option.value === value);
 
   const handleSelect = (optionValue: string) => {
     onChange?.(optionValue);
     setIsOpen(false);
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isOpen]);
 
   return (
     <div className="w-full">
@@ -207,7 +224,7 @@ export function Select({
         </label>
       )}
       
-      <div className="relative">
+      <div className="relative" ref={selectRef}>
         <button
           type="button"
           onClick={() => !disabled && setIsOpen(!isOpen)}
