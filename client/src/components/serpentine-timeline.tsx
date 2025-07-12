@@ -27,6 +27,7 @@ interface FilterState {
 
 interface EventBubbleProps {
   event: TimelineEvent;
+  events?: TimelineEvent[]; // Array of all events for multi-event scenarios
   multiCount?: number;
   position: { x: number; y: number };
   side: "left" | "right";
@@ -92,7 +93,7 @@ const EVENT_TYPE_ICONS = {
   other: Calendar
 };
 
-function EventBubble({ event, multiCount, position, side, onEventClick }: EventBubbleProps) {
+function EventBubble({ event, events, multiCount, position, side, onEventClick }: EventBubbleProps) {
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const bubbleRef = useRef<HTMLDivElement>(null);
@@ -210,7 +211,9 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
           width: "140px"
         }}
       >
-        <div className="font-semibold truncate text-center">{event.title}</div>
+        <div className="font-semibold truncate text-center">
+          {multiCount && multiCount > 1 ? `${multiCount} Events` : event.title}
+        </div>
         <div className="text-muted-foreground text-xs mt-1 text-center">
           Year {event.year}, Month {event.month}, Day {event.day}
         </div>
@@ -220,7 +223,7 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
       {showPopup && (
         <div
           ref={popupRef}
-          className="fixed bg-popover rounded-lg shadow-xl border border-border p-4 z-50 max-w-xs"
+          className="fixed bg-popover rounded-lg shadow-xl border border-border p-4 z-50 max-w-sm"
           style={{
             left: popupPosition.x,
             top: popupPosition.y
@@ -228,70 +231,118 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
           onMouseEnter={handlePopupMouseEnter}
           onMouseLeave={handlePopupMouseLeave}
         >
-          <div className="flex flex-col gap-3 mb-3">
-            <div className="flex items-center gap-3">
-              <div className={cn("p-1.5 rounded-lg", stageConfig.bg, stageConfig.border)}>
-                <IconComponent className={cn("w-4 h-4", stageConfig.icon)} />
+          {multiCount && multiCount > 1 && events ? (
+            // Multi-event simplified list
+            <div className="space-y-3">
+              <div className="text-sm font-semibold text-popover-foreground mb-3">
+                {multiCount} Events - Year {event.year}, Month {event.month}, Day {event.day}
               </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-popover-foreground text-sm">{event.title}</h4>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs", stageConfig.bg, stageConfig.border)}>
-                <stageConfig.stageIcon className={cn("w-3 h-3", stageConfig.icon)} />
-                <span className={cn("capitalize font-medium", stageConfig.icon)}>{event.stage}</span>
-              </div>
-              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-secondary border border-border">
-                <IconComponent className="w-3 h-3 text-muted-foreground" />
-                <span className="capitalize text-secondary-foreground">{event.type}</span>
-              </div>
-            </div>
-          </div>
-          
-          {event.description && (
-            <p className="text-sm text-popover-foreground mb-3">
-              {truncateDescription(event.description)}
-            </p>
-          )}
-
-          {/* Location and Characters Section */}
-          {(event.location || (event.characters && event.characters.length > 0)) && (
-            <div className="mb-3 space-y-2">
-              {event.location && (
-                <div>
-                  <div className="text-xs font-medium text-popover-foreground mb-1.5">Location</div>
-                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-brand-100 border border-brand-300">
-                    <MapPin className="w-3 h-3 text-brand-600" />
-                    <span className="text-brand-800 font-medium">{event.location.name}</span>
-                  </div>
-                </div>
-              )}
-
-              {event.characters && event.characters.length > 0 && (
-                <div>
-                  <div className="text-xs font-medium text-popover-foreground mb-1.5">Characters</div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {event.characters.slice(0, 4).map((char) => (
-                      <div key={char.id} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-brand-200 border border-brand-400">
-                        <Users className="w-3 h-3 text-brand-700" />
-                        <span className="text-brand-900 font-medium">{char.name}</span>
+              {events.map((evt) => {
+                const eventStageConfig = STAGE_COLORS[evt.stage as keyof typeof STAGE_COLORS] || STAGE_COLORS.planning;
+                const EventIcon = EVENT_TYPE_ICONS[evt.type as keyof typeof EVENT_TYPE_ICONS] || Calendar;
+                
+                return (
+                  <div
+                    key={evt.id}
+                    className="border border-border rounded-lg p-3 cursor-pointer hover:bg-accent transition-colors"
+                    onClick={() => onEventClick?.(evt)}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={cn("p-1.5 rounded-lg", eventStageConfig.bg, eventStageConfig.border)}>
+                        <EventIcon className={cn("w-4 h-4", eventStageConfig.icon)} />
                       </div>
-                    ))}
-                    {event.characters.length > 4 && (
-                      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 border border-gray-200">
-                        <span className="text-gray-600 font-medium">+{event.characters.length - 4} more</span>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-popover-foreground text-sm">{evt.title}</h4>
                       </div>
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs", eventStageConfig.bg, eventStageConfig.border)}>
+                        <eventStageConfig.stageIcon className={cn("w-3 h-3", eventStageConfig.icon)} />
+                        <span className={cn("capitalize font-medium", eventStageConfig.icon)}>{evt.stage}</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-secondary border border-border">
+                        <EventIcon className="w-3 h-3 text-muted-foreground" />
+                        <span className="capitalize text-secondary-foreground">{evt.type}</span>
+                      </div>
+                    </div>
+                    {evt.description && (
+                      <p className="text-xs text-muted-foreground">
+                        {truncateDescription(evt.description, 80)}
+                      </p>
                     )}
                   </div>
+                );
+              })}
+            </div>
+          ) : (
+            // Single event detailed view
+            <div>
+              <div className="flex flex-col gap-3 mb-3">
+                <div className="flex items-center gap-3">
+                  <div className={cn("p-1.5 rounded-lg", stageConfig.bg, stageConfig.border)}>
+                    <IconComponent className={cn("w-4 h-4", stageConfig.icon)} />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-popover-foreground text-sm">{event.title}</h4>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs", stageConfig.bg, stageConfig.border)}>
+                    <stageConfig.stageIcon className={cn("w-3 h-3", stageConfig.icon)} />
+                    <span className={cn("capitalize font-medium", stageConfig.icon)}>{event.stage}</span>
+                  </div>
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-secondary border border-border">
+                    <IconComponent className="w-3 h-3 text-muted-foreground" />
+                    <span className="capitalize text-secondary-foreground">{event.type}</span>
+                  </div>
+                </div>
+              </div>
+              
+              {event.description && (
+                <p className="text-sm text-popover-foreground mb-3">
+                  {truncateDescription(event.description)}
+                </p>
+              )}
+
+              {/* Location and Characters Section */}
+              {(event.location || (event.characters && event.characters.length > 0)) && (
+                <div className="mb-3 space-y-2">
+                  {event.location && (
+                    <div>
+                      <div className="text-xs font-medium text-popover-foreground mb-1.5">Location</div>
+                      <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-brand-100 border border-brand-300">
+                        <MapPin className="w-3 h-3 text-brand-600" />
+                        <span className="text-brand-800 font-medium">{event.location.name}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {event.characters && event.characters.length > 0 && (
+                    <div>
+                      <div className="text-xs font-medium text-popover-foreground mb-1.5">Characters</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {event.characters.slice(0, 4).map((char) => (
+                          <div key={char.id} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-brand-200 border border-brand-400">
+                            <Users className="w-3 h-3 text-brand-700" />
+                            <span className="text-brand-900 font-medium">{char.name}</span>
+                          </div>
+                        ))}
+                        {event.characters.length > 4 && (
+                          <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 border border-gray-200">
+                            <span className="text-gray-600 font-medium">+{event.characters.length - 4} more</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
+
+              <div className="text-xs text-muted-foreground">
+                Year {event.year}, Month {event.month}, Day {event.day}
+              </div>
             </div>
           )}
-
-          <div className="text-xs text-muted-foreground">
-            Year {event.year}, Month {event.month}, Day {event.day}
-          </div>
         </div>
       )}
     </>
@@ -634,6 +685,7 @@ export function SerpentineTimeline({
             <EventBubble
               key={position.dateKey}
               event={position.events[0]}
+              events={position.isMultiple ? position.events : undefined}
               multiCount={position.isMultiple ? position.events.length : undefined}
               position={{ x: position.x, y: position.y }}
               side={position.side}
