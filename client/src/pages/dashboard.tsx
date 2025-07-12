@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Navbar } from "@/components/navbar";
 import { 
   Users, MapPin, Clock, Wand2, Book, StickyNote, 
   Plus, Download, UserPlus, MapPinIcon, PlusCircle,
@@ -75,7 +76,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6">
+    <div className="min-h-screen bg-brand-50">
+      <Navbar 
+        hasActiveProject={true}
+        currentPage="dashboard"
+        projectName="The Chronicles of Mystara"
+      />
+      <div className="p-6">
       {/* Header Section */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
@@ -423,6 +430,7 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );
