@@ -252,28 +252,37 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
             </p>
           )}
 
-          {event.characters && event.characters.length > 0 && (
-            <div className="mb-2">
-              <div className="text-xs font-medium text-popover-foreground mb-1">Characters:</div>
-              <div className="flex flex-wrap gap-1">
-                {event.characters.slice(0, 3).map((char) => (
-                  <span key={char.id} className="text-xs bg-secondary px-2 py-0.5 rounded-full text-secondary-foreground">
-                    {char.name}
-                  </span>
-                ))}
-                {event.characters.length > 3 && (
-                  <span className="text-xs text-muted-foreground">+{event.characters.length - 3} more</span>
-                )}
-              </div>
-            </div>
-          )}
+          {/* Location and Characters Section */}
+          {(event.location || (event.characters && event.characters.length > 0)) && (
+            <div className="mb-3 space-y-2">
+              {event.location && (
+                <div>
+                  <div className="text-xs font-medium text-popover-foreground mb-1.5">Location</div>
+                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-emerald-50 border border-emerald-200">
+                    <MapPin className="w-3 h-3 text-emerald-600" />
+                    <span className="text-emerald-800 font-medium">{event.location.name}</span>
+                  </div>
+                </div>
+              )}
 
-          {event.location && (
-            <div className="mb-2">
-              <div className="text-xs font-medium text-popover-foreground mb-1">Location:</div>
-              <span className="text-xs bg-secondary px-2 py-0.5 rounded-full text-secondary-foreground">
-                {event.location.name}
-              </span>
+              {event.characters && event.characters.length > 0 && (
+                <div>
+                  <div className="text-xs font-medium text-popover-foreground mb-1.5">Characters</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {event.characters.slice(0, 4).map((char) => (
+                      <div key={char.id} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-blue-50 border border-blue-200">
+                        <Users className="w-3 h-3 text-blue-600" />
+                        <span className="text-blue-800 font-medium">{char.name}</span>
+                      </div>
+                    ))}
+                    {event.characters.length > 4 && (
+                      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 border border-gray-200">
+                        <span className="text-gray-600 font-medium">+{event.characters.length - 4} more</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
