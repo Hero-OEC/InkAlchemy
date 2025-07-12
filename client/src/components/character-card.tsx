@@ -87,8 +87,9 @@ export function CharacterCard({
   // Format full name with prefix and suffix
   const fullName = [prefix, name, suffix].filter(Boolean).join(" ");
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('en-US', { 
       month: 'short', 
       day: 'numeric',
       year: 'numeric'
@@ -147,12 +148,12 @@ export function CharacterCard({
         <div className="flex justify-between text-xs text-brand-600">
           {createdAt && (
             <div>
-              <span className="font-medium">Created:</span> {createdAt.toLocaleDateString()}
+              <span className="font-medium">Created:</span> {formatDate(createdAt)}
             </div>
           )}
           {lastEditedAt && (
             <div>
-              <span className="font-medium">Last edited:</span> {lastEditedAt.toLocaleDateString()}
+              <span className="font-medium">Last edited:</span> {formatDate(lastEditedAt)}
             </div>
           )}
         </div>
