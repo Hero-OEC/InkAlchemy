@@ -5,6 +5,7 @@ import { NavbarDemo } from "./components/navbar";
 import { FontShowcase } from "./components/font-showcase";
 import { ContentCardDemo } from "./components/content-card";
 import { FormInputsDemo } from "./components/form-inputs";
+import { MiniCardDemo } from "./components/mini-card";
 import SerpentineTimeline from "./components/serpentine-timeline";
 import { useQuery } from "@tanstack/react-query";
 import type { Event, Character, Location, Relationship } from "@shared/schema";
@@ -116,6 +117,11 @@ function App() {
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-brand-900 mb-6">Form Components</h2>
         <FormInputsDemo />
+      </section>
+
+      {/* Mini Cards Demo */}
+      <section className="mb-12">
+        <MiniCardDemo />
       </section>
 
       {/* Font Demo */}
