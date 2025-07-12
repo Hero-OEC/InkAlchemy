@@ -27,13 +27,13 @@ export function MiniCard({
     
     switch (badgeVariant) {
       case "stage":
-        return "bg-brand-100 border-brand-300 text-brand-800";
+        return "bg-brand-500 text-white";
       case "type":
-        return "bg-secondary border-border text-secondary-foreground";
+        return "bg-brand-400 text-white";
       case "status":
-        return "bg-brand-200 border-brand-400 text-brand-900";
+        return "bg-brand-600 text-white";
       default:
-        return "bg-secondary border-border text-secondary-foreground";
+        return "bg-brand-400 text-white";
     }
   };
 
@@ -47,8 +47,8 @@ export function MiniCard({
       onClick={onClick}
     >
       {/* Icon */}
-      <div className="flex-shrink-0">
-        <IconComponent className="w-5 h-5 text-brand-700" />
+      <div className="flex-shrink-0 p-1.5 rounded-lg bg-brand-200">
+        <IconComponent className="w-4 h-4 text-brand-700" />
       </div>
       
       {/* Content Container */}
@@ -61,7 +61,7 @@ export function MiniCard({
         {/* Badge */}
         {badge && (
           <div className={cn(
-            "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border mt-1",
+            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize mt-1",
             getBadgeStyles()
           )}>
             {badge}
