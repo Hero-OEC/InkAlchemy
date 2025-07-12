@@ -278,7 +278,6 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
           <IconComponent className={cn("w-5 h-5", stageConfig.icon)} />
         )}
       </div>
-
       {/* Event Info Card positioned below bubble */}
       <div
         className={cn(
@@ -298,7 +297,6 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
           Year {event.year}, Month {event.month}, Day {event.day}
         </div>
       </div>
-
       {/* Detailed Popup on Hover */}
       {showPopup && (
         <div
@@ -314,7 +312,7 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
         >
           {multiCount && multiCount > 1 && events ? (
             // Multi-event simplified list
-            <div className="space-y-3">
+            (<div className="space-y-3">
               <div className="text-sm font-semibold text-popover-foreground mb-3">
                 {multiCount} Events - Year {event.year}, Month {event.month}, Day {event.day}
               </div>
@@ -354,10 +352,10 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
                   </div>
                 );
               })}
-            </div>
+            </div>)
           ) : (
             // Single event detailed view
-            <div
+            (<div
               className="cursor-pointer"
               onClick={() => onEventClick?.(event)}
             >
@@ -381,13 +379,11 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
                   </div>
                 </div>
               </div>
-              
               {event.description && (
                 <p className="text-sm text-popover-foreground mb-3">
                   {truncateDescription(event.description)}
                 </p>
               )}
-
               {/* Location and Characters Section */}
               {(event.location || (event.characters && event.characters.length > 0)) && (
                 <div className="mb-3 space-y-2">
@@ -421,11 +417,10 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
                   )}
                 </div>
               )}
-
               <div className="text-xs text-muted-foreground">
                 Year {event.year}, Month {event.month}, Day {event.day}
               </div>
-            </div>
+            </div>)
           )}
         </div>
       )}
@@ -677,15 +672,13 @@ export function SerpentineTimeline({
           </div>
         </div>
       )}
-
       {/* Legend */}
       <div className="mb-3">
         <TimelineLegend />
       </div>
-
       {/* Timeline Container */}
       <div 
-        className="relative bg-background rounded-lg overflow-hidden p-4"
+        className="relative rounded-lg overflow-hidden p-4 bg-[#fcf8ee00]"
       >
         <div 
           className="relative mx-auto"
