@@ -16,37 +16,32 @@ export interface ContentCardProps {
   onDelete?: () => void;
 }
 
-// Type-specific styling configurations using brand color scheme
+// Type-specific styling configurations - universal beige icon container with type-specific badges
 const typeConfigs = {
   location: {
-    iconBg: "bg-brand-600",
-    badgeBg: "bg-brand-200",
-    badgeText: "text-brand-800",
+    badgeBg: "bg-emerald-100",
+    badgeText: "text-emerald-800",
     borderColor: "border-brand-200",
   },
   magic: {
-    iconBg: "bg-brand-700", 
-    badgeBg: "bg-brand-200",
-    badgeText: "text-brand-900",
-    borderColor: "border-brand-300",
+    badgeBg: "bg-purple-100",
+    badgeText: "text-purple-800",
+    borderColor: "border-brand-200",
   },
   lore: {
-    iconBg: "bg-brand-500",
-    badgeBg: "bg-brand-100",
-    badgeText: "text-brand-700",
+    badgeBg: "bg-amber-100",
+    badgeText: "text-amber-800",
     borderColor: "border-brand-200",
   },
   note: {
-    iconBg: "bg-brand-400",
-    badgeBg: "bg-brand-100",
-    badgeText: "text-brand-800", 
+    badgeBg: "bg-blue-100",
+    badgeText: "text-blue-800", 
     borderColor: "border-brand-200",
   },
   project: {
-    iconBg: "bg-brand-800",
-    badgeBg: "bg-brand-200",
-    badgeText: "text-brand-900",
-    borderColor: "border-brand-300",
+    badgeBg: "bg-brand-100",
+    badgeText: "text-brand-800",
+    borderColor: "border-brand-200",
   },
 };
 
@@ -83,23 +78,22 @@ export function ContentCard({
       )}
       onClick={onClick}
     >
-      {/* Header with Icon, Title, and Badge on same line */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className={cn(
-          "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
-          config.iconBg
-        )}>
-          <Icon className="w-5 h-5 text-white" />
-        </div>
-        
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-brand-950 truncate">
-            {title}
-          </h3>
+      {/* Header with Icon and Title */}
+      <div className="mb-4">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 bg-brand-200 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Icon className="w-5 h-5 text-brand-700" />
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold text-brand-950 truncate">
+              {title}
+            </h3>
+          </div>
         </div>
 
-        {/* Subtype Badge - positioned on same line as title */}
-        <div className="flex-shrink-0">
+        {/* Subtype Badge - positioned under title */}
+        <div className="ml-[52px]">
           <span className={cn(
             "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize",
             config.badgeBg,
