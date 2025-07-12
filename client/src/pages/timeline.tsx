@@ -91,7 +91,7 @@ export default function Timeline() {
 
         {/* Timeline Content */}
         {events.length > 0 ? (
-          <div className="bg-brand-100 rounded-xl border border-brand-200 p-6">
+          <div className="p-6">
             <SerpentineTimeline
               events={processedEvents}
               characters={characters}
@@ -101,7 +101,7 @@ export default function Timeline() {
             />
           </div>
         ) : (
-          <div className="bg-brand-100 rounded-xl border border-brand-200 p-12">
+          <div className="p-12">
             <div className="text-center">
               <Calendar className="w-16 h-16 text-brand-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-brand-900 mb-2">No events yet</h3>
