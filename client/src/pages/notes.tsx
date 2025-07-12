@@ -1,9 +1,9 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
-import { ContentCard } from "@/components/content-card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/button-variations";
-import { Plus, StickyNote, FileText, Lightbulb, AlertCircle, Tag } from "lucide-react";
+import { Plus, StickyNote, FileText, Lightbulb, AlertCircle, Tag, MoreVertical } from "lucide-react";
 import type { Project, Note } from "@shared/schema";
 
 // Note category icons
@@ -55,23 +55,14 @@ export default function Notes() {
     setLocation(`/projects/${projectId}/notes/${note.id}/edit`);
   };
 
-  // Convert notes to ContentCard format
-  const noteCards = notes.map(note => {
-    const category = note.category || "general";
-    const icon = NOTE_CATEGORY_ICONS[category as keyof typeof NOTE_CATEGORY_ICONS] || StickyNote;
-    
-    return {
-      id: note.id,
-      title: note.content.length > 50 ? `${note.content.substring(0, 50)}...` : note.content,
-      type: "note" as const,
-      subtype: category,
-      description: note.content,
-      icon: icon,
-      createdAt: note.createdAt,
-      lastEditedAt: note.updatedAt,
-      color: note.color,
-    };
-  });
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('en-US', { 
+      month: 'numeric', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  };
 
   return (
     <div className="min-h-screen bg-brand-50">
@@ -103,22 +94,56 @@ export default function Notes() {
         {/* Notes Grid */}
         {notes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {noteCards.map((noteCard) => (
-              <ContentCard
-                key={noteCard.id}
-                id={noteCard.id}
-                title={noteCard.title}
-                type={noteCard.type}
-                subtype={noteCard.subtype}
-                description={noteCard.description}
-                icon={noteCard.icon}
-                createdAt={noteCard.createdAt}
-                lastEditedAt={noteCard.lastEditedAt}
-                onClick={() => handleNoteClick(notes.find(n => n.id === noteCard.id)!)}
-                onEdit={() => handleNoteEdit(notes.find(n => n.id === noteCard.id)!)}
-                className={noteCard.color ? NOTE_COLORS[noteCard.color as keyof typeof NOTE_COLORS]?.bg : undefined}
-              />
-            ))}
+            {notes.map((note) => {
+              const category = note.category || "general";
+              const IconComponent = NOTE_CATEGORY_ICONS[category as keyof typeof NOTE_CATEGORY_ICONS] || StickyNote;
+              const colorClasses = NOTE_COLORS[note.color as keyof typeof NOTE_COLORS];
+              
+              return (
+                <Card
+                  key={note.id}
+                  className={`cursor-pointer transition-all duration-200 hover:shadow-md hover:border-brand-300 ${colorClasses?.bg || 'bg-brand-50'} ${colorClasses?.border || 'border-brand-200'}`}
+                  onClick={() => handleNoteClick(note)}
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 rounded-lg bg-brand-200 flex items-center justify-center">
+                          <IconComponent className="w-4 h-4 text-brand-700" />
+                        </div>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-600 text-white capitalize">
+                          {category}
+                        </span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleNoteEdit(note);
+                        }}
+                        className="h-8 w-8 p-0"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-2">
+                      <p className="text-sm text-brand-800 line-clamp-4">
+                        {note.content}
+                      </p>
+                      <div className="flex justify-between items-center text-xs text-brand-500">
+                        <span>Created: {formatDate(note.createdAt)}</span>
+                        {note.updatedAt && note.updatedAt !== note.createdAt && (
+                          <span>Updated: {formatDate(note.updatedAt)}</span>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-20">
