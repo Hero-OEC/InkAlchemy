@@ -305,7 +305,7 @@ export default function CharacterDetails() {
                           onEventClick={(event) => setLocation(`/projects/${projectId}/events/${event.id}`)}
                           onEventEdit={(event) => setLocation(`/projects/${projectId}/events/${event.id}/edit`)}
                           eventsPerRow={3}
-                          maxWidth="800px"
+                          maxWidth="600px"
                           responsive={false}
                           showFilters={false}
                         />

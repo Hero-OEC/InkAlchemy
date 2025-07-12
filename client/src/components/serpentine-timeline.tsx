@@ -685,7 +685,7 @@ export function SerpentineTimeline({
 
       {/* Timeline Container */}
       <div 
-        className="relative bg-background rounded-lg overflow-x-auto p-6"
+        className="relative bg-background rounded-lg overflow-hidden p-4"
       >
         <div 
           className="relative mx-auto"
