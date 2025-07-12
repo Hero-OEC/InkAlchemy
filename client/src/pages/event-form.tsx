@@ -103,7 +103,6 @@ export default function EventForm() {
       description: event?.description || "",
       type: event?.type || "meeting",
       stage: event?.stage || "planning",
-      importance: event?.importance || "medium",
       year: event?.year || 1,
       month: event?.month || 1,
       day: event?.day || 1,
@@ -120,7 +119,6 @@ export default function EventForm() {
         description: event.description || "",
         type: event.type,
         stage: event.stage,
-        importance: event.importance,
         year: event.year,
         month: event.month,
         day: event.day,
@@ -259,13 +257,6 @@ export default function EventForm() {
     { value: "complete", label: "Complete" },
   ];
 
-  const importanceOptions = [
-    { value: "low", label: "Low" },
-    { value: "medium", label: "Medium" },
-    { value: "high", label: "High" },
-    { value: "critical", label: "Critical" },
-  ];
-
   const locationOptions = [
     { value: "", label: "No location specified" },
     ...locations.map(location => ({
@@ -329,7 +320,7 @@ export default function EventForm() {
 
         {/* Form */}
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="bg-white rounded-xl border border-brand-200 p-6">
+          <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
             <h2 className="text-xl font-semibold text-brand-900 mb-6">Event Information</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -364,14 +355,6 @@ export default function EventForm() {
                 value={form.watch("locationId")?.toString() || ""}
                 onChange={(value) => form.setValue("locationId", value ? parseInt(value) : undefined)}
                 error={form.formState.errors.locationId?.message}
-              />
-
-              <Select
-                label="Importance Level"
-                options={importanceOptions}
-                value={form.watch("importance")}
-                onChange={(value) => form.setValue("importance", value as any)}
-                error={form.formState.errors.importance?.message}
               />
 
               <div className="md:col-span-2">
@@ -416,7 +399,7 @@ export default function EventForm() {
           </div>
 
           {/* Characters Section */}
-          <div className="bg-white rounded-xl border border-brand-200 p-6">
+          <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
             <h2 className="text-xl font-semibold text-brand-900 mb-6">Characters Involved</h2>
             
             {/* Add Character */}

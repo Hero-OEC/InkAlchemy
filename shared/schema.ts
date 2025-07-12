@@ -53,7 +53,6 @@ export const events = pgTable("events", {
   day: integer("day").notNull(),
   type: text("type").default("other"), // battle, meeting, discovery, political, personal, death, travel, magic, other
   stage: text("stage").default("planning"), // planning, writing, first-draft, editing, complete
-  importance: text("importance").default("medium"), // low, medium, high, critical
   locationId: integer("location_id").references(() => locations.id),
   order: integer("order").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),

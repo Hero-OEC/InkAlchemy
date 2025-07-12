@@ -203,7 +203,7 @@ export default function EventDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content - Event Description */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl border border-brand-200 p-6">
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
               <h2 className="text-xl font-semibold text-brand-900 mb-4">Event Description</h2>
               {event.description ? (
                 <div className="prose prose-brand max-w-none">
@@ -222,7 +222,7 @@ export default function EventDetails() {
           {/* Sidebar - Location & Characters */}
           <div className="space-y-6">
             {/* Location Section */}
-            <div className="bg-white rounded-xl border border-brand-200 p-6">
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
               <h3 className="text-lg font-semibold text-brand-900 mb-4">Location</h3>
               {eventLocation ? (
                 <MiniCard
@@ -241,7 +241,7 @@ export default function EventDetails() {
             </div>
 
             {/* Characters Section */}
-            <div className="bg-white rounded-xl border border-brand-200 p-6">
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
               <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters Involved</h3>
               {eventCharacters.length > 0 ? (
                 <div className="space-y-3">
