@@ -8,7 +8,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { Input, Textarea, Select } from "@/components/form-inputs";
 import { MiniCard } from "@/components/mini-card";
-import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, CheckCircle, X } from "lucide-react";
+import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, CheckCircle, X, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { insertEventSchema, type Project, type Event, type Location, type Character, type Relationship } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -468,7 +468,17 @@ export default function EventForm() {
               type="submit"
               loading={createMutation.isPending || updateMutation.isPending}
             >
-              {isEditing ? "Update Event" : "Create Event"}
+              {isEditing ? (
+                <>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Update Event
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Event
+                </>
+              )}
             </Button>
           </div>
         </form>
