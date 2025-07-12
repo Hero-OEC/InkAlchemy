@@ -73,19 +73,19 @@ export default function NoteDetails() {
   const { projectId, noteId } = useParams();
   const [, setLocation] = useLocation();
 
-  // Prevent this component from rendering if noteId is "new"
-  if (noteId === "new") {
-    return null;
-  }
-
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
   const { data: note } = useQuery<Note>({
     queryKey: [`/api/notes/${noteId}`],
-    enabled: !!noteId,
+    enabled: noteId !== "new" && !!noteId,
   });
+
+  // Prevent this component from rendering if noteId is "new"
+  if (noteId === "new") {
+    return null;
+  }
 
   if (!note) {
     return (
