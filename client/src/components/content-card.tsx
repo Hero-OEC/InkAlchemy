@@ -79,17 +79,19 @@ export function ContentCard({
       onClick={onClick}
     >
       {/* Header with Icon and Title */}
-      <div className="flex items-start gap-3 mb-4">
-        <div className="w-10 h-10 bg-brand-200 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Icon className="w-5 h-5 text-brand-700" />
-        </div>
-        
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-brand-950 truncate mb-1">
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="p-1.5 rounded-lg bg-brand-200 flex items-center justify-center flex-shrink-0">
+            <Icon className="w-4 h-4 text-brand-700" />
+          </div>
+          
+          <h3 className="text-lg font-semibold text-brand-950 truncate">
             {title}
           </h3>
-          
-          {/* Subtype Badge - directly under title within same container */}
+        </div>
+
+        {/* Subtype Badge - positioned below title in separate row */}
+        <div className="mb-1">
           <span className={cn(
             "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize",
             config.badgeBg,
