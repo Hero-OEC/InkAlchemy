@@ -307,6 +307,7 @@ export default function CharacterDetails() {
                           eventsPerRow={3}
                           maxWidth="800px"
                           responsive={false}
+                          showFilters={false}
                         />
                       );
                     })()}

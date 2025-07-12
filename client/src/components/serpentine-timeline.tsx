@@ -18,6 +18,7 @@ interface SerpentineTimelineProps {
   eventsPerRow?: number; // Optional prop to override responsive behavior
   maxWidth?: string; // Optional prop to override responsive behavior  
   responsive?: boolean; // Enable automatic responsive behavior (default: true)
+  showFilters?: boolean; // Whether to show character and location filters (default: true)
 }
 
 interface FilterState {
@@ -517,7 +518,8 @@ export function SerpentineTimeline({
   onEventEdit,
   eventsPerRow: overrideEventsPerRow,
   maxWidth: overrideMaxWidth,
-  responsive = true
+  responsive = true,
+  showFilters = true
 }: SerpentineTimelineProps) {
   const [filters, setFilters] = useState<FilterState>({
     characters: [],
@@ -628,47 +630,49 @@ export function SerpentineTimeline({
   return (
     <div className="w-full flex flex-col items-center">
       {/* Filter Section */}
-      <div className="bg-secondary rounded-lg border border-border mb-4">
-        <div className="px-6 py-3 flex items-center justify-center gap-8 flex-wrap">
-          <div className="flex items-center gap-3">
-            <Users className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-secondary-foreground">Characters:</span>
-            <div className="min-w-48">
-              <Select
-                placeholder="Filter by character..."
-                options={[
-                  { value: "", label: "All characters" },
-                  ...characters.map((char) => ({
-                    value: char.id.toString(),
-                    label: char.name
-                  }))
-                ]}
-                value={filters.characters[0] || ""}
-                onChange={handleCharacterFilterChange}
-              />
+      {showFilters && (
+        <div className="bg-secondary rounded-lg border border-border mb-4">
+          <div className="px-6 py-3 flex items-center justify-center gap-8 flex-wrap">
+            <div className="flex items-center gap-3">
+              <Users className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-secondary-foreground">Characters:</span>
+              <div className="min-w-48">
+                <Select
+                  placeholder="Filter by character..."
+                  options={[
+                    { value: "", label: "All characters" },
+                    ...characters.map((char) => ({
+                      value: char.id.toString(),
+                      label: char.name
+                    }))
+                  ]}
+                  value={filters.characters[0] || ""}
+                  onChange={handleCharacterFilterChange}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-secondary-foreground">Locations:</span>
-            <div className="min-w-48">
-              <Select
-                placeholder="Filter by location..."
-                options={[
-                  { value: "", label: "All locations" },
-                  ...locations.map((loc) => ({
-                    value: loc.id.toString(),
-                    label: loc.name
-                  }))
-                ]}
-                value={filters.locations[0] || ""}
-                onChange={handleLocationFilterChange}
-              />
+            <div className="flex items-center gap-3">
+              <MapPin className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-secondary-foreground">Locations:</span>
+              <div className="min-w-48">
+                <Select
+                  placeholder="Filter by location..."
+                  options={[
+                    { value: "", label: "All locations" },
+                    ...locations.map((loc) => ({
+                      value: loc.id.toString(),
+                      label: loc.name
+                    }))
+                  ]}
+                  value={filters.locations[0] || ""}
+                  onChange={handleLocationFilterChange}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Legend */}
       <div className="mb-6">
