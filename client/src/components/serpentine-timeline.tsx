@@ -260,9 +260,9 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
               {event.location && (
                 <div>
                   <div className="text-xs font-medium text-popover-foreground mb-1.5">Location</div>
-                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-emerald-50 border border-emerald-200">
-                    <MapPin className="w-3 h-3 text-emerald-600" />
-                    <span className="text-emerald-800 font-medium">{event.location.name}</span>
+                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-50 border border-green-200">
+                    <MapPin className="w-3 h-3 text-green-600" />
+                    <span className="text-green-800 font-medium">{event.location.name}</span>
                   </div>
                 </div>
               )}
