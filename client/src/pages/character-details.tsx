@@ -251,7 +251,7 @@ export default function CharacterDetails() {
               {activeTab === "timeline" && (
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-3">Character Timeline</h3>
-                  <div className="bg-brand-50 border border-brand-200 rounded-lg p-4">
+                  <div className="bg-brand-50 rounded-lg p-4">
                     {(() => {
                       // Filter events where this character is involved
                       const characterEvents = events.filter(event => {
