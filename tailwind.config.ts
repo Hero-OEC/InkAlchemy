@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'sans-serif'],
+        sans: ['Cairo', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",

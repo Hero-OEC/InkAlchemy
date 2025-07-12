@@ -2,7 +2,7 @@ export function FontShowcase() {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-lg font-semibold text-brand-900 mb-6">Plus Jakarta Sans Font Weights</h3>
+        <h3 className="text-lg font-semibold text-brand-900 mb-6">Cairo Font Weights</h3>
         
         <div className="space-y-4">
           {/* Font Weight Demonstrations */}
@@ -40,6 +40,11 @@ export function FontShowcase() {
             <div className="font-extrabold text-brand-800">
               <span className="text-sm text-brand-600 font-medium">ExtraBold (800):</span> 
               <span className="ml-2">Hero headings, brand names, and maximum impact text</span>
+            </div>
+            
+            <div className="font-black text-brand-800">
+              <span className="text-sm text-brand-600 font-medium">Black (900):</span> 
+              <span className="ml-2">Ultra-bold for maximum visual impact and emphasis</span>
             </div>
           </div>
         </div>

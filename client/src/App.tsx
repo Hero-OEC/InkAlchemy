@@ -101,7 +101,7 @@ function App() {
 
       {/* Font Showcase */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold text-brand-900 mb-6">Plus Jakarta Sans Typography</h2>
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Cairo Typography</h2>
         <div className="bg-white border border-brand-200 rounded-xl p-6">
           <FontShowcase />
         </div>
