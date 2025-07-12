@@ -38,7 +38,7 @@ interface TimelinePosition {
   side: "left" | "right";
 }
 
-// Writing stage color configurations using brand colors - 200, 500, 800 pattern
+// Writing stage color configurations using brand colors - 200, 400, 600, 800, 950 pattern
 const STAGE_COLORS = {
   planning: {
     bg: "bg-brand-200",
@@ -46,22 +46,22 @@ const STAGE_COLORS = {
     icon: "text-brand-900"
   },
   writing: {
-    bg: "bg-brand-500", 
-    border: "border-brand-600",
+    bg: "bg-brand-400", 
+    border: "border-brand-500",
     icon: "text-white"
   },
   "first-draft": {
-    bg: "bg-brand-800",
-    border: "border-brand-900", 
+    bg: "bg-brand-600",
+    border: "border-brand-700", 
     icon: "text-white"
   },
   editing: {
-    bg: "bg-brand-600",
-    border: "border-brand-700",
+    bg: "bg-brand-800",
+    border: "border-brand-900",
     icon: "text-white"
   },
   complete: {
-    bg: "bg-brand-900",
+    bg: "bg-brand-950",
     border: "border-brand-950",
     icon: "text-white"
   },
