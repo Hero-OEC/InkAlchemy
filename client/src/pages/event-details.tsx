@@ -2,6 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { MiniCard } from "@/components/mini-card";
+import { Button } from "@/components/button-variations";
 import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
@@ -93,6 +94,11 @@ export default function EventDetails() {
     setLocation(`/projects/${projectId}/locations/${locationId}`);
   };
 
+  const handleEditEvent = () => {
+    // TODO: Implement edit event functionality
+    console.log("Edit event:", event?.id);
+  };
+
   if (!event) {
     return (
       <div className="min-h-screen bg-brand-50">
@@ -178,6 +184,17 @@ export default function EventDetails() {
                 </span>
               </div>
             </div>
+          </div>
+          <div className="flex-shrink-0">
+            <Button
+              variant="outline"
+              size="md"
+              onClick={handleEditEvent}
+              className="flex items-center gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              Edit Event
+            </Button>
           </div>
         </div>
 
