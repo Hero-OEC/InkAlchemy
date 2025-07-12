@@ -357,7 +357,7 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
           ) : (
             // Single event detailed view
             <div
-              className="cursor-pointer hover:bg-accent transition-colors rounded-lg p-2 -m-2"
+              className="cursor-pointer"
               onClick={() => onEventClick?.(event)}
             >
               <div className="flex flex-col gap-3 mb-3">
