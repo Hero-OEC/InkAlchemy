@@ -117,7 +117,7 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
       <div
         ref={bubbleRef}
         className={cn(
-          "absolute w-12 h-12 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 z-10",
+          "absolute w-12 h-12 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 z-20",
           stageConfig.bg,
           stageConfig.border
         )}
@@ -141,7 +141,7 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
       {/* Event Info Card positioned below bubble */}
       <div
         className={cn(
-          "absolute bg-card rounded-lg px-3 py-2 text-xs text-card-foreground border border-border shadow-sm z-5",
+          "absolute bg-card rounded-lg px-3 py-2 text-xs text-card-foreground border border-border shadow-sm z-10",
           "transform -translate-x-1/2"
         )}
         style={{
