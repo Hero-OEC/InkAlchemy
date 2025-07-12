@@ -4,10 +4,69 @@ import { Button } from "@/components/button-variations";
 import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContentCard } from "@/components/content-card";
-import { Input } from "@/components/form-inputs";
+import { Input, Select } from "@/components/form-inputs";
 import { Sword, Zap, Plus, FolderOpen, Book } from "lucide-react";
 import { useLocation } from "wouter";
 import type { Project, InsertProject } from "@shared/schema";
+
+const genreOptions = [
+  { value: "High Fantasy", label: "High Fantasy", description: "Epic worlds with magic, quests, and mythical creatures" },
+  { value: "Low Fantasy", label: "Low Fantasy", description: "Subtle magic in realistic settings" },
+  { value: "Urban Fantasy", label: "Urban Fantasy", description: "Magic hidden in modern city life" },
+  { value: "Dark Fantasy", label: "Dark Fantasy", description: "Horror meets fantasy with gothic themes" },
+  { value: "Sword & Sorcery", label: "Sword & Sorcery", description: "Adventure-focused with warriors and magic" },
+  { value: "Romantic Fantasy", label: "Romantic Fantasy", description: "Love stories with magical elements" },
+  { value: "Portal Fantasy", label: "Portal Fantasy", description: "Characters travel to magical worlds" },
+  { value: "Fairy Tale Retellings", label: "Fairy Tale Retellings", description: "Classic tales with fresh twists" },
+  { value: "Mythic Fantasy", label: "Mythic Fantasy", description: "Stories rooted in ancient myths" },
+  { value: "Historical Fantasy", label: "Historical Fantasy", description: "Magic woven into historical periods" },
+  { value: "Cozy Fantasy", label: "Cozy Fantasy", description: "Gentle, comforting magical stories" },
+  { value: "Flintlock Fantasy", label: "Flintlock Fantasy", description: "Fantasy with early firearms technology" },
+  { value: "Progression Fantasy", label: "Progression Fantasy", description: "Characters grow stronger through systems" },
+  { value: "Cultivation (Xianxia / Wuxia)", label: "Cultivation (Xianxia / Wuxia)", description: "Martial arts and spiritual power growth" },
+  { value: "LitRPG", label: "LitRPG", description: "Game mechanics in story format" },
+  { value: "GameLit", label: "GameLit", description: "Gaming elements without strict rules" },
+  { value: "Dungeon Core", label: "Dungeon Core", description: "Building and managing dungeons" },
+  { value: "Cyberpunk", label: "Cyberpunk", description: "High tech, low life dystopian future" },
+  { value: "Biopunk", label: "Biopunk", description: "Biotechnology and genetic engineering focus" },
+  { value: "Time Travel", label: "Time Travel", description: "Stories involving temporal journeys" },
+  { value: "AI & Robots", label: "AI & Robots", description: "Artificial intelligence and robotics themes" },
+  { value: "Dystopian", label: "Dystopian", description: "Oppressive future societies" },
+  { value: "Post-Apocalyptic", label: "Post-Apocalyptic", description: "Survival after civilization's collapse" },
+  { value: "Alien Invasion", label: "Alien Invasion", description: "Earth under extraterrestrial attack" },
+  { value: "LitRPG Sci-Fi", label: "LitRPG Sci-Fi", description: "Game systems in futuristic settings" },
+  { value: "Cozy Mystery", label: "Cozy Mystery", description: "Gentle mysteries in small communities" },
+  { value: "Detective Noir", label: "Detective Noir", description: "Dark, gritty crime investigations" },
+  { value: "Spy / Espionage", label: "Spy / Espionage", description: "Secret agents and international intrigue" },
+  { value: "Crime Fiction", label: "Crime Fiction", description: "Criminal activities and investigations" },
+  { value: "Techno-thriller", label: "Techno-thriller", description: "Technology-driven suspense stories" },
+  { value: "Domestic Thriller", label: "Domestic Thriller", description: "Suspense in everyday relationships" },
+  { value: "Psychological Horror", label: "Psychological Horror", description: "Fear from mental manipulation" },
+  { value: "Supernatural Horror", label: "Supernatural Horror", description: "Ghosts, demons, and otherworldly terror" },
+  { value: "Slasher", label: "Slasher", description: "Killer stalking multiple victims" },
+  { value: "Gothic Horror", label: "Gothic Horror", description: "Dark atmosphere with classic monsters" },
+  { value: "Occult Horror", label: "Occult Horror", description: "Dark magic and forbidden knowledge" },
+  { value: "Survival Horror", label: "Survival Horror", description: "Characters fighting to stay alive" },
+  { value: "Monster Horror", label: "Monster Horror", description: "Creatures terrorizing protagonists" },
+  { value: "YA Fantasy", label: "YA Fantasy", description: "Young adult fantasy adventures" },
+  { value: "YA Sci-Fi", label: "YA Sci-Fi", description: "Teen-focused science fiction" },
+  { value: "YA Romance", label: "YA Romance", description: "Young love and relationships" },
+  { value: "YA Contemporary", label: "YA Contemporary", description: "Modern teen life and issues" },
+  { value: "YA Dystopian", label: "YA Dystopian", description: "Young heroes in broken societies" },
+  { value: "YA Thriller", label: "YA Thriller", description: "Teen suspense and danger" },
+  { value: "YA Paranormal", label: "YA Paranormal", description: "Young adult supernatural stories" },
+  { value: "Romantic Comedy (Rom-Com)", label: "Romantic Comedy (Rom-Com)", description: "Light-hearted love stories" },
+  { value: "Coming-of-Age", label: "Coming-of-Age", description: "Growing up and self-discovery" },
+  { value: "Literary Fiction", label: "Literary Fiction", description: "Character-driven artistic prose" },
+  { value: "Contemporary Fiction", label: "Contemporary Fiction", description: "Modern life and relationships" },
+  { value: "Slice of Life", label: "Slice of Life", description: "Everyday moments and experiences" },
+  { value: "Magical Realism", label: "Magical Realism", description: "Subtle magic in realistic settings" },
+  { value: "Satire", label: "Satire", description: "Humor to critique society" },
+  { value: "Drama", label: "Drama", description: "Serious emotional conflicts" },
+  { value: "Alt-History", label: "Alt-History", description: "What if history went differently" },
+  { value: "Dark Academia", label: "Dark Academia", description: "Academic settings with dark secrets" },
+  { value: "Antihero Fiction", label: "Antihero Fiction", description: "Morally complex protagonists" },
+];
 
 export default function Welcome() {
   const [, setLocation] = useLocation();
@@ -16,6 +75,8 @@ export default function Welcome() {
   const [newProjectGenre, setNewProjectGenre] = useState("");
   const [newProjectDescription, setNewProjectDescription] = useState("");
   const queryClient = useQueryClient();
+
+  const selectedGenreDescription = genreOptions.find(g => g.value === newProjectGenre)?.description;
 
   const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
@@ -114,12 +175,20 @@ export default function Welcome() {
                       placeholder="e.g., The Chronicles of Mystara"
                       required
                     />
-                    <Input
-                      label="Genre"
-                      value={newProjectGenre}
-                      onChange={(e) => setNewProjectGenre(e.target.value)}
-                      placeholder="e.g., Fantasy, Sci-Fi, Romance"
-                    />
+                    <div>
+                      <Select
+                        label="Genre"
+                        value={newProjectGenre}
+                        onChange={setNewProjectGenre}
+                        placeholder="Select a genre for your story"
+                        options={genreOptions}
+                      />
+                      {selectedGenreDescription && (
+                        <p className="text-sm text-brand-600 mt-2 italic">
+                          {selectedGenreDescription}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <Input
                     label="Description"
