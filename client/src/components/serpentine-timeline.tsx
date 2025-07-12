@@ -38,32 +38,32 @@ interface TimelinePosition {
   side: "left" | "right";
 }
 
-// Writing stage color configurations using existing color system
+// Writing stage color configurations using warm cream/beige theme
 const STAGE_COLORS = {
   planning: {
-    bg: "bg-background",
-    border: "border-border",
-    icon: "text-muted-foreground"
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+    icon: "text-amber-600"
   },
   writing: {
-    bg: "bg-muted", 
-    border: "border-border",
-    icon: "text-foreground"
+    bg: "bg-amber-100", 
+    border: "border-amber-300",
+    icon: "text-amber-700"
   },
   "first-draft": {
-    bg: "bg-secondary",
-    border: "border-border", 
-    icon: "text-secondary-foreground"
+    bg: "bg-amber-200",
+    border: "border-amber-400", 
+    icon: "text-amber-800"
   },
   editing: {
-    bg: "bg-primary",
-    border: "border-primary",
-    icon: "text-primary-foreground"
+    bg: "bg-amber-300",
+    border: "border-amber-500",
+    icon: "text-amber-900"
   },
   complete: {
-    bg: "bg-accent-foreground",
-    border: "border-accent-foreground",
-    icon: "text-background"
+    bg: "bg-amber-400",
+    border: "border-amber-600",
+    icon: "text-amber-900"
   }
 };
 
@@ -228,7 +228,7 @@ function TimelineLegend() {
   ];
 
   return (
-    <div className="bg-secondary rounded-lg border border-border">
+    <div className="bg-amber-50 rounded-lg border border-amber-200">
       <div className="px-6 py-3 flex items-center justify-center gap-6 flex-wrap">
         {stages.map((stage) => (
           <div key={stage.key} className="flex items-center gap-2">
@@ -237,14 +237,14 @@ function TimelineLegend() {
               stage.color.bg,
               stage.color.border
             )} />
-            <span className="text-sm font-medium text-secondary-foreground">{stage.label}</span>
+            <span className="text-sm font-medium text-amber-800">{stage.label}</span>
           </div>
         ))}
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-accent border-2 border-accent-foreground flex items-center justify-center">
-            <span className="text-xs font-bold text-accent-foreground">3</span>
+          <div className="w-4 h-4 rounded-full bg-amber-100 border-2 border-amber-400 flex items-center justify-center">
+            <span className="text-xs font-bold text-amber-800">3</span>
           </div>
-          <span className="text-sm font-medium text-secondary-foreground">Multiple Events</span>
+          <span className="text-sm font-medium text-amber-800">Multiple Events</span>
         </div>
       </div>
     </div>
@@ -414,11 +414,11 @@ export function SerpentineTimeline({
   return (
     <div className="w-full flex flex-col items-center">
       {/* Filter Section */}
-      <div className="bg-secondary rounded-lg border border-border mb-4">
+      <div className="bg-amber-50 rounded-lg border border-amber-200 mb-4">
         <div className="px-6 py-3 flex items-center justify-center gap-8 flex-wrap">
           <div className="flex items-center gap-3">
-            <Users className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-secondary-foreground">Characters:</span>
+            <Users className="w-4 h-4 text-amber-600" />
+            <span className="text-sm font-medium text-amber-800">Characters:</span>
             <select
               className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground min-w-48"
               value={filters.characters[0] || ""}
@@ -434,8 +434,8 @@ export function SerpentineTimeline({
           </div>
 
           <div className="flex items-center gap-3">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-secondary-foreground">Locations:</span>
+            <MapPin className="w-4 h-4 text-amber-600" />
+            <span className="text-sm font-medium text-amber-800">Locations:</span>
             <select
               className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground min-w-48"
               value={filters.locations[0] || ""}
