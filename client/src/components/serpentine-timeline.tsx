@@ -464,10 +464,10 @@ export function SerpentineTimeline({
                 return pathCommands.join(' ');
               })()}
               fill="none"
-              stroke="hsl(var(--muted-foreground))"
-              strokeWidth="2"
+              stroke="hsl(var(--color-400))"
+              strokeWidth="3"
               strokeLinecap="round"
-              opacity="0.6"
+              strokeDasharray="8,4"
             />
           </svg>
 
