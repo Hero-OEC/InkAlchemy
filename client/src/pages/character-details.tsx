@@ -121,7 +121,7 @@ export default function CharacterDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Character Image & Basic Info */}
           <div className="lg:col-span-1">
-            <div className="bg-brand-100 border border-brand-200 rounded-xl p-6 mb-6">
+            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6 mb-6">
               {/* Character Image */}
               <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-4">
                 {character.imageUrl ? (
@@ -173,7 +173,7 @@ export default function CharacterDetails() {
             </div>
 
             {/* Tab Content */}
-            <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
               {activeTab === "details" && (
                 <div className="space-y-6">
                   {character.description && (
