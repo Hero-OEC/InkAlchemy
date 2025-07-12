@@ -175,10 +175,10 @@ export default function Dashboard() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'create': return 'text-green-600 bg-green-50';
-      case 'edit': return 'text-blue-600 bg-blue-50';
-      case 'delete': return 'text-red-600 bg-red-50';
-      default: return 'text-brand-600 bg-brand-50';
+      case 'create': return 'text-brand-700 bg-brand-200';
+      case 'edit': return 'text-brand-600 bg-brand-100';
+      case 'delete': return 'text-brand-800 bg-brand-300';
+      default: return 'text-brand-600 bg-brand-100';
     }
   };
 
@@ -191,7 +191,7 @@ export default function Dashboard() {
         onNavigate={handleNavigation}
       />
       
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-brand-900 mb-2">
@@ -204,7 +204,7 @@ export default function Dashboard() {
 
         {/* Stats Grid */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-4 gap-4 mb-8">
             <div className="bg-brand-100 rounded-lg p-6 border border-brand-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
