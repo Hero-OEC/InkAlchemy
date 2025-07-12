@@ -135,3 +135,11 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Fixed container width issues and z-index layering for proper event display
 - Added responsive prop to enable/disable automatic responsive behavior
 - Supports both responsive mode and fixed-size override mode
+
+### January 2025 - Multi-Event Timeline Functionality
+- Implemented multi-event bubble display showing "X Events" for same-date events
+- Created simplified multi-event hover popup with clickable individual event cards
+- Added intelligent popup positioning to prevent viewport overflow
+- Enhanced scroll detection to distinguish between timeline and popup scrolling
+- Fixed internal popup scrolling while maintaining timeline scroll-to-close behavior
+- Multi-event bubbles use brand-50 background with proper event count display
