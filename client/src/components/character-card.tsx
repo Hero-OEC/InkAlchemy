@@ -17,43 +17,43 @@ const CHARACTER_TYPE_CONFIG = {
   protagonist: {
     icon: Crown,
     label: "Protagonist",
-    bgColor: "bg-brand-400",
+    bgColor: "bg-brand-500",
     textColor: "text-white"
   },
   antagonist: {
     icon: Sword,
     label: "Antagonist", 
-    bgColor: "bg-brand-300",
-    textColor: "text-brand-900"
+    bgColor: "bg-brand-400",
+    textColor: "text-white"
   },
   villain: {
     icon: Skull,
     label: "Villain",
-    bgColor: "bg-brand-600", 
+    bgColor: "bg-brand-700", 
     textColor: "text-white"
   },
   supporting: {
     icon: Users,
     label: "Supporting",
-    bgColor: "bg-brand-200",
-    textColor: "text-brand-800"
+    bgColor: "bg-brand-300",
+    textColor: "text-brand-900"
   },
   ally: {
     icon: Shield,
     label: "Ally",
-    bgColor: "bg-brand-100",
-    textColor: "text-brand-700"
+    bgColor: "bg-brand-600",
+    textColor: "text-white"
   },
   neutral: {
     icon: Zap,
     label: "Neutral",
-    bgColor: "bg-brand-50",
-    textColor: "text-brand-800"
+    bgColor: "bg-brand-800",
+    textColor: "text-white"
   },
   "love-interest": {
     icon: Heart,
     label: "Love Interest",
-    bgColor: "bg-brand-500",
+    bgColor: "bg-brand-900",
     textColor: "text-white"
   }
 };

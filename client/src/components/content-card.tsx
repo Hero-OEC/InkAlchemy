@@ -16,30 +16,30 @@ export interface ContentCardProps {
   onDelete?: () => void;
 }
 
-// Type-specific styling configurations - universal beige icon container with brand color badges
+// Type-specific styling configurations - universal beige icon container with contrasting badges
 const typeConfigs = {
   location: {
-    badgeBg: "bg-brand-200",
-    badgeText: "text-brand-800",
-    borderColor: "border-brand-200",
-  },
-  magic: {
     badgeBg: "bg-brand-300",
     badgeText: "text-brand-900",
     borderColor: "border-brand-200",
   },
+  magic: {
+    badgeBg: "bg-brand-500",
+    badgeText: "text-white",
+    borderColor: "border-brand-200",
+  },
   lore: {
-    badgeBg: "bg-brand-100",
-    badgeText: "text-brand-700",
+    badgeBg: "bg-brand-400",
+    badgeText: "text-white",
     borderColor: "border-brand-200",
   },
   note: {
-    badgeBg: "bg-brand-50",
-    badgeText: "text-brand-800", 
+    badgeBg: "bg-brand-600",
+    badgeText: "text-white", 
     borderColor: "border-brand-200",
   },
   project: {
-    badgeBg: "bg-brand-400",
+    badgeBg: "bg-brand-700",
     badgeText: "text-white",
     borderColor: "border-brand-200",
   },
