@@ -575,7 +575,7 @@ export function SerpentineTimeline({
     })[] = [];
     
     const containerWidth = parseInt(maxWidth.replace('px', ''));
-    const margin = Math.max(40, containerWidth * 0.04); // Responsive margin (4% of width, min 40px)
+    const margin = Math.max(60, containerWidth * 0.08); // Responsive margin (8% of width, min 60px)
     const usableWidth = containerWidth - (margin * 2);
     const verticalSpacing = 150; // Vertical spacing between rows
     const startY = 80; // Starting Y position
@@ -590,13 +590,17 @@ export function SerpentineTimeline({
       let x: number;
       let side: "left" | "right";
       
+      // Use only 70% of available width for tighter spacing, center the timeline
+      const timelineWidth = usableWidth * 0.7;
+      const timelineStartX = margin + (usableWidth - timelineWidth) / 2;
+      
       if (isEvenRow) {
         // Left to right
-        x = margin + (positionInRow * (usableWidth / (eventsPerRow - 1)));
+        x = timelineStartX + (positionInRow * (timelineWidth / (eventsPerRow - 1)));
         side = positionInRow < eventsPerRow / 2 ? "left" : "right";
       } else {
         // Right to left
-        x = margin + usableWidth - (positionInRow * (usableWidth / (eventsPerRow - 1)));
+        x = timelineStartX + timelineWidth - (positionInRow * (timelineWidth / (eventsPerRow - 1)));
         side = positionInRow < eventsPerRow / 2 ? "right" : "left";
       }
 
