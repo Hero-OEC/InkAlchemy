@@ -131,6 +131,7 @@ export class MemStorage implements IStorage {
         age: "19",
         race: "Human",
         role: "Main Protagonist",
+        imageUrl: null,
         status: "active",
         createdAt: new Date(),
         updatedAt: new Date()
@@ -151,6 +152,7 @@ export class MemStorage implements IStorage {
         age: "150",
         race: "Elf", 
         role: "Mentor",
+        imageUrl: null,
         status: "active",
         createdAt: new Date(),
         updatedAt: new Date()
@@ -171,6 +173,7 @@ export class MemStorage implements IStorage {
         age: "45",
         race: "Human",
         role: "Main Antagonist", 
+        imageUrl: null,
         status: "active",
         createdAt: new Date(),
         updatedAt: new Date()
@@ -601,6 +604,7 @@ export class MemStorage implements IStorage {
       powerType: insertCharacter.powerType ?? null,
       age: insertCharacter.age ?? null,
       race: insertCharacter.race ?? null,
+      imageUrl: insertCharacter.imageUrl ?? null,
       status: insertCharacter.status ?? "active",
       createdAt: new Date(),
       updatedAt: new Date()

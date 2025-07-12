@@ -35,6 +35,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
       personality: character?.personality || "",
       background: character?.background || "",
       goals: character?.goals || "",
+      imageUrl: character?.imageUrl || "",
       status: character?.status || "active",
     },
   });
@@ -162,6 +163,24 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                 <Textarea 
                   placeholder="Brief overview of the character"
                   className="min-h-[80px]"
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Character Image URL</FormLabel>
+              <FormControl>
+                <Input 
+                  type="url"
+                  placeholder="https://example.com/character-image.jpg"
                   {...field} 
                 />
               </FormControl>
