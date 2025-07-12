@@ -117,7 +117,7 @@ export default function CreateCharacter() {
                 <p className="text-brand-600 mt-1">Add a new character to your story</p>
               </div>
             </div>
-            <Button variant="secondary" onClick={handleBack} className="flex items-center gap-2">
+            <Button variant="ghost" onClick={handleBack} className="flex items-center gap-2">
               <ArrowLeft size={16} />
               Back to Characters
             </Button>

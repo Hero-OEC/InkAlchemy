@@ -150,7 +150,7 @@ export default function EditCharacter() {
                 <p className="text-brand-600 mt-1">Update character details and information</p>
               </div>
             </div>
-            <Button variant="secondary" onClick={handleBack} className="flex items-center gap-2">
+            <Button variant="ghost" onClick={handleBack} className="flex items-center gap-2">
               <ArrowLeft size={16} />
               Back to Character
             </Button>
