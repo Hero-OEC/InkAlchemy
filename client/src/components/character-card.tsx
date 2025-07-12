@@ -18,50 +18,43 @@ const CHARACTER_TYPE_CONFIG = {
     icon: Crown,
     label: "Protagonist",
     bgColor: "bg-brand-400",
-    textColor: "text-white",
-    iconColor: "text-brand-400"
+    textColor: "text-white"
   },
   antagonist: {
     icon: Sword,
     label: "Antagonist", 
-    bgColor: "bg-red-500",
-    textColor: "text-white",
-    iconColor: "text-red-500"
+    bgColor: "bg-brand-300",
+    textColor: "text-brand-900"
   },
   villain: {
     icon: Skull,
     label: "Villain",
-    bgColor: "bg-red-600", 
-    textColor: "text-white",
-    iconColor: "text-red-600"
+    bgColor: "bg-brand-600", 
+    textColor: "text-white"
   },
   supporting: {
     icon: Users,
     label: "Supporting",
-    bgColor: "bg-brand-600",
-    textColor: "text-white", 
-    iconColor: "text-brand-600"
+    bgColor: "bg-brand-200",
+    textColor: "text-brand-800"
   },
   ally: {
     icon: Shield,
     label: "Ally",
-    bgColor: "bg-green-500",
-    textColor: "text-white",
-    iconColor: "text-green-500"
+    bgColor: "bg-brand-100",
+    textColor: "text-brand-700"
   },
   neutral: {
     icon: Zap,
     label: "Neutral",
-    bgColor: "bg-gray-500",
-    textColor: "text-white",
-    iconColor: "text-gray-500"
+    bgColor: "bg-brand-50",
+    textColor: "text-brand-800"
   },
   "love-interest": {
     icon: Heart,
     label: "Love Interest",
-    bgColor: "bg-pink-500",
-    textColor: "text-white",
-    iconColor: "text-pink-500"
+    bgColor: "bg-brand-500",
+    textColor: "text-white"
   }
 };
 
@@ -109,8 +102,8 @@ export function CharacterCard({
 
       {/* Character Name with Icon */}
       <div className="mb-2 flex items-center gap-2">
-        <div className={`p-1.5 rounded-lg ${config.bgColor}`}>
-          <Icon size={16} className="text-white" />
+        <div className="p-1.5 rounded-lg bg-brand-200">
+          <Icon size={16} className="text-brand-700" />
         </div>
         <h3 className="text-brand-950 font-semibold text-lg leading-tight">
           {prefix && <span className="text-sm text-brand-600 font-normal">{prefix} </span>}
