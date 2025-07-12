@@ -5,68 +5,81 @@ import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContentCard } from "@/components/content-card";
 import { Input, Select } from "@/components/form-inputs";
-import { Sword, Zap, Plus, FolderOpen, Book } from "lucide-react";
+import { 
+  Plus, FolderOpen, Book,
+  Castle, Globe, Building, Flame, Swords, Heart, DoorOpen, Wand, BookOpen, ScrollText,
+  Coffee as MugHot, Zap as Gun, TrendingUp, Leaf, Dice5, MonitorPlay, Layers3, Cpu, Dna, Clock,
+  Bot, Factory, Radiation, Satellite, Gamepad, Search, Key, Gavel, Server, Home,
+  Brain, Ghost, Zap as Knife, Moon, Hexagon as Pentagon, Shield, Bug, Feather, Rocket, Smile,
+  Calendar, AlertOctagon, AlertCircle, Eye, Laugh, User, Users, Coffee,
+  Sparkles, Megaphone, Zap as Drama, Clock as Timeline, GraduationCap, Mask, Pen
+} from "lucide-react";
 import { useLocation } from "wouter";
 import type { Project, InsertProject } from "@shared/schema";
 
 const genreOptions = [
-  { value: "High Fantasy", label: "High Fantasy", description: "Epic worlds with magic, quests, and mythical creatures" },
-  { value: "Low Fantasy", label: "Low Fantasy", description: "Subtle magic in realistic settings" },
-  { value: "Urban Fantasy", label: "Urban Fantasy", description: "Magic hidden in modern city life" },
-  { value: "Dark Fantasy", label: "Dark Fantasy", description: "Horror meets fantasy with gothic themes" },
-  { value: "Sword & Sorcery", label: "Sword & Sorcery", description: "Adventure-focused with warriors and magic" },
-  { value: "Romantic Fantasy", label: "Romantic Fantasy", description: "Love stories with magical elements" },
-  { value: "Portal Fantasy", label: "Portal Fantasy", description: "Characters travel to magical worlds" },
-  { value: "Fairy Tale Retellings", label: "Fairy Tale Retellings", description: "Classic tales with fresh twists" },
-  { value: "Mythic Fantasy", label: "Mythic Fantasy", description: "Stories rooted in ancient myths" },
-  { value: "Historical Fantasy", label: "Historical Fantasy", description: "Magic woven into historical periods" },
-  { value: "Cozy Fantasy", label: "Cozy Fantasy", description: "Gentle, comforting magical stories" },
-  { value: "Flintlock Fantasy", label: "Flintlock Fantasy", description: "Fantasy with early firearms technology" },
-  { value: "Progression Fantasy", label: "Progression Fantasy", description: "Characters grow stronger through systems" },
-  { value: "Cultivation (Xianxia / Wuxia)", label: "Cultivation (Xianxia / Wuxia)", description: "Martial arts and spiritual power growth" },
-  { value: "LitRPG", label: "LitRPG", description: "Game mechanics in story format" },
-  { value: "GameLit", label: "GameLit", description: "Gaming elements without strict rules" },
-  { value: "Dungeon Core", label: "Dungeon Core", description: "Building and managing dungeons" },
-  { value: "Cyberpunk", label: "Cyberpunk", description: "High tech, low life dystopian future" },
-  { value: "Biopunk", label: "Biopunk", description: "Biotechnology and genetic engineering focus" },
-  { value: "Time Travel", label: "Time Travel", description: "Stories involving temporal journeys" },
-  { value: "AI & Robots", label: "AI & Robots", description: "Artificial intelligence and robotics themes" },
-  { value: "Dystopian", label: "Dystopian", description: "Oppressive future societies" },
-  { value: "Post-Apocalyptic", label: "Post-Apocalyptic", description: "Survival after civilization's collapse" },
-  { value: "Alien Invasion", label: "Alien Invasion", description: "Earth under extraterrestrial attack" },
-  { value: "LitRPG Sci-Fi", label: "LitRPG Sci-Fi", description: "Game systems in futuristic settings" },
-  { value: "Cozy Mystery", label: "Cozy Mystery", description: "Gentle mysteries in small communities" },
-  { value: "Detective Noir", label: "Detective Noir", description: "Dark, gritty crime investigations" },
-  { value: "Spy / Espionage", label: "Spy / Espionage", description: "Secret agents and international intrigue" },
-  { value: "Crime Fiction", label: "Crime Fiction", description: "Criminal activities and investigations" },
-  { value: "Techno-thriller", label: "Techno-thriller", description: "Technology-driven suspense stories" },
-  { value: "Domestic Thriller", label: "Domestic Thriller", description: "Suspense in everyday relationships" },
-  { value: "Psychological Horror", label: "Psychological Horror", description: "Fear from mental manipulation" },
-  { value: "Supernatural Horror", label: "Supernatural Horror", description: "Ghosts, demons, and otherworldly terror" },
-  { value: "Slasher", label: "Slasher", description: "Killer stalking multiple victims" },
-  { value: "Gothic Horror", label: "Gothic Horror", description: "Dark atmosphere with classic monsters" },
-  { value: "Occult Horror", label: "Occult Horror", description: "Dark magic and forbidden knowledge" },
-  { value: "Survival Horror", label: "Survival Horror", description: "Characters fighting to stay alive" },
-  { value: "Monster Horror", label: "Monster Horror", description: "Creatures terrorizing protagonists" },
-  { value: "YA Fantasy", label: "YA Fantasy", description: "Young adult fantasy adventures" },
-  { value: "YA Sci-Fi", label: "YA Sci-Fi", description: "Teen-focused science fiction" },
-  { value: "YA Romance", label: "YA Romance", description: "Young love and relationships" },
-  { value: "YA Contemporary", label: "YA Contemporary", description: "Modern teen life and issues" },
-  { value: "YA Dystopian", label: "YA Dystopian", description: "Young heroes in broken societies" },
-  { value: "YA Thriller", label: "YA Thriller", description: "Teen suspense and danger" },
-  { value: "YA Paranormal", label: "YA Paranormal", description: "Young adult supernatural stories" },
-  { value: "Romantic Comedy (Rom-Com)", label: "Romantic Comedy (Rom-Com)", description: "Light-hearted love stories" },
-  { value: "Coming-of-Age", label: "Coming-of-Age", description: "Growing up and self-discovery" },
-  { value: "Literary Fiction", label: "Literary Fiction", description: "Character-driven artistic prose" },
-  { value: "Contemporary Fiction", label: "Contemporary Fiction", description: "Modern life and relationships" },
-  { value: "Slice of Life", label: "Slice of Life", description: "Everyday moments and experiences" },
-  { value: "Magical Realism", label: "Magical Realism", description: "Subtle magic in realistic settings" },
-  { value: "Satire", label: "Satire", description: "Humor to critique society" },
-  { value: "Drama", label: "Drama", description: "Serious emotional conflicts" },
-  { value: "Alt-History", label: "Alt-History", description: "What if history went differently" },
-  { value: "Dark Academia", label: "Dark Academia", description: "Academic settings with dark secrets" },
-  { value: "Antihero Fiction", label: "Antihero Fiction", description: "Morally complex protagonists" },
+  { value: "High Fantasy", label: "High Fantasy", description: "Epic worlds with magic, quests, and mythical creatures", icon: Castle },
+  { value: "Low Fantasy", label: "Low Fantasy", description: "Subtle magic in realistic settings", icon: Globe },
+  { value: "Urban Fantasy", label: "Urban Fantasy", description: "Magic hidden in modern city life", icon: Building },
+  { value: "Dark Fantasy", label: "Dark Fantasy", description: "Horror meets fantasy with gothic themes", icon: Flame },
+  { value: "Sword & Sorcery", label: "Sword & Sorcery", description: "Adventure-focused with warriors and magic", icon: Swords },
+  { value: "Romantic Fantasy", label: "Romantic Fantasy", description: "Love stories with magical elements", icon: Heart },
+  { value: "Portal Fantasy", label: "Portal Fantasy", description: "Characters travel to magical worlds", icon: DoorOpen },
+  { value: "Fairy Tale Retellings", label: "Fairy Tale Retellings", description: "Classic tales with fresh twists", icon: Wand },
+  { value: "Mythic Fantasy", label: "Mythic Fantasy", description: "Stories rooted in ancient myths", icon: BookOpen },
+  { value: "Historical Fantasy", label: "Historical Fantasy", description: "Magic woven into historical periods", icon: ScrollText },
+  { value: "Cozy Fantasy", label: "Cozy Fantasy", description: "Gentle, comforting magical stories", icon: MugHot },
+  { value: "Flintlock Fantasy", label: "Flintlock Fantasy", description: "Fantasy with early firearms technology", icon: Zap },
+  { value: "Progression Fantasy", label: "Progression Fantasy", description: "Characters grow stronger through systems", icon: TrendingUp },
+  { value: "Cultivation (Xianxia / Wuxia)", label: "Cultivation (Xianxia / Wuxia)", description: "Martial arts and spiritual power growth", icon: Leaf },
+  { value: "LitRPG", label: "LitRPG", description: "Game mechanics in story format", icon: Dice5 },
+  { value: "GameLit", label: "GameLit", description: "Gaming elements without strict rules", icon: MonitorPlay },
+  { value: "Dungeon Core", label: "Dungeon Core", description: "Building and managing dungeons", icon: Layers3 },
+  { value: "Cyberpunk", label: "Cyberpunk", description: "High tech, low life dystopian future", icon: Cpu },
+  { value: "Biopunk", label: "Biopunk", description: "Biotechnology and genetic engineering focus", icon: Dna },
+  { value: "Time Travel", label: "Time Travel", description: "Stories involving temporal journeys", icon: Clock },
+  { value: "AI & Robots", label: "AI & Robots", description: "Artificial intelligence and robotics themes", icon: Bot },
+  { value: "Dystopian", label: "Dystopian", description: "Oppressive future societies", icon: Factory },
+  { value: "Post-Apocalyptic", label: "Post-Apocalyptic", description: "Survival after civilization's collapse", icon: Radiation },
+  { value: "Alien Invasion", label: "Alien Invasion", description: "Earth under extraterrestrial attack", icon: Satellite },
+  { value: "LitRPG Sci-Fi", label: "LitRPG Sci-Fi", description: "Game systems in futuristic settings", icon: Gamepad },
+  { value: "Cozy Mystery", label: "Cozy Mystery", description: "Gentle mysteries in small communities", icon: Book },
+  { value: "Detective Noir", label: "Detective Noir", description: "Dark, gritty crime investigations", icon: Search },
+  { value: "Spy / Espionage", label: "Spy / Espionage", description: "Secret agents and international intrigue", icon: Key },
+  { value: "Crime Fiction", label: "Crime Fiction", description: "Criminal activities and investigations", icon: Gavel },
+  { value: "Techno-thriller", label: "Techno-thriller", description: "Technology-driven suspense stories", icon: Server },
+  { value: "Domestic Thriller", label: "Domestic Thriller", description: "Suspense in everyday relationships", icon: Home },
+  { value: "Psychological Horror", label: "Psychological Horror", description: "Fear from mental manipulation", icon: Brain },
+  { value: "Supernatural Horror", label: "Supernatural Horror", description: "Ghosts, demons, and otherworldly terror", icon: Ghost },
+  { value: "Slasher", label: "Slasher", description: "Killer stalking multiple victims", icon: Zap },
+  { value: "Gothic Horror", label: "Gothic Horror", description: "Dark atmosphere with classic monsters", icon: Moon },
+  { value: "Occult Horror", label: "Occult Horror", description: "Dark magic and forbidden knowledge", icon: Hexagon },
+  { value: "Survival Horror", label: "Survival Horror", description: "Characters fighting to stay alive", icon: Shield },
+  { value: "Monster Horror", label: "Monster Horror", description: "Creatures terrorizing protagonists", icon: Bug },
+  { value: "YA Fantasy", label: "YA Fantasy", description: "Young adult fantasy adventures", icon: Feather },
+  { value: "YA Sci-Fi", label: "YA Sci-Fi", description: "Teen-focused science fiction", icon: Rocket },
+  { value: "YA Romance", label: "YA Romance", description: "Young love and relationships", icon: Smile },
+  { value: "YA Contemporary", label: "YA Contemporary", description: "Modern teen life and issues", icon: Calendar },
+  { value: "YA Dystopian", label: "YA Dystopian", description: "Young heroes in broken societies", icon: AlertOctagon },
+  { value: "YA Thriller", label: "YA Thriller", description: "Teen suspense and danger", icon: AlertCircle },
+  { value: "YA Paranormal", label: "YA Paranormal", description: "Young adult supernatural stories", icon: Eye },
+  { value: "Romantic Comedy (Rom-Com)", label: "Romantic Comedy (Rom-Com)", description: "Light-hearted love stories", icon: Laugh },
+  { value: "Coming-of-Age", label: "Coming-of-Age", description: "Growing up and self-discovery", icon: User },
+  { value: "Literary Fiction", label: "Literary Fiction", description: "Character-driven artistic prose", icon: Pen },
+  { value: "Contemporary Fiction", label: "Contemporary Fiction", description: "Modern life and relationships", icon: Users },
+  { value: "Slice of Life", label: "Slice of Life", description: "Everyday moments and experiences", icon: Coffee },
+  { value: "Magical Realism", label: "Magical Realism", description: "Subtle magic in realistic settings", icon: Sparkles },
+  { value: "Satire", label: "Satire", description: "Humor to critique society", icon: Megaphone },
+  { value: "Drama", label: "Drama", description: "Serious emotional conflicts", icon: Zap },
+  { value: "Alt-History", label: "Alt-History", description: "What if history went differently", icon: Clock },
+  { value: "Dark Academia", label: "Dark Academia", description: "Academic settings with dark secrets", icon: GraduationCap },
+  { value: "Antihero Fiction", label: "Antihero Fiction", description: "Morally complex protagonists", icon: Mask },
 ];
+
+const getGenreIcon = (genre: string) => {
+  const genreData = genreOptions.find(g => g.value === genre);
+  return genreData?.icon || Book;
+};
 
 export default function Welcome() {
   const [, setLocation] = useLocation();
@@ -244,7 +257,7 @@ export default function Welcome() {
                   type="project"
                   subtype={project.genre || "story"}
                   description={project.description || "No description provided"}
-                  icon={project.genre === "Fantasy" ? Sword : project.genre === "Sci-Fi" ? Zap : Book}
+                  icon={getGenreIcon(project.genre || "")}
                   createdAt={new Date(project.createdAt)}
                   lastEditedAt={project.lastEditedAt ? new Date(project.lastEditedAt) : undefined}
                   onClick={() => handleOpenProject(project.id)}
