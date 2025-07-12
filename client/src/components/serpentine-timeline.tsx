@@ -575,7 +575,7 @@ export function SerpentineTimeline({
     })[] = [];
     
     const containerWidth = parseInt(maxWidth.replace('px', ''));
-    const margin = Math.max(60, containerWidth * 0.08); // Responsive margin (8% of width, min 60px)
+    const margin = Math.max(20, containerWidth * 0.03); // Reduced margin (3% of width, min 20px)
     const usableWidth = containerWidth - (margin * 2);
     const verticalSpacing = 150; // Vertical spacing between rows
     const startY = 80; // Starting Y position
@@ -590,8 +590,8 @@ export function SerpentineTimeline({
       let x: number;
       let side: "left" | "right";
       
-      // Use only 70% of available width for tighter spacing, center the timeline
-      const timelineWidth = usableWidth * 0.7;
+      // Use 85% of available width for better space utilization
+      const timelineWidth = usableWidth * 0.85;
       const timelineStartX = margin + (usableWidth - timelineWidth) / 2;
       
       if (isEvenRow) {
@@ -705,13 +705,13 @@ export function SerpentineTimeline({
                 if (groupedEvents.length === 0) return "";
                 
                 const containerWidth = parseInt(maxWidth.replace('px', ''));
-                const margin = Math.max(60, containerWidth * 0.08);
+                const margin = Math.max(20, containerWidth * 0.03); // Reduced margin (3% of width, min 20px)
                 const usableWidth = containerWidth - (margin * 2);
                 const verticalSpacing = 150; // Vertical spacing between rows
                 const startY = 80;
                 
-                // Use same 70% timeline width as bubbles
-                const timelineWidth = usableWidth * 0.7;
+                // Use same 85% timeline width as bubbles
+                const timelineWidth = usableWidth * 0.85;
                 const timelineStartX = margin + (usableWidth - timelineWidth) / 2;
                 const timelineEndX = timelineStartX + timelineWidth;
                 
