@@ -12,9 +12,9 @@ export interface NavbarProps {
 
 const navigationItems = [
   { id: "dashboard", label: "Dashboard", icon: Home },
+  { id: "timeline", label: "Timeline", icon: Calendar },
   { id: "characters", label: "Characters", icon: Users },
   { id: "locations", label: "Locations", icon: MapPin },
-  { id: "timeline", label: "Timeline", icon: Calendar },
   { id: "magic-systems", label: "Magic", icon: Sparkles },
   { id: "lore", label: "Lore", icon: Book },
   { id: "notes", label: "Notes", icon: StickyNote },
