@@ -1,5 +1,6 @@
 import { CharacterCard } from "./components/character-card";
 import { ButtonShowcase } from "./components/button-variations";
+import { DeleteConfirmationDemo } from "./components/delete-confirmation";
 
 function App() {
   return (
@@ -77,6 +78,14 @@ function App() {
         <h2 className="text-2xl font-bold text-brand-900 mb-6">Button Components</h2>
         <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
           <ButtonShowcase />
+        </div>
+      </section>
+
+      {/* Delete Confirmation Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Delete Confirmation Modal</h2>
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <DeleteConfirmationDemo />
         </div>
       </section>
 
