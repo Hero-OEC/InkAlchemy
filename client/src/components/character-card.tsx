@@ -102,7 +102,7 @@ export function CharacterCard({
   return (
     <div 
       className={cn(
-        "bg-brand-50 border border-brand-200 rounded-xl p-4 hover:shadow-lg hover:border-brand-300 transition-all duration-200 cursor-pointer group relative",
+        "bg-brand-100 border border-brand-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group relative",
         className
       )}
       onClick={handleCardClick}
@@ -112,7 +112,7 @@ export function CharacterCard({
         <Button
           variant="ghost"
           size="sm"
-          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 p-0 bg-brand-50 hover:bg-brand-100 border border-brand-200"
+          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 p-0 bg-brand-100 hover:bg-brand-200 border border-brand-200"
           onClick={handleEditClick}
         >
           <Edit className="w-4 h-4 text-brand-600" />
@@ -121,7 +121,7 @@ export function CharacterCard({
 
       {/* Character Image - 1:1 aspect ratio */}
       <div className="mb-4">
-        <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border border-brand-200">
+        <div className="aspect-square w-full bg-brand-50 rounded-lg overflow-hidden border border-brand-200">
           {imageUrl ? (
             <img 
               src={imageUrl} 
