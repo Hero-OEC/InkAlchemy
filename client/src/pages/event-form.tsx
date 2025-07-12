@@ -239,23 +239,23 @@ export default function EventForm() {
   const IconComponent = EVENT_TYPE_ICONS[selectedType as keyof typeof EVENT_TYPE_ICONS] || Calendar;
 
   const eventTypeOptions = [
-    { value: "battle", label: "Battle" },
-    { value: "meeting", label: "Meeting" },
-    { value: "discovery", label: "Discovery" },
-    { value: "political", label: "Political" },
-    { value: "personal", label: "Personal" },
-    { value: "death", label: "Death" },
-    { value: "travel", label: "Travel" },
-    { value: "magic", label: "Magic" },
-    { value: "other", label: "Other" },
+    { value: "battle", label: "Battle", icon: EVENT_TYPE_ICONS.battle },
+    { value: "meeting", label: "Meeting", icon: EVENT_TYPE_ICONS.meeting },
+    { value: "discovery", label: "Discovery", icon: EVENT_TYPE_ICONS.discovery },
+    { value: "political", label: "Political", icon: EVENT_TYPE_ICONS.political },
+    { value: "personal", label: "Personal", icon: EVENT_TYPE_ICONS.personal },
+    { value: "death", label: "Death", icon: EVENT_TYPE_ICONS.death },
+    { value: "travel", label: "Travel", icon: EVENT_TYPE_ICONS.travel },
+    { value: "magic", label: "Magic", icon: EVENT_TYPE_ICONS.magic },
+    { value: "other", label: "Other", icon: EVENT_TYPE_ICONS.other },
   ];
 
   const stageOptions = [
-    { value: "planning", label: "Planning" },
-    { value: "writing", label: "Writing" },
-    { value: "first-draft", label: "First Draft" },
-    { value: "editing", label: "Editing" },
-    { value: "complete", label: "Complete" },
+    { value: "planning", label: "Planning", icon: STAGE_COLORS.planning.stageIcon },
+    { value: "writing", label: "Writing", icon: STAGE_COLORS.writing.stageIcon },
+    { value: "first-draft", label: "First Draft", icon: STAGE_COLORS["first-draft"].stageIcon },
+    { value: "editing", label: "Editing", icon: STAGE_COLORS.editing.stageIcon },
+    { value: "complete", label: "Complete", icon: STAGE_COLORS.complete.stageIcon },
   ];
 
   const locationOptions = [
