@@ -2,6 +2,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Settings, Lightbulb, PenTool, FileText, Edit, CheckCircle } from "lucide-react";
 import { Event, Character, Location } from "@shared/schema";
 import { cn } from "@/lib/utils";
+import { Select } from "./form-inputs";
 
 interface TimelineEvent extends Event {
   characters?: Character[];
@@ -498,35 +499,39 @@ export function SerpentineTimeline({
           <div className="flex items-center gap-3">
             <Users className="w-4 h-4 text-muted-foreground" />
             <span className="text-sm font-medium text-secondary-foreground">Characters:</span>
-            <select
-              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground min-w-48"
-              value={filters.characters[0] || ""}
-              onChange={(e) => handleCharacterFilterChange(e.target.value)}
-            >
-              <option value="">Filter by character...</option>
-              {characters.map((char) => (
-                <option key={char.id} value={char.id.toString()}>
-                  {char.name}
-                </option>
-              ))}
-            </select>
+            <div className="min-w-48">
+              <Select
+                placeholder="Filter by character..."
+                options={[
+                  { value: "", label: "All characters" },
+                  ...characters.map((char) => ({
+                    value: char.id.toString(),
+                    label: char.name
+                  }))
+                ]}
+                value={filters.characters[0] || ""}
+                onChange={handleCharacterFilterChange}
+              />
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
             <MapPin className="w-4 h-4 text-muted-foreground" />
             <span className="text-sm font-medium text-secondary-foreground">Locations:</span>
-            <select
-              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground min-w-48"
-              value={filters.locations[0] || ""}
-              onChange={(e) => handleLocationFilterChange(e.target.value)}
-            >
-              <option value="">Filter by location...</option>
-              {locations.map((loc) => (
-                <option key={loc.id} value={loc.id.toString()}>
-                  {loc.name}
-                </option>
-              ))}
-            </select>
+            <div className="min-w-48">
+              <Select
+                placeholder="Filter by location..."
+                options={[
+                  { value: "", label: "All locations" },
+                  ...locations.map((loc) => ({
+                    value: loc.id.toString(),
+                    label: loc.name
+                  }))
+                ]}
+                value={filters.locations[0] || ""}
+                onChange={handleLocationFilterChange}
+              />
+            </div>
           </div>
         </div>
       </div>
