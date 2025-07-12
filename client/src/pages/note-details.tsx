@@ -19,12 +19,54 @@ const NOTE_CATEGORY_ICONS = {
 
 // Note color configurations
 const NOTE_COLORS = {
-  yellow: { bg: "bg-yellow-100", border: "border-yellow-200", text: "text-yellow-800" },
-  blue: { bg: "bg-blue-100", border: "border-blue-200", text: "text-blue-800" },
-  green: { bg: "bg-green-100", border: "border-green-200", text: "text-green-800" },
-  purple: { bg: "bg-purple-100", border: "border-purple-200", text: "text-purple-800" },
-  pink: { bg: "bg-pink-100", border: "border-pink-200", text: "text-pink-800" },
-  orange: { bg: "bg-orange-100", border: "border-orange-200", text: "text-orange-800" },
+  yellow: { 
+    bg: "bg-yellow-50", 
+    border: "border-yellow-200", 
+    text: "text-yellow-900",
+    accent: "bg-yellow-100",
+    iconBg: "bg-yellow-200",
+    iconText: "text-yellow-700"
+  },
+  blue: { 
+    bg: "bg-blue-50", 
+    border: "border-blue-200", 
+    text: "text-blue-900",
+    accent: "bg-blue-100",
+    iconBg: "bg-blue-200",
+    iconText: "text-blue-700"
+  },
+  green: { 
+    bg: "bg-green-50", 
+    border: "border-green-200", 
+    text: "text-green-900",
+    accent: "bg-green-100",
+    iconBg: "bg-green-200",
+    iconText: "text-green-700"
+  },
+  purple: { 
+    bg: "bg-purple-50", 
+    border: "border-purple-200", 
+    text: "text-purple-900",
+    accent: "bg-purple-100",
+    iconBg: "bg-purple-200",
+    iconText: "text-purple-700"
+  },
+  pink: { 
+    bg: "bg-pink-50", 
+    border: "border-pink-200", 
+    text: "text-pink-900",
+    accent: "bg-pink-100",
+    iconBg: "bg-pink-200",
+    iconText: "text-pink-700"
+  },
+  orange: { 
+    bg: "bg-orange-50", 
+    border: "border-orange-200", 
+    text: "text-orange-900",
+    accent: "bg-orange-100",
+    iconBg: "bg-orange-200",
+    iconText: "text-orange-700"
+  },
 };
 
 export default function NoteDetails() {
@@ -84,7 +126,7 @@ export default function NoteDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-brand-50">
       <Navbar 
         hasActiveProject={true}
         currentPage="notes"
@@ -110,20 +152,16 @@ export default function NoteDetails() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-xl ${colorConfig?.bg || 'bg-brand-200'}`}>
-                <IconComponent size={24} className={colorConfig?.text || 'text-brand-700'} />
+              <div className="p-3 rounded-xl bg-brand-200">
+                <IconComponent size={24} className="text-brand-700" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-brand-950 mb-2">Note Details</h1>
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-600 text-white capitalize">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${colorConfig?.accent || 'bg-brand-600'} ${colorConfig?.text || 'text-white'}`}>
                     {category}
                   </span>
-                  {note.color && (
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${colorConfig?.bg} ${colorConfig?.text}`}>
-                      {note.color}
-                    </span>
-                  )}
+
                 </div>
               </div>
             </div>
@@ -138,10 +176,10 @@ export default function NoteDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content - Note Content */}
           <div className="lg:col-span-2">
-            <div className={`rounded-xl p-6 ${colorConfig?.bg || 'bg-brand-50'} ${colorConfig?.border || 'border-brand-200'} border`}>
+            <div className="rounded-xl p-6 bg-brand-50 border-brand-200 border">
               <h2 className="text-xl font-semibold text-brand-900 mb-4">Content</h2>
               <div className="prose prose-brand max-w-none">
-                <p className={`text-base leading-relaxed whitespace-pre-wrap ${colorConfig?.text || 'text-brand-800'}`}>
+                <p className="text-base leading-relaxed whitespace-pre-wrap text-brand-800">
                   {note.content}
                 </p>
               </div>
@@ -153,34 +191,11 @@ export default function NoteDetails() {
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6 space-y-6">
               <h2 className="text-xl font-semibold text-brand-900">Note Information</h2>
               
-              {/* Category */}
-              <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
-                  <IconComponent className="w-4 h-4 text-brand-600" />
-                </div>
-                <div>
-                  <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Category</div>
-                  <div className="text-sm font-semibold text-brand-900 capitalize">{category}</div>
-                </div>
-              </div>
-
-              {/* Color */}
-              {note.color && (
-                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                  <div className={`flex items-center justify-center w-8 h-8 rounded-lg ${colorConfig?.bg}`}>
-                    <div className={`w-4 h-4 rounded-full ${colorConfig?.bg} border-2 ${colorConfig?.border}`}></div>
-                  </div>
-                  <div>
-                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Color</div>
-                    <div className="text-sm font-semibold text-brand-900 capitalize">{note.color}</div>
-                  </div>
-                </div>
-              )}
 
               {/* Created Date */}
-              <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
-                  <Calendar className="w-4 h-4 text-brand-600" />
+              <div className={`flex items-center gap-2 p-3 ${colorConfig?.accent || 'bg-brand-100'} border ${colorConfig?.border || 'border-brand-200'} rounded-lg`}>
+                <div className={`flex items-center justify-center w-8 h-8 ${colorConfig?.iconBg || 'bg-brand-200'} rounded-lg`}>
+                  <Calendar className={`w-4 h-4 ${colorConfig?.iconText || 'text-brand-600'}`} />
                 </div>
                 <div>
                   <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Created</div>
