@@ -3,63 +3,43 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(20, 14.3%, 4.1%);
-  --muted: hsl(60, 4.8%, 95.9%);
-  --muted-foreground: hsl(25, 5.3%, 44.7%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(20, 14.3%, 4.1%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(20, 14.3%, 4.1%);
-  --border: hsl(20, 5.9%, 90%);
-  --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(44, 75%, 52%);
+  /* Custom color palette - Light mode focused */
+  --color-50: 45 70% 96%;     /* #FAF9EC - Light backgrounds and main app surface */
+  --color-100: 45 67% 88%;    /* #F4F0CD - Secondary backgrounds and light containers */
+  --color-200: 44 64% 77%;    /* #EBDF9D - Hover backgrounds or very soft accents */
+  --color-300: 44 62% 64%;    /* #DFC865 - Subtle section headers or muted buttons */
+  --color-400: 44 59% 53%;    /* #D4B13B - Primary brand color */
+  --color-500: 41 62% 46%;    /* #BF972C - Emphasized primary components */
+  --color-600: 38 61% 40%;    /* #A97A25 - Accent color and supporting contrast */
+  --color-700: 35 62% 33%;    /* #885A20 - Secondary roles and darker accents */
+  --color-800: 32 55% 28%;    /* #714A22 - Cards or containers requiring depth */
+  --color-900: 29 48% 26%;    /* #613E22 - Primary text in light mode */
+  --color-950: 26 55% 14%;    /* #382010 - Strong text and maximum contrast */
+
+  /* UI System Colors */
+  --background: hsl(var(--color-50));
+  --foreground: hsl(var(--color-900));
+  --muted: hsl(var(--color-100));
+  --muted-foreground: hsl(var(--color-700));
+  --popover: hsl(var(--color-50));
+  --popover-foreground: hsl(var(--color-900));
+  --card: hsl(var(--color-50));
+  --card-foreground: hsl(var(--color-900));
+  --border: hsl(var(--color-200));
+  --input: hsl(var(--color-200));
+  --primary: hsl(var(--color-400));
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(60, 4.8%, 95.9%);
-  --secondary-foreground: hsl(24, 9.8%, 10%);
-  --accent: hsl(60, 4.8%, 95.9%);
-  --accent-foreground: hsl(24, 9.8%, 10%);
-  --destructive: hsl(0, 84.2%, 60.2%);
-  --destructive-foreground: hsl(60, 9.1%, 97.8%);
-  --ring: hsl(20, 14.3%, 4.1%);
+  --secondary: hsl(var(--color-100));
+  --secondary-foreground: hsl(var(--color-800));
+  --accent: hsl(var(--color-200));
+  --accent-foreground: hsl(var(--color-800));
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(var(--color-400));
   --radius: 0.5rem;
-  
-  /* Custom primary color palette */
-  --primary-50: hsl(45, 86%, 96%);
-  --primary-100: hsl(45, 82%, 92%);
-  --primary-200: hsl(44, 80%, 85%);
-  --primary-300: hsl(44, 78%, 78%);
-  --primary-400: hsl(44, 75%, 52%);
-  --primary-500: hsl(41, 68%, 47%);
-  --primary-600: hsl(38, 65%, 42%);
-  --primary-700: hsl(35, 62%, 37%);
-  --primary-800: hsl(32, 59%, 32%);
-  --primary-900: hsl(29, 56%, 27%);
-  --primary-950: hsl(26, 53%, 22%);
 }
 
-.dark {
-  --background: hsl(20, 14.3%, 4.1%);
-  --foreground: hsl(60, 9.1%, 97.8%);
-  --muted: hsl(12, 6.5%, 15.1%);
-  --muted-foreground: hsl(24, 5.4%, 63.9%);
-  --popover: hsl(20, 14.3%, 4.1%);
-  --popover-foreground: hsl(60, 9.1%, 97.8%);
-  --card: hsl(20, 14.3%, 4.1%);
-  --card-foreground: hsl(60, 9.1%, 97.8%);
-  --border: hsl(12, 6.5%, 15.1%);
-  --input: hsl(12, 6.5%, 15.1%);
-  --primary: hsl(44, 75%, 52%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(12, 6.5%, 15.1%);
-  --secondary-foreground: hsl(60, 9.1%, 97.8%);
-  --accent: hsl(12, 6.5%, 15.1%);
-  --accent-foreground: hsl(60, 9.1%, 97.8%);
-  --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(60, 9.1%, 97.8%);
-  --ring: hsl(35.5, 91.7%, 32.9%);
-  --radius: 0.5rem;
-}
+
 
 @layer base {
   * {

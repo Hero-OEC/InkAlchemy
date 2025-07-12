@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
@@ -11,6 +10,21 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        // Custom color palette
+        brand: {
+          50: "hsl(var(--color-50))",   // #FAF9EC
+          100: "hsl(var(--color-100))", // #F4F0CD
+          200: "hsl(var(--color-200))", // #EBDF9D
+          300: "hsl(var(--color-300))", // #DFC865
+          400: "hsl(var(--color-400))", // #D4B13B
+          500: "hsl(var(--color-500))", // #BF972C
+          600: "hsl(var(--color-600))", // #A97A25
+          700: "hsl(var(--color-700))", // #885A20
+          800: "hsl(var(--color-800))", // #714A22
+          900: "hsl(var(--color-900))", // #613E22
+          950: "hsl(var(--color-950))", // #382010
+        },
+        // UI system colors
         background: "var(--background)",
         foreground: "var(--foreground)",
         card: {
