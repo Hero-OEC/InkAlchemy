@@ -498,6 +498,10 @@ export function SerpentineTimeline({
                 for (let row = 0; row < totalRows; row++) {
                   const y = startY + (row * verticalSpacing);
                   const isEvenRow = row % 2 === 0;
+                  const isLastRow = row === totalRows - 1;
+                  
+                  // Calculate how many events are in this row
+                  const eventsInThisRow = Math.min(eventsPerRow, groupedEvents.length - (row * eventsPerRow));
                   
                   if (row === 0) {
                     // Start of the path
@@ -506,7 +510,13 @@ export function SerpentineTimeline({
                   
                   if (isEvenRow) {
                     // Left to right
-                    pathCommands.push(`L ${margin + usableWidth} ${y}`);
+                    if (isLastRow) {
+                      // For the last row, only go to the last event position + some buffer
+                      const lastEventX = margin + ((eventsInThisRow - 1) * (usableWidth / (eventsPerRow - 1))) + 80;
+                      pathCommands.push(`L ${Math.min(lastEventX, margin + usableWidth)} ${y}`);
+                    } else {
+                      pathCommands.push(`L ${margin + usableWidth} ${y}`);
+                    }
                     
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
@@ -516,7 +526,13 @@ export function SerpentineTimeline({
                     }
                   } else {
                     // Right to left
-                    pathCommands.push(`L ${margin} ${y}`);
+                    if (isLastRow) {
+                      // For the last row, only go to the last event position - some buffer
+                      const lastEventX = margin + usableWidth - ((eventsInThisRow - 1) * (usableWidth / (eventsPerRow - 1))) - 80;
+                      pathCommands.push(`L ${Math.max(lastEventX, margin)} ${y}`);
+                    } else {
+                      pathCommands.push(`L ${margin} ${y}`);
+                    }
                     
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
