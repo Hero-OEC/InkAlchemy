@@ -480,7 +480,6 @@ export class MemStorage implements IStorage {
         projectId: 1,
         content: "Remember to develop the magic system's cost mechanism - each spell should require something from the caster",
         category: "idea",
-        color: "yellow",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -489,7 +488,6 @@ export class MemStorage implements IStorage {
         projectId: 1,
         content: "Plot hole: How does Aria learn about the ancient prophecy? Need to establish this earlier in Chapter 3",
         category: "plot",
-        color: "pink",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -498,7 +496,6 @@ export class MemStorage implements IStorage {
         projectId: 1,
         content: "Research medieval clothing styles for the royal court scenes - need accurate descriptions",
         category: "research",
-        color: "blue",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -507,7 +504,6 @@ export class MemStorage implements IStorage {
         projectId: 1,
         content: "Character development: Show more of Theron's backstory through dialogue rather than exposition",
         category: "character",
-        color: "green",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -516,7 +512,6 @@ export class MemStorage implements IStorage {
         projectId: 1,
         content: "Don't forget to submit first three chapters to beta readers by Friday",
         category: "reminder",
-        color: "purple",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -525,7 +520,6 @@ export class MemStorage implements IStorage {
         projectId: 1,
         content: "Great line idea: 'The shadows whispered secrets that daylight could never reveal'",
         category: "general",
-        color: "orange",
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -826,7 +820,6 @@ export class MemStorage implements IStorage {
       projectId: insertNote.projectId,
       content: insertNote.content,
       category: insertNote.category ?? null,
-      color: insertNote.color ?? null,
       createdAt: new Date(),
       updatedAt: new Date()
     };

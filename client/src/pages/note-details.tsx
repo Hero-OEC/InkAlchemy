@@ -17,57 +17,7 @@ const NOTE_CATEGORY_ICONS = {
   research: FileText,
 };
 
-// Note color configurations
-const NOTE_COLORS = {
-  yellow: { 
-    bg: "bg-yellow-50", 
-    border: "border-yellow-200", 
-    text: "text-yellow-900",
-    accent: "bg-yellow-100",
-    iconBg: "bg-yellow-200",
-    iconText: "text-yellow-700"
-  },
-  blue: { 
-    bg: "bg-blue-50", 
-    border: "border-blue-200", 
-    text: "text-blue-900",
-    accent: "bg-blue-100",
-    iconBg: "bg-blue-200",
-    iconText: "text-blue-700"
-  },
-  green: { 
-    bg: "bg-green-50", 
-    border: "border-green-200", 
-    text: "text-green-900",
-    accent: "bg-green-100",
-    iconBg: "bg-green-200",
-    iconText: "text-green-700"
-  },
-  purple: { 
-    bg: "bg-purple-50", 
-    border: "border-purple-200", 
-    text: "text-purple-900",
-    accent: "bg-purple-100",
-    iconBg: "bg-purple-200",
-    iconText: "text-purple-700"
-  },
-  pink: { 
-    bg: "bg-pink-50", 
-    border: "border-pink-200", 
-    text: "text-pink-900",
-    accent: "bg-pink-100",
-    iconBg: "bg-pink-200",
-    iconText: "text-pink-700"
-  },
-  orange: { 
-    bg: "bg-orange-50", 
-    border: "border-orange-200", 
-    text: "text-orange-900",
-    accent: "bg-orange-100",
-    iconBg: "bg-orange-200",
-    iconText: "text-orange-700"
-  },
-};
+
 
 export default function NoteDetails() {
   const { projectId, noteId } = useParams();
@@ -109,7 +59,6 @@ export default function NoteDetails() {
 
   const category = note.category || "general";
   const IconComponent = NOTE_CATEGORY_ICONS[category as keyof typeof NOTE_CATEGORY_ICONS] || StickyNote;
-  const colorConfig = NOTE_COLORS[note.color as keyof typeof NOTE_COLORS];
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);

@@ -12,7 +12,6 @@ import { z } from "zod";
 
 const formSchema = insertNoteSchema.extend({
   category: z.string().optional(),
-  color: z.enum(["yellow", "blue", "green", "purple", "pink", "orange"]).optional(),
 });
 
 interface NoteFormProps {
@@ -30,7 +29,6 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
       projectId,
       content: note?.content || "",
       category: note?.category || "general",
-      color: note?.color || "yellow",
     },
   });
 
@@ -149,31 +147,7 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="color"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Color</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select color" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="yellow">Yellow</SelectItem>
-                    <SelectItem value="blue">Blue</SelectItem>
-                    <SelectItem value="green">Green</SelectItem>
-                    <SelectItem value="purple">Purple</SelectItem>
-                    <SelectItem value="pink">Pink</SelectItem>
-                    <SelectItem value="orange">Orange</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
         </div>
 
         <div className="flex justify-end space-x-4">

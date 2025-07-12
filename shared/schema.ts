@@ -98,7 +98,6 @@ export const notes = pgTable("notes", {
   projectId: integer("project_id").references(() => projects.id).notNull(),
   content: text("content").notNull(),
   category: text("category").default("general"),
-  color: text("color").default("yellow"), // for visual organization
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
