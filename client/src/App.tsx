@@ -1,4 +1,3 @@
-import { Route, Switch } from "wouter";
 import { CharacterCard } from "./components/character-card";
 import { ButtonShowcase } from "./components/button-variations";
 import { DeleteConfirmationDemo } from "./components/delete-confirmation";
@@ -7,17 +6,52 @@ import { FontShowcase } from "./components/font-showcase";
 import { ContentCardDemo } from "./components/content-card";
 import { FormInputsDemo } from "./components/form-inputs";
 import SerpentineTimeline from "./components/serpentine-timeline";
-import TimelinePage from "./pages/timeline";
+import { useQuery } from "@tanstack/react-query";
+import type { Event, Character, Location, Relationship } from "@shared/schema";
 
-function ComponentDemo() {
+function App() {
+  // Fetch data for the timeline demo
+  const { data: events = [] } = useQuery<Event[]>({
+    queryKey: ["/api/projects", "1", "events"]
+  });
+
+  const { data: characters = [] } = useQuery<Character[]>({
+    queryKey: ["/api/projects", "1", "characters"]
+  });
+
+  const { data: locations = [] } = useQuery<Location[]>({
+    queryKey: ["/api/projects", "1", "locations"]
+  });
+
+  const { data: relationships = [] } = useQuery<Relationship[]>({
+    queryKey: ["/api/projects", "1", "relationships"]
+  });
+
+  // Process events with relationships to add character and location data
+  const processedEvents = events.map(event => {
+    const eventRelationships = relationships.filter(rel => 
+      rel.fromElementType === 'event' && rel.fromElementId === event.id
+    );
+    
+    const eventCharacters = eventRelationships
+      .filter(rel => rel.toElementType === 'character')
+      .map(rel => characters.find(char => char.id === rel.toElementId))
+      .filter(Boolean) as Character[];
+    
+    const eventLocation = event.locationId 
+      ? locations.find(loc => loc.id === event.locationId)
+      : undefined;
+
+    return {
+      ...event,
+      characters: eventCharacters,
+      location: eventLocation
+    };
+  });
+
   return (
     <div className="min-h-screen bg-background text-foreground p-8">
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-4xl font-bold text-brand-950">InkAlchemy Components</h1>
-        <a href="/timeline/1" className="bg-brand-500 text-white px-4 py-2 rounded-lg hover:bg-brand-600 transition-colors">
-          View Timeline Demo
-        </a>
-      </div>
+      <h1 className="text-4xl font-bold text-brand-950 mb-8">InkAlchemy Components</h1>
       
       {/* Character Cards Demo */}
       <section className="mb-12">
@@ -374,14 +408,6 @@ function ComponentDemo() {
   );
 }
 
-function App() {
-  return (
-    <Switch>
-      <Route path="/timeline/:id" component={TimelinePage} />
-      <Route path="/timeline" component={() => <TimelinePage />} />
-      <Route path="/" component={ComponentDemo} />
-    </Switch>
-  );
-}
+
 
 export default App;
