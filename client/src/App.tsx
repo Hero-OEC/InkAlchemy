@@ -2,6 +2,7 @@ import { CharacterCard } from "./components/character-card";
 import { ButtonShowcase } from "./components/button-variations";
 import { DeleteConfirmationDemo } from "./components/delete-confirmation";
 import { NavbarDemo } from "./components/navbar";
+import { FontShowcase } from "./components/font-showcase";
 
 function App() {
   return (
@@ -95,6 +96,14 @@ function App() {
         <h2 className="text-2xl font-bold text-brand-900 mb-6">Navigation Bar</h2>
         <div className="bg-white border border-brand-200 rounded-xl p-6">
           <NavbarDemo />
+        </div>
+      </section>
+
+      {/* Font Showcase */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Plus Jakarta Sans Typography</h2>
+        <div className="bg-white border border-brand-200 rounded-xl p-6">
+          <FontShowcase />
         </div>
       </section>
 
