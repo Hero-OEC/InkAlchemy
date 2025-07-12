@@ -41,7 +41,7 @@ export function MiniCard({
     <div
       className={cn(
         "flex items-center gap-3 p-3 rounded-lg border border-brand-200 bg-brand-100 transition-all duration-200",
-        onClick && "cursor-pointer hover:bg-brand-200 hover:border-brand-300",
+        onClick && "cursor-pointer hover:bg-brand-200 hover:border-brand-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]",
         className
       )}
       onClick={onClick}
