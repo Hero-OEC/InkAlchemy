@@ -88,8 +88,22 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
   useEffect(() => {
     if (showPopup && bubbleRef.current) {
       const rect = bubbleRef.current.getBoundingClientRect();
-      const newX = side === "left" ? rect.right + 10 : rect.left - 320;
-      const newY = rect.top - 50;
+      const timelineContainer = bubbleRef.current.closest('[style*="width: 1000px"]');
+      const containerRect = timelineContainer?.getBoundingClientRect();
+      
+      let newX = rect.right + 10;
+      let newY = rect.top - 50;
+      
+      // Check if popup would go off screen and adjust
+      if (containerRect) {
+        if (newX + 320 > containerRect.right) {
+          newX = rect.left - 330;
+        }
+        if (newX < containerRect.left) {
+          newX = containerRect.left + 10;
+        }
+      }
+      
       setPopupPosition({ x: newX, y: newY });
     }
   }, [showPopup, side]);
@@ -128,16 +142,16 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
       <div
         className={cn(
           "absolute bg-card rounded-lg px-3 py-2 text-xs text-card-foreground border border-border shadow-sm z-5",
-          side === "left" ? "translate-x-2" : "-translate-x-full -translate-x-2"
+          "transform -translate-x-1/2"
         )}
         style={{
           left: position.x,
-          top: position.y + 30,
-          minWidth: "120px"
+          top: position.y + 35,
+          width: "140px"
         }}
       >
-        <div className="font-semibold truncate">{event.title}</div>
-        <div className="text-muted-foreground text-xs mt-1">
+        <div className="font-semibold truncate text-center">{event.title}</div>
+        <div className="text-muted-foreground text-xs mt-1 text-center">
           Year {event.year}, Month {event.month}, Day {event.day}
         </div>
       </div>
@@ -291,29 +305,31 @@ export function SerpentineTimeline({
       dateKey: string 
     })[] = [];
     
-    const containerWidth = 1000; // Timeline container width
-    const segmentLength = 300; // Length of each segment
-    const verticalSpacing = 200; // Vertical spacing between rows
-    const startY = 100; // Starting Y position
+    const containerWidth = 1000;
+    const margin = 80; // Margin from edges
+    const usableWidth = containerWidth - (margin * 2);
+    const eventsPerRow = 4; // Events per serpentine row
+    const verticalSpacing = 150; // Vertical spacing between rows
+    const startY = 80; // Starting Y position
 
     groupedEvents.forEach((group, index) => {
-      const segmentIndex = Math.floor(index / 3); // 3 events per segment
-      const positionInSegment = index % 3;
+      const rowIndex = Math.floor(index / eventsPerRow);
+      const positionInRow = index % eventsPerRow;
       
-      const isEvenRow = segmentIndex % 2 === 0;
-      const y = startY + (segmentIndex * verticalSpacing);
+      const isEvenRow = rowIndex % 2 === 0;
+      const y = startY + (rowIndex * verticalSpacing);
       
       let x: number;
       let side: "left" | "right";
       
       if (isEvenRow) {
         // Left to right
-        x = 100 + (positionInSegment * segmentLength);
-        side = positionInSegment < 1.5 ? "left" : "right";
+        x = margin + (positionInRow * (usableWidth / (eventsPerRow - 1)));
+        side = positionInRow < eventsPerRow / 2 ? "left" : "right";
       } else {
         // Right to left
-        x = containerWidth - 100 - (positionInSegment * segmentLength);
-        side = positionInSegment < 1.5 ? "right" : "left";
+        x = margin + usableWidth - (positionInRow * (usableWidth / (eventsPerRow - 1)));
+        side = positionInRow < eventsPerRow / 2 ? "right" : "left";
       }
 
       positions.push({
@@ -390,41 +406,69 @@ export function SerpentineTimeline({
       {/* Timeline Container */}
       <div className="relative w-full bg-background rounded-lg border border-border overflow-x-auto">
         <div 
-          className="relative"
+          className="relative mx-auto"
           style={{ 
             width: "1000px", 
-            height: `${Math.ceil(groupedEvents.length / 3) * 200 + 200}px`,
+            height: `${Math.ceil(groupedEvents.length / 4) * 150 + 160}px`,
             minHeight: "400px"
           }}
         >
-          {/* Serpentine Path */}
+          {/* Dynamic Serpentine Path */}
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
             style={{ zIndex: 1 }}
           >
-            <defs>
-              <path
-                id="serpentine-path"
-                d={`
-                  M 100 100 
-                  L 700 100 
-                  Q 800 100 800 200
-                  L 800 200
-                  L 200 200
-                  Q 100 200 100 300
-                  L 100 300
-                  L 700 300
-                  Q 800 300 800 400
-                  L 800 400
-                  L 200 400
-                `}
-                fill="none"
-                stroke="hsl(var(--muted-foreground))"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </defs>
-            <use href="#serpentine-path" />
+            <path
+              d={(() => {
+                if (groupedEvents.length === 0) return "";
+                
+                const margin = 80;
+                const usableWidth = 1000 - (margin * 2);
+                const eventsPerRow = 4;
+                const verticalSpacing = 150;
+                const startY = 80;
+                
+                let pathCommands = [];
+                const totalRows = Math.ceil(groupedEvents.length / eventsPerRow);
+                
+                for (let row = 0; row < totalRows; row++) {
+                  const y = startY + (row * verticalSpacing);
+                  const isEvenRow = row % 2 === 0;
+                  
+                  if (row === 0) {
+                    // Start of the path
+                    pathCommands.push(`M ${margin} ${y}`);
+                  }
+                  
+                  if (isEvenRow) {
+                    // Left to right
+                    pathCommands.push(`L ${margin + usableWidth} ${y}`);
+                    
+                    // Add curve to next row if not last row
+                    if (row < totalRows - 1) {
+                      const nextY = y + verticalSpacing;
+                      pathCommands.push(`Q ${margin + usableWidth + 40} ${y + verticalSpacing/2} ${margin + usableWidth} ${nextY}`);
+                    }
+                  } else {
+                    // Right to left
+                    pathCommands.push(`L ${margin} ${y}`);
+                    
+                    // Add curve to next row if not last row
+                    if (row < totalRows - 1) {
+                      const nextY = y + verticalSpacing;
+                      pathCommands.push(`Q ${margin - 40} ${y + verticalSpacing/2} ${margin} ${nextY}`);
+                    }
+                  }
+                }
+                
+                return pathCommands.join(' ');
+              })()}
+              fill="none"
+              stroke="hsl(var(--muted-foreground))"
+              strokeWidth="2"
+              strokeLinecap="round"
+              opacity="0.6"
+            />
           </svg>
 
           {/* Event Bubbles */}
