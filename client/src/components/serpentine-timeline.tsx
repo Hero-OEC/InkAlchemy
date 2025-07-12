@@ -176,7 +176,11 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
   useEffect(() => {
     if (!showPopup) return;
 
-    const handleScroll = () => {
+    const handleScroll = (event: Event) => {
+      // Don't close popup if scrolling is happening inside the popup itself
+      if (popupRef.current && popupRef.current.contains(event.target as Node)) {
+        return;
+      }
       setShowPopup(false);
     };
 
