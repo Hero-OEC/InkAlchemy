@@ -23,7 +23,7 @@ export default function Characters() {
   };
 
   const handleCreateCharacter = () => {
-    setLocation(`/projects/${projectId}/characters/new-character`);
+    setLocation(`/projects/${projectId}/characters/new`);
   };
 
   const handleCharacterClick = (character: Character) => {

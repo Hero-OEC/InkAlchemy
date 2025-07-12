@@ -16,12 +16,18 @@ export const characters = pgTable("characters", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id").references(() => projects.id).notNull(),
   name: text("name").notNull(),
+  prefix: text("prefix"),
+  suffix: text("suffix"),
+  type: text("type").default("supporting"), // protagonist, antagonist, villain, supporting, ally, neutral, love-interest
   role: text("role"),
   description: text("description"),
   appearance: text("appearance"),
   personality: text("personality"),
   background: text("background"),
   goals: text("goals"),
+  powerType: text("power_type"),
+  age: text("age"),
+  race: text("race"),
   status: text("status").default("active"), // active, developing, inactive
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
