@@ -3,34 +3,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/navbar";
+import { useParams, useLocation } from "wouter";
 import { 
   Users, MapPin, Clock, Wand2, Book, StickyNote, 
   Plus, Download, UserPlus, MapPinIcon, PlusCircle,
   Edit, Link
 } from "lucide-react";
-import type { Character, Event, Note, Relationship } from "@shared/schema";
-
-const DEFAULT_PROJECT_ID = 1;
+import type { Character, Event, Note, Relationship, Project } from "@shared/schema";
 
 export default function Dashboard() {
+  const { projectId } = useParams<{ projectId: string }>();
+  const [, setLocation] = useLocation();
+  
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
+    queryKey: ["/api/projects", projectId],
+  });
+
   const { data: stats, isLoading: statsLoading } = useQuery({
-    queryKey: ["/api/projects", DEFAULT_PROJECT_ID, "stats"],
+    queryKey: ["/api/projects", projectId, "stats"],
   });
 
   const { data: characters, isLoading: charactersLoading } = useQuery<Character[]>({
-    queryKey: ["/api/projects", DEFAULT_PROJECT_ID, "characters"],
+    queryKey: ["/api/projects", projectId, "characters"],
   });
 
   const { data: events, isLoading: eventsLoading } = useQuery<Event[]>({
-    queryKey: ["/api/projects", DEFAULT_PROJECT_ID, "events"],
+    queryKey: ["/api/projects", projectId, "events"],
   });
 
   const { data: notes, isLoading: notesLoading } = useQuery<Note[]>({
-    queryKey: ["/api/projects", DEFAULT_PROJECT_ID, "notes"],
+    queryKey: ["/api/projects", projectId, "notes"],
   });
 
   const { data: relationships, isLoading: relationshipsLoading } = useQuery<Relationship[]>({
-    queryKey: ["/api/projects", DEFAULT_PROJECT_ID, "relationships"],
+    queryKey: ["/api/projects", projectId, "relationships"],
   });
 
   const recentCharacters = characters?.slice(0, 4) || [];
@@ -60,7 +66,11 @@ export default function Dashboard() {
     }
   };
 
-  if (statsLoading || charactersLoading || eventsLoading || notesLoading || relationshipsLoading) {
+  const handleNavigation = (page: string) => {
+    setLocation(`/projects/${projectId}/${page}`);
+  };
+
+  if (projectLoading || statsLoading || charactersLoading || eventsLoading || notesLoading || relationshipsLoading) {
     return (
       <div className="p-6">
         <div className="animate-pulse space-y-4">
@@ -80,7 +90,8 @@ export default function Dashboard() {
       <Navbar 
         hasActiveProject={true}
         currentPage="dashboard"
-        projectName="The Chronicles of Mystara"
+        projectName={project?.name}
+        onNavigate={handleNavigation}
       />
       <div className="p-6">
       {/* Header Section */}
