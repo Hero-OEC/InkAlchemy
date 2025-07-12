@@ -212,8 +212,8 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-brand-900">{stats.events}</p>
                 </div>
                 <div className="flex-shrink-0 ml-4">
-                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-brand-700" />
+                  <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-white" />
                   </div>
                 </div>
               </div>
@@ -226,8 +226,8 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-brand-900">{stats.characters}</p>
                 </div>
                 <div className="flex-shrink-0 ml-4">
-                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
-                    <Users className="w-6 h-6 text-brand-700" />
+                  <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center">
+                    <Users className="w-6 h-6 text-white" />
                   </div>
                 </div>
               </div>
@@ -240,8 +240,8 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-brand-900">{stats.locations}</p>
                 </div>
                 <div className="flex-shrink-0 ml-4">
-                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-brand-700" />
+                  <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-white" />
                   </div>
                 </div>
               </div>
@@ -254,8 +254,8 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-brand-900">{stats.magicSystems}</p>
                 </div>
                 <div className="flex-shrink-0 ml-4">
-                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-brand-700" />
+                  <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-white" />
                   </div>
                 </div>
               </div>
@@ -291,7 +291,7 @@ export default function Dashboard() {
                           <CategoryIcon className="w-4 h-4 text-brand-700" />
                           <span className="text-sm font-medium text-brand-700">{item.category}</span>
                           <span className="text-sm text-brand-500">•</span>
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-brand-200 text-brand-800 capitalize">{item.type}</span>
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-brand-600 text-white capitalize">{item.type}</span>
                         </div>
                         
                         <h3 className="font-semibold text-brand-900 truncate">{item.title}</h3>
