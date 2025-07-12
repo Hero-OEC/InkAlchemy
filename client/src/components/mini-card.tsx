@@ -1,5 +1,6 @@
-import { LucideIcon, Users, MapPin, Sword, Zap, FileText, Crown } from "lucide-react";
+import { LucideIcon, Users, MapPin, Sword, Zap, FileText, Crown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/button-variations";
 
 export interface MiniCardProps {
   icon: LucideIcon;
@@ -8,6 +9,8 @@ export interface MiniCardProps {
   badgeVariant?: "stage" | "type" | "status" | "custom";
   badgeColor?: string; // For custom badge colors using brand palette
   onClick?: () => void;
+  onDelete?: () => void;
+  variant?: "default" | "editable";
   className?: string;
 }
 
@@ -18,6 +21,8 @@ export function MiniCard({
   badgeVariant = "type",
   badgeColor,
   onClick, 
+  onDelete,
+  variant = "default",
   className 
 }: MiniCardProps) {
   const getBadgeStyles = () => {
@@ -42,32 +47,51 @@ export function MiniCard({
       className={cn(
         "flex items-center gap-3 p-3 rounded-lg border border-brand-200 bg-brand-100 transition-all duration-200",
         onClick && "cursor-pointer hover:bg-brand-200 hover:border-brand-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]",
+        variant === "editable" && "justify-between",
         className
       )}
-      onClick={onClick}
+      onClick={variant === "default" ? onClick : undefined}
     >
-      {/* Icon */}
-      <div className="flex-shrink-0 p-1.5 rounded-lg bg-brand-200">
-        <IconComponent className="w-4 h-4 text-brand-700" />
-      </div>
-      
-      {/* Content Container */}
-      <div className="flex-1 min-w-0">
-        {/* Title */}
-        <h4 className="text-sm font-medium text-brand-950 truncate">
-          {title}
-        </h4>
+      {/* Main Content */}
+      <div className="flex items-center gap-3 flex-1 min-w-0" onClick={variant === "editable" ? onClick : undefined}>
+        {/* Icon */}
+        <div className="flex-shrink-0 p-1.5 rounded-lg bg-brand-200">
+          <IconComponent className="w-4 h-4 text-brand-700" />
+        </div>
         
-        {/* Badge */}
-        {badge && (
-          <div className={cn(
-            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize mt-1",
-            getBadgeStyles()
-          )}>
-            {badge}
-          </div>
-        )}
+        {/* Content Container */}
+        <div className="flex-1 min-w-0">
+          {/* Title */}
+          <h4 className="text-sm font-medium text-brand-950 truncate">
+            {title}
+          </h4>
+          
+          {/* Badge */}
+          {badge && (
+            <div className={cn(
+              "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize mt-1",
+              getBadgeStyles()
+            )}>
+              {badge}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Delete Button for Editable Variant */}
+      {variant === "editable" && onDelete && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          className="text-brand-500 hover:text-brand-700 flex-shrink-0"
+        >
+          <X className="w-4 h-4" />
+        </Button>
+      )}
     </div>
   );
 }

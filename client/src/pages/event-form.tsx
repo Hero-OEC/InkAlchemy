@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { Input, Textarea, Select } from "@/components/form-inputs";
+import { MiniCard } from "@/components/mini-card";
 import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, CheckCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { insertEventSchema, type Project, type Event, type Location, type Character, type Relationship } from "@shared/schema";
@@ -429,28 +430,15 @@ export default function EventForm() {
             {selectedCharacters.length > 0 ? (
               <div className="space-y-2">
                 {selectedCharacters.map(character => (
-                  <div 
-                    key={character.id} 
-                    className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-200"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-brand-200 rounded-full flex items-center justify-center">
-                        <Users className="w-4 h-4 text-brand-600" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-brand-900">{character.name}</h4>
-                        <p className="text-sm text-brand-600 capitalize">{character.type}</p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemoveCharacter(character.id)}
-                      className="text-brand-500 hover:text-brand-700"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  <MiniCard
+                    key={character.id}
+                    icon={Users}
+                    title={character.name}
+                    badge={character.type}
+                    badgeVariant="type"
+                    variant="editable"
+                    onDelete={() => handleRemoveCharacter(character.id)}
+                  />
                 ))}
               </div>
             ) : (
