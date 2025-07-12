@@ -14,6 +14,8 @@ interface SerpentineTimelineProps {
   locations: Location[];
   onEventClick?: (event: Event) => void;
   onEventEdit?: (event: Event) => void;
+  eventsPerRow?: number; // Optional prop to control responsiveness (default: 4)
+  maxWidth?: string; // Optional prop to control container width (default: "1000px")
 }
 
 interface FilterState {
@@ -253,7 +255,9 @@ export function SerpentineTimeline({
   characters, 
   locations, 
   onEventClick, 
-  onEventEdit 
+  onEventEdit,
+  eventsPerRow = 4,
+  maxWidth = "1000px"
 }: SerpentineTimelineProps) {
   const [filters, setFilters] = useState<FilterState>({
     characters: [],
@@ -297,7 +301,7 @@ export function SerpentineTimeline({
     }));
   }, [events, filters]);
 
-  // Calculate serpentine positions
+  // Calculate serpentine positions with responsive support
   const timelinePositions = useMemo(() => {
     const positions: (TimelinePosition & { 
       events: TimelineEvent[]; 
@@ -305,10 +309,9 @@ export function SerpentineTimeline({
       dateKey: string 
     })[] = [];
     
-    const containerWidth = 1000;
-    const margin = 80; // Margin from edges
+    const containerWidth = parseInt(maxWidth.replace('px', ''));
+    const margin = Math.max(60, containerWidth * 0.08); // Responsive margin (8% of width, min 60px)
     const usableWidth = containerWidth - (margin * 2);
-    const eventsPerRow = 4; // Events per serpentine row
     const verticalSpacing = 150; // Vertical spacing between rows
     const startY = 80; // Starting Y position
 
@@ -343,7 +346,7 @@ export function SerpentineTimeline({
     });
 
     return positions;
-  }, [groupedEvents]);
+  }, [groupedEvents, eventsPerRow, maxWidth]);
 
   const handleCharacterFilterChange = (value: string) => {
     setFilters(prev => ({
@@ -408,8 +411,8 @@ export function SerpentineTimeline({
         <div 
           className="relative mx-auto"
           style={{ 
-            width: "1000px", 
-            height: `${Math.ceil(groupedEvents.length / 4) * 150 + 160}px`,
+            width: maxWidth, 
+            height: `${Math.ceil(groupedEvents.length / eventsPerRow) * 150 + 160}px`,
             minHeight: "400px"
           }}
         >
@@ -422,9 +425,9 @@ export function SerpentineTimeline({
               d={(() => {
                 if (groupedEvents.length === 0) return "";
                 
-                const margin = 80;
-                const usableWidth = 1000 - (margin * 2);
-                const eventsPerRow = 4;
+                const containerWidth = parseInt(maxWidth.replace('px', ''));
+                const margin = Math.max(60, containerWidth * 0.08);
+                const usableWidth = containerWidth - (margin * 2);
                 const verticalSpacing = 150;
                 const startY = 80;
                 
@@ -447,7 +450,8 @@ export function SerpentineTimeline({
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
                       const nextY = y + verticalSpacing;
-                      pathCommands.push(`Q ${margin + usableWidth + 40} ${y + verticalSpacing/2} ${margin + usableWidth} ${nextY}`);
+                      const curveOffset = Math.min(40, containerWidth * 0.04);
+                      pathCommands.push(`Q ${margin + usableWidth + curveOffset} ${y + verticalSpacing/2} ${margin + usableWidth} ${nextY}`);
                     }
                   } else {
                     // Right to left
@@ -456,7 +460,8 @@ export function SerpentineTimeline({
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
                       const nextY = y + verticalSpacing;
-                      pathCommands.push(`Q ${margin - 40} ${y + verticalSpacing/2} ${margin} ${nextY}`);
+                      const curveOffset = Math.min(40, containerWidth * 0.04);
+                      pathCommands.push(`Q ${margin - curveOffset} ${y + verticalSpacing/2} ${margin} ${nextY}`);
                     }
                   }
                 }
