@@ -227,7 +227,7 @@ function TimelineLegend() {
   ];
 
   return (
-    <div className="bg-secondary rounded-lg p-4 border border-border mb-6">
+    <div className="bg-secondary rounded-lg p-4 border border-border mb-6 w-full">
       <div className="flex items-center justify-center gap-6 flex-wrap">
         {stages.map((stage) => (
           <div key={stage.key} className="flex items-center gap-2">
@@ -363,9 +363,12 @@ export function SerpentineTimeline({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col items-center">
       {/* Filter Section */}
-      <div className="bg-secondary rounded-lg p-4 border border-border mb-4">
+      <div 
+        className="bg-secondary rounded-lg p-4 border border-border mb-4"
+        style={{ width: maxWidth }}
+      >
         <div className="flex items-center justify-center gap-8 flex-wrap">
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-muted-foreground" />
@@ -404,7 +407,9 @@ export function SerpentineTimeline({
       </div>
 
       {/* Legend */}
-      <TimelineLegend />
+      <div style={{ width: maxWidth }}>
+        <TimelineLegend />
+      </div>
 
       {/* Timeline Container */}
       <div className="relative w-full bg-background rounded-lg border border-border overflow-x-auto">
