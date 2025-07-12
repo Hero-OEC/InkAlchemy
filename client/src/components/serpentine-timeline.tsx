@@ -106,14 +106,23 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
     : STAGE_COLORS[event.stage as keyof typeof STAGE_COLORS] || STAGE_COLORS.planning;
   const IconComponent = EVENT_TYPE_ICONS[event.type as keyof typeof EVENT_TYPE_ICONS] || Calendar;
 
+  const handleBubbleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowPopup(!showPopup);
+  };
+
   const handleMouseEnter = () => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
-    setShowPopup(true);
+    // Only show popup on hover if it's not already open from a click
+    if (!showPopup) {
+      setShowPopup(true);
+    }
   };
 
   const handleMouseLeave = () => {
+    // Only hide popup on mouse leave if it wasn't opened by click
     hoverTimeoutRef.current = setTimeout(() => {
       setShowPopup(false);
     }, 100); // Small delay to allow moving to popup
@@ -126,7 +135,10 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
   };
 
   const handlePopupMouseLeave = () => {
-    setShowPopup(false);
+    // Don't auto-hide if popup was opened by click
+    hoverTimeoutRef.current = setTimeout(() => {
+      setShowPopup(false);
+    }, 100);
   };
 
   useEffect(() => {
@@ -172,7 +184,7 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
     }
   }, [showPopup, side, multiCount]);
 
-  // Add scroll detection to hide popup
+  // Add scroll detection and click outside to hide popup
   useEffect(() => {
     if (!showPopup) return;
 
@@ -184,8 +196,20 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
       setShowPopup(false);
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+      // Don't close if clicking on the bubble or popup
+      if (
+        bubbleRef.current && bubbleRef.current.contains(event.target as Node) ||
+        popupRef.current && popupRef.current.contains(event.target as Node)
+      ) {
+        return;
+      }
+      setShowPopup(false);
+    };
+
     // Listen to both window scroll and any parent container scrolls
     window.addEventListener('scroll', handleScroll, true);
+    document.addEventListener('mousedown', handleClickOutside);
     
     // Also listen to scroll events on any scrollable parent containers
     if (bubbleRef.current) {
@@ -205,6 +229,7 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
       
       return () => {
         window.removeEventListener('scroll', handleScroll, true);
+        document.removeEventListener('mousedown', handleClickOutside);
         scrollableElements.forEach(el => {
           el.removeEventListener('scroll', handleScroll, true);
         });
@@ -216,6 +241,7 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
     
     return () => {
       window.removeEventListener('scroll', handleScroll, true);
+      document.removeEventListener('mousedown', handleClickOutside);
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current);
       }
@@ -241,7 +267,7 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={() => onEventClick?.(event)}
+        onClick={handleBubbleClick}
       >
         {multiCount ? (
           <span className={cn("text-sm font-bold", stageConfig.icon)}>
