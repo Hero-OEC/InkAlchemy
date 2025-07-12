@@ -22,7 +22,7 @@ function App() {
       <Route path="/projects/:projectId/lore" component={Lore} />
       <Route path="/projects/:projectId/notes" component={Notes} />
       <Route path="/components" component={ComponentsShowcase} />
-      <Route component={NotFound} />
+      <Route path="*" component={NotFound} />
     </Router>
   );
 }
