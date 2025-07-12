@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/form-inputs";
 import { Sword, Zap, Plus, FolderOpen } from "lucide-react";
 import { useLocation } from "wouter";
-import logoPath from "@assets/inkalchemy_1752303410066.png";
 import type { Project, InsertProject } from "@shared/schema";
 
 export default function Welcome() {
@@ -74,14 +73,7 @@ export default function Welcome() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Welcome Header */}
         <div className="text-center mb-16">
-          <div className="flex items-center justify-center mb-6">
-            <img 
-              src={logoPath} 
-              alt="InkAlchemy Logo" 
-              className="w-16 h-16 object-contain mr-4"
-            />
-            <h1 className="text-5xl font-bold text-brand-950">Welcome to InkAlchemy</h1>
-          </div>
+          <h1 className="text-5xl font-bold text-brand-950 mb-6">Welcome to InkAlchemy</h1>
           <p className="text-xl text-brand-700 max-w-2xl mx-auto leading-relaxed">
             Your comprehensive creative writing companion. Organize characters, build worlds, 
             manage timelines, and bring your stories to life.
