@@ -85,9 +85,9 @@ export function CharacterCard({
   const fullName = [prefix, name, suffix].filter(Boolean).join(" ");
 
   return (
-    <div className={`bg-card border border-border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer ${className}`}>
+    <div className={`bg-card border border-border rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer ${className}`}>
       {/* Character Image - 1:1 aspect ratio */}
-      <div className="relative mb-3">
+      <div className="mb-3">
         <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden">
           {imageUrl ? (
             <img 
@@ -101,24 +101,23 @@ export function CharacterCard({
             </div>
           )}
         </div>
-        
-        {/* Character Type Icon - Positioned over image */}
-        <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-2 border-2 border-border shadow-sm">
-          <Icon size={20} className={config.iconColor} />
-        </div>
       </div>
 
-      {/* Character Name */}
-      <div className="mb-2">
+      {/* Character Name with Icon */}
+      <div className="mb-2 flex items-center gap-2">
+        <div className={`p-1.5 rounded-lg ${config.bgColor}`}>
+          <Icon size={16} className="text-white" />
+        </div>
         <h3 className="text-brand-950 font-semibold text-lg leading-tight">
-          {fullName}
+          {prefix && <span className="text-sm text-brand-600 font-normal">{prefix} </span>}
+          {name}
+          {suffix && <span className="text-sm text-brand-600 font-normal"> {suffix}</span>}
         </h3>
       </div>
 
       {/* Character Type Badge */}
       <div className="mb-3">
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgColor} ${config.textColor}`}>
-          <Icon size={12} className="mr-1" />
           {config.label}
         </span>
       </div>
