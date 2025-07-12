@@ -35,8 +35,7 @@ export default function Timeline() {
   };
 
   const handleEventClick = (event: Event) => {
-    console.log("Event clicked:", event);
-    // TODO: Implement event detail view or edit modal
+    setLocation(`/projects/${projectId}/events/${event.id}`);
   };
 
   const handleEventEdit = (event: Event) => {
