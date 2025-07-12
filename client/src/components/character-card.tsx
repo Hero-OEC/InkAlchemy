@@ -134,7 +134,7 @@ export function CharacterCard({
       {/* Separator Line */}
       <div className="border-t border-brand-200 pt-3">
         {/* Dates Section */}
-        <div className="flex flex-col gap-1 text-xs text-brand-600">
+        <div className="flex justify-between text-xs text-brand-600">
           {createdAt && (
             <div>
               <span className="font-medium">Created:</span> {createdAt.toLocaleDateString()}
