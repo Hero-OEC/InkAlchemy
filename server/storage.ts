@@ -478,6 +478,7 @@ export class MemStorage implements IStorage {
       {
         id: 21,
         projectId: 1,
+        title: "Magic System Cost Mechanism",
         content: "Remember to develop the magic system's cost mechanism - each spell should require something from the caster",
         category: "idea",
         createdAt: new Date(),
@@ -486,6 +487,7 @@ export class MemStorage implements IStorage {
       {
         id: 22,
         projectId: 1,
+        title: "Ancient Prophecy Plot Hole",
         content: "Plot hole: How does Aria learn about the ancient prophecy? Need to establish this earlier in Chapter 3",
         category: "plot",
         createdAt: new Date(),
@@ -494,6 +496,7 @@ export class MemStorage implements IStorage {
       {
         id: 23,
         projectId: 1,
+        title: "Medieval Clothing Research",
         content: "Research medieval clothing styles for the royal court scenes - need accurate descriptions",
         category: "research",
         createdAt: new Date(),
@@ -502,6 +505,7 @@ export class MemStorage implements IStorage {
       {
         id: 24,
         projectId: 1,
+        title: "Theron Character Development",
         content: "Character development: Show more of Theron's backstory through dialogue rather than exposition",
         category: "character",
         createdAt: new Date(),
@@ -510,6 +514,7 @@ export class MemStorage implements IStorage {
       {
         id: 25,
         projectId: 1,
+        title: "Beta Reader Deadline",
         content: "Don't forget to submit first three chapters to beta readers by Friday",
         category: "reminder",
         createdAt: new Date(),
@@ -518,6 +523,7 @@ export class MemStorage implements IStorage {
       {
         id: 26,
         projectId: 1,
+        title: "Great Line Idea",
         content: "Great line idea: 'The shadows whispered secrets that daylight could never reveal'",
         category: "general",
         createdAt: new Date(),
@@ -818,6 +824,7 @@ export class MemStorage implements IStorage {
     const note: Note = {
       id,
       projectId: insertNote.projectId,
+      title: insertNote.title,
       content: insertNote.content,
       category: insertNote.category ?? null,
       createdAt: new Date(),

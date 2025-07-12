@@ -111,12 +111,11 @@ export default function NoteDetails() {
                 <IconComponent size={24} className="text-brand-700" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-brand-950 mb-2">Note Details</h1>
+                <h1 className="text-3xl font-bold text-brand-950 mb-2">{note.title}</h1>
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-600 text-white capitalize">
                     {category}
                   </span>
-
                 </div>
               </div>
             </div>

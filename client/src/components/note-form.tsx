@@ -11,6 +11,7 @@ import { insertNoteSchema, type Note } from "@shared/schema";
 import { z } from "zod";
 
 const formSchema = insertNoteSchema.extend({
+  title: z.string().min(1, "Title is required"),
   category: z.string().optional(),
 });
 
@@ -27,6 +28,7 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       projectId,
+      title: note?.title || "",
       content: note?.content || "",
       category: note?.category || "general",
     },
@@ -101,6 +103,25 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title *</FormLabel>
+              <FormControl>
+                <input 
+                  type="text"
+                  placeholder="Enter note title..."
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="content"

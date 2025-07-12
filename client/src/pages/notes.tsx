@@ -17,15 +17,7 @@ const NOTE_CATEGORY_ICONS = {
   research: FileText,
 };
 
-// Note color configurations
-const NOTE_COLORS = {
-  yellow: { bg: "bg-yellow-100", border: "border-yellow-200" },
-  blue: { bg: "bg-blue-100", border: "border-blue-200" },
-  green: { bg: "bg-green-100", border: "border-green-200" },
-  purple: { bg: "bg-purple-100", border: "border-purple-200" },
-  pink: { bg: "bg-pink-100", border: "border-pink-200" },
-  orange: { bg: "bg-orange-100", border: "border-orange-200" },
-};
+
 
 export default function Notes() {
   const { projectId } = useParams();
@@ -62,10 +54,10 @@ export default function Notes() {
     
     return {
       id: note.id,
-      title: note.content.length > 50 ? `${note.content.substring(0, 50)}...` : note.content,
+      title: note.title,
       type: "note" as const,
       subtype: category,
-      description: note.content,
+      description: note.content.length > 100 ? `${note.content.substring(0, 100)}...` : note.content,
       icon: icon,
       createdAt: note.createdAt,
       lastEditedAt: note.updatedAt,

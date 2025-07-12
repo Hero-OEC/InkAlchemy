@@ -96,6 +96,7 @@ export const loreEntries = pgTable("lore_entries", {
 export const notes = pgTable("notes", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id").references(() => projects.id).notNull(),
+  title: text("title").notNull(),
   content: text("content").notNull(),
   category: text("category").default("general"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
