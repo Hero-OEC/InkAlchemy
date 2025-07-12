@@ -122,8 +122,7 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Implemented custom color palette system (brand-50 to brand-950) replacing default theme
 - Created reusable CharacterCard component with image, type icons, badges, and metadata
 - Built comprehensive Button component with 6 variants and 4 sizes
-- Added DeleteConfirmation modal with full viewport backdrop coverage and customizable content
+- Added DeleteConfirmation modal with backdrop blur and customizable content
 - Developed responsive Navbar with conditional navigation based on project state
-- Created universal ContentCard component for locations, magic, lore, notes, and projects
 - Integrated Cairo font family with full weight range (200-900) for typography hierarchy
-- Established light-mode-only design system with consistent visual language and proper spacing
+- Established light-mode-only design system with consistent visual language
