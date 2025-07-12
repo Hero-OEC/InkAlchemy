@@ -2,6 +2,7 @@ import { Route, Router } from "wouter";
 import Welcome from "./pages/welcome";
 import Dashboard from "./pages/dashboard";
 import Characters from "./pages/characters";
+import CharacterDetails from "./pages/character-details";
 import Locations from "./pages/locations";
 import Timeline from "./pages/timeline";
 import EventDetails from "./pages/event-details";
@@ -18,6 +19,7 @@ function App() {
       <Route path="/" component={Welcome} />
       <Route path="/projects/:projectId/dashboard" component={Dashboard} />
       <Route path="/projects/:projectId/characters" component={Characters} />
+      <Route path="/projects/:projectId/characters/:characterId" component={CharacterDetails} />
       <Route path="/projects/:projectId/locations" component={Locations} />
       <Route path="/projects/:projectId/timeline" component={Timeline} />
       <Route path="/projects/:projectId/events/:eventId" component={EventDetails} />
