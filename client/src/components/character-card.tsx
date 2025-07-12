@@ -8,6 +8,8 @@ export interface CharacterCardProps {
   type: "protagonist" | "antagonist" | "supporting" | "ally" | "neutral" | "love-interest" | "villain";
   description: string;
   imageUrl?: string;
+  createdAt?: Date;
+  lastEditedAt?: Date;
   className?: string;
 }
 
@@ -70,7 +72,9 @@ export function CharacterCard({
   suffix, 
   type, 
   description, 
-  imageUrl, 
+  imageUrl,
+  createdAt,
+  lastEditedAt,
   className = "" 
 }: CharacterCardProps) {
   const config = CHARACTER_TYPE_CONFIG[type];
@@ -88,7 +92,7 @@ export function CharacterCard({
     <div className={`bg-brand-100 border border-border rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer ${className}`}>
       {/* Character Image - 1:1 aspect ratio */}
       <div className="mb-3">
-        <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden">
+        <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200">
           {imageUrl ? (
             <img 
               src={imageUrl} 
@@ -123,9 +127,26 @@ export function CharacterCard({
       </div>
 
       {/* Character Description */}
-      <p className="text-brand-700 text-sm leading-relaxed">
+      <p className="text-brand-700 text-sm leading-relaxed mb-3">
         {truncatedDescription}
       </p>
+
+      {/* Separator Line */}
+      <div className="border-t border-brand-200 pt-3">
+        {/* Dates Section */}
+        <div className="flex flex-col gap-1 text-xs text-brand-600">
+          {createdAt && (
+            <div>
+              <span className="font-medium">Created:</span> {createdAt.toLocaleDateString()}
+            </div>
+          )}
+          {lastEditedAt && (
+            <div>
+              <span className="font-medium">Last edited:</span> {lastEditedAt.toLocaleDateString()}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

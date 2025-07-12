@@ -17,6 +17,8 @@ function App() {
             suffix="the Wise"
             type="protagonist"
             description="A brilliant mage and scholar who discovers an ancient prophecy that threatens to unravel the very fabric of reality. Her quest for knowledge leads her down dangerous paths."
+            createdAt={new Date('2024-01-15')}
+            lastEditedAt={new Date('2024-01-20')}
           />
           
           <CharacterCard
@@ -25,6 +27,8 @@ function App() {
             prefix="Lord"
             type="villain"
             description="The fallen king who seeks to reclaim his throne through dark magic and necromancy. His hatred burns as hot as the fires that consumed his kingdom."
+            createdAt={new Date('2024-01-10')}
+            lastEditedAt={new Date('2024-01-18')}
           />
           
           <CharacterCard
@@ -32,6 +36,8 @@ function App() {
             name="Finn"
             type="ally"
             description="A loyal friend and skilled warrior who stands by the protagonist's side through thick and thin. His unwavering courage inspires others to fight."
+            createdAt={new Date('2024-01-12')}
+            lastEditedAt={new Date('2024-01-22')}
           />
           
           <CharacterCard
@@ -40,6 +46,8 @@ function App() {
             suffix="of the Dawn"
             type="love-interest"
             description="A mysterious healer with the power to mend both wounds and broken hearts. Her gentle nature hides secrets that could change everything."
+            createdAt={new Date('2024-01-08')}
+            lastEditedAt={new Date('2024-01-25')}
           />
           
           <CharacterCard
@@ -48,6 +56,8 @@ function App() {
             prefix="Sir"
             type="supporting"
             description="A grizzled veteran knight who serves as mentor and guide. His experience in battle is matched only by his wisdom in matters of the heart."
+            createdAt={new Date('2024-01-05')}
+            lastEditedAt={new Date('2024-01-19')}
           />
           
           <CharacterCard
@@ -55,6 +65,8 @@ function App() {
             name="Zara"
             type="neutral"
             description="A cunning merchant who plays all sides for profit. Her allegiances shift like the winds, but her information is always valuable and accurate."
+            createdAt={new Date('2024-01-14')}
+            lastEditedAt={new Date('2024-01-21')}
           />
         </div>
       </section>
