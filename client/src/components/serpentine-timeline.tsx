@@ -132,25 +132,45 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
   useEffect(() => {
     if (showPopup && bubbleRef.current) {
       const rect = bubbleRef.current.getBoundingClientRect();
-      const timelineContainer = bubbleRef.current.closest('[style*="width"]');
-      const containerRect = timelineContainer?.getBoundingClientRect();
+      const viewport = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
       
+      // Popup dimensions (estimated based on content)
+      const popupWidth = multiCount && multiCount > 1 ? 400 : 320;
+      const popupHeight = multiCount && multiCount > 1 ? Math.min(400, multiCount * 120 + 80) : 200;
+      
+      // Default positioning: to the right of bubble
       let newX = rect.right + 10;
       let newY = rect.top - 50;
       
-      // Check if popup would go off screen and adjust
-      if (containerRect) {
-        if (newX + 320 > containerRect.right) {
-          newX = rect.left - 330;
+      // Adjust X position if popup would go off right edge
+      if (newX + popupWidth > viewport.width - 20) {
+        // Try positioning to the left of bubble
+        newX = rect.left - popupWidth - 10;
+        
+        // If still off screen, position within viewport
+        if (newX < 20) {
+          newX = Math.max(20, viewport.width - popupWidth - 20);
         }
-        if (newX < containerRect.left) {
-          newX = containerRect.left + 10;
-        }
+      }
+      
+      // Adjust Y position if popup would go off top or bottom edge
+      if (newY < 20) {
+        newY = 20;
+      } else if (newY + popupHeight > viewport.height - 20) {
+        newY = Math.max(20, viewport.height - popupHeight - 20);
+      }
+      
+      // Ensure popup doesn't go off left edge
+      if (newX < 20) {
+        newX = 20;
       }
       
       setPopupPosition({ x: newX, y: newY });
     }
-  }, [showPopup, side]);
+  }, [showPopup, side, multiCount]);
 
   // Add scroll detection to hide popup
   useEffect(() => {
@@ -223,10 +243,11 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
       {showPopup && (
         <div
           ref={popupRef}
-          className="fixed bg-popover rounded-lg shadow-xl border border-border p-4 z-50 max-w-sm"
+          className="fixed bg-popover rounded-lg shadow-xl border border-border p-4 z-50 max-h-96 overflow-y-auto"
           style={{
             left: popupPosition.x,
-            top: popupPosition.y
+            top: popupPosition.y,
+            width: multiCount && multiCount > 1 ? '400px' : '320px'
           }}
           onMouseEnter={handlePopupMouseEnter}
           onMouseLeave={handlePopupMouseLeave}
