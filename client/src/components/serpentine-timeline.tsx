@@ -228,8 +228,8 @@ function TimelineLegend() {
   ];
 
   return (
-    <div className="bg-secondary rounded-lg border border-border mb-6 w-full overflow-hidden">
-      <div className="px-4 py-3 flex items-center justify-center gap-4 flex-wrap">
+    <div className="bg-secondary rounded-lg border border-border">
+      <div className="px-6 py-3 flex items-center justify-center gap-6 flex-wrap">
         {stages.map((stage) => (
           <div key={stage.key} className="flex items-center gap-2">
             <div className={cn(
@@ -414,16 +414,13 @@ export function SerpentineTimeline({
   return (
     <div className="w-full flex flex-col items-center">
       {/* Filter Section */}
-      <div 
-        className="bg-secondary rounded-lg border border-border mb-4 overflow-hidden"
-        style={{ width: maxWidth, maxWidth: maxWidth }}
-      >
-        <div className="px-4 py-3 flex items-center justify-center gap-6 flex-wrap">
-          <div className="flex items-center gap-2">
+      <div className="bg-secondary rounded-lg border border-border mb-4">
+        <div className="px-6 py-3 flex items-center justify-center gap-8 flex-wrap">
+          <div className="flex items-center gap-3">
             <Users className="w-4 h-4 text-muted-foreground" />
             <span className="text-sm font-medium text-secondary-foreground">Characters:</span>
             <select
-              className="bg-background border border-border rounded px-3 py-1 text-sm text-foreground min-w-32"
+              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground min-w-48"
               value={filters.characters[0] || ""}
               onChange={(e) => handleCharacterFilterChange(e.target.value)}
             >
@@ -436,11 +433,11 @@ export function SerpentineTimeline({
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <MapPin className="w-4 h-4 text-muted-foreground" />
             <span className="text-sm font-medium text-secondary-foreground">Locations:</span>
             <select
-              className="bg-background border border-border rounded px-3 py-1 text-sm text-foreground min-w-32"
+              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground min-w-48"
               value={filters.locations[0] || ""}
               onChange={(e) => handleLocationFilterChange(e.target.value)}
             >
@@ -456,10 +453,7 @@ export function SerpentineTimeline({
       </div>
 
       {/* Legend */}
-      <div 
-        style={{ width: maxWidth, maxWidth: maxWidth }}
-        className="overflow-hidden"
-      >
+      <div className="mb-6">
         <TimelineLegend />
       </div>
 
