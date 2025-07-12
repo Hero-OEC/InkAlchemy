@@ -577,7 +577,7 @@ export function SerpentineTimeline({
     const containerWidth = parseInt(maxWidth.replace('px', ''));
     const margin = Math.max(60, containerWidth * 0.08); // Responsive margin (8% of width, min 60px)
     const usableWidth = containerWidth - (margin * 2);
-    const verticalSpacing = 112; // Vertical spacing between rows (25% reduction from 150px)
+    const verticalSpacing = 150; // Vertical spacing between rows
     const startY = 80; // Starting Y position
 
     groupedEvents.forEach((group, index) => {
@@ -679,7 +679,7 @@ export function SerpentineTimeline({
       )}
 
       {/* Legend */}
-      <div className="mb-6">
+      <div className="mb-3">
         <TimelineLegend />
       </div>
 
@@ -691,7 +691,7 @@ export function SerpentineTimeline({
           className="relative mx-auto"
           style={{ 
             width: maxWidth, 
-            height: `${Math.ceil(groupedEvents.length / eventsPerRow) * 112 + 160}px`,
+            height: `${Math.ceil(groupedEvents.length / eventsPerRow) * 150 + 160}px`,
             minHeight: "400px"
           }}
         >
@@ -707,7 +707,7 @@ export function SerpentineTimeline({
                 const containerWidth = parseInt(maxWidth.replace('px', ''));
                 const margin = Math.max(60, containerWidth * 0.08);
                 const usableWidth = containerWidth - (margin * 2);
-                const verticalSpacing = 112; // Vertical spacing between rows (25% reduction from 150px)
+                const verticalSpacing = 150; // Vertical spacing between rows
                 const startY = 80;
                 
                 // Use same 70% timeline width as bubbles
