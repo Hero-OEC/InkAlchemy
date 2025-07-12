@@ -227,11 +227,16 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
           onMouseEnter={handlePopupMouseEnter}
           onMouseLeave={handlePopupMouseLeave}
         >
-          <div className="flex flex-col items-center gap-3 mb-3">
-            <div className={cn("p-1.5 rounded-lg", stageConfig.bg, stageConfig.border)}>
-              <IconComponent className={cn("w-4 h-4", stageConfig.icon)} />
+          <div className="flex flex-col gap-3 mb-3">
+            <div className="flex items-center gap-3">
+              <div className={cn("p-1.5 rounded-lg", stageConfig.bg, stageConfig.border)}>
+                <IconComponent className={cn("w-4 h-4", stageConfig.icon)} />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-popover-foreground text-sm">{event.title}</h4>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-center">
               <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs", stageConfig.bg, stageConfig.border)}>
                 <stageConfig.stageIcon className={cn("w-3 h-3", stageConfig.icon)} />
                 <span className={cn("capitalize font-medium", stageConfig.icon)}>{event.stage}</span>
@@ -240,9 +245,6 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
                 <IconComponent className="w-3 h-3 text-muted-foreground" />
                 <span className="capitalize text-secondary-foreground">{event.type}</span>
               </div>
-            </div>
-            <div className="text-center">
-              <h4 className="font-semibold text-popover-foreground text-sm">{event.title}</h4>
             </div>
           </div>
           
