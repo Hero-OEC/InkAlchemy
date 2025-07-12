@@ -1,7 +1,67 @@
+import { CharacterCard } from "./components/character-card";
+
 function App() {
   return (
     <div className="min-h-screen bg-background text-foreground p-8">
-      <h1 className="text-4xl font-bold text-brand-950 mb-8">Custom Color Palette</h1>
+      <h1 className="text-4xl font-bold text-brand-950 mb-8">InkAlchemy Components</h1>
+      
+      {/* Character Cards Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Character Cards</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          <CharacterCard
+            id={1}
+            name="Aeliana"
+            prefix="Lady"
+            suffix="the Wise"
+            type="protagonist"
+            description="A brilliant mage and scholar who discovers an ancient prophecy that threatens to unravel the very fabric of reality. Her quest for knowledge leads her down dangerous paths."
+          />
+          
+          <CharacterCard
+            id={2}
+            name="Korrath"
+            prefix="Lord"
+            type="villain"
+            description="The fallen king who seeks to reclaim his throne through dark magic and necromancy. His hatred burns as hot as the fires that consumed his kingdom."
+          />
+          
+          <CharacterCard
+            id={3}
+            name="Finn"
+            type="ally"
+            description="A loyal friend and skilled warrior who stands by the protagonist's side through thick and thin. His unwavering courage inspires others to fight."
+          />
+          
+          <CharacterCard
+            id={4}
+            name="Seraphina"
+            suffix="of the Dawn"
+            type="love-interest"
+            description="A mysterious healer with the power to mend both wounds and broken hearts. Her gentle nature hides secrets that could change everything."
+          />
+          
+          <CharacterCard
+            id={5}
+            name="Marcus"
+            prefix="Sir"
+            type="supporting"
+            description="A grizzled veteran knight who serves as mentor and guide. His experience in battle is matched only by his wisdom in matters of the heart."
+          />
+          
+          <CharacterCard
+            id={6}
+            name="Zara"
+            type="neutral"
+            description="A cunning merchant who plays all sides for profit. Her allegiances shift like the winds, but her information is always valuable and accurate."
+          />
+        </div>
+      </section>
+
+      {/* Color Palette Reference */}
+      <section>
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Color System Reference</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Color 50 */}
@@ -94,6 +154,7 @@ function App() {
           </div>
         </div>
       </div>
+      </section>
     </div>
   );
 }
