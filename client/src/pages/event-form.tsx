@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -7,9 +7,9 @@ import { z } from "zod";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { Input, Textarea, Select } from "@/components/form-inputs";
-import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, CheckCircle } from "lucide-react";
+import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, CheckCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { insertEventSchema, type Project, type Event, type Location, type Character } from "@shared/schema";
+import { insertEventSchema, type Project, type Event, type Location, type Character, type Relationship } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
 // Event type icons (same as event details)
@@ -72,6 +72,7 @@ export default function EventForm() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const isEditing = !!eventId;
+  const [selectedCharacters, setSelectedCharacters] = useState<Character[]>([]);
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -86,6 +87,15 @@ export default function EventForm() {
     queryKey: [`/api/projects/${projectId}/locations`],
   });
 
+  const { data: characters = [] } = useQuery<Character[]>({
+    queryKey: [`/api/projects/${projectId}/characters`],
+  });
+
+  const { data: relationships = [] } = useQuery<Relationship[]>({
+    queryKey: [`/api/projects/${projectId}/relationships`],
+    enabled: isEditing,
+  });
+
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
@@ -93,7 +103,7 @@ export default function EventForm() {
       description: event?.description || "",
       type: event?.type || "meeting",
       stage: event?.stage || "planning",
-      importance: event?.importance || 3,
+      importance: event?.importance || "medium",
       year: event?.year || 1,
       month: event?.month || 1,
       day: event?.day || 1,
@@ -104,7 +114,7 @@ export default function EventForm() {
 
   // Reset form when event data loads
   useEffect(() => {
-    if (event && isEditing) {
+    if (event && isEditing && relationships.length > 0) {
       form.reset({
         title: event.title,
         description: event.description || "",
@@ -117,27 +127,88 @@ export default function EventForm() {
         locationId: event.locationId || undefined,
         projectId: event.projectId,
       });
+
+      // Load selected characters from relationships
+      const eventCharacterIds = relationships
+        .filter(rel => rel.fromElementType === 'event' && rel.fromElementId === event.id && rel.toElementType === 'character')
+        .map(rel => rel.toElementId);
+      
+      const eventCharacters = characters.filter(char => eventCharacterIds.includes(char.id));
+      setSelectedCharacters(eventCharacters);
     }
-  }, [event, isEditing, form]);
+  }, [event, isEditing, form, relationships, characters]);
 
   const createMutation = useMutation({
-    mutationFn: (data: EventFormData) => apiRequest(`/api/events`, {
-      method: "POST",
-      body: JSON.stringify(data),
-    }),
+    mutationFn: async (data: EventFormData) => {
+      const event = await apiRequest(`/api/events`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      
+      // Create character relationships
+      for (const character of selectedCharacters) {
+        await apiRequest(`/api/relationships`, {
+          method: "POST",
+          body: JSON.stringify({
+            projectId: parseInt(projectId!),
+            fromElementType: 'event',
+            fromElementId: event.id,
+            toElementType: 'character',
+            toElementId: character.id,
+            relationshipType: 'involved',
+            description: `${character.name} is involved in ${event.title}`,
+          }),
+        });
+      }
+      
+      return event;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/events`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/relationships`] });
       setLocation(`/projects/${projectId}/timeline`);
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: EventFormData) => apiRequest(`/api/events/${eventId}`, {
-      method: "PATCH",
-      body: JSON.stringify(data),
-    }),
+    mutationFn: async (data: EventFormData) => {
+      const updatedEvent = await apiRequest(`/api/events/${eventId}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+      
+      // Delete existing character relationships for this event
+      const existingRelationships = relationships.filter(rel => 
+        rel.fromElementType === 'event' && rel.fromElementId === parseInt(eventId!) && rel.toElementType === 'character'
+      );
+      
+      for (const rel of existingRelationships) {
+        await apiRequest(`/api/relationships/${rel.id}`, {
+          method: "DELETE",
+        });
+      }
+      
+      // Create new character relationships
+      for (const character of selectedCharacters) {
+        await apiRequest(`/api/relationships`, {
+          method: "POST",
+          body: JSON.stringify({
+            projectId: parseInt(projectId!),
+            fromElementType: 'event',
+            fromElementId: parseInt(eventId!),
+            toElementType: 'character',
+            toElementId: character.id,
+            relationshipType: 'involved',
+            description: `${character.name} is involved in ${updatedEvent.title}`,
+          }),
+        });
+      }
+      
+      return updatedEvent;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/events`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/relationships`] });
       queryClient.invalidateQueries({ queryKey: [`/api/events/${eventId}`] });
       setLocation(`/projects/${projectId}/events/${eventId}`);
     },
@@ -188,6 +259,13 @@ export default function EventForm() {
     { value: "complete", label: "Complete" },
   ];
 
+  const importanceOptions = [
+    { value: "low", label: "Low" },
+    { value: "medium", label: "Medium" },
+    { value: "high", label: "High" },
+    { value: "critical", label: "Critical" },
+  ];
+
   const locationOptions = [
     { value: "", label: "No location specified" },
     ...locations.map(location => ({
@@ -195,6 +273,21 @@ export default function EventForm() {
       label: location.name,
     })),
   ];
+
+  const availableCharacters = characters.filter(char => 
+    !selectedCharacters.some(selected => selected.id === char.id)
+  );
+
+  const handleAddCharacter = (characterId: string) => {
+    const character = characters.find(c => c.id === parseInt(characterId));
+    if (character) {
+      setSelectedCharacters([...selectedCharacters, character]);
+    }
+  };
+
+  const handleRemoveCharacter = (characterId: number) => {
+    setSelectedCharacters(selectedCharacters.filter(c => c.id !== characterId));
+  };
 
   return (
     <div className="min-h-screen bg-brand-50">
@@ -273,16 +366,13 @@ export default function EventForm() {
                 error={form.formState.errors.locationId?.message}
               />
 
-              <div>
-                <Input
-                  label="Importance (1-5)"
-                  type="number"
-                  min={1}
-                  max={5}
-                  {...form.register("importance", { valueAsNumber: true })}
-                  error={form.formState.errors.importance?.message}
-                />
-              </div>
+              <Select
+                label="Importance Level"
+                options={importanceOptions}
+                value={form.watch("importance")}
+                onChange={(value) => form.setValue("importance", value as any)}
+                error={form.formState.errors.importance?.message}
+              />
 
               <div className="md:col-span-2">
                 <h3 className="text-sm font-medium text-brand-900 mb-3">Event Date</h3>
@@ -323,6 +413,72 @@ export default function EventForm() {
                 />
               </div>
             </div>
+          </div>
+
+          {/* Characters Section */}
+          <div className="bg-white rounded-xl border border-brand-200 p-6">
+            <h2 className="text-xl font-semibold text-brand-900 mb-6">Characters Involved</h2>
+            
+            {/* Add Character */}
+            {availableCharacters.length > 0 && (
+              <div className="mb-4">
+                <Select
+                  label="Add Character"
+                  placeholder="Select a character to add..."
+                  options={[
+                    { value: "", label: "Select a character..." },
+                    ...availableCharacters.map(char => ({
+                      value: char.id.toString(),
+                      label: char.name,
+                    })),
+                  ]}
+                  value=""
+                  onChange={(value) => {
+                    if (value) {
+                      handleAddCharacter(value);
+                    }
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Selected Characters */}
+            {selectedCharacters.length > 0 ? (
+              <div className="space-y-2">
+                {selectedCharacters.map(character => (
+                  <div 
+                    key={character.id} 
+                    className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-200"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-brand-200 rounded-full flex items-center justify-center">
+                        <Users className="w-4 h-4 text-brand-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-brand-900">{character.name}</h4>
+                        <p className="text-sm text-brand-600 capitalize">{character.type}</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveCharacter(character.id)}
+                      className="text-brand-500 hover:text-brand-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-brand-500">
+                <Users className="w-12 h-12 mx-auto mb-3 text-brand-300" />
+                <p>No characters added to this event yet.</p>
+                {availableCharacters.length === 0 && (
+                  <p className="text-sm mt-1">Create characters first to add them to events.</p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Form Actions */}
