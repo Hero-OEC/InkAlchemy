@@ -48,10 +48,13 @@ export const events = pgTable("events", {
   projectId: integer("project_id").references(() => projects.id).notNull(),
   title: text("title").notNull(),
   description: text("description"),
-  date: text("date"), // flexible date format for fictional calendars
-  type: text("type"), // battle, meeting, discovery, etc.
+  year: integer("year").notNull(),
+  month: integer("month").notNull(),
+  day: integer("day").notNull(),
+  type: text("type").default("other"), // battle, meeting, discovery, political, personal, death, travel, magic, other
+  stage: text("stage").default("planning"), // planning, writing, first-draft, editing, complete
   importance: text("importance").default("medium"), // low, medium, high, critical
-  status: text("status").default("planned"), // planned, active, completed
+  locationId: integer("location_id").references(() => locations.id),
   order: integer("order").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

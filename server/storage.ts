@@ -112,7 +112,93 @@ export class MemStorage implements IStorage {
       updatedAt: new Date()
     };
     this.projects.set(1, defaultProject);
-    this.currentId = 2;
+
+    // Add sample events for the default project
+    const defaultEvents: Event[] = [
+      {
+        id: 1,
+        projectId: 1,
+        title: "The Great Discovery",
+        description: "The main character discovers their hidden power",
+        year: 1,
+        month: 2,
+        day: 15,
+        type: "discovery",
+        stage: "editing",
+        importance: "high",
+        locationId: null,
+        order: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 2,
+        projectId: 1,
+        title: "First Battle",
+        description: "The character's first real test in combat",
+        year: 1,
+        month: 5,
+        day: 3,
+        type: "battle",
+        stage: "writing",
+        importance: "medium",
+        locationId: null,
+        order: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 3,
+        projectId: 1,
+        title: "Meeting the Mentor",
+        description: "The protagonist meets their guide and teacher",
+        year: 1,
+        month: 1,
+        day: 20,
+        type: "meeting",
+        stage: "complete",
+        importance: "high",
+        locationId: null,
+        order: 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 4,
+        projectId: 1,
+        title: "Dark Revelation",
+        description: "A shocking truth about the world is revealed",
+        year: 2,
+        month: 3,
+        day: 10,
+        type: "discovery",
+        stage: "planning",
+        importance: "critical",
+        locationId: null,
+        order: 3,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 5,
+        projectId: 1,
+        title: "The Final Confrontation",
+        description: "The climactic battle between good and evil",
+        year: 3,
+        month: 12,
+        day: 25,
+        type: "battle",
+        stage: "first-draft",
+        importance: "critical",
+        locationId: null,
+        order: 4,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    defaultEvents.forEach(event => this.events.set(event.id, event));
+    this.currentId = 6;
   }
 
   // Projects
@@ -263,10 +349,13 @@ export class MemStorage implements IStorage {
       projectId: insertEvent.projectId,
       title: insertEvent.title,
       description: insertEvent.description ?? null,
-      date: insertEvent.date ?? null,
+      year: insertEvent.year,
+      month: insertEvent.month,
+      day: insertEvent.day,
       type: insertEvent.type ?? null,
+      stage: insertEvent.stage ?? null,
       importance: insertEvent.importance ?? null,
-      status: insertEvent.status ?? null,
+      locationId: insertEvent.locationId ?? null,
       order: insertEvent.order ?? null,
       createdAt: new Date(),
       updatedAt: new Date()

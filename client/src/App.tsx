@@ -5,6 +5,7 @@ import { NavbarDemo } from "./components/navbar";
 import { FontShowcase } from "./components/font-showcase";
 import { ContentCardDemo } from "./components/content-card";
 import { FormInputsDemo } from "./components/form-inputs";
+import SerpentineTimeline from "./components/serpentine-timeline";
 
 function App() {
   return (
@@ -220,6 +221,144 @@ function App() {
           </div>
         </div>
       </div>
+      </section>
+
+      {/* Serpentine Timeline Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-color-900 mb-6">Serpentine Timeline</h2>
+        <SerpentineTimeline
+          events={[
+            {
+              id: 1,
+              projectId: 1,
+              title: "The Great Discovery",
+              description: "The main character discovers their hidden power that will change everything",
+              year: 1,
+              month: 2,
+              day: 15,
+              type: "discovery",
+              stage: "editing",
+              importance: "high",
+              locationId: null,
+              order: 1,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            },
+            {
+              id: 2,
+              projectId: 1,
+              title: "First Battle",
+              description: "The character's first real test in combat against dark forces",
+              year: 1,
+              month: 5,
+              day: 3,
+              type: "battle",
+              stage: "writing",
+              importance: "medium",
+              locationId: null,
+              order: 2,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            },
+            {
+              id: 3,
+              projectId: 1,
+              title: "Meeting the Mentor",
+              description: "The protagonist meets their guide and teacher who reveals ancient secrets",
+              year: 1,
+              month: 1,
+              day: 20,
+              type: "meeting",
+              stage: "complete",
+              importance: "high",
+              locationId: null,
+              order: 0,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            },
+            {
+              id: 4,
+              projectId: 1,
+              title: "Dark Revelation",
+              description: "A shocking truth about the world is revealed that changes everything",
+              year: 2,
+              month: 3,
+              day: 10,
+              type: "discovery",
+              stage: "planning",
+              importance: "critical",
+              locationId: null,
+              order: 3,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            },
+            {
+              id: 5,
+              projectId: 1,
+              title: "The Final Confrontation",
+              description: "The climactic battle between good and evil that determines the fate of all",
+              year: 3,
+              month: 12,
+              day: 25,
+              type: "battle",
+              stage: "first-draft",
+              importance: "critical",
+              locationId: null,
+              order: 4,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            },
+            {
+              id: 6,
+              projectId: 1,
+              title: "Love's First Kiss",
+              description: "A tender moment between the protagonist and their love interest",
+              year: 2,
+              month: 3,
+              day: 10,
+              type: "personal",
+              stage: "writing",
+              importance: "medium",
+              locationId: null,
+              order: 5,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          ]}
+          characters={[
+            {
+              id: 1,
+              projectId: 1,
+              name: "Aeliana",
+              role: "protagonist",
+              description: "A brilliant mage",
+              appearance: null,
+              personality: null,
+              background: null,
+              goals: null,
+              status: null,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          ]}
+          locations={[
+            {
+              id: 1,
+              projectId: 1,
+              name: "Crystal Tower",
+              type: "building",
+              description: "An ancient magical tower",
+              geography: null,
+              culture: null,
+              politics: null,
+              parentLocationId: null,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          ]}
+          onEventClick={(event) => console.log("Event clicked:", event)}
+          onEventEdit={(event) => console.log("Edit event:", event)}
+        />
       </section>
     </div>
   );
