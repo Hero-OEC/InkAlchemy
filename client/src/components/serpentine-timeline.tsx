@@ -260,9 +260,9 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
               {event.location && (
                 <div>
                   <div className="text-xs font-medium text-popover-foreground mb-1.5">Location</div>
-                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-50 border border-green-200">
-                    <MapPin className="w-3 h-3 text-green-600" />
-                    <span className="text-green-800 font-medium">{event.location.name}</span>
+                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-brand-100 border border-brand-300">
+                    <MapPin className="w-3 h-3 text-brand-600" />
+                    <span className="text-brand-800 font-medium">{event.location.name}</span>
                   </div>
                 </div>
               )}
@@ -272,9 +272,9 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
                   <div className="text-xs font-medium text-popover-foreground mb-1.5">Characters</div>
                   <div className="flex flex-wrap gap-1.5">
                     {event.characters.slice(0, 4).map((char) => (
-                      <div key={char.id} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-blue-50 border border-blue-200">
-                        <Users className="w-3 h-3 text-blue-600" />
-                        <span className="text-blue-800 font-medium">{char.name}</span>
+                      <div key={char.id} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-brand-200 border border-brand-400">
+                        <Users className="w-3 h-3 text-brand-700" />
+                        <span className="text-brand-900 font-medium">{char.name}</span>
                       </div>
                     ))}
                     {event.characters.length > 4 && (
