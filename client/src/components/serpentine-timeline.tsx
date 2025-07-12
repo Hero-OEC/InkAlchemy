@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Settings } from "lucide-react";
+import { Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Settings, Lightbulb, PenTool, FileText, Edit, CheckCircle } from "lucide-react";
 import { Event, Character, Location } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
@@ -43,32 +43,38 @@ const STAGE_COLORS = {
   planning: {
     bg: "bg-brand-200",
     border: "border-brand-300",
-    icon: "text-brand-900"
+    icon: "text-brand-900",
+    stageIcon: Lightbulb
   },
   writing: {
     bg: "bg-brand-400", 
     border: "border-brand-500",
-    icon: "text-white"
+    icon: "text-white",
+    stageIcon: PenTool
   },
   "first-draft": {
     bg: "bg-brand-600",
     border: "border-brand-700", 
-    icon: "text-white"
+    icon: "text-white",
+    stageIcon: FileText
   },
   editing: {
     bg: "bg-brand-800",
     border: "border-brand-900",
-    icon: "text-white"
+    icon: "text-white",
+    stageIcon: Edit
   },
   complete: {
     bg: "bg-brand-950",
     border: "border-brand-950",
-    icon: "text-white"
+    icon: "text-white",
+    stageIcon: CheckCircle
   },
   multiple: {
     bg: "bg-brand-50",
     border: "border-brand-200",
-    icon: "text-brand-900"
+    icon: "text-brand-900",
+    stageIcon: Calendar
   }
 };
 
@@ -89,6 +95,8 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const bubbleRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // Use special "multiple" stage color for multiple events, otherwise use event's stage
   const stageConfig = multiCount && multiCount > 1 
@@ -96,10 +104,33 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
     : STAGE_COLORS[event.stage as keyof typeof STAGE_COLORS] || STAGE_COLORS.planning;
   const IconComponent = EVENT_TYPE_ICONS[event.type as keyof typeof EVENT_TYPE_ICONS] || Calendar;
 
+  const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    setShowPopup(true);
+  };
+
+  const handleMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setShowPopup(false);
+    }, 100); // Small delay to allow moving to popup
+  };
+
+  const handlePopupMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+  };
+
+  const handlePopupMouseLeave = () => {
+    setShowPopup(false);
+  };
+
   useEffect(() => {
     if (showPopup && bubbleRef.current) {
       const rect = bubbleRef.current.getBoundingClientRect();
-      const timelineContainer = bubbleRef.current.closest('[style*="width: 1000px"]');
+      const timelineContainer = bubbleRef.current.closest('[style*="width"]');
       const containerRect = timelineContainer?.getBoundingClientRect();
       
       let newX = rect.right + 10;
@@ -119,6 +150,23 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
     }
   }, [showPopup, side]);
 
+  // Add scroll detection to hide popup
+  useEffect(() => {
+    const handleScroll = () => {
+      if (showPopup) {
+        setShowPopup(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, true);
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, [showPopup]);
+
   const truncateDescription = (text: string, maxLength: number = 100) => {
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
@@ -136,8 +184,8 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
           left: position.x - 24,
           top: position.y - 24
         }}
-        onMouseEnter={() => setShowPopup(true)}
-        onMouseLeave={() => setShowPopup(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         onClick={() => onEventClick?.(event)}
       >
         {multiCount ? (
@@ -170,19 +218,31 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
       {/* Detailed Popup on Hover */}
       {showPopup && (
         <div
+          ref={popupRef}
           className="fixed bg-popover rounded-lg shadow-xl border border-border p-4 z-50 max-w-xs"
           style={{
             left: popupPosition.x,
             top: popupPosition.y
           }}
+          onMouseEnter={handlePopupMouseEnter}
+          onMouseLeave={handlePopupMouseLeave}
         >
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-3 mb-3">
             <div className={cn("p-1.5 rounded-lg", stageConfig.bg, stageConfig.border)}>
               <IconComponent className={cn("w-4 h-4", stageConfig.icon)} />
             </div>
-            <div>
+            <div className="flex-1">
               <h4 className="font-semibold text-popover-foreground text-sm">{event.title}</h4>
-              <div className="text-xs text-muted-foreground capitalize">{event.type} • {event.stage}</div>
+              <div className="flex items-center gap-2 mt-1">
+                <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs", stageConfig.bg, stageConfig.border)}>
+                  <stageConfig.stageIcon className={cn("w-3 h-3", stageConfig.icon)} />
+                  <span className={cn("capitalize font-medium", stageConfig.icon)}>{event.stage}</span>
+                </div>
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-secondary border border-border">
+                  <IconComponent className="w-3 h-3 text-muted-foreground" />
+                  <span className="capitalize text-secondary-foreground">{event.type}</span>
+                </div>
+              </div>
             </div>
           </div>
           
