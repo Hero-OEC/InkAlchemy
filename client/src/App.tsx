@@ -1,4 +1,5 @@
 import { CharacterCard } from "./components/character-card";
+import { ButtonShowcase } from "./components/button-variations";
 
 function App() {
   return (
@@ -68,6 +69,14 @@ function App() {
             createdAt={new Date('2024-01-14')}
             lastEditedAt={new Date('2024-01-21')}
           />
+        </div>
+      </section>
+
+      {/* Button Variations Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Button Components</h2>
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <ButtonShowcase />
         </div>
       </section>
 
