@@ -152,13 +152,15 @@ export default function EventDetails() {
       <main className="container mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
-          <button 
+          <Button
+            variant="ghost"
+            size="md"
             onClick={handleBack}
-            className="flex items-center gap-2 text-brand-600 hover:text-brand-700 transition-colors"
+            className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Timeline
-          </button>
+          </Button>
         </div>
 
         {/* Event Header */}
@@ -187,7 +189,7 @@ export default function EventDetails() {
           </div>
           <div className="flex-shrink-0">
             <Button
-              variant="outline"
+              variant="primary"
               size="md"
               onClick={handleEditEvent}
               className="flex items-center gap-2"
