@@ -13,6 +13,8 @@ import MagicSystems from "./pages/magic-systems";
 import Lore from "./pages/lore";
 import Notes from "./pages/notes";
 import NoteDetails from "./pages/note-details";
+import CreateNote from "./pages/create-note";
+import EditNote from "./pages/edit-note";
 import ComponentsShowcase from "./pages/components-showcase";
 import NotFound from "./pages/not-found";
 
@@ -33,7 +35,9 @@ function App() {
       <Route path="/projects/:projectId/magic-systems" component={MagicSystems} />
       <Route path="/projects/:projectId/lore" component={Lore} />
       <Route path="/projects/:projectId/notes" component={Notes} />
+      <Route path="/projects/:projectId/notes/new" component={CreateNote} />
       <Route path="/projects/:projectId/notes/:noteId" component={NoteDetails} />
+      <Route path="/projects/:projectId/notes/:noteId/edit" component={EditNote} />
       <Route path="/components" component={ComponentsShowcase} />
 
     </Router>

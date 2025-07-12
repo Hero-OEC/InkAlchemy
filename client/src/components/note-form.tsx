@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button-variations";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -12,7 +12,7 @@ import { z } from "zod";
 
 const formSchema = insertNoteSchema.extend({
   category: z.string().optional(),
-  color: z.enum(["yellow", "blue", "green", "red", "purple"]).optional(),
+  color: z.enum(["yellow", "blue", "green", "purple", "pink", "orange"]).optional(),
 });
 
 interface NoteFormProps {
@@ -42,10 +42,10 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/projects", projectId, "notes"] 
+        queryKey: [`/api/projects/${projectId}/notes`] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/projects", projectId, "stats"] 
+        queryKey: [`/api/projects/${projectId}/stats`] 
       });
       toast({
         title: "Success",
@@ -70,7 +70,10 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/projects", projectId, "notes"] 
+        queryKey: [`/api/projects/${projectId}/notes`] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: [`/api/notes/${note?.id}`] 
       });
       toast({
         title: "Success",
@@ -133,13 +136,12 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="plot">Plot Ideas</SelectItem>
-                    <SelectItem value="character">Character Notes</SelectItem>
-                    <SelectItem value="worldbuilding">Worldbuilding</SelectItem>
-                    <SelectItem value="dialogue">Dialogue</SelectItem>
+                    <SelectItem value="idea">Idea</SelectItem>
+                    <SelectItem value="reminder">Reminder</SelectItem>
+                    <SelectItem value="plot">Plot</SelectItem>
+                    <SelectItem value="character">Character</SelectItem>
+                    <SelectItem value="location">Location</SelectItem>
                     <SelectItem value="research">Research</SelectItem>
-                    <SelectItem value="inspiration">Inspiration</SelectItem>
-                    <SelectItem value="todo">To Do</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -163,8 +165,9 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
                     <SelectItem value="yellow">Yellow</SelectItem>
                     <SelectItem value="blue">Blue</SelectItem>
                     <SelectItem value="green">Green</SelectItem>
-                    <SelectItem value="red">Red</SelectItem>
                     <SelectItem value="purple">Purple</SelectItem>
+                    <SelectItem value="pink">Pink</SelectItem>
+                    <SelectItem value="orange">Orange</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -173,11 +176,11 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
           />
         </div>
 
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end space-x-4">
           <Button type="button" variant="outline" onClick={onSuccess}>
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" variant="primary" disabled={isLoading}>
             {isLoading ? "Saving..." : note ? "Update Note" : "Create Note"}
           </Button>
         </div>
