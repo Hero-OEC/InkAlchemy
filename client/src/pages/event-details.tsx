@@ -95,8 +95,7 @@ export default function EventDetails() {
   };
 
   const handleEditEvent = () => {
-    // TODO: Implement edit event functionality
-    console.log("Edit event:", event?.id);
+    setLocation(`/projects/${projectId}/events/${event?.id}/edit`);
   };
 
   if (!event) {

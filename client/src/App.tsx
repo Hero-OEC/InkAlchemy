@@ -5,6 +5,7 @@ import Characters from "./pages/characters";
 import Locations from "./pages/locations";
 import Timeline from "./pages/timeline";
 import EventDetails from "./pages/event-details";
+import EventForm from "./pages/event-form";
 import MagicSystems from "./pages/magic-systems";
 import Lore from "./pages/lore";
 import Notes from "./pages/notes";
@@ -20,6 +21,8 @@ function App() {
       <Route path="/projects/:projectId/locations" component={Locations} />
       <Route path="/projects/:projectId/timeline" component={Timeline} />
       <Route path="/projects/:projectId/events/:eventId" component={EventDetails} />
+      <Route path="/projects/:projectId/events/:eventId/edit" component={EventForm} />
+      <Route path="/projects/:projectId/timeline/new-event" component={EventForm} />
       <Route path="/projects/:projectId/magic-systems" component={MagicSystems} />
       <Route path="/projects/:projectId/lore" component={Lore} />
       <Route path="/projects/:projectId/notes" component={Notes} />

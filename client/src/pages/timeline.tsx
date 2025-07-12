@@ -39,8 +39,11 @@ export default function Timeline() {
   };
 
   const handleEventEdit = (event: Event) => {
-    console.log("Edit event:", event);
-    // TODO: Implement event edit functionality
+    setLocation(`/projects/${projectId}/events/${event.id}/edit`);
+  };
+
+  const handleCreateEvent = () => {
+    setLocation(`/projects/${projectId}/timeline/new-event`);
   };
 
   // Process events with relationships to add character and location data
@@ -83,7 +86,12 @@ export default function Timeline() {
               Track the chronological events in your story world
             </p>
           </div>
-          <Button variant="primary" size="md" className="flex items-center gap-2">
+          <Button 
+            variant="primary" 
+            size="md" 
+            onClick={handleCreateEvent}
+            className="flex items-center gap-2"
+          >
             <Plus className="w-4 h-4" />
             Add Event
           </Button>
@@ -108,7 +116,12 @@ export default function Timeline() {
               <p className="text-brand-600 mb-6">
                 Start building your story timeline by adding your first event
               </p>
-              <Button variant="primary" size="lg" className="flex items-center gap-2 mx-auto">
+              <Button 
+                variant="primary" 
+                size="lg" 
+                onClick={handleCreateEvent}
+                className="flex items-center gap-2 mx-auto"
+              >
                 <Plus className="w-5 h-5" />
                 Create First Event
               </Button>
