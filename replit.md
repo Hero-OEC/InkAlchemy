@@ -7,6 +7,8 @@ StoryForge is a comprehensive worldbuilding and story management platform design
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Typography: Cairo font for entire application with full weight range (200-900).
+Design approach: Light mode only, custom brand color palette, offline-first architecture.
 
 ## System Architecture
 
@@ -54,9 +56,10 @@ RESTful API endpoints following convention:
 - `DELETE /api/[entity]/:id` - Delete entity
 
 ### UI Architecture
-- **Component Library**: Comprehensive set of reusable UI components
+- **Component Library**: Comprehensive set of reusable UI components (CharacterCard, Button variations, DeleteConfirmation, Navbar)
+- **Typography**: Cairo font family with weights 200-900 for consistent visual hierarchy
 - **Form Management**: Consistent form patterns with validation
-- **Theme System**: Light/dark mode support with CSS custom properties
+- **Theme System**: Light mode only with custom brand color palette (brand-50 to brand-950)
 - **Responsive Design**: Mobile-first approach with Tailwind breakpoints
 
 ## Data Flow
@@ -112,3 +115,14 @@ RESTful API endpoints following convention:
 - Replit-specific vite plugins for enhanced development experience
 
 The architecture prioritizes developer experience with hot reloading, type safety, and modern tooling while maintaining production performance and scalability.
+
+## Recent Changes
+
+### January 2025 - Core Component System
+- Implemented custom color palette system (brand-50 to brand-950) replacing default theme
+- Created reusable CharacterCard component with image, type icons, badges, and metadata
+- Built comprehensive Button component with 6 variants and 4 sizes
+- Added DeleteConfirmation modal with backdrop blur and customizable content
+- Developed responsive Navbar with conditional navigation based on project state
+- Integrated Cairo font family with full weight range (200-900) for typography hierarchy
+- Established light-mode-only design system with consistent visual language
