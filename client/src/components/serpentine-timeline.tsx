@@ -174,13 +174,42 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
 
   // Add scroll detection to hide popup
   useEffect(() => {
+    if (!showPopup) return;
+
     const handleScroll = () => {
-      if (showPopup) {
-        setShowPopup(false);
-      }
+      setShowPopup(false);
     };
 
+    // Listen to both window scroll and any parent container scrolls
     window.addEventListener('scroll', handleScroll, true);
+    
+    // Also listen to scroll events on any scrollable parent containers
+    if (bubbleRef.current) {
+      let element = bubbleRef.current.parentElement;
+      const scrollableElements: Element[] = [];
+      
+      while (element) {
+        const style = window.getComputedStyle(element);
+        if (style.overflow === 'scroll' || style.overflow === 'auto' || 
+            style.overflowX === 'scroll' || style.overflowX === 'auto' ||
+            style.overflowY === 'scroll' || style.overflowY === 'auto') {
+          scrollableElements.push(element);
+          element.addEventListener('scroll', handleScroll, true);
+        }
+        element = element.parentElement;
+      }
+      
+      return () => {
+        window.removeEventListener('scroll', handleScroll, true);
+        scrollableElements.forEach(el => {
+          el.removeEventListener('scroll', handleScroll, true);
+        });
+        if (hoverTimeoutRef.current) {
+          clearTimeout(hoverTimeoutRef.current);
+        }
+      };
+    }
+    
     return () => {
       window.removeEventListener('scroll', handleScroll, true);
       if (hoverTimeoutRef.current) {
