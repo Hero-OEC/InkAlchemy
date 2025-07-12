@@ -1,7 +1,11 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
-import type { Project } from "@shared/schema";
+import { 
+  Users, MapPin, Calendar, Sparkles, BookOpen, StickyNote,
+  Edit3, Plus, Trash2, Clock
+} from "lucide-react";
+import type { Project, Character, Location, Event, MagicSystem, LoreEntry, Note } from "@shared/schema";
 
 export default function Dashboard() {
   const { projectId } = useParams();
@@ -11,8 +15,171 @@ export default function Dashboard() {
     queryKey: [`/api/projects/${projectId}`],
   });
 
+  const { data: stats } = useQuery({
+    queryKey: [`/api/projects/${projectId}/stats`],
+  });
+
+  const { data: characters } = useQuery<Character[]>({
+    queryKey: [`/api/projects/${projectId}/characters`],
+  });
+
+  const { data: locations } = useQuery<Location[]>({
+    queryKey: [`/api/projects/${projectId}/locations`],
+  });
+
+  const { data: events } = useQuery<Event[]>({
+    queryKey: [`/api/projects/${projectId}/events`],
+  });
+
+  const { data: magicSystems } = useQuery<MagicSystem[]>({
+    queryKey: [`/api/projects/${projectId}/magic-systems`],
+  });
+
+  const { data: loreEntries } = useQuery<LoreEntry[]>({
+    queryKey: [`/api/projects/${projectId}/lore`],
+  });
+
+  const { data: notes } = useQuery<Note[]>({
+    queryKey: [`/api/projects/${projectId}/notes`],
+  });
+
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
+  };
+
+  // Create edit history from all elements
+  const createEditHistory = () => {
+    const history: Array<{
+      id: string;
+      type: 'create' | 'edit' | 'delete';
+      category: string;
+      title: string;
+      summary: string;
+      icon: typeof Users;
+      timestamp: Date;
+    }> = [];
+
+    // Add characters to history
+    characters?.forEach(char => {
+      history.push({
+        id: `character-${char.id}`,
+        type: 'create',
+        category: 'Characters',
+        title: char.name,
+        summary: `Created ${char.type || 'character'} - ${char.description?.substring(0, 50) || 'No description'}...`,
+        icon: Users,
+        timestamp: char.createdAt || new Date()
+      });
+      
+      if (char.lastEditedAt && char.lastEditedAt > char.createdAt) {
+        history.push({
+          id: `character-edit-${char.id}`,
+          type: 'edit',
+          category: 'Characters',
+          title: char.name,
+          summary: `Updated character details and properties`,
+          icon: Users,
+          timestamp: char.lastEditedAt
+        });
+      }
+    });
+
+    // Add locations to history
+    locations?.forEach(loc => {
+      history.push({
+        id: `location-${loc.id}`,
+        type: 'create',
+        category: 'Locations',
+        title: loc.name,
+        summary: `Created ${loc.type || 'location'} - ${loc.description?.substring(0, 50) || 'No description'}...`,
+        icon: MapPin,
+        timestamp: loc.createdAt || new Date()
+      });
+    });
+
+    // Add events to history
+    events?.forEach(event => {
+      history.push({
+        id: `event-${event.id}`,
+        type: 'create',
+        category: 'Timeline',
+        title: event.title,
+        summary: `Added timeline event - ${event.description?.substring(0, 50) || 'No description'}...`,
+        icon: Calendar,
+        timestamp: event.createdAt || new Date()
+      });
+    });
+
+    // Add magic systems to history
+    magicSystems?.forEach(magic => {
+      history.push({
+        id: `magic-${magic.id}`,
+        type: 'create',
+        category: 'Magic Systems',
+        title: magic.name,
+        summary: `Created magic system - ${magic.description?.substring(0, 50) || 'No description'}...`,
+        icon: Sparkles,
+        timestamp: magic.createdAt || new Date()
+      });
+    });
+
+    // Add lore entries to history
+    loreEntries?.forEach(lore => {
+      history.push({
+        id: `lore-${lore.id}`,
+        type: 'create',
+        category: 'Lore',
+        title: lore.title,
+        summary: `Added lore entry - ${lore.content?.substring(0, 50) || 'No content'}...`,
+        icon: BookOpen,
+        timestamp: lore.createdAt || new Date()
+      });
+    });
+
+    // Add notes to history
+    notes?.forEach(note => {
+      history.push({
+        id: `note-${note.id}`,
+        type: 'create',
+        category: 'Notes',
+        title: note.title,
+        summary: `Created note - ${note.content?.substring(0, 50) || 'No content'}...`,
+        icon: StickyNote,
+        timestamp: note.createdAt || new Date()
+      });
+    });
+
+    // Sort by timestamp (most recent first)
+    return history.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  };
+
+  const editHistory = createEditHistory();
+
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(new Date(date));
+  };
+
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'create': return Plus;
+      case 'edit': return Edit3;
+      case 'delete': return Trash2;
+      default: return Edit3;
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'create': return 'text-green-600 bg-green-50';
+      case 'edit': return 'text-blue-600 bg-blue-50';
+      case 'delete': return 'text-red-600 bg-red-50';
+      default: return 'text-brand-600 bg-brand-50';
+    }
   };
 
   return (
@@ -25,9 +192,131 @@ export default function Dashboard() {
       />
       
       <main className="container mx-auto px-6 py-8">
-        <div className="text-center py-20">
-          <h1 className="text-4xl font-bold text-brand-900 mb-4">Dashboard</h1>
-          <p className="text-brand-600">Ready for content</p>
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-brand-900 mb-2">
+            {project?.name || "Project Dashboard"}
+          </h1>
+          <p className="text-brand-700">
+            {project?.description || "Manage and organize your story elements"}
+          </p>
+        </div>
+
+        {/* Stats Grid */}
+        {stats && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-brand-600">Characters</p>
+                  <p className="text-2xl font-bold text-brand-900">{stats.characters}</p>
+                </div>
+                <Users className="w-8 h-8 text-brand-500" />
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-brand-600">Locations</p>
+                  <p className="text-2xl font-bold text-brand-900">{stats.locations}</p>
+                </div>
+                <MapPin className="w-8 h-8 text-brand-500" />
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-brand-600">Events</p>
+                  <p className="text-2xl font-bold text-brand-900">{stats.events}</p>
+                </div>
+                <Calendar className="w-8 h-8 text-brand-500" />
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-brand-600">Magic</p>
+                  <p className="text-2xl font-bold text-brand-900">{stats.magicSystems}</p>
+                </div>
+                <Sparkles className="w-8 h-8 text-brand-500" />
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-brand-600">Lore</p>
+                  <p className="text-2xl font-bold text-brand-900">{stats.loreEntries}</p>
+                </div>
+                <BookOpen className="w-8 h-8 text-brand-500" />
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-brand-600">Notes</p>
+                  <p className="text-2xl font-bold text-brand-900">{stats.notes}</p>
+                </div>
+                <StickyNote className="w-8 h-8 text-brand-500" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit History */}
+        <div className="bg-white rounded-lg border border-brand-200 shadow-sm">
+          <div className="px-6 py-4 border-b border-brand-200">
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-brand-600" />
+              <h2 className="text-xl font-semibold text-brand-900">Recent Activity</h2>
+            </div>
+            <p className="text-sm text-brand-600 mt-1">Latest changes across your project</p>
+          </div>
+          
+          <div className="p-6">
+            {editHistory.length > 0 ? (
+              <div className="space-y-4">
+                {editHistory.slice(0, 20).map((item) => {
+                  const TypeIcon = getTypeIcon(item.type);
+                  const CategoryIcon = item.icon;
+                  
+                  return (
+                    <div key={item.id} className="flex items-start gap-4 p-4 rounded-lg hover:bg-brand-50 transition-colors">
+                      <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${getTypeColor(item.type)}`}>
+                        <TypeIcon className="w-4 h-4" />
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <CategoryIcon className="w-4 h-4 text-brand-600" />
+                          <span className="text-sm font-medium text-brand-600">{item.category}</span>
+                          <span className="text-sm text-brand-400">•</span>
+                          <span className="text-sm text-brand-500 capitalize">{item.type}</span>
+                        </div>
+                        
+                        <h3 className="font-semibold text-brand-900 truncate">{item.title}</h3>
+                        <p className="text-sm text-brand-600 mt-1">{item.summary}</p>
+                      </div>
+                      
+                      <div className="flex-shrink-0 text-right">
+                        <span className="text-sm text-brand-500">{formatDate(item.timestamp)}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Clock className="w-12 h-12 text-brand-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-brand-500 mb-2">No activity yet</h3>
+                <p className="text-brand-400">Start creating characters, locations, and events to see activity here</p>
+              </div>
+            )}
+          </div>
         </div>
       </main>
     </div>
