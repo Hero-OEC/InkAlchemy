@@ -204,77 +204,57 @@ export default function Dashboard() {
 
         {/* Stats Grid */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-brand-600">Characters</p>
-                  <p className="text-2xl font-bold text-brand-900">{stats.characters}</p>
+                  <p className="text-sm font-medium text-yellow-700">Timeline Events</p>
+                  <p className="text-3xl font-bold text-yellow-900">{stats.events}</p>
                 </div>
-                <Users className="w-8 h-8 text-brand-500" />
+                <Calendar className="w-10 h-10 text-yellow-600" />
+              </div>
+            </div>
+
+            <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-yellow-700">Characters</p>
+                  <p className="text-3xl font-bold text-yellow-900">{stats.characters}</p>
+                </div>
+                <Users className="w-10 h-10 text-yellow-600" />
               </div>
             </div>
             
-            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
+            <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-brand-600">Locations</p>
-                  <p className="text-2xl font-bold text-brand-900">{stats.locations}</p>
+                  <p className="text-sm font-medium text-yellow-700">Locations</p>
+                  <p className="text-3xl font-bold text-yellow-900">{stats.locations}</p>
                 </div>
-                <MapPin className="w-8 h-8 text-brand-500" />
+                <MapPin className="w-10 h-10 text-yellow-600" />
               </div>
             </div>
 
-            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
+            <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-brand-600">Events</p>
-                  <p className="text-2xl font-bold text-brand-900">{stats.events}</p>
+                  <p className="text-sm font-medium text-yellow-700">Magic Systems</p>
+                  <p className="text-3xl font-bold text-yellow-900">{stats.magicSystems}</p>
                 </div>
-                <Calendar className="w-8 h-8 text-brand-500" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-brand-600">Magic</p>
-                  <p className="text-2xl font-bold text-brand-900">{stats.magicSystems}</p>
-                </div>
-                <Sparkles className="w-8 h-8 text-brand-500" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-brand-600">Lore</p>
-                  <p className="text-2xl font-bold text-brand-900">{stats.loreEntries}</p>
-                </div>
-                <BookOpen className="w-8 h-8 text-brand-500" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg p-4 border border-brand-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-brand-600">Notes</p>
-                  <p className="text-2xl font-bold text-brand-900">{stats.notes}</p>
-                </div>
-                <StickyNote className="w-8 h-8 text-brand-500" />
+                <Sparkles className="w-10 h-10 text-yellow-600" />
               </div>
             </div>
           </div>
         )}
 
         {/* Edit History */}
-        <div className="bg-white rounded-lg border border-brand-200 shadow-sm">
-          <div className="px-6 py-4 border-b border-brand-200">
+        <div className="bg-yellow-50 rounded-lg border border-yellow-200 shadow-sm">
+          <div className="px-6 py-4 border-b border-yellow-200">
             <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-brand-600" />
-              <h2 className="text-xl font-semibold text-brand-900">Recent Activity</h2>
+              <Clock className="w-5 h-5 text-yellow-700" />
+              <h2 className="text-xl font-semibold text-yellow-900">Editing History</h2>
             </div>
-            <p className="text-sm text-brand-600 mt-1">Latest changes across your project</p>
+            <p className="text-sm text-yellow-600 mt-1">Track all changes made to your project</p>
           </div>
           
           <div className="p-6">
@@ -285,25 +265,25 @@ export default function Dashboard() {
                   const CategoryIcon = item.icon;
                   
                   return (
-                    <div key={item.id} className="flex items-start gap-4 p-4 rounded-lg hover:bg-brand-50 transition-colors">
+                    <div key={item.id} className="flex items-start gap-4 p-4 rounded-lg hover:bg-yellow-100 transition-colors">
                       <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${getTypeColor(item.type)}`}>
                         <TypeIcon className="w-4 h-4" />
                       </div>
                       
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <CategoryIcon className="w-4 h-4 text-brand-600" />
-                          <span className="text-sm font-medium text-brand-600">{item.category}</span>
-                          <span className="text-sm text-brand-400">•</span>
-                          <span className="text-sm text-brand-500 capitalize">{item.type}</span>
+                          <CategoryIcon className="w-4 h-4 text-yellow-700" />
+                          <span className="text-sm font-medium text-yellow-700">{item.category}</span>
+                          <span className="text-sm text-yellow-500">•</span>
+                          <span className="text-sm text-yellow-600 capitalize">{item.type}</span>
                         </div>
                         
-                        <h3 className="font-semibold text-brand-900 truncate">{item.title}</h3>
-                        <p className="text-sm text-brand-600 mt-1">{item.summary}</p>
+                        <h3 className="font-semibold text-yellow-900 truncate">{item.title}</h3>
+                        <p className="text-sm text-yellow-700 mt-1">{item.summary}</p>
                       </div>
                       
                       <div className="flex-shrink-0 text-right">
-                        <span className="text-sm text-brand-500">{formatDate(item.timestamp)}</span>
+                        <span className="text-sm text-yellow-600">{formatDate(item.timestamp)}</span>
                       </div>
                     </div>
                   );
@@ -311,9 +291,9 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <Clock className="w-12 h-12 text-brand-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-brand-500 mb-2">No activity yet</h3>
-                <p className="text-brand-400">Start creating characters, locations, and events to see activity here</p>
+                <Clock className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-yellow-600 mb-2">No activity yet</h3>
+                <p className="text-yellow-500">Start creating characters, locations, and events to see activity here</p>
               </div>
             )}
           </div>
