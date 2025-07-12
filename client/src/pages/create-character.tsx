@@ -105,22 +105,27 @@ export default function CreateCharacter() {
       />
       
       <main className="max-w-4xl mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className="bg-brand-500 p-3 rounded-xl">
-                <TypeIcon size={24} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-brand-950">Create New Character</h1>
-                <p className="text-brand-600 mt-1">Add a new character to your story</p>
-              </div>
-            </div>
-            <Button variant="ghost" onClick={handleBack} className="flex items-center gap-2">
-              <ArrowLeft size={16} />
-              Back to Characters
-            </Button>
+        {/* Header with Back Button */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            variant="ghost"
+            size="md"
+            onClick={handleBack}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Characters
+          </Button>
+        </div>
+
+        {/* Form Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="bg-brand-500 p-3 rounded-xl">
+            <TypeIcon size={24} className="text-white" />
+          </div>
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-brand-950 mb-2">Create New Character</h1>
+            <p className="text-brand-600">Add a new character to your story</p>
           </div>
         </div>
 

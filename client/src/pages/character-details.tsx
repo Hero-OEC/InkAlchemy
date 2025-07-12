@@ -5,7 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
-import { Edit, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User } from "lucide-react";
+import { Edit, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft } from "lucide-react";
 import type { Project, Character, MagicSystem, Event, Location, Relationship } from "@shared/schema";
 
 const CHARACTER_TYPE_CONFIG = {
@@ -94,6 +94,19 @@ export default function CharacterDetails() {
       />
       
       <main className="max-w-7xl mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
+        {/* Header with Back Button */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            variant="ghost"
+            size="md"
+            onClick={() => setLocation(`/projects/${projectId}/characters`)}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Characters
+          </Button>
+        </div>
+
         {/* Character Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
