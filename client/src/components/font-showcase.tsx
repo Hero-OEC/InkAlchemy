@@ -93,44 +93,7 @@ export function FontShowcase() {
         </div>
       </div>
 
-      {/* Character Card Example with Proper Typography */}
-      <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-brand-900 mb-4">Character Card Typography</h3>
-        
-        <div className="bg-brand-50 border border-brand-200 rounded-lg p-4 max-w-sm">
-          <div className="aspect-square w-full bg-brand-200 rounded-lg mb-3 flex items-center justify-center">
-            <span className="text-brand-600 font-light">Character Image</span>
-          </div>
-          
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-6 h-6 bg-brand-400 rounded flex items-center justify-center">
-              <span className="text-white text-xs">★</span>
-            </div>
-            <h3 className="text-lg font-semibold text-brand-950">
-              <span className="text-sm font-light text-brand-600">Lady </span>
-              Aeliana
-              <span className="text-sm font-light text-brand-600"> the Wise</span>
-            </h3>
-          </div>
-          
-          <div className="mb-3">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-400 text-white">
-              Protagonist
-            </span>
-          </div>
-          
-          <p className="text-sm font-normal text-brand-700 leading-relaxed mb-3">
-            A brilliant mage and scholar who discovers an ancient prophecy...
-          </p>
-          
-          <div className="border-t border-brand-200 pt-3">
-            <div className="flex justify-between text-xs font-light text-brand-600">
-              <span><span className="font-medium">Created:</span> 1/15/2024</span>
-              <span><span className="font-medium">Edited:</span> 1/20/2024</span>
-            </div>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
