@@ -85,7 +85,7 @@ export function CharacterCard({
   const fullName = [prefix, name, suffix].filter(Boolean).join(" ");
 
   return (
-    <div className={`bg-card border border-border rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer ${className}`}>
+    <div className={`bg-brand-100 border border-border rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer ${className}`}>
       {/* Character Image - 1:1 aspect ratio */}
       <div className="mb-3">
         <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden">
