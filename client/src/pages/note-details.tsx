@@ -79,6 +79,7 @@ export default function NoteDetails() {
 
   const { data: note } = useQuery<Note>({
     queryKey: [`/api/notes/${noteId}`],
+    enabled: noteId !== "new" && !!noteId,
   });
 
   if (!note) {
