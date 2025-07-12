@@ -165,6 +165,7 @@ export interface SelectOption {
   value: string;
   label: string;
   disabled?: boolean;
+  icon?: React.ComponentType<{ className?: string }>;
 }
 
 export interface SelectProps {
@@ -221,8 +222,12 @@ export function Select({
           disabled={disabled}
         >
           <span className={cn(
+            "flex items-center gap-2",
             selectedOption ? "text-brand-950" : "text-brand-500 font-light"
           )}>
+            {selectedOption?.icon && (
+              <selectedOption.icon className="w-4 h-4 text-brand-600" />
+            )}
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <ChevronDown className={cn(
@@ -240,13 +245,16 @@ export function Select({
                 onClick={() => !option.disabled && handleSelect(option.value)}
                 className={cn(
                   "w-full px-3 py-2.5 text-sm font-normal text-left hover:bg-brand-100 transition-colors",
-                  "first:rounded-t-lg last:rounded-b-lg",
+                  "first:rounded-t-lg last:rounded-b-lg flex items-center gap-2",
                   option.disabled && "text-brand-400 cursor-not-allowed hover:bg-transparent",
                   value === option.value && "bg-brand-200 text-brand-950 font-medium"
                 )}
                 disabled={option.disabled}
               >
-                {option.label}
+                {option.icon && (
+                  <option.icon className="w-4 h-4 text-brand-600 flex-shrink-0" />
+                )}
+                <span className="truncate">{option.label}</span>
               </button>
             ))}
           </div>
