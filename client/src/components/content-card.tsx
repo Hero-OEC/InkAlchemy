@@ -16,31 +16,31 @@ export interface ContentCardProps {
   onDelete?: () => void;
 }
 
-// Type-specific styling configurations - universal beige icon container with type-specific badges
+// Type-specific styling configurations - universal beige icon container with brand color badges
 const typeConfigs = {
   location: {
-    badgeBg: "bg-emerald-100",
-    badgeText: "text-emerald-800",
+    badgeBg: "bg-brand-200",
+    badgeText: "text-brand-800",
     borderColor: "border-brand-200",
   },
   magic: {
-    badgeBg: "bg-purple-100",
-    badgeText: "text-purple-800",
+    badgeBg: "bg-brand-300",
+    badgeText: "text-brand-900",
     borderColor: "border-brand-200",
   },
   lore: {
-    badgeBg: "bg-amber-100",
-    badgeText: "text-amber-800",
+    badgeBg: "bg-brand-100",
+    badgeText: "text-brand-700",
     borderColor: "border-brand-200",
   },
   note: {
-    badgeBg: "bg-blue-100",
-    badgeText: "text-blue-800", 
+    badgeBg: "bg-brand-50",
+    badgeText: "text-brand-800", 
     borderColor: "border-brand-200",
   },
   project: {
-    badgeBg: "bg-brand-100",
-    badgeText: "text-brand-800",
+    badgeBg: "bg-brand-400",
+    badgeText: "text-white",
     borderColor: "border-brand-200",
   },
 };
@@ -72,7 +72,7 @@ export function ContentCard({
   return (
     <div 
       className={cn(
-        "bg-brand-50 border rounded-xl p-4 transition-all duration-200 hover:shadow-md hover:border-brand-300 cursor-pointer",
+        "bg-brand-100 border rounded-xl p-4 transition-all duration-200 hover:shadow-md hover:border-brand-300 cursor-pointer",
         config.borderColor,
         className
       )}
@@ -92,8 +92,8 @@ export function ContentCard({
           </div>
         </div>
 
-        {/* Subtype Badge - positioned under title */}
-        <div className="ml-[52px]">
+        {/* Subtype Badge - positioned closer under title */}
+        <div className="ml-[52px] -mt-1">
           <span className={cn(
             "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize",
             config.badgeBg,
