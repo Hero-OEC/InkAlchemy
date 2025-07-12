@@ -223,9 +223,12 @@ function App() {
       </div>
       </section>
 
-      {/* Serpentine Timeline Demo */}
+      {/* Responsive Serpentine Timeline Demo */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold text-color-900 mb-6">Serpentine Timeline - Full Width (4 per row)</h2>
+        <h2 className="text-2xl font-bold text-color-900 mb-6">Responsive Serpentine Timeline</h2>
+        <p className="text-color-700 mb-4 text-sm">
+          This timeline automatically adapts: Mobile (2 per row), Tablet (3 per row), Desktop (4 per row)
+        </p>
         <SerpentineTimeline
           events={[
             {
@@ -358,14 +361,16 @@ function App() {
           ]}
           onEventClick={(event) => console.log("Event clicked:", event)}
           onEventEdit={(event) => console.log("Edit event:", event)}
-          eventsPerRow={4}
-          maxWidth="1000px"
+          responsive={true}
         />
       </section>
 
-      {/* Compact Serpentine Timeline Demo */}
+      {/* Fixed Size Serpentine Timeline Demo */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold text-color-900 mb-6">Serpentine Timeline - Compact (3 per row)</h2>
+        <h2 className="text-2xl font-bold text-color-900 mb-6">Fixed Size Timeline (3 per row, 750px)</h2>
+        <p className="text-color-700 mb-4 text-sm">
+          This timeline uses fixed dimensions regardless of screen size
+        </p>
         <SerpentineTimeline
           events={[
             {
@@ -484,6 +489,7 @@ function App() {
           onEventEdit={(event) => console.log("Edit event:", event)}
           eventsPerRow={3}
           maxWidth="750px"
+          responsive={false}
         />
       </section>
     </div>

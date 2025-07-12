@@ -14,8 +14,9 @@ interface SerpentineTimelineProps {
   locations: Location[];
   onEventClick?: (event: Event) => void;
   onEventEdit?: (event: Event) => void;
-  eventsPerRow?: number; // Optional prop to control responsiveness (default: 4)
-  maxWidth?: string; // Optional prop to control container width (default: "1000px")
+  eventsPerRow?: number; // Optional prop to override responsive behavior
+  maxWidth?: string; // Optional prop to override responsive behavior  
+  responsive?: boolean; // Enable automatic responsive behavior (default: true)
 }
 
 interface FilterState {
@@ -250,19 +251,67 @@ function TimelineLegend() {
   );
 }
 
+// Custom hook for responsive screen size detection
+function useResponsiveTimeline(responsive: boolean, overrideEventsPerRow?: number, overrideMaxWidth?: string) {
+  const [screenSize, setScreenSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    if (!responsive) return;
+
+    const updateScreenSize = () => {
+      setScreenSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
+    // Initial size
+    updateScreenSize();
+
+    // Listen for resize
+    window.addEventListener('resize', updateScreenSize);
+    return () => window.removeEventListener('resize', updateScreenSize);
+  }, [responsive]);
+
+  // Calculate responsive values
+  const eventsPerRow = useMemo(() => {
+    if (overrideEventsPerRow) return overrideEventsPerRow;
+    if (!responsive) return 4;
+
+    if (screenSize.width < 640) return 2; // Mobile: 2 per row
+    if (screenSize.width < 1024) return 3; // Tablet: 3 per row  
+    return 4; // Desktop: 4 per row
+  }, [responsive, overrideEventsPerRow, screenSize.width]);
+
+  const maxWidth = useMemo(() => {
+    if (overrideMaxWidth) return overrideMaxWidth;
+    if (!responsive) return "1000px";
+
+    if (screenSize.width < 640) return "320px"; // Mobile
+    if (screenSize.width < 1024) return "600px"; // Tablet
+    return "1000px"; // Desktop
+  }, [responsive, overrideMaxWidth, screenSize.width]);
+
+  return { eventsPerRow, maxWidth, screenSize };
+}
+
 export function SerpentineTimeline({ 
   events, 
   characters, 
   locations, 
   onEventClick, 
   onEventEdit,
-  eventsPerRow = 4,
-  maxWidth = "1000px"
+  eventsPerRow: overrideEventsPerRow,
+  maxWidth: overrideMaxWidth,
+  responsive = true
 }: SerpentineTimelineProps) {
   const [filters, setFilters] = useState<FilterState>({
     characters: [],
     locations: []
   });
+
+  // Get responsive values
+  const { eventsPerRow, maxWidth } = useResponsiveTimeline(responsive, overrideEventsPerRow, overrideMaxWidth);
 
   // Sort and group events by date
   const groupedEvents = useMemo(() => {
