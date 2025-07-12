@@ -385,7 +385,7 @@ export default function EditCharacter() {
             <div className="flex items-center justify-end gap-4">
               <Button 
                 type="button" 
-                variant="secondary" 
+                variant="outline" 
                 onClick={handleBack}
               >
                 Cancel
