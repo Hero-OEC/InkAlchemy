@@ -207,41 +207,57 @@ export default function Dashboard() {
           <div className="grid grid-cols-4 gap-4 mb-8">
             <div className="bg-brand-100 rounded-lg p-6 border border-brand-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-brand-700">Timeline Events</p>
                   <p className="text-3xl font-bold text-brand-900">{stats.events}</p>
                 </div>
-                <Calendar className="w-10 h-10 text-brand-600" />
+                <div className="flex-shrink-0 ml-4">
+                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-brand-700" />
+                  </div>
+                </div>
               </div>
             </div>
 
             <div className="bg-brand-100 rounded-lg p-6 border border-brand-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-brand-700">Characters</p>
                   <p className="text-3xl font-bold text-brand-900">{stats.characters}</p>
                 </div>
-                <Users className="w-10 h-10 text-brand-600" />
+                <div className="flex-shrink-0 ml-4">
+                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
+                    <Users className="w-6 h-6 text-brand-700" />
+                  </div>
+                </div>
               </div>
             </div>
             
             <div className="bg-brand-100 rounded-lg p-6 border border-brand-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-brand-700">Locations</p>
                   <p className="text-3xl font-bold text-brand-900">{stats.locations}</p>
                 </div>
-                <MapPin className="w-10 h-10 text-brand-600" />
+                <div className="flex-shrink-0 ml-4">
+                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-brand-700" />
+                  </div>
+                </div>
               </div>
             </div>
 
             <div className="bg-brand-100 rounded-lg p-6 border border-brand-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-brand-700">Magic Systems</p>
                   <p className="text-3xl font-bold text-brand-900">{stats.magicSystems}</p>
                 </div>
-                <Sparkles className="w-10 h-10 text-brand-600" />
+                <div className="flex-shrink-0 ml-4">
+                  <div className="w-12 h-12 bg-brand-200 rounded-lg flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-brand-700" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -275,7 +291,7 @@ export default function Dashboard() {
                           <CategoryIcon className="w-4 h-4 text-brand-700" />
                           <span className="text-sm font-medium text-brand-700">{item.category}</span>
                           <span className="text-sm text-brand-500">•</span>
-                          <span className="text-sm text-brand-600 capitalize">{item.type}</span>
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-brand-200 text-brand-800 capitalize">{item.type}</span>
                         </div>
                         
                         <h3 className="font-semibold text-brand-900 truncate">{item.title}</h3>
