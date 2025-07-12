@@ -158,7 +158,7 @@ export default function NoteDetails() {
               <div>
                 <h1 className="text-3xl font-bold text-brand-950 mb-2">Note Details</h1>
                 <div className="flex items-center gap-2">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${colorConfig?.accent || 'bg-brand-600'} ${colorConfig?.text || 'text-white'}`}>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-600 text-white capitalize">
                     {category}
                   </span>
 
@@ -193,9 +193,9 @@ export default function NoteDetails() {
               
 
               {/* Created Date */}
-              <div className={`flex items-center gap-2 p-3 ${colorConfig?.accent || 'bg-brand-100'} border ${colorConfig?.border || 'border-brand-200'} rounded-lg`}>
-                <div className={`flex items-center justify-center w-8 h-8 ${colorConfig?.iconBg || 'bg-brand-200'} rounded-lg`}>
-                  <Calendar className={`w-4 h-4 ${colorConfig?.iconText || 'text-brand-600'}`} />
+              <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
+                <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
+                  <Calendar className="w-4 h-4 text-brand-600" />
                 </div>
                 <div>
                   <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Created</div>
