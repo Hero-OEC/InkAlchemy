@@ -61,8 +61,9 @@ export function ContentCard({
 }: ContentCardProps) {
   const config = typeConfigs[type];
   
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('en-US', { 
       month: 'numeric', 
       day: 'numeric', 
       year: 'numeric' 
