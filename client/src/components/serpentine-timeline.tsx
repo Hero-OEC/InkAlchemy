@@ -356,7 +356,10 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
             </div>
           ) : (
             // Single event detailed view
-            <div>
+            <div
+              className="cursor-pointer hover:bg-accent transition-colors rounded-lg p-2 -m-2"
+              onClick={() => onEventClick?.(event)}
+            >
               <div className="flex flex-col gap-3 mb-3">
                 <div className="flex items-center gap-3">
                   <div className={cn("p-1.5 rounded-lg", stageConfig.bg, stageConfig.border)}>
