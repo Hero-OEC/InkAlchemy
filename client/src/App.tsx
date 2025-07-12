@@ -1,3 +1,4 @@
+import { Route, Switch } from "wouter";
 import { CharacterCard } from "./components/character-card";
 import { ButtonShowcase } from "./components/button-variations";
 import { DeleteConfirmationDemo } from "./components/delete-confirmation";
@@ -6,11 +7,17 @@ import { FontShowcase } from "./components/font-showcase";
 import { ContentCardDemo } from "./components/content-card";
 import { FormInputsDemo } from "./components/form-inputs";
 import SerpentineTimeline from "./components/serpentine-timeline";
+import TimelinePage from "./pages/timeline";
 
-function App() {
+function ComponentDemo() {
   return (
     <div className="min-h-screen bg-background text-foreground p-8">
-      <h1 className="text-4xl font-bold text-brand-950 mb-8">InkAlchemy Components</h1>
+      <div className="mb-8 flex items-center justify-between">
+        <h1 className="text-4xl font-bold text-brand-950">InkAlchemy Components</h1>
+        <a href="/timeline/1" className="bg-brand-500 text-white px-4 py-2 rounded-lg hover:bg-brand-600 transition-colors">
+          View Timeline Demo
+        </a>
+      </div>
       
       {/* Character Cards Demo */}
       <section className="mb-12">
@@ -364,6 +371,16 @@ function App() {
         />
       </section>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Switch>
+      <Route path="/timeline/:id" component={TimelinePage} />
+      <Route path="/timeline" component={() => <TimelinePage />} />
+      <Route path="/" component={ComponentDemo} />
+    </Switch>
   );
 }
 

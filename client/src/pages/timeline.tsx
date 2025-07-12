@@ -12,30 +12,27 @@ interface TimelineEvent extends Event {
 
 export default function TimelinePage() {
   const { id } = useParams<{ id: string }>();
+  const projectId = id || "1"; // Default to project 1 for demo
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   // Fetch events for the project
   const { data: events = [], isLoading: eventsLoading } = useQuery<Event[]>({
-    queryKey: ["/api/projects", id, "events"],
-    enabled: !!id
+    queryKey: ["/api/projects", projectId, "events"]
   });
 
   // Fetch characters for the project (for filtering)
   const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
-    queryKey: ["/api/projects", id, "characters"],
-    enabled: !!id
+    queryKey: ["/api/projects", projectId, "characters"]
   });
 
   // Fetch locations for the project (for filtering and event details)
   const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
-    queryKey: ["/api/projects", id, "locations"],
-    enabled: !!id
+    queryKey: ["/api/projects", projectId, "locations"]
   });
 
   // Fetch relationships to connect characters to events
   const { data: relationships = [], isLoading: relationshipsLoading } = useQuery<Relationship[]>({
-    queryKey: ["/api/projects", id, "relationships"],
-    enabled: !!id
+    queryKey: ["/api/projects", projectId, "relationships"]
   });
 
   // Create enriched events with related data
@@ -52,6 +49,14 @@ export default function TimelinePage() {
     const relatedCharacters = eventCharacterRelationships
       .map(rel => characters.find(char => char.id === rel.toElementId))
       .filter((char): char is Character => char !== undefined);
+
+    // Debug logging
+    console.log(`Event ${event.id} (${event.title}):`, {
+      locationId: event.locationId,
+      location: location?.name,
+      relationshipCount: eventCharacterRelationships.length,
+      characterNames: relatedCharacters.map(c => c.name)
+    });
 
     return {
       ...event,
