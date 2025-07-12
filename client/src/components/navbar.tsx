@@ -34,7 +34,7 @@ export function Navbar({
   };
 
   return (
-    <nav className="bg-brand-50 border-b-2 border-brand-200 sticky top-0 z-40">
+    <nav className="bg-brand-200 border-b-2 border-brand-300 sticky top-0 z-40 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
@@ -42,15 +42,13 @@ export function Navbar({
             <img 
               src={logoPath} 
               alt="InkAlchemy Logo" 
-              className="w-10 h-10"
+              className="w-10 h-10 object-contain flex-shrink-0"
             />
             <div className="flex flex-col">
               <h1 className="text-xl font-bold text-brand-950">InkAlchemy</h1>
-              {hasActiveProject && projectName && (
-                <span className="text-xs text-brand-600 -mt-1">
-                  {projectName}
-                </span>
-              )}
+              <span className="text-xs text-brand-600 -mt-1 font-medium">
+                {hasActiveProject && projectName ? projectName : "Your Creative Writing Companion"}
+              </span>
             </div>
           </div>
 
@@ -105,7 +103,7 @@ export function Navbar({
 
         {/* Mobile Navigation Menu */}
         {hasActiveProject && isMobileMenuOpen && (
-          <div className="md:hidden border-t border-brand-200 bg-brand-50">
+          <div className="md:hidden border-t border-brand-300 bg-brand-200">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigationItems.map((item) => {
                 const Icon = item.icon;

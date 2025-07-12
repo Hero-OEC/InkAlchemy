@@ -41,13 +41,11 @@ export function DeleteConfirmation({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       tabIndex={-1}
     >
-      {/* Backdrop with blur and dark overlay */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
       
       {/* Modal Container */}
       <div className="relative w-full max-w-md bg-brand-50 border-2 border-brand-200 rounded-xl shadow-2xl">
