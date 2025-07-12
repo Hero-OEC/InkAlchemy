@@ -40,21 +40,21 @@ export function MiniCard({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 p-3 rounded-lg border border-border bg-card transition-all duration-200",
-        onClick && "cursor-pointer hover:bg-accent hover:border-brand-300",
+        "flex items-center gap-3 p-3 rounded-lg border border-brand-200 bg-brand-100 transition-all duration-200",
+        onClick && "cursor-pointer hover:bg-brand-200 hover:border-brand-300",
         className
       )}
       onClick={onClick}
     >
       {/* Icon */}
       <div className="flex-shrink-0">
-        <IconComponent className="w-5 h-5 text-muted-foreground" />
+        <IconComponent className="w-5 h-5 text-brand-700" />
       </div>
       
       {/* Content Container */}
       <div className="flex-1 min-w-0">
         {/* Title */}
-        <h4 className="text-sm font-medium text-card-foreground truncate">
+        <h4 className="text-sm font-medium text-brand-950 truncate">
           {title}
         </h4>
         
