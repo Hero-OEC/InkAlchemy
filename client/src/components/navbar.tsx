@@ -64,15 +64,15 @@ export function Navbar({
                     key={item.id}
                     onClick={() => handleNavigation(item.id)}
                     className={`
-                      flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                      flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
                       ${isActive 
                         ? 'bg-brand-400 text-white shadow-sm' 
-                        : 'text-brand-700 hover:bg-brand-100 hover:text-brand-900'
+                        : 'text-brand-700 hover:bg-brand-200 hover:text-brand-900'
                       }
                     `}
                   >
                     <Icon size={16} />
-                    <span className="hidden lg:inline">{item.label}</span>
+                    <span>{item.label}</span>
                   </button>
                 );
               })}
