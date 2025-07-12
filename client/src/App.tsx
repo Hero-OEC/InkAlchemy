@@ -12,6 +12,7 @@ import EventForm from "./pages/event-form";
 import MagicSystems from "./pages/magic-systems";
 import Lore from "./pages/lore";
 import Notes from "./pages/notes";
+import NoteDetails from "./pages/note-details";
 import ComponentsShowcase from "./pages/components-showcase";
 import NotFound from "./pages/not-found";
 
@@ -32,6 +33,7 @@ function App() {
       <Route path="/projects/:projectId/magic-systems" component={MagicSystems} />
       <Route path="/projects/:projectId/lore" component={Lore} />
       <Route path="/projects/:projectId/notes" component={Notes} />
+      <Route path="/projects/:projectId/notes/:noteId" component={NoteDetails} />
       <Route path="/components" component={ComponentsShowcase} />
 
     </Router>
