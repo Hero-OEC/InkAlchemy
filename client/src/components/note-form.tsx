@@ -36,7 +36,10 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
 
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("POST", "/api/notes", data),
+      apiRequest("/api/notes", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: ["/api/projects", projectId, "notes"] 
@@ -61,7 +64,10 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
 
   const updateMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("PATCH", `/api/notes/${note?.id}`, data),
+      apiRequest(`/api/notes/${note?.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: ["/api/projects", projectId, "notes"] 

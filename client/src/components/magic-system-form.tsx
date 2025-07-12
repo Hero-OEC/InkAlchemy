@@ -40,7 +40,10 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
 
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("POST", "/api/magic-systems", data),
+      apiRequest("/api/magic-systems", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: ["/api/projects", projectId, "magic-systems"] 
@@ -65,7 +68,10 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
 
   const updateMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("PATCH", `/api/magic-systems/${magicSystem?.id}`, data),
+      apiRequest(`/api/magic-systems/${magicSystem?.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: ["/api/projects", projectId, "magic-systems"] 
