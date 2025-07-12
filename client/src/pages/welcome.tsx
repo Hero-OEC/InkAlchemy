@@ -8,11 +8,11 @@ import { Input, Select } from "@/components/form-inputs";
 import { 
   Plus, FolderOpen, Book,
   Castle, Globe, Building, Flame, Swords, Heart, DoorOpen, Wand, BookOpen, ScrollText,
-  Coffee as MugHot, Zap as Gun, TrendingUp, Leaf, Dice5, MonitorPlay, Layers3, Cpu, Dna, Clock,
+  Coffee, Zap, TrendingUp, Leaf, Dice5, MonitorPlay, Layers3, Cpu, Dna, Clock,
   Bot, Factory, Radiation, Satellite, Gamepad, Search, Key, Gavel, Server, Home,
-  Brain, Ghost, Zap as Knife, Moon, Hexagon as Pentagon, Shield, Bug, Feather, Rocket, Smile,
-  Calendar, AlertOctagon, AlertCircle, Eye, Laugh, User, Users, Coffee,
-  Sparkles, Megaphone, Zap as Drama, Clock as Timeline, GraduationCap, Mask, Pen
+  Brain, Ghost, Moon, Hexagon, Shield, Bug, Feather, Rocket, Smile,
+  Calendar, AlertOctagon, AlertCircle, Eye, Laugh, User, Users,
+  Sparkles, Megaphone, GraduationCap, Pen, Swords as SwordsIcon
 } from "lucide-react";
 import { useLocation } from "wouter";
 import type { Project, InsertProject } from "@shared/schema";
@@ -28,7 +28,7 @@ const genreOptions = [
   { value: "Fairy Tale Retellings", label: "Fairy Tale Retellings", description: "Classic tales with fresh twists", icon: Wand },
   { value: "Mythic Fantasy", label: "Mythic Fantasy", description: "Stories rooted in ancient myths", icon: BookOpen },
   { value: "Historical Fantasy", label: "Historical Fantasy", description: "Magic woven into historical periods", icon: ScrollText },
-  { value: "Cozy Fantasy", label: "Cozy Fantasy", description: "Gentle, comforting magical stories", icon: MugHot },
+  { value: "Cozy Fantasy", label: "Cozy Fantasy", description: "Gentle, comforting magical stories", icon: Coffee },
   { value: "Flintlock Fantasy", label: "Flintlock Fantasy", description: "Fantasy with early firearms technology", icon: Zap },
   { value: "Progression Fantasy", label: "Progression Fantasy", description: "Characters grow stronger through systems", icon: TrendingUp },
   { value: "Cultivation (Xianxia / Wuxia)", label: "Cultivation (Xianxia / Wuxia)", description: "Martial arts and spiritual power growth", icon: Leaf },
@@ -73,7 +73,7 @@ const genreOptions = [
   { value: "Drama", label: "Drama", description: "Serious emotional conflicts", icon: Zap },
   { value: "Alt-History", label: "Alt-History", description: "What if history went differently", icon: Clock },
   { value: "Dark Academia", label: "Dark Academia", description: "Academic settings with dark secrets", icon: GraduationCap },
-  { value: "Antihero Fiction", label: "Antihero Fiction", description: "Morally complex protagonists", icon: Mask },
+  { value: "Antihero Fiction", label: "Antihero Fiction", description: "Morally complex protagonists", icon: User },
 ];
 
 const getGenreIcon = (genre: string) => {
