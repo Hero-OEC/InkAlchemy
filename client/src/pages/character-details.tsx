@@ -5,7 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
-import { Edit, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles } from "lucide-react";
+import { Edit, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User } from "lucide-react";
 import type { Project, Character, MagicSystem, Event, Location, Relationship } from "@shared/schema";
 
 const CHARACTER_TYPE_CONFIG = {
@@ -139,13 +139,23 @@ export default function CharacterDetails() {
               
               {/* Basic Info */}
               <div className="space-y-3">
-                <div>
-                  <span className="text-sm font-medium text-brand-600">Age:</span>
-                  <span className="ml-2 text-brand-900">{character.age || "Unknown"}</span>
+                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
+                    <Calendar className="w-4 h-4 text-brand-600" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Age</div>
+                    <div className="text-sm font-semibold text-brand-900">{character.age || "Unknown"}</div>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-sm font-medium text-brand-600">Race:</span>
-                  <span className="ml-2 text-brand-900">{character.race || "Unknown"}</span>
+                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
+                    <User className="w-4 h-4 text-brand-600" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Race</div>
+                    <div className="text-sm font-semibold text-brand-900">{character.race || "Unknown"}</div>
+                  </div>
                 </div>
               </div>
             </div>
