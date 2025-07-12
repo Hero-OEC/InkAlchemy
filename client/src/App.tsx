@@ -6,6 +6,7 @@ import Locations from "./pages/locations";
 import Timeline from "./pages/timeline";
 import MagicSystems from "./pages/magic-systems";
 import Lore from "./pages/lore";
+import Notes from "./pages/notes";
 import ComponentsShowcase from "./pages/components-showcase";
 import NotFound from "./pages/not-found";
 
@@ -19,6 +20,7 @@ function App() {
       <Route path="/projects/:projectId/timeline" component={Timeline} />
       <Route path="/projects/:projectId/magic-systems" component={MagicSystems} />
       <Route path="/projects/:projectId/lore" component={Lore} />
+      <Route path="/projects/:projectId/notes" component={Notes} />
       <Route path="/components" component={ComponentsShowcase} />
       <Route component={NotFound} />
     </Router>
