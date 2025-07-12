@@ -101,7 +101,7 @@ export class MemStorage implements IStorage {
     this.loreEntries = new Map();
     this.notes = new Map();
     this.relationships = new Map();
-    this.currentId = 1;
+    this.currentId = 10;
 
     // Create a default project
     const defaultProject: Project = {
@@ -301,6 +301,55 @@ export class MemStorage implements IStorage {
         order: 4,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      // Multi-event scenario: Three events on the same date (year 2, month 6, day 15)
+      {
+        id: 6,
+        projectId: 1,
+        title: "The Royal Festival",
+        description: "A grand celebration in the capital city",
+        year: 2,
+        month: 6,
+        day: 15,
+        type: "political",
+        stage: "writing",
+        importance: "medium",
+        locationId: 1, // Silverbrook Village
+        order: 5,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 7,
+        projectId: 1,
+        title: "Assassin's Strike",
+        description: "An attempt on the protagonist's life during the festival",
+        year: 2,
+        month: 6,
+        day: 15,
+        type: "battle",
+        stage: "editing",
+        importance: "high",
+        locationId: 1, // Silverbrook Village
+        order: 6,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 8,
+        projectId: 1,
+        title: "Love's Declaration",
+        description: "A romantic moment between protagonists amid the chaos",
+        year: 2,
+        month: 6,
+        day: 15,
+        type: "personal",
+        stage: "complete",
+        importance: "medium",
+        locationId: 1, // Silverbrook Village
+        order: 7,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ];
 
@@ -365,6 +414,43 @@ export class MemStorage implements IStorage {
         toElementId: 3, // Lord Malachar
         relationshipType: "participant",
         description: "Malachar is the antagonist in final battle",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      // Relationships for multi-event scenario (events 6, 7, 8 on same date)
+      {
+        id: 6,
+        projectId: 1,
+        fromElementType: "event",
+        fromElementId: 6, // The Royal Festival
+        toElementType: "character",
+        toElementId: 1, // Aria Stormwind
+        relationshipType: "participant",
+        description: "Aria attends the festival",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 7,
+        projectId: 1,
+        fromElementType: "event",
+        fromElementId: 7, // Assassin's Strike
+        toElementType: "character",
+        toElementId: 1, // Aria Stormwind
+        relationshipType: "target",
+        description: "Aria is the target of the assassination attempt",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 8,
+        projectId: 1,
+        fromElementType: "event",
+        fromElementId: 8, // Love's Declaration
+        toElementType: "character",
+        toElementId: 1, // Aria Stormwind
+        relationshipType: "participant",
+        description: "Aria shares a romantic moment",
         createdAt: new Date(),
         updatedAt: new Date()
       }
