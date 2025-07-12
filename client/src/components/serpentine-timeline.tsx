@@ -38,32 +38,37 @@ interface TimelinePosition {
   side: "left" | "right";
 }
 
-// Writing stage color configurations using existing color system
+// Writing stage color configurations using brand colors - 200, 500, 800 pattern
 const STAGE_COLORS = {
   planning: {
-    bg: "bg-background",
-    border: "border-border",
-    icon: "text-muted-foreground"
+    bg: "bg-brand-200",
+    border: "border-brand-300",
+    icon: "text-brand-900"
   },
   writing: {
-    bg: "bg-muted", 
-    border: "border-border",
-    icon: "text-foreground"
+    bg: "bg-brand-500", 
+    border: "border-brand-600",
+    icon: "text-white"
   },
   "first-draft": {
-    bg: "bg-secondary",
-    border: "border-border", 
-    icon: "text-secondary-foreground"
+    bg: "bg-brand-800",
+    border: "border-brand-900", 
+    icon: "text-white"
   },
   editing: {
-    bg: "bg-primary",
-    border: "border-primary",
-    icon: "text-primary-foreground"
+    bg: "bg-brand-600",
+    border: "border-brand-700",
+    icon: "text-white"
   },
   complete: {
-    bg: "bg-accent-foreground",
-    border: "border-accent-foreground",
-    icon: "text-background"
+    bg: "bg-brand-900",
+    border: "border-brand-950",
+    icon: "text-white"
+  },
+  multiple: {
+    bg: "bg-brand-50",
+    border: "border-brand-200",
+    icon: "text-brand-900"
   }
 };
 
@@ -85,7 +90,10 @@ function EventBubble({ event, multiCount, position, side, onEventClick }: EventB
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const bubbleRef = useRef<HTMLDivElement>(null);
   
-  const stageConfig = STAGE_COLORS[event.stage as keyof typeof STAGE_COLORS] || STAGE_COLORS.planning;
+  // Use special "multiple" stage color for multiple events, otherwise use event's stage
+  const stageConfig = multiCount && multiCount > 1 
+    ? STAGE_COLORS.multiple 
+    : STAGE_COLORS[event.stage as keyof typeof STAGE_COLORS] || STAGE_COLORS.planning;
   const IconComponent = EVENT_TYPE_ICONS[event.type as keyof typeof EVENT_TYPE_ICONS] || Calendar;
 
   useEffect(() => {
@@ -241,8 +249,8 @@ function TimelineLegend() {
           </div>
         ))}
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-accent border-2 border-accent-foreground flex items-center justify-center">
-            <span className="text-xs font-bold text-accent-foreground">3</span>
+          <div className="w-4 h-4 rounded-full bg-brand-50 border-2 border-brand-200 flex items-center justify-center">
+            <span className="text-xs font-bold text-brand-900">3</span>
           </div>
           <span className="text-sm font-medium text-secondary-foreground">Multiple Events</span>
         </div>
