@@ -281,13 +281,13 @@ function useResponsiveTimeline(responsive: boolean, overrideEventsPerRow?: numbe
     return () => window.removeEventListener('resize', updateScreenSize);
   }, [responsive]);
 
-  // Calculate responsive values
+  // Calculate responsive values - relaxed breakpoints for easier testing
   const eventsPerRow = useMemo(() => {
     if (overrideEventsPerRow) return overrideEventsPerRow;
     if (!responsive) return 4;
 
-    if (screenSize.width < 640) return 2; // Mobile: 2 per row
-    if (screenSize.width < 1024) return 3; // Tablet: 3 per row  
+    if (screenSize.width < 768) return 2; // Mobile: 2 per row
+    if (screenSize.width < 1200) return 3; // Tablet: 3 per row  
     return 4; // Desktop: 4 per row
   }, [responsive, overrideEventsPerRow, screenSize.width]);
 
@@ -295,8 +295,8 @@ function useResponsiveTimeline(responsive: boolean, overrideEventsPerRow?: numbe
     if (overrideMaxWidth) return overrideMaxWidth;
     if (!responsive) return "1000px";
 
-    if (screenSize.width < 640) return "320px"; // Mobile
-    if (screenSize.width < 1024) return "600px"; // Tablet
+    if (screenSize.width < 768) return "500px"; // Mobile - more generous
+    if (screenSize.width < 1200) return "750px"; // Tablet - more generous
     return "1000px"; // Desktop
   }, [responsive, overrideMaxWidth, screenSize.width]);
 
@@ -467,7 +467,7 @@ export function SerpentineTimeline({
 
       {/* Timeline Container */}
       <div 
-        className="relative bg-background rounded-lg border border-border overflow-x-auto"
+        className="relative bg-background rounded-lg overflow-x-auto"
         style={{ width: maxWidth, maxWidth: maxWidth }}
       >
         <div 

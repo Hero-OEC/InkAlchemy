@@ -227,7 +227,7 @@ function App() {
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-color-900 mb-6">Serpentine Timeline</h2>
         <p className="text-color-700 mb-4 text-sm">
-          Responsive timeline that automatically adapts: Mobile (2 per row), Tablet (3 per row), Desktop (4 per row)
+          Responsive timeline that automatically adapts: Mobile &lt;768px (2 per row), Tablet &lt;1200px (3 per row), Desktop (4 per row)
         </p>
         <SerpentineTimeline
           events={[
