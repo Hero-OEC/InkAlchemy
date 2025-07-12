@@ -472,7 +472,67 @@ export class MemStorage implements IStorage {
     ];
 
     defaultRelationships.forEach(rel => this.relationships.set(rel.id, rel));
-    this.currentId = 20;
+
+    // Add sample notes for the default project
+    const defaultNotes: Note[] = [
+      {
+        id: 21,
+        projectId: 1,
+        content: "Remember to develop the magic system's cost mechanism - each spell should require something from the caster",
+        category: "idea",
+        color: "yellow",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 22,
+        projectId: 1,
+        content: "Plot hole: How does Aria learn about the ancient prophecy? Need to establish this earlier in Chapter 3",
+        category: "plot",
+        color: "pink",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 23,
+        projectId: 1,
+        content: "Research medieval clothing styles for the royal court scenes - need accurate descriptions",
+        category: "research",
+        color: "blue",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 24,
+        projectId: 1,
+        content: "Character development: Show more of Theron's backstory through dialogue rather than exposition",
+        category: "character",
+        color: "green",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 25,
+        projectId: 1,
+        content: "Don't forget to submit first three chapters to beta readers by Friday",
+        category: "reminder",
+        color: "purple",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 26,
+        projectId: 1,
+        content: "Great line idea: 'The shadows whispered secrets that daylight could never reveal'",
+        category: "general",
+        color: "orange",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    defaultNotes.forEach(note => this.notes.set(note.id, note));
+    this.currentId = 30;
   }
 
   // Projects
