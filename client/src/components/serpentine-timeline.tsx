@@ -504,7 +504,7 @@ function useResponsiveTimeline(responsive: boolean, overrideEventsPerRow?: numbe
 
     if (screenSize.width < 768) return "500px"; // Mobile - more generous
     if (screenSize.width < 1200) return "750px"; // Tablet - more generous
-    return "1000px"; // Desktop
+    return "1200px"; // Desktop
   }, [responsive, overrideMaxWidth, screenSize.width]);
 
   return { eventsPerRow, maxWidth, screenSize };
