@@ -40,7 +40,7 @@ export function Navbar({
           {/* Logo and Title */}
           <button 
             onClick={() => window.location.href = '/'}
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity text-left"
           >
             <img 
               src={logoPath} 
