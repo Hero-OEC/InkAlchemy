@@ -4,6 +4,7 @@ import { DeleteConfirmationDemo } from "./components/delete-confirmation";
 import { NavbarDemo } from "./components/navbar";
 import { FontShowcase } from "./components/font-showcase";
 import { ContentCardDemo } from "./components/content-card";
+import { FormInputsDemo } from "./components/form-inputs";
 
 function App() {
   return (
@@ -113,6 +114,14 @@ function App() {
         <h2 className="text-2xl font-bold text-brand-900 mb-6">Universal Content Cards</h2>
         <div className="bg-white border border-brand-200 rounded-xl p-6">
           <ContentCardDemo />
+        </div>
+      </section>
+
+      {/* Form Inputs */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Form Inputs & Dropdowns</h2>
+        <div className="bg-white border border-brand-200 rounded-xl p-6">
+          <FormInputsDemo />
         </div>
       </section>
 
