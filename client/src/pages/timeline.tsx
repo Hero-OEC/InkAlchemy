@@ -2,6 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import SerpentineTimeline from "@/components/serpentine-timeline";
+import { Button } from "@/components/button-variations";
 import { Plus, Calendar } from "lucide-react";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
 
@@ -83,10 +84,10 @@ export default function Timeline() {
               Track the chronological events in your story world
             </p>
           </div>
-          <button className="flex items-center gap-2 bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors">
+          <Button variant="primary" size="md" className="flex items-center gap-2">
             <Plus className="w-4 h-4" />
             Add Event
-          </button>
+          </Button>
         </div>
 
         {/* Timeline Content */}
@@ -108,10 +109,10 @@ export default function Timeline() {
               <p className="text-brand-600 mb-6">
                 Start building your story timeline by adding your first event
               </p>
-              <button className="flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-lg hover:bg-brand-700 transition-colors mx-auto">
+              <Button variant="primary" size="lg" className="flex items-center gap-2 mx-auto">
                 <Plus className="w-5 h-5" />
                 Create First Event
-              </button>
+              </Button>
             </div>
           </div>
         )}
