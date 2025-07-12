@@ -36,8 +36,8 @@ function App() {
       <Route path="/projects/:projectId/lore" component={Lore} />
       <Route path="/projects/:projectId/notes" component={Notes} />
       <Route path="/projects/:projectId/notes/new" component={CreateNote} />
-      <Route path="/projects/:projectId/notes/:noteId" component={NoteDetails} />
       <Route path="/projects/:projectId/notes/:noteId/edit" component={EditNote} />
+      <Route path="/projects/:projectId/notes/:noteId" component={NoteDetails} />
       <Route path="/components" component={ComponentsShowcase} />
 
     </Router>
