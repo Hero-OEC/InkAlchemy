@@ -710,6 +710,11 @@ export function SerpentineTimeline({
                 const verticalSpacing = 150;
                 const startY = 80;
                 
+                // Use same 70% timeline width as bubbles
+                const timelineWidth = usableWidth * 0.7;
+                const timelineStartX = margin + (usableWidth - timelineWidth) / 2;
+                const timelineEndX = timelineStartX + timelineWidth;
+                
                 let pathCommands = [];
                 const totalRows = Math.ceil(groupedEvents.length / eventsPerRow);
                 
@@ -723,40 +728,40 @@ export function SerpentineTimeline({
                   
                   if (row === 0) {
                     // Start of the path
-                    pathCommands.push(`M ${margin} ${y}`);
+                    pathCommands.push(`M ${timelineStartX} ${y}`);
                   }
                   
                   if (isEvenRow) {
                     // Left to right
                     if (isLastRow) {
                       // For the last row, only go to the last event position + some buffer
-                      const lastEventX = margin + ((eventsInThisRow - 1) * (usableWidth / (eventsPerRow - 1))) + 80;
-                      pathCommands.push(`L ${Math.min(lastEventX, margin + usableWidth)} ${y}`);
+                      const lastEventX = timelineStartX + ((eventsInThisRow - 1) * (timelineWidth / (eventsPerRow - 1))) + 80;
+                      pathCommands.push(`L ${Math.min(lastEventX, timelineEndX)} ${y}`);
                     } else {
-                      pathCommands.push(`L ${margin + usableWidth} ${y}`);
+                      pathCommands.push(`L ${timelineEndX} ${y}`);
                     }
                     
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
                       const nextY = y + verticalSpacing;
                       const curveOffset = Math.min(40, containerWidth * 0.04);
-                      pathCommands.push(`Q ${margin + usableWidth + curveOffset} ${y + verticalSpacing/2} ${margin + usableWidth} ${nextY}`);
+                      pathCommands.push(`Q ${timelineEndX + curveOffset} ${y + verticalSpacing/2} ${timelineEndX} ${nextY}`);
                     }
                   } else {
                     // Right to left
                     if (isLastRow) {
                       // For the last row, only go to the last event position - some buffer
-                      const lastEventX = margin + usableWidth - ((eventsInThisRow - 1) * (usableWidth / (eventsPerRow - 1))) - 80;
-                      pathCommands.push(`L ${Math.max(lastEventX, margin)} ${y}`);
+                      const lastEventX = timelineEndX - ((eventsInThisRow - 1) * (timelineWidth / (eventsPerRow - 1))) - 80;
+                      pathCommands.push(`L ${Math.max(lastEventX, timelineStartX)} ${y}`);
                     } else {
-                      pathCommands.push(`L ${margin} ${y}`);
+                      pathCommands.push(`L ${timelineStartX} ${y}`);
                     }
                     
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
                       const nextY = y + verticalSpacing;
                       const curveOffset = Math.min(40, containerWidth * 0.04);
-                      pathCommands.push(`Q ${margin - curveOffset} ${y + verticalSpacing/2} ${margin} ${nextY}`);
+                      pathCommands.push(`Q ${timelineStartX - curveOffset} ${y + verticalSpacing/2} ${timelineStartX} ${nextY}`);
                     }
                   }
                 }
