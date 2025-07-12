@@ -34,7 +34,7 @@ export function Navbar({
   };
 
   return (
-    <nav className="bg-brand-200 border-b-2 border-brand-300 sticky top-0 z-40 shadow-sm">
+    <nav className="bg-brand-100 border-b-2 border-brand-200 sticky top-0 z-40 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
@@ -103,7 +103,7 @@ export function Navbar({
 
         {/* Mobile Navigation Menu */}
         {hasActiveProject && isMobileMenuOpen && (
-          <div className="md:hidden border-t border-brand-300 bg-brand-200">
+          <div className="md:hidden border-t border-brand-200 bg-brand-100">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigationItems.map((item) => {
                 const Icon = item.icon;
