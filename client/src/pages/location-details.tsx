@@ -4,8 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
+import SerpentineTimeline from "@/components/serpentine-timeline";
 import { ArrowLeft, Edit, Calendar, MapPin, Users, Landmark, Crown } from "lucide-react";
-import type { Project, Location, Character, Event } from "@shared/schema";
+import type { Project, Location, Character, Event, Relationship } from "@shared/schema";
 import { Building2, Trees, Castle, Mountain, Home, Globe } from "lucide-react";
 
 // Location type icons
@@ -49,6 +50,10 @@ export default function LocationDetails() {
 
   const { data: events = [] } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
+  });
+
+  const { data: relationships = [] } = useQuery<Relationship[]>({
+    queryKey: [`/api/projects/${projectId}/relationships`],
   });
 
   const handleNavigation = (page: string) => {
@@ -97,12 +102,34 @@ export default function LocationDetails() {
     character.description?.toLowerCase().includes(location.name.toLowerCase())
   );
 
+  // Process events for the timeline component
+  const processedEvents = relatedEvents.map(event => {
+    const eventRelationships = relationships.filter(rel => 
+      rel.fromElementType === 'event' && rel.fromElementId === event.id
+    );
+    
+    const eventCharacters = eventRelationships
+      .filter(rel => rel.toElementType === 'character')
+      .map(rel => characters.find(char => char.id === rel.toElementId))
+      .filter(Boolean) as Character[];
+    
+    const eventLocation = event.locationId 
+      ? locations.find(loc => loc.id === event.locationId)
+      : undefined;
+
+    return {
+      ...event,
+      characters: eventCharacters,
+      location: eventLocation
+    };
+  });
+
   const tabs = [
     { id: "overview", label: "Overview", icon: MapPin },
     { id: "geography", label: "Geography", icon: Mountain },
     { id: "politics", label: "Politics", icon: Crown },
-    { id: "timeline", label: "Timeline", icon: Calendar },
     { id: "characters", label: "Characters", icon: Users },
+    { id: "timeline", label: "Timeline", icon: Calendar },
   ];
 
   const formatDate = (date: Date) => {
@@ -231,24 +258,29 @@ export default function LocationDetails() {
 
             {activeTab === "timeline" && (
               <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Events at this Location</h3>
-                {relatedEvents.length > 0 ? (
-                  <div className="space-y-3">
-                    {relatedEvents.map((event) => (
-                      <MiniCard
-                        key={event.id}
-                        icon={Calendar}
-                        title={event.title}
-                        badge={`${event.month}/${event.day}/${event.year}`}
-                        badgeVariant="custom"
-                        badgeColor="brand-600"
-                        onClick={() => handleEventClick(event)}
-                        variant="editable"
-                      />
-                    ))}
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Timeline: Events at {location.name}</h3>
+                {processedEvents.length > 0 ? (
+                  <div className="bg-brand-50 rounded-lg p-4">
+                    <SerpentineTimeline
+                      events={processedEvents}
+                      characters={characters}
+                      locations={locations}
+                      onEventClick={handleEventClick}
+                      onEventEdit={(event) => setLocation(`/projects/${projectId}/events/${event.id}/edit`)}
+                      eventsPerRow={3}
+                      maxWidth="800px"
+                      responsive={false}
+                      showFilters={false}
+                    />
                   </div>
                 ) : (
-                  <p className="text-brand-600 italic">No events recorded at this location</p>
+                  <div className="text-center py-8">
+                    <Calendar className="w-16 h-16 text-brand-400 mx-auto mb-4" />
+                    <p className="text-brand-600">No events recorded at this location</p>
+                    <p className="text-sm text-brand-500 mt-2">
+                      Create events and set their location to see them here.
+                    </p>
+                  </div>
                 )}
               </div>
             )}
