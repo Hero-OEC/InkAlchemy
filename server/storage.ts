@@ -523,7 +523,93 @@ export class MemStorage implements IStorage {
     ];
 
     defaultNotes.forEach(note => this.notes.set(note.id, note));
-    this.currentId = 30;
+
+    // Add sample lore entries for the default project
+    const defaultLoreEntries: LoreEntry[] = [
+      {
+        id: 27,
+        projectId: 1,
+        title: "The Great Sundering",
+        content: "Three thousand years ago, the realm was torn asunder by a cataclysmic magical event known as the Great Sundering. This catastrophe split the once-united continent of Aethermoor into seven distinct realms, each separated by treacherous void-barriers that can only be crossed through ancient gateways.\n\nThe Sundering was caused by the misuse of the Eternal Crystals - seven powerful artifacts that once maintained balance across the realm. When the High Mage Valdris attempted to merge all seven crystals to achieve immortality, the resulting magical explosion tore reality itself.\n\nThe aftermath left each realm with its own unique magical properties and dangers, forever changing the nature of magic and the creatures that inhabit these lands.",
+        category: "history",
+        importance: "high",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 28,
+        projectId: 1,
+        title: "The Order of the Silver Moon",
+        content: "The Order of the Silver Moon is an ancient religious organization dedicated to preserving the balance between light and shadow magic. Founded in the early days following the Great Sundering, the Order serves as both a spiritual guide and a guardian against magical corruption.\n\nBeliefs and Practices:\n- Monthly ceremonies during the full moon to renew magical protections\n- Meditation techniques that help practitioners resist dark magic influence\n- Sacred vows of neutrality in political conflicts\n- Preservation of ancient texts and magical knowledge\n\nThe Order maintains temples in each of the seven realms, serving as neutral ground where even enemies can seek sanctuary. Their priests and priestesses are recognizable by their silver robes and moon-shaped amulets.",
+        category: "religion",
+        importance: "medium",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 29,
+        projectId: 1,
+        title: "The Council of Seven Realms",
+        content: "Following the chaos after the Great Sundering, the surviving leaders established the Council of Seven Realms as a governing body to maintain peace and coordinate responses to realm-threatening dangers.\n\nStructure:\n- Each realm sends one representative (usually a ruler or high noble)\n- Decisions require majority vote (4 of 7 realms)\n- Rotating leadership changes every three years\n- Emergency sessions can be called if void-creatures threaten multiple realms\n\nThe Council meets annually in the Neutral Sanctum, a floating island maintained by powerful magic that exists between all seven realms. Recent tensions have strained relationships, particularly between the Northern Ice Realm and the Southern Desert Provinces.",
+        category: "politics",
+        importance: "high",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 30,
+        projectId: 1,
+        title: "Festival of Convergence",
+        content: "The Festival of Convergence is the most important cultural celebration across all seven realms, commemorating the rare astronomical event when all three moons align. This occurs once every seven years and is believed to amplify magical abilities.\n\nTraditions:\n- Exchange of Convergence Gifts between realms\n- Lighting of the Unity Flames in each realm's capital\n- Performance of the ancient Song of Binding by trained bards\n- Temporary opening of additional pathways between realms\n- Pilgrimage to the Sundering Memorial Sites\n\nDuring the festival, magical barriers weaken, allowing easier travel between realms. It's also when new mages traditionally attempt their first major spells and when diplomatic marriages are often arranged between ruling families.",
+        category: "culture",
+        importance: "medium",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 31,
+        projectId: 1,
+        title: "Ancient Draconic Language",
+        content: "The Ancient Draconic language predates the Great Sundering and remains the primary language for complex magical incantations and scholarly texts. Modern scholars study this dead language to unlock the secrets of pre-Sundering magic.\n\nKey Characteristics:\n- Tonal language with five distinct pitch levels\n- Complex grammar with 12 verb tenses relating to magical states\n- Runic writing system with 87 base symbols\n- Many concepts have no equivalent in modern common tongue\n\nImportant Phrases:\n- 'Veth mor drakon' = 'By the ancient power' (common incantation opening)\n- 'Sil'thara nex' = 'The void between' (referring to barriers between realms)\n- 'Mor'dun keth' = 'Balance restored' (traditional greeting among mages)\n\nMastery of Ancient Draconic is required for advancement in most magical institutions and is considered a mark of true scholarship.",
+        category: "language",
+        importance: "medium",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 32,
+        projectId: 1,
+        title: "Elemental Crystals and Magical Technology",
+        content: "The technology of Aethermoor is built around the manipulation of elemental crystals - naturally occurring gems that can store and channel specific types of magical energy. These crystals power everything from simple household items to massive realm-protecting barriers.\n\nTypes of Crystals:\n- Fire Crystals (red): Used for heating, lighting, and forging\n- Water Crystals (blue): Purification, healing, and weather control\n- Earth Crystals (brown): Construction, agriculture, and defensive barriers\n- Air Crystals (clear): Communication, transportation, and wind power\n- Shadow Crystals (black): Rare and dangerous, used in forbidden magic\n\nCrystal-powered inventions include floating platforms for transportation, communication mirrors that work across realms, and defensive barriers that protect cities from void-creature attacks. The largest crystals, known as Heart Stones, power entire cities and are heavily guarded.",
+        category: "technology",
+        importance: "high",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 33,
+        projectId: 1,
+        title: "The Whispering Woods Geographic Anomaly",
+        content: "The Whispering Woods span the border between three realms and represent one of the most dangerous geographical features in Aethermoor. The forest itself seems to exist partially outside normal reality, with paths that change based on the traveler's intentions and trees that remember events from centuries past.\n\nUnique Properties:\n- Time flows differently - some areas experience rapid aging while others are frozen in temporal loops\n- The trees themselves are sentient and can communicate through telepathic whispers\n- Plant life exhibits properties from all seven realms simultaneously\n- Compass and magical navigation fail within the forest boundaries\n- Seasonal changes occur randomly rather than following natural patterns\n\nThe woods are home to the last remaining population of Fae Folk, who serve as guardians of this mystical place. Many who enter seeking shortcuts between realms are never seen again, though some emerge years later claiming only hours have passed.",
+        category: "geography",
+        importance: "medium",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 34,
+        projectId: 1,
+        title: "The Three Schools of Magic",
+        content: "Magic in Aethermoor is divided into three fundamental schools, each with distinct principles, practitioners, and societal roles. Understanding these schools is crucial for any magical education.\n\n**Arcane Magic** (The School of Knowledge)\n- Relies on study, formulas, and precise incantations\n- Practitioners: Wizards, scholars, court mages\n- Strengths: Predictable results, powerful long-range effects\n- Weaknesses: Requires preparation and components\n\n**Divine Magic** (The School of Faith)\n- Draws power from devotion to deities or cosmic forces\n- Practitioners: Clerics, paladins, temple guardians\n- Strengths: Healing abilities, protective wards\n- Weaknesses: Limited by faith and divine approval\n\n**Primal Magic** (The School of Instinct)\n- Channels raw magical energy through emotion and will\n- Practitioners: Sorcerers, druids, wild mages\n- Strengths: Spontaneous casting, elemental control\n- Weaknesses: Unpredictable, physically exhausting\n\nMost magical institutions teach all three schools, though students typically specialize in one primary discipline.",
+        category: "magic",
+        importance: "high",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    defaultLoreEntries.forEach(lore => this.loreEntries.set(lore.id, lore));
+    this.currentId = 35;
   }
 
   // Projects
