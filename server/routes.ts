@@ -262,6 +262,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/magic-systems/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const magicSystem = await storage.getMagicSystem(id);
+      if (!magicSystem) {
+        return res.status(404).json({ message: "Magic system not found" });
+      }
+      res.json(magicSystem);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch magic system" });
+    }
+  });
+
   app.post("/api/magic-systems", async (req, res) => {
     try {
       const data = insertMagicSystemSchema.parse(req.body);
