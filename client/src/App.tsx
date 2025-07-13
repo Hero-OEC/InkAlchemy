@@ -6,6 +6,7 @@ import CharacterDetails from "./pages/character-details";
 import EditCharacter from "./pages/edit-character";
 import CreateCharacter from "./pages/create-character";
 import Locations from "./pages/locations";
+import LocationDetails from "./pages/location-details";
 import Timeline from "./pages/timeline";
 import EventDetails from "./pages/event-details";
 import EventForm from "./pages/event-form";
@@ -28,6 +29,7 @@ function App() {
       <Route path="/projects/:projectId/characters/:characterId" component={CharacterDetails} />
       <Route path="/projects/:projectId/characters/:characterId/edit" component={EditCharacter} />
       <Route path="/projects/:projectId/locations" component={Locations} />
+      <Route path="/projects/:projectId/locations/:locationId" component={LocationDetails} />
       <Route path="/projects/:projectId/timeline" component={Timeline} />
       <Route path="/projects/:projectId/events/:eventId" component={EventDetails} />
       <Route path="/projects/:projectId/events/:eventId/edit" component={EventForm} />
