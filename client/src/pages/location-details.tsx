@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
@@ -37,10 +37,11 @@ export default function LocationDetails() {
   const [activeTab, setActiveTab] = useState("overview");
 
   // Redirect if this is the create route
-  if (locationId === "new") {
-    setLocation(`/projects/${projectId}/locations/new`);
-    return null;
-  }
+  useEffect(() => {
+    if (locationId === "new") {
+      setLocation(`/projects/${projectId}/locations/new`);
+    }
+  }, [locationId, projectId, setLocation]);
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
