@@ -56,6 +56,10 @@ export default function LocationDetails() {
     queryKey: [`/api/projects/${projectId}/relationships`],
   });
 
+  const { data: locations = [] } = useQuery<Location[]>({
+    queryKey: [`/api/projects/${projectId}/locations`],
+  });
+
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
   };
