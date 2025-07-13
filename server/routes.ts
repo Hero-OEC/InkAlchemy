@@ -310,6 +310,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/lore/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const loreEntry = await storage.getLoreEntry(id);
+      if (!loreEntry) {
+        return res.status(404).json({ message: "Lore entry not found" });
+      }
+      res.json(loreEntry);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch lore entry" });
+    }
+  });
+
   app.post("/api/lore", async (req, res) => {
     try {
       const data = insertLoreEntrySchema.parse(req.body);

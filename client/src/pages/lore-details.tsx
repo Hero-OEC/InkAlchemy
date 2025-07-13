@@ -34,8 +34,9 @@ export default function LoreDetails() {
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: lore } = useQuery<LoreEntry>({
+  const { data: lore, isLoading } = useQuery<LoreEntry>({
     queryKey: [`/api/lore/${loreId}`],
+    enabled: !!loreId && loreId !== "new"
   });
 
   const handleNavigation = (page: string) => {
@@ -49,6 +50,22 @@ export default function LoreDetails() {
   const handleEdit = () => {
     setLocation(`/projects/${projectId}/lore/${loreId}/edit`);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="lore"
+          projectName={project?.name}
+          onNavigate={handleNavigation}
+        />
+        <div className="flex items-center justify-center py-20">
+          <p className="text-brand-600">Loading lore entry...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!lore) {
     return (
