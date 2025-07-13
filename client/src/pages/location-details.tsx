@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
-import { ArrowLeft, Edit, Calendar, MapPin, Users, Landmark, Crown, Route } from "lucide-react";
+import { ArrowLeft, Edit, Calendar, MapPin, Users, Landmark, Crown } from "lucide-react";
 import type { Project, Location, Character, Event } from "@shared/schema";
 import { Building2, Trees, Castle, Mountain, Home, Globe } from "lucide-react";
 
@@ -103,7 +103,6 @@ export default function LocationDetails() {
     { id: "politics", label: "Politics", icon: Crown },
     { id: "timeline", label: "Timeline", icon: Calendar },
     { id: "characters", label: "Characters", icon: Users },
-    { id: "connections", label: "Connections", icon: Route },
   ];
 
   const formatDate = (date: Date) => {
@@ -289,12 +288,7 @@ export default function LocationDetails() {
               </div>
             )}
 
-            {activeTab === "connections" && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Connected Locations</h3>
-                <p className="text-brand-600 italic">Location connections feature coming soon</p>
-              </div>
-            )}
+
           </div>
         </div>
       </main>
