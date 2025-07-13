@@ -82,7 +82,7 @@ export default function LocationDetails() {
 
   if (!location) {
     return (
-      <div className="min-h-screen bg-brand-50">
+      <div className="min-h-screen bg-background text-foreground">
         <Navbar 
           hasActiveProject={true} 
           currentPage="locations"
