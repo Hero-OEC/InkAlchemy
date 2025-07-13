@@ -609,7 +609,83 @@ export class MemStorage implements IStorage {
     ];
 
     defaultLoreEntries.forEach(lore => this.loreEntries.set(lore.id, lore));
-    this.currentId = 35;
+
+    // Add sample magic systems for the default project
+    const defaultMagicSystems: MagicSystem[] = [
+      {
+        id: 35,
+        projectId: 1,
+        name: "Elemental Manipulation",
+        type: "magic",
+        description: "The ability to control and manipulate the four classical elements: fire, water, earth, and air through willpower and training.",
+        rules: "Practitioners must maintain physical contact with their chosen element or its derivatives. The more distant from the pure element, the more difficult the manipulation becomes.",
+        limitations: "Cannot create elements from nothing - must work with existing matter. Overuse leads to elemental fatigue and temporary loss of abilities. Weather conditions can greatly enhance or diminish power.",
+        source: "elemental",
+        complexity: "medium",
+        users: "Approximately 15% of the population shows elemental affinity, but only 3% develop usable skills through training.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 36,
+        projectId: 1,
+        name: "Divine Channeling",
+        type: "magic",
+        description: "Sacred magic drawn from devotion to the Seven Celestial Guardians, granting protective wards, healing abilities, and divine insight.",
+        rules: "Power scales with genuine faith and moral alignment. Requires daily prayers and adherence to divine commandments. More powerful abilities require ritual components and group ceremonies.",
+        limitations: "Divine magic fails completely when the practitioner acts against their deity's principles. Cannot be used for purely selfish or harmful purposes. Power fluctuates based on holy calendar and celestial events.",
+        source: "divine",
+        complexity: "high",
+        users: "Restricted to ordained clergy and paladins of the Seven Celestial Guardians. Approximately 500 active practitioners across all realms.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 37,
+        projectId: 1,
+        name: "Shadow Weaving",
+        type: "magic",
+        description: "The manipulation of shadow and darkness for concealment, illusion, and limited offensive capabilities. Often misunderstood and feared by the general population.",
+        rules: "Strongest in darkness or dim light, weakest in bright sunlight. Requires emotional control and understanding of fear psychology. Advanced techniques involve merging with shadows for travel.",
+        limitations: "Completely powerless in absolute light or areas blessed by divine magic. Prolonged use can lead to 'shadow addiction' and gradual loss of connection to light and warmth.",
+        source: "shadow",
+        complexity: "high",
+        users: "Secretive practitioners organized in hidden guilds. Estimated 200-300 shadow weavers exist, mostly operating covertly.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 38,
+        projectId: 1,
+        name: "Psychic Resonance",
+        type: "power",
+        description: "Mental abilities including telepathy, telekinesis, and precognitive flashes. Believed to be an evolutionary development rather than learned magic.",
+        rules: "Power manifests during emotional stress or life-threatening situations. Strength correlates with mental discipline and meditation practice. Range limited by emotional connection to target.",
+        limitations: "Causes severe mental fatigue and headaches with overuse. Cannot read minds protected by magical wards or strong mental barriers. Precognitive visions are often symbolic and difficult to interpret.",
+        source: "psychic",
+        complexity: "medium",
+        users: "Genetic trait appearing in roughly 2% of the population. Most develop only minor abilities; true psychics number less than 50 known individuals.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 39,
+        projectId: 1,
+        name: "Crystal Fusion",
+        type: "power",
+        description: "The ability to mentally interface with and amplify elemental crystals, creating powerful technological-magical hybrid effects.",
+        rules: "Requires direct skin contact with charged crystals. User's life force temporarily bonds with crystal energy. More powerful effects demand multiple synchronized crystals.",
+        limitations: "Overuse can cause crystalline scarring on the skin and eventual crystal poisoning. Incompatible crystals can cause violent energy feedback. Each person can only bond with 2-3 crystal types safely.",
+        source: "technological",
+        complexity: "low",
+        users: "Modern development taught in specialized academies. Approximately 800 certified crystal fusion specialists work in various technological and defensive roles.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    defaultMagicSystems.forEach(system => this.magicSystems.set(system.id, system));
+    this.currentId = 40;
   }
 
   // Projects

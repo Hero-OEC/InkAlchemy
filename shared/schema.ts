@@ -71,6 +71,7 @@ export const magicSystems = pgTable("magic_systems", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id").references(() => projects.id).notNull(),
   name: text("name").notNull(),
+  type: text("type").default("magic"), // magic, power
   description: text("description"),
   rules: text("rules"),
   limitations: text("limitations"),
