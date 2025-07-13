@@ -32,8 +32,8 @@ function App() {
       <Route path="/projects/:projectId/characters/:characterId/edit" component={EditCharacter} />
       <Route path="/projects/:projectId/locations" component={Locations} />
       <Route path="/projects/:projectId/locations/new" component={CreateLocation} />
-      <Route path="/projects/:projectId/locations/:locationId" component={LocationDetails} />
       <Route path="/projects/:projectId/locations/:locationId/edit" component={EditLocation} />
+      <Route path="/projects/:projectId/locations/:locationId" component={LocationDetails} />
       <Route path="/projects/:projectId/timeline" component={Timeline} />
       <Route path="/projects/:projectId/events/:eventId" component={EventDetails} />
       <Route path="/projects/:projectId/events/:eventId/edit" component={EventForm} />

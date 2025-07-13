@@ -36,6 +36,12 @@ export default function LocationDetails() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
 
+  // Redirect if this is the create route
+  if (locationId === "new") {
+    setLocation(`/projects/${projectId}/locations/new`);
+    return null;
+  }
+
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
