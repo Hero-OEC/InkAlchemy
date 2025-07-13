@@ -23,21 +23,27 @@ export default function LoreDetails() {
   const { projectId, loreId } = useParams();
   const [, setLocation] = useLocation();
 
-  // Redirect if this is the create route
-  useEffect(() => {
-    if (loreId === "new") {
-      setLocation(`/projects/${projectId}/lore/new`);
-    }
-  }, [loreId, projectId, setLocation]);
-
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
   const { data: lore, isLoading } = useQuery<LoreEntry>({
     queryKey: [`/api/lore/${loreId}`],
-    enabled: !!loreId && loreId !== "new"
+    enabled: !!loreId && loreId !== "new" && !isNaN(Number(loreId))
   });
+
+  // Redirect if this is the create route
+  useEffect(() => {
+    if (loreId === "new") {
+      setLocation(`/projects/${projectId}/lore/new`);
+      return;
+    }
+  }, [loreId, projectId, setLocation]);
+
+  // Don't render anything if this is the "new" route
+  if (loreId === "new") {
+    return null;
+  }
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
