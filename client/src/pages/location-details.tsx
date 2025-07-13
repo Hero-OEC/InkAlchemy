@@ -159,60 +159,30 @@ export default function LocationDetails() {
           </div>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Location Info */}
-          <div className="lg:col-span-1">
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6 mb-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
-                    <Calendar className="w-4 h-4 text-brand-600" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Created</div>
-                    <div className="text-sm font-semibold text-brand-900">{formatDate(location.createdAt)}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
-                    <Edit className="w-4 h-4 text-brand-600" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Last Updated</div>
-                    <div className="text-sm font-semibold text-brand-900">{formatDate(location.updatedAt)}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Tab Navigation */}
+        <div className="border-b border-brand-200 mb-6">
+          <nav className="flex space-x-8">
+            {tabs.map((tab) => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-brand-500 text-brand-600'
+                      : 'border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
 
-          {/* Right Column - Tab System */}
-          <div className="lg:col-span-2">
-            {/* Tab Navigation */}
-            <div className="border-b border-brand-200 mb-6">
-              <nav className="flex space-x-8">
-                {tabs.map((tab) => {
-                  const TabIcon = tab.icon;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                        activeTab === tab.id
-                          ? 'border-brand-500 text-brand-600'
-                          : 'border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300'
-                      }`}
-                    >
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
-
-            {/* Tab Content */}
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+        {/* Tab Content */}
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
             {activeTab === "overview" && (
               <div className="space-y-6">
                 <div>
@@ -305,8 +275,6 @@ export default function LocationDetails() {
                 )}
               </div>
             )}
-            </div>
-          </div>
         </div>
       </main>
     </div>
