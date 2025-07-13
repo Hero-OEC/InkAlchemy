@@ -42,10 +42,10 @@ function App() {
       <Route path="/projects/:projectId/events/:eventId/edit" component={EventForm} />
       <Route path="/projects/:projectId/timeline/new-event" component={EventForm} />
       <Route path="/projects/:projectId/magic-systems" component={MagicSystems} />
-      <Route path="/projects/:projectId/lore" component={Lore} />
       <Route path="/projects/:projectId/lore/new" component={CreateLore} />
       <Route path="/projects/:projectId/lore/:loreId/edit" component={EditLore} />
       <Route path="/projects/:projectId/lore/:loreId" component={LoreDetails} />
+      <Route path="/projects/:projectId/lore" component={Lore} />
       <Route path="/projects/:projectId/notes" component={Notes} />
       <Route path="/projects/:projectId/notes/new" component={CreateNote} />
       <Route path="/projects/:projectId/notes/:noteId/edit" component={EditNote} />
