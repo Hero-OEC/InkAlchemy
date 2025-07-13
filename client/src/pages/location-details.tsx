@@ -114,7 +114,7 @@ export default function LocationDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-50">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar 
         hasActiveProject={true} 
         currentPage="locations"
@@ -122,74 +122,103 @@ export default function LocationDetails() {
         onNavigate={handleNavigation}
       />
       
-      <main className="container mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
-        {/* Back Button */}
-        <Button 
-          variant="ghost" 
-          onClick={handleBack}
-          className="flex items-center gap-2 mb-6"
-        >
-          <ArrowLeft size={16} />
-          Back to Locations
-        </Button>
+      <main className="max-w-7xl mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
+        {/* Header with Back Button */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            variant="ghost"
+            size="md"
+            onClick={handleBack}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Locations
+          </Button>
+        </div>
 
         {/* Location Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-brand-200 p-6 mb-8">
-          <div className="flex justify-between items-start">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-brand-200">
                 <IconComponent size={24} className="text-brand-700" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-brand-950 mb-2">{location.name}</h1>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-600 text-white capitalize">
+                <h1 className="text-3xl font-bold text-brand-950">{location.name}</h1>
+                <div className="mt-2">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-200 text-brand-700 capitalize">
                     {locationType}
                   </span>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={handleEdit} className="flex items-center gap-2">
-                <Edit size={16} />
-                Edit Location
-              </Button>
-            </div>
+            <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
+              <Edit size={16} />
+              Edit Location
+            </Button>
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="bg-white rounded-xl shadow-sm border border-brand-200 mb-8">
-          <div className="border-b border-brand-200">
-            <nav className="flex space-x-8 px-6">
-              {tabs.map((tab) => {
-                const TabIcon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
-                      activeTab === tab.id
-                        ? "border-brand-600 text-brand-600"
-                        : "border-transparent text-brand-500 hover:text-brand-700"
-                    }`}
-                  >
-                    <TabIcon size={16} />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </nav>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Location Info */}
+          <div className="lg:col-span-1">
+            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6 mb-6">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
+                    <Calendar className="w-4 h-4 text-brand-600" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Created</div>
+                    <div className="text-sm font-semibold text-brand-900">{formatDate(location.createdAt)}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
+                    <Edit className="w-4 h-4 text-brand-600" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Last Updated</div>
+                    <div className="text-sm font-semibold text-brand-900">{formatDate(location.updatedAt)}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Tab Content */}
-          <div className="p-6">
+          {/* Right Column - Tab System */}
+          <div className="lg:col-span-2">
+            {/* Tab Navigation */}
+            <div className="border-b border-brand-200 mb-6">
+              <nav className="flex space-x-8">
+                {tabs.map((tab) => {
+                  const TabIcon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === tab.id
+                          ? 'border-brand-500 text-brand-600'
+                          : 'border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+
+            {/* Tab Content */}
+            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
             {activeTab === "overview" && (
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-3">Description</h3>
                   <div className="prose prose-brand max-w-none">
-                    <p className="text-base leading-relaxed text-brand-800">
+                    <p className="text-brand-700 leading-relaxed">
                       {location.description || "No description available"}
                     </p>
                   </div>
@@ -199,23 +228,12 @@ export default function LocationDetails() {
                   <div>
                     <h3 className="text-lg font-semibold text-brand-900 mb-3">Culture & Significance</h3>
                     <div className="prose prose-brand max-w-none">
-                      <p className="text-base leading-relaxed text-brand-800">
+                      <p className="text-brand-700 leading-relaxed">
                         {location.culture}
                       </p>
                     </div>
                   </div>
                 )}
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-brand-50 border border-brand-200 rounded-lg p-4">
-                    <div className="text-sm font-medium text-brand-500 uppercase tracking-wide mb-1">Created</div>
-                    <div className="text-brand-900">{formatDate(location.createdAt)}</div>
-                  </div>
-                  <div className="bg-brand-50 border border-brand-200 rounded-lg p-4">
-                    <div className="text-sm font-medium text-brand-500 uppercase tracking-wide mb-1">Last Updated</div>
-                    <div className="text-brand-900">{formatDate(location.updatedAt)}</div>
-                  </div>
-                </div>
               </div>
             )}
 
@@ -223,7 +241,7 @@ export default function LocationDetails() {
               <div>
                 <h3 className="text-lg font-semibold text-brand-900 mb-3">Geography & Environment</h3>
                 <div className="prose prose-brand max-w-none">
-                  <p className="text-base leading-relaxed text-brand-800">
+                  <p className="text-brand-700 leading-relaxed">
                     {location.geography || "No geographical information available"}
                   </p>
                 </div>
@@ -234,7 +252,7 @@ export default function LocationDetails() {
               <div>
                 <h3 className="text-lg font-semibold text-brand-900 mb-3">Political Structure</h3>
                 <div className="prose prose-brand max-w-none">
-                  <p className="text-base leading-relaxed text-brand-800">
+                  <p className="text-brand-700 leading-relaxed">
                     {location.politics || "No political information available"}
                   </p>
                 </div>
@@ -287,8 +305,7 @@ export default function LocationDetails() {
                 )}
               </div>
             )}
-
-
+            </div>
           </div>
         </div>
       </main>
