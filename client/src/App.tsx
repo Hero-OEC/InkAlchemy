@@ -14,6 +14,9 @@ import EventDetails from "./pages/event-details";
 import EventForm from "./pages/event-form";
 import MagicSystems from "./pages/magic-systems";
 import Lore from "./pages/lore";
+import LoreDetails from "./pages/lore-details";
+import CreateLore from "./pages/create-lore";
+import EditLore from "./pages/edit-lore";
 import Notes from "./pages/notes";
 import NoteDetails from "./pages/note-details";
 import CreateNote from "./pages/create-note";
@@ -40,6 +43,9 @@ function App() {
       <Route path="/projects/:projectId/timeline/new-event" component={EventForm} />
       <Route path="/projects/:projectId/magic-systems" component={MagicSystems} />
       <Route path="/projects/:projectId/lore" component={Lore} />
+      <Route path="/projects/:projectId/lore/new" component={CreateLore} />
+      <Route path="/projects/:projectId/lore/:loreId/edit" component={EditLore} />
+      <Route path="/projects/:projectId/lore/:loreId" component={LoreDetails} />
       <Route path="/projects/:projectId/notes" component={Notes} />
       <Route path="/projects/:projectId/notes/new" component={CreateNote} />
       <Route path="/projects/:projectId/notes/:noteId/edit" component={EditNote} />
