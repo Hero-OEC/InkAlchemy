@@ -35,7 +35,7 @@ export default function EditNote() {
           projectName={project?.name}
           onNavigate={handleNavigation}
         />
-        <main className="max-w-7xl mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
+        <main className="max-w-4xl mx-auto px-6 py-8">
           <div className="text-center py-20">
             <StickyNote className="w-16 h-16 mx-auto mb-4 text-brand-300" />
             <h2 className="text-xl font-semibold text-brand-900 mb-2">Note Not Found</h2>
@@ -55,7 +55,7 @@ export default function EditNote() {
         projectName={project?.name}
       />
       
-      <main className="max-w-7xl mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
+      <main className="max-w-4xl mx-auto px-6 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
