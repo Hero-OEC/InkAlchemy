@@ -166,7 +166,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
           name="source"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Source of Power</FormLabel>
+              <FormLabel>Source</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="Where does this magical power come from? (e.g., elemental forces, divine blessing, life energy)"
@@ -184,7 +184,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
           name="users"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Who Can Use This Magic</FormLabel>
+              <FormLabel>Users & Practitioners</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="Who has access to this magic? Requirements, bloodlines, training needed, etc."
@@ -202,7 +202,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
           name="rules"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Rules & Mechanics</FormLabel>
+              <FormLabel>System Rules</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="How does the magic work? Gestures, incantations, focus requirements, casting time, etc."
@@ -220,7 +220,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
           name="limitations"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Limitations & Costs</FormLabel>
+              <FormLabel>Limitations & Drawbacks</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="What are the restrictions? Physical costs, mental strain, cooldowns, materials needed, etc."
