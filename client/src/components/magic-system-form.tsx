@@ -29,6 +29,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
     defaultValues: {
       projectId,
       name: magicSystem?.name || "",
+      type: magicSystem?.type || "magic",
       description: magicSystem?.description || "",
       rules: magicSystem?.rules || "",
       limitations: magicSystem?.limitations || "",
@@ -104,7 +105,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <FormField
             control={form.control}
             name="name"
@@ -112,8 +113,30 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
               <FormItem>
                 <FormLabel>Name *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Magic system name" {...field} />
+                  <Input placeholder="System name" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>System Type</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value || "magic"}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select system type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="magic">Magic System</SelectItem>
+                    <SelectItem value="power">Power System</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
