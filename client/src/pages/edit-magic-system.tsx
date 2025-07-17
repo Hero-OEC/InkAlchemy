@@ -135,7 +135,7 @@ export default function EditMagicSystem() {
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-lg border border-brand-200 p-8">
+        <div className="bg-brand-50 rounded-lg border border-brand-200 p-8">
           <MagicSystemForm 
             magicSystem={system}
             projectId={Number(projectId)} 
