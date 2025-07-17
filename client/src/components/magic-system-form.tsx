@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,10 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertMagicSystemSchema, type MagicSystem } from "@shared/schema";
+import { BookOpen, Scroll, Shield, DollarSign } from "lucide-react";
 import { z } from "zod";
 
 const formSchema = insertMagicSystemSchema.extend({
   complexity: z.enum(["low", "medium", "high"]).optional(),
+  cost: z.string().optional(),
 });
 
 interface MagicSystemFormProps {
@@ -24,6 +27,7 @@ interface MagicSystemFormProps {
 
 export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChange }: MagicSystemFormProps) {
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("details");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,6 +41,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
       source: magicSystem?.source || "",
       complexity: magicSystem?.complexity || "medium",
       users: magicSystem?.users || "",
+      cost: magicSystem?.cost || "",
     },
   });
 
@@ -103,167 +108,251 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
 
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
+  const systemType = form.watch("type") || "magic";
+  
+  const tabs = [
+    { id: "details", label: "Details", icon: BookOpen },
+    { id: "rules", label: "Rules", icon: Scroll },
+    { id: "limitations", label: "Limitations", icon: Shield },
+    { id: "cost", label: "Cost", icon: DollarSign },
+  ];
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "details":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="System name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>System Type</FormLabel>
+                    <Select 
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        onTypeChange?.(value);
+                      }} 
+                      defaultValue={field.value || "magic"}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select system type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="magic">Magic System</SelectItem>
+                        <SelectItem value="power">Power System</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="complexity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Complexity</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select complexity level" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="low">Low - Simple and intuitive</SelectItem>
+                        <SelectItem value="medium">Medium - Moderate learning curve</SelectItem>
+                        <SelectItem value="high">High - Complex and demanding</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Overview of how this system works"
+                      className="min-h-[100px]"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="source"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Source</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Where does this power come from? (e.g., elemental forces, divine blessing, life energy)"
+                      className="min-h-[80px]"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="users"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Users & Practitioners</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Who has access to this system? Requirements, bloodlines, training needed, etc."
+                      className="min-h-[80px]"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        );
+
+      case "rules":
+        return (
+          <div className="space-y-6">
+            <FormField
+              control={form.control}
+              name="rules"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>System Rules</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="How does the system work? Gestures, incantations, focus requirements, activation methods, etc."
+                      className="min-h-[200px]"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        );
+
+      case "limitations":
+        return (
+          <div className="space-y-6">
+            <FormField
+              control={form.control}
+              name="limitations"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Limitations & Drawbacks</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="What are the restrictions? Physical costs, mental strain, cooldowns, materials needed, etc."
+                      className="min-h-[200px]"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        );
+
+      case "cost":
+        return (
+          <div className="space-y-6">
+            <FormField
+              control={form.control}
+              name="cost"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cost & Requirements</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="What does it cost to use this system? Materials, energy, time, training requirements, etc."
+                      className="min-h-[200px]"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-3 gap-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name *</FormLabel>
-                <FormControl>
-                  <Input placeholder="System name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>System Type</FormLabel>
-                <Select 
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    onTypeChange?.(value);
-                  }} 
-                  defaultValue={field.value || "magic"}
+        {/* Tabs */}
+        <div className="border-b border-brand-200 mb-8">
+          <nav className="flex space-x-8">
+            {tabs.map((tab) => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === tab.id
+                      ? "border-brand-500 text-brand-600"
+                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
+                  }`}
                 >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select system type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="magic">Magic System</SelectItem>
-                    <SelectItem value="power">Power System</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="complexity"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Complexity</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select complexity level" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="low">Low - Simple and intuitive</SelectItem>
-                    <SelectItem value="medium">Medium - Moderate learning curve</SelectItem>
-                    <SelectItem value="high">High - Complex and demanding</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <TabIcon size={16} />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
         </div>
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Overview of how this magic system works"
-                  className="min-h-[100px]"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Tab Content */}
+        <div className="min-h-[400px]">
+          {renderTabContent()}
+        </div>
 
-        <FormField
-          control={form.control}
-          name="source"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Source</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Where does this magical power come from? (e.g., elemental forces, divine blessing, life energy)"
-                  className="min-h-[80px]"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="users"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Users & Practitioners</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Who has access to this magic? Requirements, bloodlines, training needed, etc."
-                  className="min-h-[80px]"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="rules"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>System Rules</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="How does the magic work? Gestures, incantations, focus requirements, casting time, etc."
-                  className="min-h-[120px]"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="limitations"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Limitations & Drawbacks</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="What are the restrictions? Physical costs, mental strain, cooldowns, materials needed, etc."
-                  className="min-h-[120px]"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="flex justify-end space-x-2">
+        {/* Action Buttons */}
+        <div className="flex justify-end space-x-2 pt-6 border-t border-brand-200">
           <Button type="button" variant="outline" onClick={onSuccess}>
             Cancel
           </Button>

@@ -78,6 +78,7 @@ export const magicSystems = pgTable("magic_systems", {
   source: text("source"),
   complexity: text("complexity").default("medium"), // low, medium, high
   users: text("users"), // who can use this magic
+  cost: text("cost"), // cost and requirements for using this system
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

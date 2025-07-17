@@ -221,8 +221,8 @@ export default function MagicSystemDetails() {
           <div>
             <h3 className="text-lg font-semibold text-brand-900 mb-3">Cost & Requirements</h3>
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <p className="text-brand-700 leading-relaxed">
-                Information about the costs, requirements, and prices for using this {system.type === "power" ? "power" : "magic"} system will be displayed here.
+              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
+                {system.cost || "No cost information defined yet"}
               </p>
             </div>
           </div>
