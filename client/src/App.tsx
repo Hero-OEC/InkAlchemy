@@ -14,6 +14,8 @@ import EventDetails from "./pages/event-details";
 import EventForm from "./pages/event-form";
 import MagicSystems from "./pages/magic-systems";
 import MagicSystemDetails from "./pages/magic-system-details";
+import CreateMagicSystem from "./pages/create-magic-system";
+import EditMagicSystem from "./pages/edit-magic-system";
 import Lore from "./pages/lore";
 import LoreDetails from "./pages/lore-details";
 import CreateLore from "./pages/create-lore";
@@ -42,8 +44,10 @@ function App() {
       <Route path="/projects/:projectId/events/:eventId" component={EventDetails} />
       <Route path="/projects/:projectId/events/:eventId/edit" component={EventForm} />
       <Route path="/projects/:projectId/timeline/new-event" component={EventForm} />
-      <Route path="/projects/:projectId/magic-systems/:systemId" component={MagicSystemDetails} />
       <Route path="/projects/:projectId/magic-systems" component={MagicSystems} />
+      <Route path="/projects/:projectId/magic-systems/new" component={CreateMagicSystem} />
+      <Route path="/projects/:projectId/magic-systems/:systemId" component={MagicSystemDetails} />
+      <Route path="/projects/:projectId/magic-systems/:systemId/edit" component={EditMagicSystem} />
       <Route path="/projects/:projectId/lore/new" component={CreateLore} />
       <Route path="/projects/:projectId/lore/:loreId/edit" component={EditLore} />
       <Route path="/projects/:projectId/lore/:loreId" component={LoreDetails} />
