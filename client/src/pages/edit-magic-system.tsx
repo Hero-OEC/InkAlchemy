@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MagicSystemForm } from "@/components/magic-system-form";
@@ -44,6 +45,7 @@ const getSystemIcon = (system: MagicSystem) => {
 export default function EditMagicSystem() {
   const { projectId, systemId } = useParams();
   const [, setLocation] = useLocation();
+  const [currentType, setCurrentType] = useState<string>("magic");
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -53,6 +55,13 @@ export default function EditMagicSystem() {
     queryKey: [`/api/magic-systems/${systemId}`],
     enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
   });
+
+  // Set initial type when system data loads
+  useEffect(() => {
+    if (system) {
+      setCurrentType(system.type || "magic");
+    }
+  }, [system]);
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
@@ -64,6 +73,15 @@ export default function EditMagicSystem() {
 
   const handleSuccess = () => {
     setLocation(`/projects/${projectId}/magic-systems/${systemId}`);
+  };
+
+  const handleTypeChange = (type: string) => {
+    setCurrentType(type);
+  };
+
+  const getCurrentIcon = () => {
+    if (currentType === "power") return Zap;
+    return getSystemIcon({ ...system, type: currentType } as MagicSystem);
   };
 
   if (isLoading) {
@@ -98,7 +116,7 @@ export default function EditMagicSystem() {
     );
   }
 
-  const Icon = getSystemIcon(system);
+  const Icon = getCurrentIcon();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -128,7 +146,7 @@ export default function EditMagicSystem() {
             <div>
               <h1 className="text-3xl font-bold text-brand-950">Edit {system.name}</h1>
               <p className="text-brand-600 mt-1">
-                Modify the details of this {system.type} system
+                Modify the details of this {currentType === "power" ? "power" : "magic"} system
               </p>
             </div>
           </div>
@@ -140,6 +158,7 @@ export default function EditMagicSystem() {
             magicSystem={system}
             projectId={Number(projectId)} 
             onSuccess={handleSuccess}
+            onTypeChange={handleTypeChange}
           />
         </div>
       </div>

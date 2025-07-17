@@ -1,14 +1,16 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MagicSystemForm } from "@/components/magic-system-form";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Sparkles, Zap } from "lucide-react";
 import type { Project } from "@shared/schema";
 
 export default function CreateMagicSystem() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
+  const [systemType, setSystemType] = useState<string>("magic");
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -25,6 +27,20 @@ export default function CreateMagicSystem() {
   const handleSuccess = () => {
     setLocation(`/projects/${projectId}/magic-systems`);
   };
+
+  const handleTypeChange = (type: string) => {
+    setSystemType(type);
+  };
+
+  const getIcon = () => {
+    return systemType === "power" ? Zap : Sparkles;
+  };
+
+  const getTypeLabel = () => {
+    return systemType === "power" ? "power" : "magic";
+  };
+
+  const Icon = getIcon();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -49,12 +65,12 @@ export default function CreateMagicSystem() {
           
           <div className="flex items-center gap-4">
             <div className="bg-brand-500 p-3 rounded-xl">
-              <Sparkles size={24} className="text-white" />
+              <Icon size={24} className="text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-brand-950">Create New Magic System</h1>
+              <h1 className="text-3xl font-bold text-brand-950">Create New {systemType === "power" ? "Power" : "Magic"} System</h1>
               <p className="text-brand-600 mt-1">
-                Define a new magical or supernatural power system for your world
+                Define a new {getTypeLabel()} system for your world
               </p>
             </div>
           </div>
@@ -65,6 +81,7 @@ export default function CreateMagicSystem() {
           <MagicSystemForm 
             projectId={Number(projectId)} 
             onSuccess={handleSuccess}
+            onTypeChange={handleTypeChange}
           />
         </div>
       </div>

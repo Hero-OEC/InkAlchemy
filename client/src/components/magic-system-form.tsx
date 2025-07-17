@@ -19,9 +19,10 @@ interface MagicSystemFormProps {
   magicSystem?: MagicSystem | null;
   projectId: number;
   onSuccess: () => void;
+  onTypeChange?: (type: string) => void;
 }
 
-export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSystemFormProps) {
+export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChange }: MagicSystemFormProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -126,7 +127,13 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess }: MagicSyst
             render={({ field }) => (
               <FormItem>
                 <FormLabel>System Type</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value || "magic"}>
+                <Select 
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    onTypeChange?.(value);
+                  }} 
+                  defaultValue={field.value || "magic"}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select system type" />
