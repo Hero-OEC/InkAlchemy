@@ -206,12 +206,13 @@ export default function LocationDetails() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === tab.id
                       ? 'border-brand-500 text-brand-600'
                       : 'border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300'
                   }`}
                 >
+                  <TabIcon size={16} />
                   {tab.label}
                 </button>
               );
