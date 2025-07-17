@@ -127,60 +127,12 @@ export default function NoteDetails() {
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content - Note Content */}
-          <div className="lg:col-span-2">
-            <div className="rounded-xl p-6 bg-brand-50 border-brand-200 border">
-              <h2 className="text-xl font-semibold text-brand-900 mb-4">Content</h2>
-              <div className="prose prose-brand max-w-none">
-                <p className="text-base leading-relaxed whitespace-pre-wrap text-brand-800">
-                  {note.content}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar - Metadata */}
-          <div className="lg:col-span-1">
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6 space-y-6">
-              <h2 className="text-xl font-semibold text-brand-900">Note Information</h2>
-              
-
-              {/* Created Date */}
-              <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
-                  <Calendar className="w-4 h-4 text-brand-600" />
-                </div>
-                <div>
-                  <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Created</div>
-                  <div className="text-sm font-semibold text-brand-900">{formatDate(note.createdAt)}</div>
-                </div>
-              </div>
-
-              {/* Updated Date */}
-              {note.updatedAt && note.updatedAt !== note.createdAt && (
-                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
-                    <Edit className="w-4 h-4 text-brand-600" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Last Updated</div>
-                    <div className="text-sm font-semibold text-brand-900">{formatDate(note.updatedAt)}</div>
-                  </div>
-                </div>
-              )}
-
-              {/* Word Count */}
-              <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
-                  <FileText className="w-4 h-4 text-brand-600" />
-                </div>
-                <div>
-                  <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Word Count</div>
-                  <div className="text-sm font-semibold text-brand-900">{note.content.split(/\s+/).length} words</div>
-                </div>
-              </div>
-            </div>
+        <div className="rounded-xl p-6 bg-brand-50 border-brand-200 border">
+          <h2 className="text-xl font-semibold text-brand-900 mb-4">Content</h2>
+          <div className="prose prose-brand max-w-none">
+            <p className="text-base leading-relaxed whitespace-pre-wrap text-brand-800">
+              {note.content}
+            </p>
           </div>
         </div>
       </main>
