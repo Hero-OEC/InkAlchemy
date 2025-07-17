@@ -231,6 +231,82 @@ export default function MagicSystemDetails() {
       case "abilities":
       case "spells":
         const contentType = system.type === "power" ? "abilities" : "spells";
+        
+        // Sample data for demonstration
+        const sampleSpells = system.type === "power" ? [
+          {
+            id: 1,
+            name: "Energy Blast",
+            level: "Basic",
+            description: "Channel raw energy into a focused projectile that damages enemies at range.",
+            cost: "Low energy drain",
+            castTime: "Instant",
+            range: "Medium",
+            effect: "Deals moderate damage to single target"
+          },
+          {
+            id: 2,
+            name: "Power Shield",
+            level: "Intermediate",
+            description: "Creates a protective barrier of energy that absorbs incoming attacks.",
+            cost: "Moderate energy drain",
+            castTime: "2 seconds",
+            range: "Self",
+            effect: "Absorbs damage for 30 seconds"
+          },
+          {
+            id: 3,
+            name: "Lightning Storm",
+            level: "Advanced",
+            description: "Summons a devastating storm of electrical energy that strikes multiple foes.",
+            cost: "High energy drain",
+            castTime: "5 seconds",
+            range: "Large area",
+            effect: "Massive damage to all enemies in area"
+          }
+        ] : [
+          {
+            id: 1,
+            name: "Fireball",
+            level: "Novice",
+            description: "A classic spell that conjures a ball of fire to hurl at enemies.",
+            cost: "2 Mana",
+            castTime: "3 seconds",
+            range: "Medium",
+            effect: "Burns target for moderate damage"
+          },
+          {
+            id: 2,
+            name: "Healing Light",
+            level: "Apprentice",
+            description: "Channels divine energy to restore health and vitality to the target.",
+            cost: "3 Mana",
+            castTime: "4 seconds",
+            range: "Touch",
+            effect: "Restores significant health"
+          },
+          {
+            id: 3,
+            name: "Teleport",
+            level: "Adept",
+            description: "Instantly transports the caster to a visible location within range.",
+            cost: "5 Mana",
+            castTime: "2 seconds",
+            range: "Far",
+            effect: "Instant relocation"
+          },
+          {
+            id: 4,
+            name: "Time Freeze",
+            level: "Master",
+            description: "Halts the flow of time in a small area, freezing all movement and actions.",
+            cost: "8 Mana",
+            castTime: "6 seconds",
+            range: "Small area",
+            effect: "Stops time for 10 seconds"
+          }
+        ];
+
         return (
           <div>
             <div className="flex items-center justify-between mb-6">
@@ -243,18 +319,57 @@ export default function MagicSystemDetails() {
               </Button>
             </div>
             
-            <div className="text-center py-12">
-              <div className="bg-brand-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                {system.type === "power" ? <Zap size={24} className="text-brand-500" /> : <Wand2 size={24} className="text-brand-500" />}
-              </div>
-              <h4 className="text-xl font-semibold text-brand-900 mb-2">
-                No {system.type === "power" ? "Abilities" : "Spells"} Yet
-              </h4>
-              <p className="text-brand-600 mb-6">
-                Add {contentType} to define what users of this system can do.
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {sampleSpells.map((spell) => (
+                <div
+                  key={spell.id}
+                  className="bg-brand-50 border border-brand-200 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-semibold text-brand-900">{spell.name}</h4>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      spell.level === "Basic" || spell.level === "Novice" ? "bg-green-100 text-green-800" :
+                      spell.level === "Intermediate" || spell.level === "Apprentice" ? "bg-yellow-100 text-yellow-800" :
+                      spell.level === "Advanced" || spell.level === "Adept" ? "bg-orange-100 text-orange-800" :
+                      "bg-red-100 text-red-800"
+                    }`}>
+                      {spell.level}
+                    </span>
+                  </div>
+                  
+                  <p className="text-brand-700 text-sm mb-4 leading-relaxed">
+                    {spell.description}
+                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium text-brand-800">Cost:</span>
+                      <p className="text-brand-600">{spell.cost}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-brand-800">Cast Time:</span>
+                      <p className="text-brand-600">{spell.castTime}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-brand-800">Range:</span>
+                      <p className="text-brand-600">{spell.range}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-brand-800">Effect:</span>
+                      <p className="text-brand-600">{spell.effect}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-8 text-center">
+              <p className="text-sm text-brand-500 mb-4">
+                <em>Sample {system.type === "power" ? "abilities" : "spells"} shown above for demonstration purposes</em>
               </p>
-              <Button variant="primary">
-                Create First {system.type === "power" ? "Ability" : "Spell"}
+              <Button variant="outline" size="sm">
+                <Plus size={16} className="mr-2" />
+                Create New {system.type === "power" ? "Ability" : "Spell"}
               </Button>
             </div>
           </div>
