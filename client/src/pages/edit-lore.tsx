@@ -119,7 +119,7 @@ export default function EditLore() {
         projectName={project?.name}
       />
       
-      <main className="max-w-4xl mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
+      <main className="max-w-4xl mx-auto px-6 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
