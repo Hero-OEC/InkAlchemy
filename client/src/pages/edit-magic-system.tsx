@@ -127,7 +127,7 @@ export default function EditMagicSystem() {
         onNavigate={handleNavigation}
       />
       
-      <div className="max-w-4xl mx-auto px-4 py-8" style={{ margin: '0 100px' }}>
+      <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <Button 
