@@ -319,47 +319,21 @@ export default function MagicSystemDetails() {
               </Button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sampleSpells.map((spell) => (
-                <div
+                <ContentCard
                   key={spell.id}
-                  className="bg-brand-50 border border-brand-200 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-semibold text-brand-900">{spell.name}</h4>
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                      spell.level === "Basic" || spell.level === "Novice" ? "bg-green-100 text-green-800" :
-                      spell.level === "Intermediate" || spell.level === "Apprentice" ? "bg-yellow-100 text-yellow-800" :
-                      spell.level === "Advanced" || spell.level === "Adept" ? "bg-orange-100 text-orange-800" :
-                      "bg-red-100 text-red-800"
-                    }`}>
-                      {spell.level}
-                    </span>
-                  </div>
-                  
-                  <p className="text-brand-700 text-sm mb-4 leading-relaxed">
-                    {spell.description}
-                  </p>
-                  
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium text-brand-800">Cost:</span>
-                      <p className="text-brand-600">{spell.cost}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium text-brand-800">Cast Time:</span>
-                      <p className="text-brand-600">{spell.castTime}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium text-brand-800">Range:</span>
-                      <p className="text-brand-600">{spell.range}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium text-brand-800">Effect:</span>
-                      <p className="text-brand-600">{spell.effect}</p>
-                    </div>
-                  </div>
-                </div>
+                  id={spell.id}
+                  title={spell.name}
+                  type="magic"
+                  subtype={spell.level.toLowerCase()}
+                  description={spell.description}
+                  icon={system.type === "power" ? Zap : Wand2}
+                  onClick={() => {
+                    // Handle spell/ability click
+                    console.log(`Clicked ${spell.name}`);
+                  }}
+                />
               ))}
             </div>
             
