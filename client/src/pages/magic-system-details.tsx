@@ -335,7 +335,7 @@ export default function MagicSystemDetails() {
               <h1 className="text-3xl font-bold text-brand-950 mb-2">{system.name}</h1>
               <div className="flex items-center gap-3">
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${
-                  system.type === "magic" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
+                  system.type === "magic" ? "bg-brand-100 text-brand-800" : "bg-brand-200 text-brand-900"
                 }`}>
                   {system.type} System
                 </span>
