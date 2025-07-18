@@ -3,43 +3,27 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
 import { Button } from "@/components/button-variations";
-import { Plus, Sparkles, Zap, Scroll, Crown, Shield, Sword, Brain, Eye, Heart, Skull } from "lucide-react";
+import { Plus, Sparkles, Zap } from "lucide-react";
 import type { Project, MagicSystem } from "@shared/schema";
 
-// Magic system type configuration
-const MAGIC_TYPE_CONFIG = {
+// Simple two-type system configuration
+const SYSTEM_TYPE_CONFIG = {
   magic: {
-    icons: {
-      elemental: Sparkles,
-      arcane: Scroll,
-      divine: Crown,
-      nature: Sparkles,
-      shadow: Eye,
-      necromancy: Skull,
-      illusion: Brain,
-      enchantment: Heart,
-      other: Sparkles
-    }
+    icon: Sparkles,
+    label: "Magic System",
+    color: "bg-purple-500"
   },
   power: {
-    icons: {
-      psychic: Brain,
-      physical: Sword,
-      energy: Zap,
-      elemental: Sparkles,
-      technological: Shield,
-      genetic: Heart,
-      supernatural: Eye,
-      other: Zap
-    }
+    icon: Zap,
+    label: "Power System", 
+    color: "bg-blue-500"
   }
 };
 
 // Helper function to get appropriate icon
 const getSystemIcon = (system: MagicSystem) => {
-  const category = system.source?.toLowerCase() || 'other';
-  const typeConfig = MAGIC_TYPE_CONFIG[system.type as keyof typeof MAGIC_TYPE_CONFIG] || MAGIC_TYPE_CONFIG.magic;
-  return typeConfig.icons[category as keyof typeof typeConfig.icons] || typeConfig.icons.other;
+  const config = SYSTEM_TYPE_CONFIG[system.type as keyof typeof SYSTEM_TYPE_CONFIG] || SYSTEM_TYPE_CONFIG.magic;
+  return config.icon;
 };
 
 export default function MagicSystems() {
@@ -141,7 +125,7 @@ export default function MagicSystems() {
                 id={system.id}
                 title={system.name}
                 type="magic"
-                subtype={system.type || 'magic'}
+                subtype={system.type === 'power' ? 'power' : 'magic'}
                 description={system.description || 'No description available'}
                 icon={getSystemIcon(system)}
                 createdAt={system.createdAt}

@@ -5,42 +5,26 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { ContentCard } from "@/components/content-card";
 import { CharacterCard } from "@/components/character-card";
-import { ArrowLeft, Edit, Sparkles, Zap, Scroll, Crown, Shield, Sword, Brain, Eye, Heart, Skull, DollarSign, Users, BookOpen, Wand2, Plus } from "lucide-react";
+import { ArrowLeft, Edit, Sparkles, Zap, DollarSign, Users, BookOpen, Wand2, Plus, Scroll, Shield } from "lucide-react";
 import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
 
-// Icon configuration for magic systems
-const MAGIC_TYPE_CONFIG = {
+// Simple two-type system configuration
+const SYSTEM_TYPE_CONFIG = {
   magic: {
-    icons: {
-      elemental: Sparkles,
-      arcane: Scroll,
-      divine: Crown,
-      nature: Sparkles,
-      shadow: Eye,
-      necromancy: Skull,
-      illusion: Brain,
-      enchantment: Heart,
-      other: Sparkles
-    }
+    icon: Sparkles,
+    label: "Magic System",
+    color: "bg-purple-500"
   },
   power: {
-    icons: {
-      psychic: Brain,
-      physical: Sword,
-      energy: Zap,
-      elemental: Sparkles,
-      technological: Shield,
-      genetic: Heart,
-      supernatural: Eye,
-      other: Zap
-    }
+    icon: Zap,
+    label: "Power System", 
+    color: "bg-blue-500"
   }
 };
 
 const getSystemIcon = (system: MagicSystem) => {
-  const category = system.source?.toLowerCase() || 'other';
-  const typeConfig = MAGIC_TYPE_CONFIG[system.type as keyof typeof MAGIC_TYPE_CONFIG] || MAGIC_TYPE_CONFIG.magic;
-  return typeConfig.icons[category as keyof typeof typeConfig.icons] || typeConfig.icons.other;
+  const config = SYSTEM_TYPE_CONFIG[system.type as keyof typeof SYSTEM_TYPE_CONFIG] || SYSTEM_TYPE_CONFIG.magic;
+  return config.icon;
 };
 
 export default function MagicSystemDetails() {
@@ -389,10 +373,10 @@ export default function MagicSystemDetails() {
             <div>
               <h1 className="text-3xl font-bold text-brand-950 mb-2">{system.name}</h1>
               <div className="flex items-center gap-3">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                   system.type === "magic" ? "bg-brand-100 text-brand-800" : "bg-brand-200 text-brand-900"
                 }`}>
-                  {system.type} System
+                  {system.type === "power" ? "Power System" : "Magic System"}
                 </span>
                 {system.updatedAt && (
                   <span className="text-sm text-brand-500">

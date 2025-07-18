@@ -98,7 +98,7 @@ export function ContentCard({
             config.badgeBg,
             config.badgeText
           )}>
-            {subtype}
+            {type === "magic" ? (subtype === "power" ? "Power System" : "Magic System") : subtype}
           </span>
         </div>
       </div>
