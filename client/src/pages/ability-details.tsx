@@ -149,7 +149,7 @@ export default function AbilityDetails() {
               </div>
             </div>
             <Button
-              variant="outline"
+              variant="primary"
               size="md"
               onClick={() => setLocation(`/projects/${projectId}/abilities/${ability.id}/edit`)}
               className="flex items-center gap-2"

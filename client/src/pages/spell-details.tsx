@@ -149,7 +149,7 @@ export default function SpellDetails() {
               </div>
             </div>
             <Button
-              variant="outline"
+              variant="primary"
               size="md"
               onClick={() => setLocation(`/projects/${projectId}/spells/${spell.id}/edit`)}
               className="flex items-center gap-2"
