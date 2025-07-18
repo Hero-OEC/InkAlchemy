@@ -2,7 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
-import { ArrowLeft, Zap, Sparkles, Brain, Crown, Shield, Sword, Eye, Heart, Skull } from "lucide-react";
+import { ArrowLeft, Zap, Sparkles, Brain, Crown, Shield, Edit } from "lucide-react";
 import type { Project, Spell, MagicSystem } from "@shared/schema";
 
 // Icon configuration for ability levels
@@ -113,47 +113,60 @@ export default function AbilityDetails() {
         onNavigate={handleNavigation}
       />
       
-      <main className="max-w-4xl mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
-        {/* Header with Back Button */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="ghost"
-            size="md"
-            onClick={handleBack}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to {powerSystem?.name || "Power System"}
-          </Button>
-        </div>
-
-        {/* Ability Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className={`p-3 rounded-xl ${levelConfig.bgColor}`}>
-            <LevelIcon size={24} className={levelConfig.textColor} />
+      <main className="max-w-4xl mx-auto px-6 py-8 flex flex-col items-center">
+        <div className="w-full max-w-3xl">
+          {/* Header with Back Button */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              onClick={handleBack}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to {powerSystem?.name || "Power System"}
+            </Button>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-brand-950 mb-2">{ability.name}</h1>
-            <div className="flex items-center gap-3">
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${levelConfig.bgColor} ${levelConfig.textColor}`}>
-                {ability.level || "Novice"} Level
-              </span>
-              {powerSystem && (
-                <span className="text-sm text-brand-500">
-                  From {powerSystem.name}
-                </span>
-              )}
+
+          {/* Ability Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-xl ${levelConfig.bgColor}`}>
+                <LevelIcon size={24} className={levelConfig.textColor} />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-brand-950 mb-2">{ability.name}</h1>
+                <div className="flex items-center gap-3">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${levelConfig.bgColor} ${levelConfig.textColor}`}>
+                    {ability.level || "Novice"} Level
+                  </span>
+                  {powerSystem && (
+                    <span className="text-sm text-brand-500">
+                      From {powerSystem.name}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => setLocation(`/projects/${projectId}/abilities/${ability.id}/edit`)}
+              className="flex items-center gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              Edit
+            </Button>
           </div>
-        </div>
 
-        {/* Ability Description */}
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-brand-900 mb-4">Description</h2>
-          <div className="prose max-w-none">
-            <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-              {ability.description || "No description available for this ability."}
-            </p>
+          {/* Ability Description */}
+          <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+            <h2 className="text-xl font-semibold text-brand-900 mb-4">Description</h2>
+            <div className="prose max-w-none">
+              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
+                {ability.description || "No description available for this ability."}
+              </p>
+            </div>
           </div>
         </div>
       </main>

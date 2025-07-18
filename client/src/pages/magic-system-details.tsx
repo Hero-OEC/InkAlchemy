@@ -252,7 +252,17 @@ export default function MagicSystemDetails() {
               <h3 className="text-lg font-semibold text-brand-900">
                 {system.type === "power" ? "Abilities" : "Spells"}
               </h3>
-              <Button variant="primary" size="sm">
+              <Button 
+                variant="primary" 
+                size="sm"
+                onClick={() => {
+                  if (system.type === "power") {
+                    setLocation(`/projects/${projectId}/magic-systems/${systemId}/abilities/new`);
+                  } else {
+                    setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
+                  }
+                }}
+              >
                 <Plus size={16} className="mr-2" />
                 Add {system.type === "power" ? "Ability" : "Spell"}
               </Button>
@@ -286,7 +296,17 @@ export default function MagicSystemDetails() {
                 <p className="text-brand-600 mb-4">
                   Start building your {system.type === "power" ? "ability" : "spell"} collection for this system.
                 </p>
-                <Button variant="primary" size="sm">
+                <Button 
+                  variant="primary" 
+                  size="sm"
+                  onClick={() => {
+                    if (system.type === "power") {
+                      setLocation(`/projects/${projectId}/magic-systems/${systemId}/abilities/new`);
+                    } else {
+                      setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
+                    }
+                  }}
+                >
                   <Plus size={16} className="mr-2" />
                   Create First {system.type === "power" ? "Ability" : "Spell"}
                 </Button>

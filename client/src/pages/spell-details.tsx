@@ -2,7 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
-import { ArrowLeft, Wand2, Sparkles, Zap, Scroll, Crown, Shield, Sword, Brain, Eye, Heart, Skull } from "lucide-react";
+import { ArrowLeft, Wand2, Sparkles, Zap, Scroll, Crown, Shield, Edit } from "lucide-react";
 import type { Project, Spell, MagicSystem } from "@shared/schema";
 
 // Icon configuration for spell levels
@@ -113,47 +113,60 @@ export default function SpellDetails() {
         onNavigate={handleNavigation}
       />
       
-      <main className="max-w-4xl mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
-        {/* Header with Back Button */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="ghost"
-            size="md"
-            onClick={handleBack}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to {magicSystem?.name || "Magic System"}
-          </Button>
-        </div>
-
-        {/* Spell Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className={`p-3 rounded-xl ${levelConfig.bgColor}`}>
-            <LevelIcon size={24} className={levelConfig.textColor} />
+      <main className="max-w-4xl mx-auto px-6 py-8 flex flex-col items-center">
+        <div className="w-full max-w-3xl">
+          {/* Header with Back Button */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              onClick={handleBack}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to {magicSystem?.name || "Magic System"}
+            </Button>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-brand-950 mb-2">{spell.name}</h1>
-            <div className="flex items-center gap-3">
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${levelConfig.bgColor} ${levelConfig.textColor}`}>
-                {spell.level || "Novice"} Level
-              </span>
-              {magicSystem && (
-                <span className="text-sm text-brand-500">
-                  From {magicSystem.name}
-                </span>
-              )}
+
+          {/* Spell Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-xl ${levelConfig.bgColor}`}>
+                <LevelIcon size={24} className={levelConfig.textColor} />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-brand-950 mb-2">{spell.name}</h1>
+                <div className="flex items-center gap-3">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${levelConfig.bgColor} ${levelConfig.textColor}`}>
+                    {spell.level || "Novice"} Level
+                  </span>
+                  {magicSystem && (
+                    <span className="text-sm text-brand-500">
+                      From {magicSystem.name}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => setLocation(`/projects/${projectId}/spells/${spell.id}/edit`)}
+              className="flex items-center gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              Edit
+            </Button>
           </div>
-        </div>
 
-        {/* Spell Description */}
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-brand-900 mb-4">Description</h2>
-          <div className="prose max-w-none">
-            <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-              {spell.description || "No description available for this spell."}
-            </p>
+          {/* Spell Description */}
+          <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+            <h2 className="text-xl font-semibold text-brand-900 mb-4">Description</h2>
+            <div className="prose max-w-none">
+              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
+                {spell.description || "No description available for this spell."}
+              </p>
+            </div>
           </div>
         </div>
       </main>
