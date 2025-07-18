@@ -137,7 +137,8 @@ export default function AbilityDetails() {
               <div>
                 <h1 className="text-3xl font-bold text-brand-950 mb-2">{ability.name}</h1>
                 <div className="flex items-center gap-3">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${levelConfig.bgColor} ${levelConfig.textColor}`}>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium capitalize ${levelConfig.bgColor} ${levelConfig.textColor}`}>
+                    <LevelIcon className="w-3.5 h-3.5" />
                     {ability.level || "Novice"} Level
                   </span>
                   {powerSystem && (
