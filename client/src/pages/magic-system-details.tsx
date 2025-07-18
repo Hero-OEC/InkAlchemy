@@ -66,13 +66,7 @@ export default function MagicSystemDetails() {
     setLocation(`/projects/${projectId}/characters/${characterId}`);
   };
 
-  const handleSpellClick = (spellId: number) => {
-    if (system?.type === "power") {
-      setLocation(`/projects/${projectId}/abilities/${spellId}`);
-    } else {
-      setLocation(`/projects/${projectId}/spells/${spellId}`);
-    }
-  };
+  
 
   if (isLoading) {
     return (
@@ -240,11 +234,7 @@ export default function MagicSystemDetails() {
                 variant="primary" 
                 size="sm"
                 onClick={() => {
-                  if (system.type === "power") {
-                    setLocation(`/projects/${projectId}/magic-systems/${systemId}/abilities/new`);
-                  } else {
-                    setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
-                  }
+                  setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
                 }}
               >
                 <Plus size={16} className="mr-2" />
@@ -263,7 +253,7 @@ export default function MagicSystemDetails() {
                     subtype={spell.level}
                     description={spell.description || "No description available"}
                     icon={system.type === "power" ? Zap : Wand2}
-                    onClick={() => handleSpellClick(spell.id)}
+                    onClick={() => setLocation(`/projects/${projectId}/spells/${spell.id}`)}
                   />
                 ))}
               </div>

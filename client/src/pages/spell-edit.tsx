@@ -1,3 +1,4 @@
+
 import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
@@ -36,16 +37,18 @@ export default function SpellEdit() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/spells/${spellId}`] });
       queryClient.invalidateQueries({ queryKey: [`/api/magic-systems/${spell?.magicSystemId}/spells`] });
+      const itemType = magicSystem?.type === "power" ? "Ability" : "Spell";
       toast({
-        title: "Spell updated",
-        description: "Your spell has been successfully updated.",
+        title: `${itemType} updated`,
+        description: `Your ${itemType.toLowerCase()} has been successfully updated.`,
       });
       handleBack();
     },
     onError: () => {
+      const itemType = magicSystem?.type === "power" ? "ability" : "spell";
       toast({
         title: "Error",
-        description: "Failed to update spell. Please try again.",
+        description: `Failed to update ${itemType}. Please try again.`,
         variant: "destructive",
       });
     },
@@ -77,7 +80,7 @@ export default function SpellEdit() {
           onNavigate={handleNavigation}
         />
         <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading spell...</p>
+          <p className="text-brand-600">Loading {magicSystem?.type === "power" ? "ability" : "spell"}...</p>
         </div>
       </div>
     );
@@ -93,11 +96,14 @@ export default function SpellEdit() {
           onNavigate={handleNavigation}
         />
         <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Spell not found</p>
+          <p className="text-brand-600">{magicSystem?.type === "power" ? "Ability" : "Spell"} not found</p>
         </div>
       </div>
     );
   }
+
+  const systemType = magicSystem?.type || "magic";
+  const systemName = systemType === "power" ? "Power System" : "Magic System";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -119,7 +125,7 @@ export default function SpellEdit() {
               className="flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to {magicSystem?.name || "Magic System"}
+              Back to {magicSystem?.name || systemName}
             </Button>
           </div>
 

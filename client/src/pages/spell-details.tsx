@@ -1,8 +1,9 @@
+
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
-import { ArrowLeft, Wand2, Sparkles, Zap, Scroll, Crown, Shield, Edit } from "lucide-react";
+import { ArrowLeft, Wand2, Sparkles, Zap, Scroll, Crown, Shield, Edit, Brain } from "lucide-react";
 import type { Project, Spell, MagicSystem } from "@shared/schema";
 
 // Icon configuration for spell levels
@@ -34,9 +35,39 @@ const SPELL_LEVEL_CONFIG = {
   }
 };
 
-const getSpellLevelIcon = (level: string) => {
-  const levelConfig = SPELL_LEVEL_CONFIG[level.toLowerCase() as keyof typeof SPELL_LEVEL_CONFIG];
-  return levelConfig || SPELL_LEVEL_CONFIG.novice;
+// Icon configuration for ability levels
+const ABILITY_LEVEL_CONFIG = {
+  novice: {
+    icon: Zap,
+    bgColor: "bg-brand-300",
+    textColor: "text-brand-900"
+  },
+  apprentice: {
+    icon: Sparkles,
+    bgColor: "bg-brand-400",
+    textColor: "text-white"
+  },
+  adept: {
+    icon: Brain,
+    bgColor: "bg-brand-500",
+    textColor: "text-white"
+  },
+  expert: {
+    icon: Crown,
+    bgColor: "bg-brand-600",
+    textColor: "text-white"
+  },
+  master: {
+    icon: Shield,
+    bgColor: "bg-brand-700",
+    textColor: "text-white"
+  }
+};
+
+const getLevelIcon = (level: string, systemType: string) => {
+  const config = systemType === "power" ? ABILITY_LEVEL_CONFIG : SPELL_LEVEL_CONFIG;
+  const levelConfig = config[level.toLowerCase() as keyof typeof config];
+  return levelConfig || config.novice;
 };
 
 export default function SpellDetails() {
@@ -79,7 +110,7 @@ export default function SpellDetails() {
           onNavigate={handleNavigation}
         />
         <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading spell...</p>
+          <p className="text-brand-600">Loading {magicSystem?.type === "power" ? "ability" : "spell"}...</p>
         </div>
       </div>
     );
@@ -95,13 +126,19 @@ export default function SpellDetails() {
           onNavigate={handleNavigation}
         />
         <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Spell not found</p>
+          <p className="text-brand-600">{magicSystem?.type === "power" ? "Ability" : "Spell"} not found</p>
         </div>
       </div>
     );
   }
 
-  const levelConfig = getSpellLevelIcon(spell.level || "novice");
+  const systemType = magicSystem?.type || "magic";
+  const isAbility = systemType === "power";
+  const itemType = isAbility ? "ability" : "spell";
+  const itemTypeCapitalized = isAbility ? "Ability" : "Spell";
+  const systemName = isAbility ? "Power System" : "Magic System";
+  
+  const levelConfig = getLevelIcon(spell.level || "novice", systemType);
   const LevelIcon = levelConfig.icon;
 
   return (
@@ -124,11 +161,11 @@ export default function SpellDetails() {
               className="flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to {magicSystem?.name || "Magic System"}
+              Back to {magicSystem?.name || systemName}
             </Button>
           </div>
 
-          {/* Spell Header */}
+          {/* Spell/Ability Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
               <div className={`p-3 rounded-xl ${levelConfig.bgColor}`}>
@@ -152,7 +189,7 @@ export default function SpellDetails() {
             <Button
               variant="primary"
               size="md"
-              onClick={() => setLocation(`/projects/${projectId}/spells/${spell.id}/edit`)}
+              onClick={() => setLocation(`/projects/${projectId}/${itemType}s/${spell.id}/edit`)}
               className="flex items-center gap-2"
             >
               <Edit className="w-4 h-4" />
@@ -160,12 +197,12 @@ export default function SpellDetails() {
             </Button>
           </div>
 
-          {/* Spell Description */}
+          {/* Spell/Ability Description */}
           <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
             <h2 className="text-xl font-semibold text-brand-900 mb-4">Description</h2>
             <div className="prose max-w-none">
               <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                {spell.description || "No description available for this spell."}
+                {spell.description || `No description available for this ${itemType}.`}
               </p>
             </div>
           </div>
