@@ -3,8 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
   insertProjectSchema, insertCharacterSchema, insertLocationSchema, 
-  insertEventSchema, insertMagicSystemSchema, insertLoreEntrySchema, 
-  insertNoteSchema, insertRelationshipSchema 
+  insertEventSchema, insertMagicSystemSchema, insertSpellSchema, 
+  insertLoreEntrySchema, insertNoteSchema, insertRelationshipSchema 
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -309,6 +309,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete magic system" });
+    }
+  });
+
+  // Spells
+  app.get("/api/magic-systems/:magicSystemId/spells", async (req, res) => {
+    try {
+      const magicSystemId = parseInt(req.params.magicSystemId);
+      const spells = await storage.getSpells(magicSystemId);
+      res.json(spells);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch spells" });
+    }
+  });
+
+  app.get("/api/spells/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const spell = await storage.getSpell(id);
+      if (!spell) {
+        return res.status(404).json({ message: "Spell not found" });
+      }
+      res.json(spell);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch spell" });
+    }
+  });
+
+  app.post("/api/spells", async (req, res) => {
+    try {
+      const data = insertSpellSchema.parse(req.body);
+      const spell = await storage.createSpell(data);
+      res.status(201).json(spell);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid spell data" });
+    }
+  });
+
+  app.patch("/api/spells/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertSpellSchema.partial().parse(req.body);
+      const spell = await storage.updateSpell(id, data);
+      if (!spell) {
+        return res.status(404).json({ message: "Spell not found" });
+      }
+      res.json(spell);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid spell data" });
+    }
+  });
+
+  app.delete("/api/spells/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteSpell(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Spell not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete spell" });
     }
   });
 

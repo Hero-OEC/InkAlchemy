@@ -6,7 +6,7 @@ import { Button } from "@/components/button-variations";
 import { ContentCard } from "@/components/content-card";
 import { CharacterCard } from "@/components/character-card";
 import { ArrowLeft, Edit, Sparkles, Zap, Scroll, Crown, Shield, Sword, Brain, Eye, Heart, Skull, DollarSign, Users, BookOpen, Wand2, Plus } from "lucide-react";
-import type { Project, MagicSystem, Character } from "@shared/schema";
+import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
 
 // Icon configuration for magic systems
 const MAGIC_TYPE_CONFIG = {
@@ -61,6 +61,11 @@ export default function MagicSystemDetails() {
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
+  const { data: spells } = useQuery<Spell[]>({
+    queryKey: [`/api/magic-systems/${systemId}/spells`],
+    enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
+  });
+
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
   };
@@ -75,6 +80,10 @@ export default function MagicSystemDetails() {
 
   const handleCharacterClick = (characterId: number) => {
     setLocation(`/projects/${projectId}/characters/${characterId}`);
+  };
+
+  const handleSpellClick = (spellId: number) => {
+    setLocation(`/projects/${projectId}/spells/${spellId}`);
   };
 
   if (isLoading) {
@@ -231,81 +240,7 @@ export default function MagicSystemDetails() {
       case "abilities":
       case "spells":
         const contentType = system.type === "power" ? "abilities" : "spells";
-        
-        // Sample data for demonstration
-        const sampleSpells = system.type === "power" ? [
-          {
-            id: 1,
-            name: "Energy Blast",
-            level: "Basic",
-            description: "Channel raw energy into a focused projectile that damages enemies at range.",
-            cost: "Low energy drain",
-            castTime: "Instant",
-            range: "Medium",
-            effect: "Deals moderate damage to single target"
-          },
-          {
-            id: 2,
-            name: "Power Shield",
-            level: "Intermediate",
-            description: "Creates a protective barrier of energy that absorbs incoming attacks.",
-            cost: "Moderate energy drain",
-            castTime: "2 seconds",
-            range: "Self",
-            effect: "Absorbs damage for 30 seconds"
-          },
-          {
-            id: 3,
-            name: "Lightning Storm",
-            level: "Advanced",
-            description: "Summons a devastating storm of electrical energy that strikes multiple foes.",
-            cost: "High energy drain",
-            castTime: "5 seconds",
-            range: "Large area",
-            effect: "Massive damage to all enemies in area"
-          }
-        ] : [
-          {
-            id: 1,
-            name: "Fireball",
-            level: "Novice",
-            description: "A classic spell that conjures a ball of fire to hurl at enemies.",
-            cost: "2 Mana",
-            castTime: "3 seconds",
-            range: "Medium",
-            effect: "Burns target for moderate damage"
-          },
-          {
-            id: 2,
-            name: "Healing Light",
-            level: "Apprentice",
-            description: "Channels divine energy to restore health and vitality to the target.",
-            cost: "3 Mana",
-            castTime: "4 seconds",
-            range: "Touch",
-            effect: "Restores significant health"
-          },
-          {
-            id: 3,
-            name: "Teleport",
-            level: "Adept",
-            description: "Instantly transports the caster to a visible location within range.",
-            cost: "5 Mana",
-            castTime: "2 seconds",
-            range: "Far",
-            effect: "Instant relocation"
-          },
-          {
-            id: 4,
-            name: "Time Freeze",
-            level: "Master",
-            description: "Halts the flow of time in a small area, freezing all movement and actions.",
-            cost: "8 Mana",
-            castTime: "6 seconds",
-            range: "Small area",
-            effect: "Stops time for 10 seconds"
-          }
-        ];
+        const actualSpells = spells || [];
 
         return (
           <div>
@@ -319,33 +254,36 @@ export default function MagicSystemDetails() {
               </Button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sampleSpells.map((spell) => (
-                <ContentCard
-                  key={spell.id}
-                  id={spell.id}
-                  title={spell.name}
-                  type="magic"
-                  subtype={spell.level.toLowerCase()}
-                  description={spell.description}
-                  icon={system.type === "power" ? Zap : Wand2}
-                  onClick={() => {
-                    // Handle spell/ability click
-                    console.log(`Clicked ${spell.name}`);
-                  }}
-                />
-              ))}
-            </div>
-            
-            <div className="mt-8 text-center">
-              <p className="text-sm text-brand-500 mb-4">
-                <em>Sample {system.type === "power" ? "abilities" : "spells"} shown above for demonstration purposes</em>
-              </p>
-              <Button variant="outline" size="sm">
-                <Plus size={16} className="mr-2" />
-                Create New {system.type === "power" ? "Ability" : "Spell"}
-              </Button>
-            </div>
+            {actualSpells.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {actualSpells.map((spell) => (
+                  <ContentCard
+                    key={spell.id}
+                    id={spell.id}
+                    title={spell.name}
+                    type="magic"
+                    subtype={spell.level}
+                    description={spell.description || "No description available"}
+                    icon={system.type === "power" ? Zap : Wand2}
+                    onClick={() => handleSpellClick(spell.id)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="bg-brand-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Wand2 size={24} className="text-brand-500" />
+                </div>
+                <h4 className="text-xl font-semibold text-brand-900 mb-2">No {system.type === "power" ? "Abilities" : "Spells"} Yet</h4>
+                <p className="text-brand-600 mb-4">
+                  Start building your {system.type === "power" ? "ability" : "spell"} collection for this system.
+                </p>
+                <Button variant="primary" size="sm">
+                  <Plus size={16} className="mr-2" />
+                  Create First {system.type === "power" ? "Ability" : "Spell"}
+                </Button>
+              </div>
+            )}
           </div>
         );
 

@@ -83,6 +83,18 @@ export const magicSystems = pgTable("magic_systems", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Spells table
+export const spells = pgTable("spells", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").references(() => projects.id).notNull(),
+  magicSystemId: integer("magic_system_id").references(() => magicSystems.id).notNull(),
+  name: text("name").notNull(),
+  level: text("level").default("novice"), // novice, apprentice, adept, expert, master
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Lore entries table
 export const loreEntries = pgTable("lore_entries", {
   id: serial("id").primaryKey(),
@@ -151,6 +163,12 @@ export const insertMagicSystemSchema = createInsertSchema(magicSystems).omit({
   updatedAt: true,
 });
 
+export const insertSpellSchema = createInsertSchema(spells).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const insertLoreEntrySchema = createInsertSchema(loreEntries).omit({
   id: true,
   createdAt: true,
@@ -183,6 +201,9 @@ export type InsertEvent = z.infer<typeof insertEventSchema>;
 
 export type MagicSystem = typeof magicSystems.$inferSelect;
 export type InsertMagicSystem = z.infer<typeof insertMagicSystemSchema>;
+
+export type Spell = typeof spells.$inferSelect;
+export type InsertSpell = z.infer<typeof insertSpellSchema>;
 
 export type LoreEntry = typeof loreEntries.$inferSelect;
 export type InsertLoreEntry = z.infer<typeof insertLoreEntrySchema>;

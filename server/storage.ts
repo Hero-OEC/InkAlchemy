@@ -1,10 +1,11 @@
 import { 
-  projects, characters, locations, events, magicSystems, loreEntries, notes, relationships,
+  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships,
   type Project, type InsertProject,
   type Character, type InsertCharacter,
   type Location, type InsertLocation,
   type Event, type InsertEvent,
   type MagicSystem, type InsertMagicSystem,
+  type Spell, type InsertSpell,
   type LoreEntry, type InsertLoreEntry,
   type Note, type InsertNote,
   type Relationship, type InsertRelationship
@@ -45,6 +46,13 @@ export interface IStorage {
   createMagicSystem(magicSystem: InsertMagicSystem): Promise<MagicSystem>;
   updateMagicSystem(id: number, magicSystem: Partial<InsertMagicSystem>): Promise<MagicSystem | undefined>;
   deleteMagicSystem(id: number): Promise<boolean>;
+
+  // Spells
+  getSpells(magicSystemId: number): Promise<Spell[]>;
+  getSpell(id: number): Promise<Spell | undefined>;
+  createSpell(spell: InsertSpell): Promise<Spell>;
+  updateSpell(id: number, spell: Partial<InsertSpell>): Promise<Spell | undefined>;
+  deleteSpell(id: number): Promise<boolean>;
 
   // Lore Entries
   getLoreEntries(projectId: number): Promise<LoreEntry[]>;
@@ -87,6 +95,7 @@ export class MemStorage implements IStorage {
   private locations: Map<number, Location>;
   private events: Map<number, Event>;
   private magicSystems: Map<number, MagicSystem>;
+  private spells: Map<number, Spell>;
   private loreEntries: Map<number, LoreEntry>;
   private notes: Map<number, Note>;
   private relationships: Map<number, Relationship>;
@@ -98,6 +107,7 @@ export class MemStorage implements IStorage {
     this.locations = new Map();
     this.events = new Map();
     this.magicSystems = new Map();
+    this.spells = new Map();
     this.loreEntries = new Map();
     this.notes = new Map();
     this.relationships = new Map();
@@ -685,7 +695,118 @@ export class MemStorage implements IStorage {
     ];
 
     defaultMagicSystems.forEach(system => this.magicSystems.set(system.id, system));
-    this.currentId = 40;
+
+    // Add sample spells for the default magic systems
+    const defaultSpells: Spell[] = [
+      // Elemental Manipulation spells (system 35)
+      {
+        id: 101,
+        projectId: 1,
+        magicSystemId: 35,
+        name: "Fireball",
+        level: "novice",
+        description: "A basic spell that conjures a ball of fire to hurl at enemies. The size and intensity depend on the caster's skill level.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 102,
+        projectId: 1,
+        magicSystemId: 35,
+        name: "Water Shield",
+        level: "apprentice",
+        description: "Creates a protective barrier of flowing water that can absorb physical and magical attacks. Requires a nearby water source.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 103,
+        projectId: 1,
+        magicSystemId: 35,
+        name: "Earth Tremor",
+        level: "adept",
+        description: "Causes the ground to shake violently in a small area, potentially knocking down opponents and damaging structures.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 104,
+        projectId: 1,
+        magicSystemId: 35,
+        name: "Hurricane Call",
+        level: "master",
+        description: "Summons a powerful localized storm with destructive winds and lightning. Extremely draining and difficult to control.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      
+      // Divine Channeling spells (system 36)
+      {
+        id: 105,
+        projectId: 1,
+        magicSystemId: 36,
+        name: "Healing Light",
+        level: "novice",
+        description: "Channels divine energy to restore health and vitality to the target. The most fundamental divine magic spell.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 106,
+        projectId: 1,
+        magicSystemId: 36,
+        name: "Guardian's Ward",
+        level: "apprentice",
+        description: "Creates a protective barrier blessed by the Celestial Guardians that repels evil and dark magic.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 107,
+        projectId: 1,
+        magicSystemId: 36,
+        name: "Divine Insight",
+        level: "adept",
+        description: "Grants the ability to see through illusions and detect lies for a limited time. Reveals the true nature of things.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      
+      // Shadow Weaving spells (system 37)
+      {
+        id: 108,
+        projectId: 1,
+        magicSystemId: 37,
+        name: "Shadow Cloak",
+        level: "novice",
+        description: "Wraps the caster in darkness, making them nearly invisible in dim light and completely invisible in darkness.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 109,
+        projectId: 1,
+        magicSystemId: 37,
+        name: "Fear Whisper",
+        level: "apprentice",
+        description: "Sends tendrils of shadow to whisper frightening thoughts into an enemy's mind, causing panic and confusion.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 110,
+        projectId: 1,
+        magicSystemId: 37,
+        name: "Shadow Step",
+        level: "expert",
+        description: "Allows the caster to travel instantly through shadows, appearing at any shadowed location within sight.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    defaultSpells.forEach(spell => this.spells.set(spell.id, spell));
+    this.currentId = 120;
   }
 
   // Projects
@@ -918,6 +1039,48 @@ export class MemStorage implements IStorage {
 
   async deleteMagicSystem(id: number): Promise<boolean> {
     return this.magicSystems.delete(id);
+  }
+
+  // Spells
+  async getSpells(magicSystemId: number): Promise<Spell[]> {
+    return Array.from(this.spells.values()).filter(s => s.magicSystemId === magicSystemId);
+  }
+
+  async getSpell(id: number): Promise<Spell | undefined> {
+    return this.spells.get(id);
+  }
+
+  async createSpell(insertSpell: InsertSpell): Promise<Spell> {
+    const id = this.currentId++;
+    const spell: Spell = {
+      id,
+      projectId: insertSpell.projectId,
+      magicSystemId: insertSpell.magicSystemId,
+      name: insertSpell.name,
+      level: insertSpell.level ?? "novice",
+      description: insertSpell.description ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.spells.set(id, spell);
+    return spell;
+  }
+
+  async updateSpell(id: number, insertSpell: Partial<InsertSpell>): Promise<Spell | undefined> {
+    const existing = this.spells.get(id);
+    if (!existing) return undefined;
+    
+    const updated: Spell = {
+      ...existing,
+      ...insertSpell,
+      updatedAt: new Date()
+    };
+    this.spells.set(id, updated);
+    return updated;
+  }
+
+  async deleteSpell(id: number): Promise<boolean> {
+    return this.spells.delete(id);
   }
 
   // Lore Entries
