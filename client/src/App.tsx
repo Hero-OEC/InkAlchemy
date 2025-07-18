@@ -17,6 +17,7 @@ import MagicSystemDetails from "./pages/magic-system-details";
 import CreateMagicSystem from "./pages/create-magic-system";
 import EditMagicSystem from "./pages/edit-magic-system";
 import SpellDetails from "./pages/spell-details";
+import AbilityDetails from "./pages/ability-details";
 import Lore from "./pages/lore";
 import LoreDetails from "./pages/lore-details";
 import CreateLore from "./pages/create-lore";
@@ -50,6 +51,7 @@ function App() {
       <Route path="/projects/:projectId/magic-systems/:systemId" component={MagicSystemDetails} />
       <Route path="/projects/:projectId/magic-systems/:systemId/edit" component={EditMagicSystem} />
       <Route path="/projects/:projectId/spells/:spellId" component={SpellDetails} />
+      <Route path="/projects/:projectId/abilities/:spellId" component={AbilityDetails} />
       <Route path="/projects/:projectId/lore/new" component={CreateLore} />
       <Route path="/projects/:projectId/lore/:loreId/edit" component={EditLore} />
       <Route path="/projects/:projectId/lore/:loreId" component={LoreDetails} />

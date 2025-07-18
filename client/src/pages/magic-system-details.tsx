@@ -83,7 +83,11 @@ export default function MagicSystemDetails() {
   };
 
   const handleSpellClick = (spellId: number) => {
-    setLocation(`/projects/${projectId}/spells/${spellId}`);
+    if (system?.type === "power") {
+      setLocation(`/projects/${projectId}/abilities/${spellId}`);
+    } else {
+      setLocation(`/projects/${projectId}/spells/${spellId}`);
+    }
   };
 
   if (isLoading) {
@@ -272,7 +276,11 @@ export default function MagicSystemDetails() {
             ) : (
               <div className="text-center py-12">
                 <div className="bg-brand-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Wand2 size={24} className="text-brand-500" />
+                  {system.type === "power" ? (
+                    <Zap size={24} className="text-brand-500" />
+                  ) : (
+                    <Wand2 size={24} className="text-brand-500" />
+                  )}
                 </div>
                 <h4 className="text-xl font-semibold text-brand-900 mb-2">No {system.type === "power" ? "Abilities" : "Spells"} Yet</h4>
                 <p className="text-brand-600 mb-4">

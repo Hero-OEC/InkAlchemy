@@ -802,11 +802,95 @@ export class MemStorage implements IStorage {
         description: "Allows the caster to travel instantly through shadows, appearing at any shadowed location within sight.",
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      
+      // Psychic Resonance abilities (system 38)
+      {
+        id: 111,
+        projectId: 1,
+        magicSystemId: 38,
+        name: "Mind Read",
+        level: "novice",
+        description: "Read surface thoughts and emotions from a willing or distracted target within close range.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 112,
+        projectId: 1,
+        magicSystemId: 38,
+        name: "Telekinetic Push",
+        level: "apprentice",
+        description: "Move objects with the mind, lifting and manipulating items up to 20 pounds without physical contact.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 113,
+        projectId: 1,
+        magicSystemId: 38,
+        name: "Precognitive Flash",
+        level: "adept",
+        description: "Glimpse potential future events through vivid mental flashes, typically 3-10 seconds ahead.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 114,
+        projectId: 1,
+        magicSystemId: 38,
+        name: "Mental Barrier",
+        level: "expert",
+        description: "Create a protective shield around the mind, blocking telepathic intrusion and psychic attacks.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      
+      // Crystal Fusion abilities (system 39)
+      {
+        id: 115,
+        projectId: 1,
+        magicSystemId: 39,
+        name: "Energy Amplification",
+        level: "novice",
+        description: "Channel crystal energy to boost physical strength and endurance temporarily.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 116,
+        projectId: 1,
+        magicSystemId: 39,
+        name: "Crystal Shield",
+        level: "apprentice",
+        description: "Project a protective barrier of crystalline energy that can deflect both physical and energy attacks.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 117,
+        projectId: 1,
+        magicSystemId: 39,
+        name: "Elemental Discharge",
+        level: "adept",
+        description: "Release stored elemental energy from crystals in a powerful directed blast.",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 118,
+        projectId: 1,
+        magicSystemId: 39,
+        name: "Crystal Network",
+        level: "master",
+        description: "Simultaneously bond with multiple crystals to create complex energy patterns and amplified effects.",
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ];
 
     defaultSpells.forEach(spell => this.spells.set(spell.id, spell));
-    this.currentId = 120;
+    this.currentId = 130;
   }
 
   // Projects
