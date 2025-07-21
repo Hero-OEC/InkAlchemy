@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { CharacterCard } from "@/components/character-card";
-import { ContentCard } from "@/components/content-card";
+import { MiniCard } from "@/components/mini-card";
 import { Button } from "@/components/button-variations";
 import { Plus, Users, UserCheck } from "lucide-react";
 import type { Project, Character, Race } from "@shared/schema";
@@ -59,9 +59,7 @@ export default function Characters() {
     navigateWithReferrer(`/projects/${projectId}/races/${race.id}`, currentPath);
   };
 
-  const handleRaceEdit = (race: Race) => {
-    setLocation(`/projects/${projectId}/races/${race.id}/edit`);
-  };
+
 
   const handleRaceDelete = (race: Race) => {
     // TODO: Implement race deletion with confirmation dialog
@@ -97,19 +95,13 @@ export default function Characters() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {races.map((race) => (
-              <ContentCard
+              <MiniCard
                 key={race.id}
-                id={race.id}
-                title={race.name}
-                type="note"
-                subtype="race"
-                description={race.description || "No description"}
                 icon={UserCheck}
+                title={race.name}
                 onClick={() => handleRaceClick(race)}
-                onEdit={() => handleRaceEdit(race)}
+                variant="editable"
                 onDelete={() => handleRaceDelete(race)}
-                createdAt={race.createdAt}
-                lastEditedAt={race.updatedAt}
               />
             ))}
           </div>
