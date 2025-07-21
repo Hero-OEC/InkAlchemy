@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CharacterMagicSelector } from "@/components/character-magic-selector";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertCharacterSchema, type Character, type MagicSystem, type Spell } from "@shared/schema";
@@ -26,6 +27,7 @@ interface CharacterFormProps {
 export function CharacterForm({ character, projectId, onSuccess }: CharacterFormProps) {
   const { toast } = useToast();
   const [selectedSpells, setSelectedSpells] = useState<number[]>([]);
+  const [activeTab, setActiveTab] = useState("overview");
 
   // Fetch magic systems and character spells
   const { data: magicSystems = [] } = useQuery<MagicSystem[]>({
@@ -164,190 +166,351 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name *</FormLabel>
-                <FormControl>
-                  <Input placeholder="Character name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., Protagonist, Mentor, Antagonist" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <div className="flex gap-6">
+          {/* Main Content Area */}
+          <div className="flex-1">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="background">Background</TabsTrigger>
+                <TabsTrigger value="details">Details</TabsTrigger>
+                <TabsTrigger value="magic">Magic & Abilities</TabsTrigger>
+              </TabsList>
 
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select character status" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="developing">Developing</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              <div className="mt-6">
+                <TabsContent value="overview" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Name *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Character name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Role</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., Protagonist, Mentor, Antagonist" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Brief overview of the character"
-                  className="min-h-[80px]"
-                  {...field} 
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select character status" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="developing">Developing</SelectItem>
+                            <SelectItem value="inactive">Inactive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Brief overview of the character"
+                            className="min-h-[100px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TabsContent>
+
+                <TabsContent value="background" className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="background"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Background</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="History, upbringing, formative experiences"
+                            className="min-h-[120px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="goals"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Goals & Motivations</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="What does this character want? What drives them?"
+                            className="min-h-[120px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TabsContent>
+
+                <TabsContent value="details" className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="appearance"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Appearance</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Physical description, clothing, notable features"
+                            className="min-h-[120px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="personality"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Personality</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Traits, mannerisms, quirks, strengths, weaknesses"
+                            className="min-h-[120px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TabsContent>
+
+                <TabsContent value="magic" className="space-y-4">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-brand-900">Magic Systems & Abilities</h3>
+                    <CharacterMagicSelector
+                      availableMagicSystems={magicSystems.map(system => ({
+                        id: system.id,
+                        name: system.name,
+                        type: system.type as "magic" | "power",
+                        spells: allSpells.filter(spell => spell.magicSystemId === system.id).map(spell => ({
+                          id: spell.id,
+                          name: spell.name,
+                          type: system.type === "magic" ? "spell" as const : "ability" as const,
+                          magicSystemId: spell.magicSystemId
+                        }))
+                      }))}
+                      selectedSpells={selectedSpells}
+                      onSelectionChange={setSelectedSpells}
+                    />
+                  </div>
+                </TabsContent>
+              </div>
+            </Tabs>
+          </div>
+
+          {/* Sidebar for Image, Age, and Race */}
+          <div className="w-80 space-y-6">
+            <div className="bg-brand-50 rounded-lg p-6 space-y-6">
+              <h3 className="text-lg font-semibold text-brand-900">Character Profile</h3>
+              
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Character Image URL</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="url"
+                        placeholder="https://example.com/image.jpg"
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {form.watch("imageUrl") && (
+                <div className="aspect-square rounded-lg overflow-hidden bg-brand-100">
+                  <img 
+                    src={form.watch("imageUrl")} 
+                    alt="Character preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="age"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Age</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="25"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={form.control}
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Character Image URL</FormLabel>
-              <FormControl>
-                <Input 
-                  type="url"
-                  placeholder="https://example.com/character-image.jpg"
-                  {...field} 
+                <FormField
+                  control={form.control}
+                  name="race"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Race</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Human, Elf, etc."
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              </div>
 
-        <FormField
-          control={form.control}
-          name="appearance"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Appearance</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Physical description, clothing, notable features"
-                  className="min-h-[80px]"
-                  {...field} 
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="prefix"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Prefix</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Sir, Lady, Dr."
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={form.control}
-          name="personality"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Personality</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Traits, mannerisms, quirks, strengths, weaknesses"
-                  className="min-h-[80px]"
-                  {...field} 
+                <FormField
+                  control={form.control}
+                  name="suffix"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Suffix</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Jr., III, PhD"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              </div>
 
-        <FormField
-          control={form.control}
-          name="background"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Background</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="History, upbringing, formative experiences"
-                  className="min-h-[80px]"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Character Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select character type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="protagonist">Protagonist</SelectItem>
+                        <SelectItem value="antagonist">Antagonist</SelectItem>
+                        <SelectItem value="supporting">Supporting</SelectItem>
+                        <SelectItem value="minor">Minor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <FormField
-          control={form.control}
-          name="goals"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Goals & Motivations</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="What does this character want? What drives them?"
-                  className="min-h-[80px]"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Magic Systems & Abilities Section */}
-        <div className="col-span-2 space-y-4">
-          <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold text-brand-900 mb-4">Magic Systems & Abilities</h3>
-            <CharacterMagicSelector
-              availableMagicSystems={magicSystems.map(system => ({
-                id: system.id,
-                name: system.name,
-                type: system.type as "magic" | "power",
-                spells: allSpells.filter(spell => spell.magicSystemId === system.id).map(spell => ({
-                  id: spell.id,
-                  name: spell.name,
-                  type: system.type === "magic" ? "spell" as const : "ability" as const,
-                  magicSystemId: spell.magicSystemId
-                }))
-              }))}
-              selectedSpells={selectedSpells}
-              onSelectionChange={setSelectedSpells}
-            />
+              <FormField
+                control={form.control}
+                name="powerType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Power Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select power type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="magical">Magical</SelectItem>
+                        <SelectItem value="physical">Physical</SelectItem>
+                        <SelectItem value="mental">Mental</SelectItem>
+                        <SelectItem value="none">None</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-end space-x-2 col-span-2">
+        <div className="flex justify-end space-x-2">
           <Button type="button" variant="outline" onClick={onSuccess}>
             Cancel
           </Button>
