@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { CharacterCard } from "@/components/character-card";
+import { MiniCard } from "@/components/mini-card";
 import { Button } from "@/components/button-variations";
-import { Plus, Users } from "lucide-react";
-import type { Project, Character } from "@shared/schema";
+import { Plus, Users, UserCheck } from "lucide-react";
+import type { Project, Character, Race } from "@shared/schema";
 
 export default function Characters() {
   const { projectId } = useParams();
@@ -19,6 +20,10 @@ export default function Characters() {
 
   const { data: characters = [] } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
+  });
+
+  const { data: races = [] } = useQuery<Race[]>({
+    queryKey: [`/api/projects/${projectId}/races`],
   });
 
   // Set page title
@@ -46,6 +51,14 @@ export default function Characters() {
     setLocation(`/projects/${projectId}/characters/${character.id}/edit`);
   };
 
+  const handleCreateRace = () => {
+    setLocation(`/projects/${projectId}/races/new`);
+  };
+
+  const handleRaceClick = (race: Race) => {
+    navigateWithReferrer(`/projects/${projectId}/races/${race.id}`, currentPath);
+  };
+
   return (
     <div className="min-h-screen bg-brand-50">
       <Navbar 
@@ -59,7 +72,7 @@ export default function Characters() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-bold text-brand-900 mb-2 text-[36px]">Characters</h1>
-            <p className="text-brand-600">Manage your story's cast of characters</p>
+            <p className="text-brand-600">Manage your story's cast of characters and races</p>
           </div>
           <Button
             variant="primary"
@@ -70,6 +83,49 @@ export default function Characters() {
             <Plus className="w-4 h-4" />
             Add Character
           </Button>
+        </div>
+
+        {/* Races Section */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-brand-900 mb-2">Races</h2>
+              <p className="text-brand-600">Define the races that inhabit your world</p>
+            </div>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={handleCreateRace}
+              className="flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add Race
+            </Button>
+          </div>
+
+          {races.length === 0 ? (
+            <div className="bg-white rounded-lg border border-brand-200 p-8 text-center">
+              <UserCheck className="w-12 h-12 text-brand-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-brand-900 mb-2">No races yet</h3>
+              <p className="text-brand-600 mb-4">Start building your world by defining the races that live in it.</p>
+              <Button variant="primary" onClick={handleCreateRace}>
+                Create Your First Race
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {races.map((race) => (
+                <MiniCard
+                  key={race.id}
+                  title={race.name}
+                  description={race.description || "No description"}
+                  category="race"
+                  categoryLabel="Race"
+                  onClick={() => handleRaceClick(race)}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Characters Grid */}

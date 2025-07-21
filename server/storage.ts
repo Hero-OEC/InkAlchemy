@@ -1,5 +1,5 @@
 import { 
-  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells,
+  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, races,
   type Project, type InsertProject,
   type Character, type InsertCharacter,
   type Location, type InsertLocation,
@@ -9,7 +9,8 @@ import {
   type LoreEntry, type InsertLoreEntry,
   type Note, type InsertNote,
   type Relationship, type InsertRelationship,
-  type CharacterSpell, type InsertCharacterSpell
+  type CharacterSpell, type InsertCharacterSpell,
+  type Race, type InsertRace
 } from "@shared/schema";
 
 export interface IStorage {
@@ -75,6 +76,13 @@ export interface IStorage {
   updateNote(id: number, note: Partial<InsertNote>): Promise<Note | undefined>;
   deleteNote(id: number): Promise<boolean>;
 
+  // Races
+  getRaces(projectId: number): Promise<Race[]>;
+  getRace(id: number): Promise<Race | undefined>;
+  createRace(race: InsertRace): Promise<Race>;
+  updateRace(id: number, race: Partial<InsertRace>): Promise<Race | undefined>;
+  deleteRace(id: number): Promise<boolean>;
+
   // Relationships
   getRelationships(projectId: number): Promise<Relationship[]>;
   getRelationshipsForElement(projectId: number, elementType: string, elementId: number): Promise<Relationship[]>;
@@ -105,6 +113,7 @@ export class MemStorage implements IStorage {
   private spells: Map<number, Spell>;
   private loreEntries: Map<number, LoreEntry>;
   private notes: Map<number, Note>;
+  private races: Map<number, Race>;
   private relationships: Map<number, Relationship>;
   private characterSpells: Map<number, CharacterSpell>;
   private currentId: number;
@@ -118,6 +127,7 @@ export class MemStorage implements IStorage {
     this.spells = new Map();
     this.loreEntries = new Map();
     this.notes = new Map();
+    this.races = new Map();
     this.relationships = new Map();
     this.characterSpells = new Map();
     this.currentId = 10;
@@ -1006,7 +1016,55 @@ export class MemStorage implements IStorage {
     ];
 
     defaultCharacterSpells.forEach(charSpell => this.characterSpells.set(charSpell.id, charSpell));
-    this.currentId = 250;
+
+    // Add sample races for the default project
+    const defaultRaces: Race[] = [
+      {
+        id: 301,
+        projectId: 1,
+        name: "Aetherian",
+        description: "Ancient magical beings with profound connection to elemental forces",
+        biology: "Lifespan: 800-1200 years. Enhanced magical conductivity, luminescent eyes that reflect their elemental affinity. Taller and more slender than humans.",
+        culture: "Deeply spiritual society centered around elemental harmony. Value wisdom and magical knowledge above material wealth. Live in crystalline cities that amplify magical energies.",
+        language: "Aetheric - a melodic language with tonal variations that can influence magical resonance",
+        homelandId: 1, // Silverhold
+        traits: "Natural spellcasters, can see magical auras, resistant to elemental damage",
+        lifespan: "800-1200 years",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 302,
+        projectId: 1,
+        name: "Stormborn",
+        description: "Hardy mountain dwellers with inherent resistance to harsh environments",
+        biology: "Lifespan: 120-150 years. Dense bone structure, enhanced lung capacity, natural cold resistance. Gray-tinted skin that darkens with age.",
+        culture: "Clan-based warrior society that values honor, strength, and loyalty. Masters of metalworking and storm magic. Oral tradition preserves ancient laws.",
+        language: "Stormtongue - harsh consonants that echo mountain winds, includes ritual battle-chants",
+        homelandId: 2, // Ironpeak Mountains
+        traits: "Natural weather resistance, enhanced physical strength, can predict storms",
+        lifespan: "120-150 years",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 303,
+        projectId: 1,
+        name: "Shadowkin",
+        description: "Mysterious beings who dwell between light and darkness",
+        biology: "Lifespan: 600-800 years. Can partially phase between material and shadow realms. Pale, almost translucent skin that becomes more solid in darkness.",
+        culture: "Secretive society of scholars, spies, and guardians of forbidden knowledge. Value secrets and information. Rarely seen by other races.",
+        language: "Umbral - a whispered language that can only be fully understood in darkness",
+        homelandId: 3, // Whispering Woods
+        traits: "Shadow manipulation, natural stealth abilities, can see in complete darkness",
+        lifespan: "600-800 years",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    defaultRaces.forEach(race => this.races.set(race.id, race));
+    this.currentId = 350;
   }
 
   // Projects
@@ -1523,6 +1581,52 @@ export class MemStorage implements IStorage {
       return true;
     }
     return false;
+  }
+
+  // Races
+  async getRaces(projectId: number): Promise<Race[]> {
+    return Array.from(this.races.values()).filter(r => r.projectId === projectId);
+  }
+
+  async getRace(id: number): Promise<Race | undefined> {
+    return this.races.get(id);
+  }
+
+  async createRace(insertRace: InsertRace): Promise<Race> {
+    const id = this.currentId++;
+    const race: Race = {
+      id,
+      projectId: insertRace.projectId,
+      name: insertRace.name,
+      description: insertRace.description ?? null,
+      biology: insertRace.biology ?? null,
+      culture: insertRace.culture ?? null,
+      language: insertRace.language ?? null,
+      homelandId: insertRace.homelandId ?? null,
+      traits: insertRace.traits ?? null,
+      lifespan: insertRace.lifespan ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.races.set(id, race);
+    return race;
+  }
+
+  async updateRace(id: number, insertRace: Partial<InsertRace>): Promise<Race | undefined> {
+    const existing = this.races.get(id);
+    if (!existing) return undefined;
+    
+    const updated: Race = {
+      ...existing,
+      ...insertRace,
+      updatedAt: new Date()
+    };
+    this.races.set(id, updated);
+    return updated;
+  }
+
+  async deleteRace(id: number): Promise<boolean> {
+    return this.races.delete(id);
   }
 
   // Stats

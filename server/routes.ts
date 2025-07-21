@@ -5,7 +5,7 @@ import {
   insertProjectSchema, insertCharacterSchema, insertLocationSchema, 
   insertEventSchema, insertMagicSystemSchema, insertSpellSchema, 
   insertLoreEntrySchema, insertNoteSchema, insertRelationshipSchema,
-  insertCharacterSpellSchema 
+  insertCharacterSpellSchema, insertRaceSchema 
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -591,6 +591,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(results);
     } catch (error) {
       res.status(500).json({ message: "Search failed" });
+    }
+  });
+
+  // Races
+  app.get("/api/projects/:projectId/races", async (req, res) => {
+    try {
+      const projectId = parseInt(req.params.projectId);
+      const races = await storage.getRaces(projectId);
+      res.json(races);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch races" });
+    }
+  });
+
+  app.get("/api/races/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const race = await storage.getRace(id);
+      if (!race) {
+        return res.status(404).json({ message: "Race not found" });
+      }
+      res.json(race);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch race" });
+    }
+  });
+
+  app.post("/api/races", async (req, res) => {
+    try {
+      const data = insertRaceSchema.parse(req.body);
+      const race = await storage.createRace(data);
+      res.status(201).json(race);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid race data" });
+    }
+  });
+
+  app.patch("/api/races/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertRaceSchema.partial().parse(req.body);
+      const race = await storage.updateRace(id, data);
+      if (!race) {
+        return res.status(404).json({ message: "Race not found" });
+      }
+      res.json(race);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid race data" });
+    }
+  });
+
+  app.delete("/api/races/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteRace(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Race not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete race" });
     }
   });
 
