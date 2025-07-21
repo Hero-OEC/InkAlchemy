@@ -23,7 +23,7 @@ import { apiRequest } from "@/lib/queryClient";
 export default function CreateRace() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState("basic");
+  const [activeTab, setActiveTab] = useState("description");
   const { goBack } = useNavigation();
   const queryClient = useQueryClient();
 
@@ -73,9 +73,11 @@ export default function CreateRace() {
   };
 
   const tabs = [
-    { id: "basic", label: "Basic Info", icon: FileText },
+    { id: "description", label: "Description", icon: FileText },
     { id: "culture", label: "Culture & Society", icon: Users },
+    { id: "lifespan", label: "Lifespan", icon: Clock },
     { id: "traits", label: "Traits & Abilities", icon: Sparkles },
+    { id: "language", label: "Language", icon: Languages },
   ];
 
   return (
@@ -146,7 +148,7 @@ export default function CreateRace() {
 
             {/* Tab Content */}
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              {activeTab === "basic" && (
+              {activeTab === "description" && (
                 <div className="space-y-6">
                   <FormField
                     control={form.control}
@@ -175,25 +177,7 @@ export default function CreateRace() {
                         <FormControl>
                           <Textarea 
                             placeholder="Describe the race's basic characteristics, appearance, and notable features..."
-                            className="bg-white border-brand-200 min-h-[120px]"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="lifespan"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-brand-900 font-semibold">Lifespan</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Describe their typical lifespan, aging process, and life stages..."
-                            className="bg-white border-brand-200 min-h-[100px]"
+                            className="bg-white border-brand-200 min-h-[150px]"
                             {...field} 
                           />
                         </FormControl>
@@ -215,7 +199,7 @@ export default function CreateRace() {
                         <FormControl>
                           <Textarea 
                             placeholder="Describe their social structure, traditions, values, customs, and way of life..."
-                            className="bg-white border-brand-200 min-h-[150px]"
+                            className="bg-white border-brand-200 min-h-[200px]"
                             {...field} 
                           />
                         </FormControl>
@@ -223,17 +207,21 @@ export default function CreateRace() {
                       </FormItem>
                     )}
                   />
+                </div>
+              )}
 
+              {activeTab === "lifespan" && (
+                <div className="space-y-6">
                   <FormField
                     control={form.control}
-                    name="language"
+                    name="lifespan"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-brand-900 font-semibold">Language</FormLabel>
+                        <FormLabel className="text-brand-900 font-semibold">Lifespan</FormLabel>
                         <FormControl>
                           <Textarea 
-                            placeholder="Describe their language, communication style, writing systems, and linguistic characteristics..."
-                            className="bg-white border-brand-200 min-h-[120px]"
+                            placeholder="Describe their typical lifespan, aging process, and life stages..."
+                            className="bg-white border-brand-200 min-h-[150px]"
                             {...field} 
                           />
                         </FormControl>
@@ -255,6 +243,28 @@ export default function CreateRace() {
                         <FormControl>
                           <Textarea 
                             placeholder="Describe their special abilities, physical traits, magical powers, and unique characteristics..."
+                            className="bg-white border-brand-200 min-h-[200px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+
+              {activeTab === "language" && (
+                <div className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="language"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-brand-900 font-semibold">Language</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Describe their language, communication style, writing systems, and linguistic characteristics..."
                             className="bg-white border-brand-200 min-h-[150px]"
                             {...field} 
                           />
