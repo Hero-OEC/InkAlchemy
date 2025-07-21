@@ -273,3 +273,15 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Welcome page uses: "StoryForge - Worldbuilding Management Platform"
 - All browser tab titles now accurately match page content and provide proper context
 - Navigation system now fully implemented app-wide with referrer tracking working correctly
+
+### January 2025 - Race Management System Completion and Routing Fixes
+- Successfully completed race management system with full CRUD operations
+- Created RaceDetails, RaceForm, CreateRace, and EditRace pages with proper validation
+- Enhanced MiniCard component with new "dropdown" variant featuring three dots menu for edit/delete actions
+- Fixed critical routing issues by removing catch-all NotFound route that was causing overlay problems
+- Added missing route for races main page (`/projects/:projectId/races`) to prevent routing conflicts
+- Fixed race creation form to prevent invalid API calls to `/api/races/new`
+- Resolved "Race Not Found" error appearing inappropriately during race creation
+- Updated race details component to properly handle "new" race ID parameter
+- Applied consistent navigation patterns and ghost button styling throughout race management
+- Race creation now properly navigates to race details page after successful creation

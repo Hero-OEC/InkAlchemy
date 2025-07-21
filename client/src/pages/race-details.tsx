@@ -23,9 +23,10 @@ export default function RaceDetails() {
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  // Fetch race data
+  // Fetch race data (only if raceId is not "new")
   const { data: race, isLoading } = useQuery<Race>({
     queryKey: [`/api/races/${raceId}`],
+    enabled: raceId !== "new",
   });
 
   // Update page title when race data loads
@@ -61,7 +62,7 @@ export default function RaceDetails() {
     );
   }
 
-  if (!race) {
+  if (!race && raceId !== "new") {
     return (
       <div className="min-h-screen bg-brand-50">
         <Navbar 
@@ -80,6 +81,12 @@ export default function RaceDetails() {
         </main>
       </div>
     );
+  }
+
+  // If raceId is "new", redirect to create race page
+  if (raceId === "new") {
+    setLocation(`/projects/${projectId}/races/new`);
+    return null;
   }
 
   return (
