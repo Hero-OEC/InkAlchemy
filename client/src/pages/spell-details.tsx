@@ -1,9 +1,11 @@
 
 import { useParams, useLocation } from "wouter";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
-import { ArrowLeft, Wand2, Sparkles, Zap, Scroll, Crown, Shield, Edit, Brain } from "lucide-react";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { ArrowLeft, Wand2, Sparkles, Zap, Scroll, Crown, Shield, Edit, Trash2, Brain } from "lucide-react";
 import type { Project, Spell, MagicSystem } from "@shared/schema";
 
 // Icon configuration for spell levels
@@ -73,6 +75,7 @@ const getLevelIcon = (level: string, systemType: string) => {
 export default function SpellDetails() {
   const { projectId, spellId } = useParams();
   const [, setLocation] = useLocation();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -97,6 +100,24 @@ export default function SpellDetails() {
       setLocation(`/projects/${projectId}/magic-systems/${spell.magicSystemId}`);
     } else {
       setLocation(`/projects/${projectId}/magic-systems`);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/spells/${spellId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        if (spell?.magicSystemId) {
+          setLocation(`/projects/${projectId}/magic-systems/${spell.magicSystemId}`);
+        } else {
+          setLocation(`/projects/${projectId}/magic-systems`);
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting spell/ability:', error);
     }
   };
 
@@ -186,15 +207,26 @@ export default function SpellDetails() {
                 </div>
               </div>
             </div>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={() => setLocation(`/projects/${projectId}/${itemType}s/${spell.id}/edit`)}
-              className="flex items-center gap-2"
-            >
-              <Edit className="w-4 h-4" />
-              Edit
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => setLocation(`/projects/${projectId}/${itemType}s/${spell.id}/edit`)}
+                className="flex items-center gap-2"
+              >
+                <Edit className="w-4 h-4" />
+                Edit
+              </Button>
+              <Button
+                variant="danger"
+                size="md"
+                onClick={() => setShowDeleteDialog(true)}
+                className="flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete
+              </Button>
+            </div>
           </div>
 
           {/* Spell/Ability Description */}
@@ -208,6 +240,15 @@ export default function SpellDetails() {
           </div>
         </div>
       </main>
+
+      <DeleteConfirmation
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title={`Delete ${itemTypeCapitalized}`}
+        description={`Are you sure you want to delete "${spell?.name}"? This action cannot be undone.`}
+        itemName={spell?.name || `this ${itemType}`}
+      />
     </div>
   );
 }
