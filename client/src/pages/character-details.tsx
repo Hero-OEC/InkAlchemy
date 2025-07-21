@@ -24,55 +24,54 @@ export default function CharacterDetails() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
 
-  const { data: project } = useQuery<Project>({
-    queryKey: [`/api/projects/${projectId}`],
+  const { data: character, isLoading: characterLoading } = useQuery<Character>({
+    queryKey: [`/api/characters/${characterId}`],
   });
 
-  const { data: character } = useQuery<Character>({
-    queryKey: [`/api/characters/${characterId}`],
+  const { data: project } = useQuery<Project>({
+    queryKey: [`/api/projects/${projectId}`],
+    enabled: !!character, // Only load project once character is loaded
   });
 
   const { data: magicSystems = [] } = useQuery<MagicSystem[]>({
     queryKey: [`/api/projects/${projectId}/magic-systems`],
+    enabled: !!character,
   });
 
   const { data: events = [] } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
+    enabled: !!character,
   });
 
   const { data: characters = [] } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
+    enabled: !!character,
   });
 
   const { data: locations = [] } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
+    enabled: !!character,
   });
 
   const { data: relationships = [] } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
+    enabled: !!character,
   });
 
   const { data: characterSpells = [] } = useQuery<(Spell & { proficiency?: string })[]>({
     queryKey: [`/api/characters/${characterId}/spells`],
+    enabled: !!character,
   });
 
-  if (!character) {
+  if (characterLoading || !character) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <Navbar 
-          hasActiveProject={true}
-          currentPage="characters"
-          onNavigate={() => {}}
-          projectName={project?.name}
-        />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto mb-4"></div>
-              <p className="text-brand-600">Loading character...</p>
-            </div>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto mb-4"></div>
+            <p className="text-brand-600">Loading character...</p>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
