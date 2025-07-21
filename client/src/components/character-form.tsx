@@ -530,7 +530,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end space-x-2 pt-6 border-t border-brand-200">
+        <div className="flex justify-end space-x-2 pt-6">
           <Button type="button" variant="outline" onClick={onSuccess}>
             Cancel
           </Button>
