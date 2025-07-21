@@ -109,7 +109,14 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
 
   const handleBubbleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setShowPopup(!showPopup);
+    
+    // For single events, navigate directly to details page
+    if (!multiCount || multiCount === 1) {
+      onEventClick?.(event);
+    } else {
+      // For multiple events, toggle popup to show list
+      setShowPopup(!showPopup);
+    }
   };
 
   const handleMouseEnter = () => {
