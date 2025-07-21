@@ -1,13 +1,6 @@
-import { LucideIcon, Users, MapPin, Sword, Zap, FileText, Crown, X, MoreVertical, Edit, Trash2 } from "lucide-react";
+import { LucideIcon, Users, MapPin, Sword, Zap, FileText, Crown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/button-variations";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 
 export interface MiniCardProps {
   icon: LucideIcon;
@@ -16,7 +9,6 @@ export interface MiniCardProps {
   badgeVariant?: "stage" | "type" | "status" | "custom";
   badgeColor?: string; // For custom badge colors using brand palette
   onClick?: () => void;
-  onEdit?: () => void;
   onDelete?: () => void;
   variant?: "default" | "editable";
   className?: string;
@@ -29,7 +21,6 @@ export function MiniCard({
   badgeVariant = "type",
   badgeColor,
   onClick, 
-  onEdit,
   onDelete,
   variant = "default",
   className 
@@ -87,49 +78,19 @@ export function MiniCard({
         </div>
       </div>
 
-      {/* Three-dot dropdown menu for Editable Variant */}
-      {variant === "editable" && (onEdit || onDelete) && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="text-brand-500 hover:text-brand-700 flex-shrink-0"
-            >
-              <MoreVertical className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            {onEdit && (
-              <DropdownMenuItem 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEdit();
-                }}
-                className="flex items-center gap-2 cursor-pointer"
-              >
-                <Edit className="w-4 h-4" />
-                Edit
-              </DropdownMenuItem>
-            )}
-            {onEdit && onDelete && <DropdownMenuSeparator />}
-            {onDelete && (
-              <DropdownMenuItem 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete();
-                }}
-                className="flex items-center gap-2 cursor-pointer text-red-600 hover:text-red-700"
-              >
-                <Trash2 className="w-4 h-4" />
-                Delete
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      {/* Delete Button for Editable Variant */}
+      {variant === "editable" && onDelete && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          className="text-brand-500 hover:text-brand-700 flex-shrink-0"
+        >
+          <X className="w-4 h-4" />
+        </Button>
       )}
     </div>
   );
