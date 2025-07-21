@@ -63,6 +63,22 @@ export function CharacterMagicSelector({
     setSelectedSystems(systemsMap);
   }, [selectedSpells, availableMagicSystems]);
 
+  // Notify parent when selected systems change
+  useEffect(() => {
+    const allSelectedSpells: number[] = [];
+    selectedSystems.forEach(({ selectedSpells }) => {
+      selectedSpells.forEach(spellId => allSelectedSpells.push(spellId));
+    });
+    
+    // Only call onSelectionChange if the selected spells actually changed
+    const currentSpellIds = allSelectedSpells.sort().join(',');
+    const propSpellIds = selectedSpells.sort().join(',');
+    
+    if (currentSpellIds !== propSpellIds) {
+      onSelectionChange(allSelectedSpells);
+    }
+  }, [selectedSystems, onSelectionChange, selectedSpells]);
+
   // Filter magic systems based on search
   const filteredSystems = availableMagicSystems.filter(system =>
     system.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -86,14 +102,6 @@ export function CharacterMagicSelector({
     setSelectedSystems(prev => {
       const newMap = new Map(prev);
       newMap.delete(systemId);
-      
-      // Update parent with remaining spell IDs
-      const allSelectedSpells: number[] = [];
-      newMap.forEach(({ selectedSpells }) => {
-        selectedSpells.forEach(spellId => allSelectedSpells.push(spellId));
-      });
-      onSelectionChange(allSelectedSpells);
-      
       return newMap;
     });
   };
@@ -115,13 +123,6 @@ export function CharacterMagicSelector({
           ...systemData,
           selectedSpells: newSelectedSpells
         });
-        
-        // Update parent with all selected spell IDs
-        const allSelectedSpells: number[] = [];
-        newMap.forEach(({ selectedSpells }) => {
-          selectedSpells.forEach(id => allSelectedSpells.push(id));
-        });
-        onSelectionChange(allSelectedSpells);
       }
       
       return newMap;
