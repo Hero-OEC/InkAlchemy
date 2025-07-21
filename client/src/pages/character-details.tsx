@@ -57,7 +57,24 @@ export default function CharacterDetails() {
   });
 
   if (!character) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Navbar 
+          hasActiveProject={true}
+          currentPage="characters"
+          onNavigate={() => {}}
+          projectName={project?.name}
+        />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto mb-4"></div>
+              <p className="text-brand-600">Loading character...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   const config = CHARACTER_TYPE_CONFIG[character.type as keyof typeof CHARACTER_TYPE_CONFIG];
