@@ -16,7 +16,7 @@ export function MasonryGrid({
   itemSelector = ".masonry-item",
   columnWidth = ".masonry-sizer",
   gutter = 24, // 6 * 4px (gap-6 equivalent)
-  horizontalOrder = true
+  horizontalOrder = false
 }: MasonryGridProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const masonryRef = useRef<Masonry | null>(null);
@@ -30,7 +30,7 @@ export function MasonryGrid({
       columnWidth,
       gutter,
       horizontalOrder,
-      fitWidth: false,
+      fitWidth: true,
       resize: true,
     });
 
@@ -95,12 +95,9 @@ export function MasonryGrid({
     <div
       ref={gridRef}
       className={`masonry-container ${className}`}
-      style={{
-        margin: '0 auto', // Center the container
-      }}
     >
       {/* Column sizer for responsive columns */}
-      <div className="masonry-sizer w-full sm:w-1/2 lg:w-1/3"></div>
+      <div className="masonry-sizer w-full md:w-1/2 lg:w-1/3"></div>
       {children}
     </div>
   );
@@ -114,10 +111,8 @@ interface MasonryItemProps {
 
 export function MasonryItem({ children, className = "" }: MasonryItemProps) {
   return (
-    <div className={`masonry-item w-full sm:w-1/2 lg:w-1/3 mb-6 ${className}`}>
-      <div className="px-3">
-        {children}
-      </div>
+    <div className={`masonry-item w-full md:w-1/2 lg:w-1/3 ${className}`} style={{ paddingLeft: '12px', paddingRight: '12px', marginBottom: '24px' }}>
+      {children}
     </div>
   );
 }
