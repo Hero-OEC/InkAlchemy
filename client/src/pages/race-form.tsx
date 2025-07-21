@@ -34,7 +34,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
   const [, setLocation] = useLocation();
   const { navigateWithReferrer } = useNavigation();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("basic");
   const currentPath = mode === "create" 
     ? `/projects/${projectId}/races/new`
     : `/projects/${projectId}/races/${raceId}/edit`;
@@ -186,132 +186,172 @@ export default function RaceForm({ mode }: RaceFormProps) {
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-xl border border-brand-200 p-6">
+        <div className="bg-white rounded-xl border border-brand-200 overflow-hidden">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Name */}
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Race Name *</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="e.g., Elves, Dwarves, Dragonborn"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              {/* Tabs */}
+              <div className="border-b border-brand-200">
+                <div className="flex w-full">
+                  {[
+                    { id: "basic", label: "Basic Info", icon: FileText },
+                    { id: "culture", label: "Culture & Society", icon: Users },
+                    { id: "traits", label: "Traits & Abilities", icon: Sparkles },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-4 text-sm font-medium border-b-2 transition-colors ${
+                        activeTab === tab.id
+                          ? "border-brand-400 text-brand-600 bg-brand-50"
+                          : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
+                      }`}
+                    >
+                      <tab.icon className="w-4 h-4" />
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-              {/* Description */}
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Brief overview of this race..."
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Tab Content */}
+              <div className="p-6">
+                {activeTab === "basic" && (
+                  <div className="space-y-6">
+                    {/* Name */}
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Race Name *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="e.g., Elves, Dwarves, Dragonborn"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-              {/* Culture */}
-              <FormField
-                control={form.control}
-                name="culture"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Culture & Society</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Social structure, traditions, values..."
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    {/* Description */}
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Brief overview of this race..."
+                              className="min-h-[120px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-              {/* Language */}
-              <FormField
-                control={form.control}
-                name="language"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Language</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Language information and characteristics..."
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                    {/* Lifespan */}
+                    <FormField
+                      control={form.control}
+                      name="lifespan"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Lifespan</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Average lifespan and aging information..."
+                              className="min-h-[100px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 )}
-              />
 
-              {/* Lifespan */}
-              <FormField
-                control={form.control}
-                name="lifespan"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Lifespan</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Average lifespan and aging information..."
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                {activeTab === "culture" && (
+                  <div className="space-y-6">
+                    {/* Culture */}
+                    <FormField
+                      control={form.control}
+                      name="culture"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Culture & Society</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Social structure, traditions, values, customs, beliefs..."
+                              className="min-h-[120px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Language */}
+                    <FormField
+                      control={form.control}
+                      name="language"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Language</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Language information, dialects, writing systems..."
+                              className="min-h-[120px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 )}
-              />
 
-              {/* Traits */}
-              <FormField
-                control={form.control}
-                name="traits"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Traits & Abilities</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Special abilities, magical traits, unique characteristics..."
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                {activeTab === "traits" && (
+                  <div className="space-y-6">
+                    {/* Traits */}
+                    <FormField
+                      control={form.control}
+                      name="traits"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Traits & Abilities</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Special abilities, magical traits, unique characteristics, physical features..."
+                              className="min-h-[150px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 )}
-              />
 
-              {/* Submit Button */}
-              <div className="flex justify-end pt-4">
-                <Button
-                  type="submit"
-                  variant="primary"
-                  disabled={isSubmitting}
-                  className="min-w-[120px]"
-                >
-                  {isSubmitting ? "Saving..." : mode === "create" ? "Create Race" : "Save Changes"}
-                </Button>
+                {/* Submit Button */}
+                <div className="flex justify-end pt-6 border-t border-brand-200 mt-6">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={isSubmitting}
+                    className="min-w-[120px]"
+                  >
+                    {isSubmitting ? "Saving..." : mode === "create" ? "Create Race" : "Save Changes"}
+                  </Button>
+                </div>
               </div>
             </form>
           </Form>

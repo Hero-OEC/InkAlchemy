@@ -91,25 +91,28 @@ export default function RaceDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-50">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar 
         hasActiveProject={true}
+        currentPage="characters"
         projectName={project?.name}
-        onNavigate={(path) => setLocation(path)}
+        onNavigate={(path) => setLocation(`/projects/${projectId}/${path}`)}
       />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
+      
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header with Back Button */}
+        <div className="flex items-center gap-4 mb-8">
           <Button
             variant="ghost"
+            size="md"
             onClick={handleBack}
-            className="mb-4 text-brand-600 hover:text-brand-800"
+            className="text-brand-600 hover:text-brand-800"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Characters
+            Back
           </Button>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-1">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-brand-200">
                 <UserCheck className="w-8 h-8 text-brand-700" />
@@ -130,66 +133,30 @@ export default function RaceDetails() {
           </div>
         </div>
 
-        {/* Content */}
+        {/* Tabs */}
         <div className="bg-white rounded-xl border border-brand-200 overflow-hidden">
-          {/* Tabs */}
           <div className="border-b border-brand-200">
-            <div className="flex">
-              <button
-                onClick={() => setActiveTab("description")}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === "description"
-                    ? "border-brand-400 text-brand-600 bg-brand-50"
-                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
-                }`}
-              >
-                <FileText className="w-4 h-4" />
-                Description
-              </button>
-              <button
-                onClick={() => setActiveTab("culture")}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === "culture"
-                    ? "border-brand-400 text-brand-600 bg-brand-50"
-                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
-                }`}
-              >
-                <Users className="w-4 h-4" />
-                Culture & Society
-              </button>
-              <button
-                onClick={() => setActiveTab("lifespan")}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === "lifespan"
-                    ? "border-brand-400 text-brand-600 bg-brand-50"
-                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
-                }`}
-              >
-                <Clock className="w-4 h-4" />
-                Lifespan
-              </button>
-              <button
-                onClick={() => setActiveTab("traits")}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === "traits"
-                    ? "border-brand-400 text-brand-600 bg-brand-50"
-                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
-                }`}
-              >
-                <Sparkles className="w-4 h-4" />
-                Traits & Abilities
-              </button>
-              <button
-                onClick={() => setActiveTab("language")}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === "language"
-                    ? "border-brand-400 text-brand-600 bg-brand-50"
-                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
-                }`}
-              >
-                <Languages className="w-4 h-4" />
-                Language
-              </button>
+            <div className="flex w-full">
+              {[
+                { id: "description", label: "Description", icon: FileText },
+                { id: "culture", label: "Culture & Society", icon: Users },
+                { id: "lifespan", label: "Lifespan", icon: Clock },
+                { id: "traits", label: "Traits & Abilities", icon: Sparkles },
+                { id: "language", label: "Language", icon: Languages },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-4 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === tab.id
+                      ? "border-brand-400 text-brand-600 bg-brand-50"
+                      : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              ))}
             </div>
           </div>
 
