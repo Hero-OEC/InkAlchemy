@@ -1,5 +1,7 @@
 import { Sparkles, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocation } from "wouter";
+import { useNavigation } from "@/contexts/navigation-context";
 
 interface Spell {
   id: number;
@@ -17,16 +19,16 @@ interface MagicSystem {
 interface CharacterMagicCardProps {
   magicSystem: MagicSystem;
   characterSpells?: Spell[];
-  onSpellClick?: (spell: Spell) => void;
-  onSystemClick?: (system: MagicSystem) => void;
+  projectId: string;
 }
 
 export function CharacterMagicCard({ 
   magicSystem, 
   characterSpells = [], 
-  onSpellClick, 
-  onSystemClick 
+  projectId 
 }: CharacterMagicCardProps) {
+  const [currentPath] = useLocation();
+  const { navigateWithReferrer } = useNavigation();
   // Get the appropriate icon based on system type
   const SystemIcon = magicSystem.type === "magic" ? Sparkles : Zap;
   
@@ -43,7 +45,7 @@ export function CharacterMagicCard({
           "flex items-center gap-3 p-3 rounded-lg border transition-all duration-200",
           "bg-brand-100 border-brand-200 hover:bg-brand-200 hover:border-brand-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
         )}
-        onClick={() => onSystemClick?.(magicSystem)}
+        onClick={() => navigateWithReferrer(`/projects/${projectId}/magic-systems/${magicSystem.id}`, currentPath)}
       >
         <div className="p-1.5 rounded-lg bg-brand-200">
           <SystemIcon className="w-6 h-6 text-brand-700" />
@@ -73,7 +75,7 @@ export function CharacterMagicCard({
                   "flex items-center gap-2 p-2 rounded-md border transition-colors cursor-pointer",
                   "bg-secondary hover:bg-accent border-border hover:border-accent-foreground/20"
                 )}
-                onClick={() => onSpellClick?.(spell)}
+                onClick={() => navigateWithReferrer(`/projects/${projectId}/spells/${spell.id}`, currentPath)}
               >
                 <div className="w-2 h-2 rounded-full bg-brand-400" />
                 <span className="text-sm font-medium text-foreground flex-1">

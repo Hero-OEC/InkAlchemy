@@ -70,8 +70,7 @@ export function CharacterMagicCardShowcase() {
             <CharacterMagicCard
               magicSystem={system}
               characterSpells={characterSpells}
-              onSpellClick={handleSpellClick}
-              onSystemClick={handleSystemClick}
+              projectId="1"
             />
           </div>
         ))}
@@ -88,8 +87,7 @@ export function CharacterMagicCardShowcase() {
             spells: []
           }}
           characterSpells={[]}
-          onSpellClick={handleSpellClick}
-          onSystemClick={handleSystemClick}
+          projectId="1"
         />
       </div>
 

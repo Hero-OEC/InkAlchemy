@@ -357,8 +357,7 @@ export default function CharacterDetails() {
                             key={system.id}
                             magicSystem={system}
                             characterSpells={system.spells}
-                            onSpellClick={(spell) => setLocation(`/projects/${projectId}/spells/${spell.id}`)}
-                            onSystemClick={(system) => handleMagicSystemClick(system.id)}
+                            projectId={projectId!}
                           />
                         ))}
                       </div>
