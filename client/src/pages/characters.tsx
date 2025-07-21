@@ -86,47 +86,22 @@ export default function Characters() {
             </Button>
           </div>
 
-          {racesLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white rounded-lg border border-brand-200 p-4 animate-pulse">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brand-200 rounded-lg"></div>
-                    <div className="flex-1">
-                      <div className="h-4 bg-brand-200 rounded mb-2"></div>
-                      <div className="h-3 bg-brand-100 rounded w-3/4"></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : races.length === 0 ? (
-            <div className="bg-white rounded-lg border border-brand-200 p-8 text-center">
-              <UserCheck className="w-12 h-12 text-brand-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-brand-900 mb-2">No races yet</h3>
-              <p className="text-brand-600 mb-4">Start building your world by defining the races that live in it.</p>
-              <Button variant="primary" onClick={handleCreateRace}>
-                Create Your First Race
-              </Button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {races.map((race) => (
-                <ContentCard
-                  key={race.id}
-                  id={race.id}
-                  title={race.name}
-                  type="note"
-                  subtype="race"
-                  description={race.description || "No description"}
-                  icon={UserCheck}
-                  onClick={() => handleRaceClick(race)}
-                  createdAt={race.createdAt}
-                  lastEditedAt={race.updatedAt}
-                />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {races.map((race) => (
+              <ContentCard
+                key={race.id}
+                id={race.id}
+                title={race.name}
+                type="note"
+                subtype="race"
+                description={race.description || "No description"}
+                icon={UserCheck}
+                onClick={() => handleRaceClick(race)}
+                createdAt={race.createdAt}
+                lastEditedAt={race.updatedAt}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Characters Section */}
