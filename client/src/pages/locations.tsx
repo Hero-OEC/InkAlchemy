@@ -115,12 +115,11 @@ export default function Locations() {
         projectName={project?.name}
         onNavigate={handleNavigation}
       />
-      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-brand-950 mb-2">Locations</h1>
+            <h1 className="text-4xl font-bold mb-2 text-[#624122]">Locations</h1>
             <p className="text-brand-600">Manage your world's places and settings</p>
           </div>
           <Button onClick={handleCreateLocation} className="flex items-center gap-2">
@@ -159,7 +158,6 @@ export default function Locations() {
           </div>
         )}
       </main>
-
       <DeleteConfirmation
         isOpen={!!deleteItem}
         onClose={() => setDeleteItem(null)}
