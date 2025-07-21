@@ -28,6 +28,8 @@ export const characters = pgTable("characters", {
   powerType: text("power_type"),
   age: text("age"),
   race: text("race"),
+  weapons: text("weapons"),
+  equipment: text("equipment"),
   imageUrl: text("image_url"),
   status: text("status").default("active"), // active, developing, inactive
   createdAt: timestamp("created_at").defaultNow().notNull(),

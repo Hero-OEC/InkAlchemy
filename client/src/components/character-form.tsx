@@ -314,6 +314,17 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                 </button>
                 <button
                   type="button"
+                  onClick={() => setActiveTab("weapons")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === "weapons"
+                      ? "border-brand-500 text-brand-600"
+                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
+                  }`}
+                >
+                  Weapons
+                </button>
+                <button
+                  type="button"
                   onClick={() => setActiveTab("magic")}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === "magic"
@@ -397,24 +408,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                     </div>
                   </div>
 
-                  <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Magic & Abilities</h3>
-                    <CharacterMagicSelector
-                      availableMagicSystems={magicSystems.map(system => ({
-                        id: system.id,
-                        name: system.name,
-                        type: system.type as "magic" | "power",
-                        spells: allSpells.filter(spell => spell.magicSystemId === system.id).map(spell => ({
-                          id: spell.id,
-                          name: spell.name,
-                          type: system.type === "magic" ? "spell" as const : "ability" as const,
-                          magicSystemId: spell.magicSystemId
-                        }))
-                      }))}
-                      selectedSpells={selectedSpells}
-                      onSelectionChange={setSelectedSpells}
-                    />
-                  </div>
+
                 </div>
               )}
 
@@ -495,6 +489,51 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                             <FormControl>
                               <Textarea 
                                 placeholder="Traits, quirks, behavior patterns..."
+                                className="min-h-[150px]"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "weapons" && (
+                <div className="space-y-6">
+                  <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Weapons & Equipment</h3>
+                    <div className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="weapons"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Weapons</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Swords, bows, magical artifacts, preferred weapons..."
+                                className="min-h-[150px]"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="equipment"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Equipment & Gear</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Armor, tools, accessories, special items..."
                                 className="min-h-[150px]"
                                 {...field} 
                               />
