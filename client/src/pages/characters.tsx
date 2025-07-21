@@ -101,6 +101,7 @@ export default function Characters() {
                 title={race.name}
                 onClick={() => handleRaceClick(race)}
                 variant="editable"
+                onEdit={() => setLocation(`/projects/${projectId}/races/${race.id}/edit`)}
                 onDelete={() => handleRaceDelete(race)}
               />
             ))}
