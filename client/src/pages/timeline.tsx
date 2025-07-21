@@ -61,12 +61,12 @@ export default function Timeline() {
   // Process events with relationships to add character and location data
   const processedEvents = events.map(event => {
     const eventRelationships = relationships.filter(rel => 
-      rel.fromElementType === 'event' && rel.fromElementId === event.id
+      rel.sourceType === 'event' && rel.sourceId === event.id
     );
     
     const eventCharacters = eventRelationships
-      .filter(rel => rel.toElementType === 'character')
-      .map(rel => characters.find(char => char.id === rel.toElementId))
+      .filter(rel => rel.targetType === 'character')
+      .map(rel => characters.find(char => char.id === rel.targetId))
       .filter(Boolean) as Character[];
     
     const eventLocation = event.locationId 
