@@ -52,7 +52,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
   // Fetch race data for edit mode
   const { data: race, isLoading } = useQuery<Race>({
     queryKey: [`/api/races/${raceId}`],
-    enabled: mode === "edit" && !!raceId,
+    enabled: mode === "edit" && !!raceId && raceId !== "new",
   });
 
   // Update page title when race data loads
@@ -98,9 +98,9 @@ export default function RaceForm({ mode }: RaceFormProps) {
         method: "POST",
         body: JSON.stringify({ ...data, projectId: parseInt(projectId!) }),
       }),
-    onSuccess: () => {
+    onSuccess: (newRace) => {
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/races`] });
-      navigateWithReferrer(`/projects/${projectId}/characters`, currentPath);
+      navigateWithReferrer(`/projects/${projectId}/races/${newRace.id}`, currentPath);
     },
   });
 

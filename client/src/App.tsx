@@ -68,6 +68,7 @@ function App() {
       <Route path="/projects/:projectId/notes/new" component={CreateNote} />
       <Route path="/projects/:projectId/notes/:noteId/edit" component={EditNote} />
       <Route path="/projects/:projectId/notes/:noteId" component={NoteDetails} />
+      <Route path="/projects/:projectId/races" component={Characters} />
       <Route path="/projects/:projectId/races/new" component={CreateRace} />
       <Route path="/projects/:projectId/races/:raceId/edit" component={EditRace} />
       <Route path="/projects/:projectId/races/:raceId" component={RaceDetails} />
