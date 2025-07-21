@@ -61,6 +61,10 @@ export default function Characters() {
 
 
 
+  const handleRaceEdit = (race: Race) => {
+    setLocation(`/projects/${projectId}/races/${race.id}/edit`);
+  };
+
   const handleRaceDelete = (race: Race) => {
     // TODO: Implement race deletion with confirmation dialog
     console.log("Delete race:", race.name);
@@ -100,7 +104,8 @@ export default function Characters() {
                 icon={UserCheck}
                 title={race.name}
                 onClick={() => handleRaceClick(race)}
-                variant="editable"
+                variant="dropdown"
+                onEdit={() => handleRaceEdit(race)}
                 onDelete={() => handleRaceDelete(race)}
               />
             ))}
