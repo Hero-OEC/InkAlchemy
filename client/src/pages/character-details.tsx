@@ -24,15 +24,9 @@ export default function CharacterDetails() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
 
-  // Redirect if characterId is invalid (like "new")
-  useEffect(() => {
-    if (!characterId || characterId === "new" || isNaN(Number(characterId))) {
-      setLocation(`/projects/${projectId}/characters`);
-    }
-  }, [characterId, projectId, setLocation]);
-
   // Don't render if characterId is invalid
   if (!characterId || characterId === "new" || isNaN(Number(characterId))) {
+    console.log('CharacterDetails: Invalid characterId detected:', characterId);
     return null;
   }
 

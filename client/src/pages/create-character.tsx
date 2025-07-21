@@ -7,6 +7,7 @@ import { type Project } from "@shared/schema";
 import { ArrowLeft, Plus, Users } from "lucide-react";
 
 export default function CreateCharacter() {
+  console.log('CreateCharacter component loaded');
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
 

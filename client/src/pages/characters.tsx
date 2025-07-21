@@ -23,6 +23,7 @@ export default function Characters() {
   };
 
   const handleCreateCharacter = () => {
+    console.log('Create character clicked, navigating to:', `/projects/${projectId}/characters/new`);
     setLocation(`/projects/${projectId}/characters/new`);
   };
 
