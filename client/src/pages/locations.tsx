@@ -82,7 +82,7 @@ export default function Locations() {
         onNavigate={handleNavigation}
       />
       
-      <main className="container mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
           <div>

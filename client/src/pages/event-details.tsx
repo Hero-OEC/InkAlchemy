@@ -107,7 +107,7 @@ export default function EventDetails() {
           projectName={project?.name}
           onNavigate={handleNavigation}
         />
-        <main className="container mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-20">
             <h1 className="text-2xl font-bold text-brand-900 mb-4">Event not found</h1>
             <button 
@@ -148,7 +148,7 @@ export default function EventDetails() {
         onNavigate={handleNavigation}
       />
       
-      <main className="container mx-auto px-6 py-8" style={{ marginLeft: '100px', marginRight: '100px' }}>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
