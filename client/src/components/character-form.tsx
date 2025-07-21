@@ -530,22 +530,12 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-end gap-4 mt-8">
-          <Button 
-            type="button" 
-            variant="ghost" 
-            onClick={onSuccess}
-          >
+        <div className="flex justify-end space-x-2 pt-6 border-t border-brand-200">
+          <Button type="button" variant="outline" onClick={onSuccess}>
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            variant="primary"
-            disabled={isLoading}
-            className="flex items-center gap-2"
-          >
-            {character ? <Save size={16} /> : <Plus size={16} />}
-            {character ? "Update Character" : "Create Character"}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Saving..." : character ? "Update Character" : "Create Character"}
           </Button>
         </div>
       </form>
