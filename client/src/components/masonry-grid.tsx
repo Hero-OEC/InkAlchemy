@@ -1,40 +1,69 @@
-import { useEffect, useRef, ReactNode } from 'react';
+import { useEffect, useRef, ReactNode, useState } from 'react';
 import Masonry from 'masonry-layout';
 
 interface MasonryGridProps {
   children: ReactNode;
   className?: string;
-  itemSelector?: string;
-  columnWidth?: number | string;
-  gutter?: number;
-  horizontalOrder?: boolean;
 }
 
 export function MasonryGrid({
   children,
-  className = "",
-  itemSelector = ".masonry-item",
-  columnWidth = ".masonry-sizer",
-  gutter = 24, // 6 * 4px (gap-6 equivalent)
-  horizontalOrder = false
+  className = ""
 }: MasonryGridProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const masonryRef = useRef<Masonry | null>(null);
+  const [columnWidth, setColumnWidth] = useState<number>(0);
+
+  // Calculate column width based on screen size
+  useEffect(() => {
+    const calculateColumnWidth = () => {
+      if (!gridRef.current) return;
+      
+      const containerWidth = gridRef.current.offsetWidth;
+      const gap = 24; // 6 * 4px (gap-6 equivalent)
+      
+      let columns = 1;
+      if (window.innerWidth >= 1024) { // lg breakpoint
+        columns = 3;
+      } else if (window.innerWidth >= 768) { // md breakpoint
+        columns = 2;
+      }
+      
+      const totalGaps = (columns - 1) * gap;
+      const availableWidth = containerWidth - totalGaps;
+      const itemWidth = Math.floor(availableWidth / columns);
+      
+      setColumnWidth(itemWidth);
+    };
+
+    calculateColumnWidth();
+    
+    const resizeHandler = () => {
+      calculateColumnWidth();
+    };
+    
+    window.addEventListener('resize', resizeHandler);
+    return () => window.removeEventListener('resize', resizeHandler);
+  }, []);
 
   useEffect(() => {
-    if (!gridRef.current) return;
+    if (!gridRef.current || !columnWidth) return;
 
-    // Initialize Masonry
+    // Destroy existing instance
+    if (masonryRef.current) {
+      masonryRef.current.destroy();
+    }
+
+    // Initialize Masonry with calculated column width
     masonryRef.current = new Masonry(gridRef.current, {
-      itemSelector,
-      columnWidth,
-      gutter,
-      horizontalOrder,
-      fitWidth: true,
+      itemSelector: '.masonry-item',
+      columnWidth: columnWidth,
+      gutter: 24,
+      fitWidth: false,
       resize: true,
     });
 
-    // Layout items on load
+    // Layout items
     const layoutMasonry = () => {
       if (masonryRef.current) {
         masonryRef.current.reloadItems();
@@ -42,33 +71,7 @@ export function MasonryGrid({
       }
     };
 
-    // Handle images loading
-    const images = gridRef.current.querySelectorAll('img');
-    let loadedImages = 0;
-    const totalImages = images.length;
-
-    if (totalImages === 0) {
-      layoutMasonry();
-    } else {
-      images.forEach(img => {
-        if (img.complete) {
-          loadedImages++;
-          if (loadedImages === totalImages) {
-            layoutMasonry();
-          }
-        } else {
-          img.addEventListener('load', () => {
-            loadedImages++;
-            if (loadedImages === totalImages) {
-              layoutMasonry();
-            }
-          });
-        }
-      });
-    }
-
-    // Layout after a short delay to ensure all content is rendered
-    const timeoutId = setTimeout(layoutMasonry, 100);
+    const timeoutId = setTimeout(layoutMasonry, 50);
 
     return () => {
       clearTimeout(timeoutId);
@@ -77,27 +80,13 @@ export function MasonryGrid({
         masonryRef.current = null;
       }
     };
-  }, [children, itemSelector, columnWidth, gutter, horizontalOrder]);
-
-  // Re-layout when children change
-  useEffect(() => {
-    if (masonryRef.current) {
-      const timeoutId = setTimeout(() => {
-        masonryRef.current?.reloadItems();
-        masonryRef.current?.layout();
-      }, 50);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [children]);
+  }, [columnWidth, children]);
 
   return (
     <div
       ref={gridRef}
       className={`masonry-container ${className}`}
     >
-      {/* Column sizer for responsive columns */}
-      <div className="masonry-sizer w-full md:w-1/2 lg:w-1/3"></div>
       {children}
     </div>
   );
@@ -111,7 +100,7 @@ interface MasonryItemProps {
 
 export function MasonryItem({ children, className = "" }: MasonryItemProps) {
   return (
-    <div className={`masonry-item w-full md:w-1/2 lg:w-1/3 ${className}`} style={{ paddingLeft: '12px', paddingRight: '12px', marginBottom: '24px' }}>
+    <div className={`masonry-item ${className}`} style={{ marginBottom: '24px' }}>
       {children}
     </div>
   );
