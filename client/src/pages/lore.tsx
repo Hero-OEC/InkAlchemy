@@ -2,6 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
+import { MasonryGrid, MasonryItem } from "@/components/masonry-grid";
 import { Button } from "@/components/button-variations";
 import { Plus, BookOpen, Crown, Scroll, Landmark, Sword, Users, Globe, Calendar } from "lucide-react";
 import type { Project, LoreEntry } from "@shared/schema";
@@ -91,25 +92,26 @@ export default function Lore() {
           </Button>
         </div>
 
-        {/* Lore Grid */}
+        {/* Lore Masonry Grid */}
         {loreEntries.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <MasonryGrid>
             {loreCards.map((loreCard) => (
-              <ContentCard
-                key={loreCard.id}
-                id={loreCard.id}
-                title={loreCard.title}
-                type={loreCard.type}
-                subtype={loreCard.subtype}
-                description={loreCard.description}
-                icon={loreCard.icon}
-                createdAt={loreCard.createdAt}
-                lastEditedAt={loreCard.lastEditedAt}
-                onClick={() => handleLoreClick(loreEntries.find(l => l.id === loreCard.id)!)}
-                onEdit={() => handleLoreEdit(loreEntries.find(l => l.id === loreCard.id)!)}
-              />
+              <MasonryItem key={loreCard.id}>
+                <ContentCard
+                  id={loreCard.id}
+                  title={loreCard.title}
+                  type={loreCard.type}
+                  subtype={loreCard.subtype}
+                  description={loreCard.description}
+                  icon={loreCard.icon}
+                  createdAt={loreCard.createdAt}
+                  lastEditedAt={loreCard.lastEditedAt}
+                  onClick={() => handleLoreClick(loreEntries.find(l => l.id === loreCard.id)!)}
+                  onEdit={() => handleLoreEdit(loreEntries.find(l => l.id === loreCard.id)!)}
+                />
+              </MasonryItem>
             ))}
-          </div>
+          </MasonryGrid>
         ) : (
           <div className="text-center py-20">
             <BookOpen className="w-16 h-16 mx-auto mb-4 text-brand-300" />

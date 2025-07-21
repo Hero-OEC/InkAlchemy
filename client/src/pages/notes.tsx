@@ -2,6 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
+import { MasonryGrid, MasonryItem } from "@/components/masonry-grid";
 import { Button } from "@/components/button-variations";
 import { Plus, StickyNote, FileText, Lightbulb, AlertCircle, Tag } from "lucide-react";
 import type { Project, Note } from "@shared/schema";
@@ -91,25 +92,26 @@ export default function Notes() {
           </Button>
         </div>
 
-        {/* Notes Grid */}
+        {/* Notes Masonry Grid */}
         {notes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <MasonryGrid>
             {noteCards.map((noteCard) => (
-              <ContentCard
-                key={noteCard.id}
-                id={noteCard.id}
-                title={noteCard.title}
-                type={noteCard.type}
-                subtype={noteCard.subtype}
-                description={noteCard.description}
-                icon={noteCard.icon}
-                createdAt={noteCard.createdAt}
-                lastEditedAt={noteCard.lastEditedAt}
-                onClick={() => handleNoteClick(notes.find(n => n.id === noteCard.id)!)}
-                onEdit={() => handleNoteEdit(notes.find(n => n.id === noteCard.id)!)}
-              />
+              <MasonryItem key={noteCard.id}>
+                <ContentCard
+                  id={noteCard.id}
+                  title={noteCard.title}
+                  type={noteCard.type}
+                  subtype={noteCard.subtype}
+                  description={noteCard.description}
+                  icon={noteCard.icon}
+                  createdAt={noteCard.createdAt}
+                  lastEditedAt={noteCard.lastEditedAt}
+                  onClick={() => handleNoteClick(notes.find(n => n.id === noteCard.id)!)}
+                  onEdit={() => handleNoteEdit(notes.find(n => n.id === noteCard.id)!)}
+                />
+              </MasonryItem>
             ))}
-          </div>
+          </MasonryGrid>
         ) : (
           <div className="text-center py-20">
             <StickyNote className="w-16 h-16 mx-auto mb-4 text-brand-300" />

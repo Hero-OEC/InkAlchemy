@@ -2,6 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
+import { MasonryGrid, MasonryItem } from "@/components/masonry-grid";
 import { Button } from "@/components/button-variations";
 import { Plus, Building2, Trees, Castle, Mountain, Home, Landmark, Globe } from "lucide-react";
 import type { Project, Location } from "@shared/schema";
@@ -95,21 +96,22 @@ export default function Locations() {
           </Button>
         </div>
 
-        {/* Locations Grid */}
+        {/* Locations Masonry Grid */}
         {locationCards.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <MasonryGrid>
             {locationCards.map((card) => {
               const originalLocation = locations.find(l => l.id === card.id);
               return (
-                <ContentCard
-                  key={card.id}
-                  {...card}
-                  onClick={() => handleLocationClick(originalLocation!)}
-                  onEdit={() => handleLocationEdit(originalLocation!)}
-                />
+                <MasonryItem key={card.id}>
+                  <ContentCard
+                    {...card}
+                    onClick={() => handleLocationClick(originalLocation!)}
+                    onEdit={() => handleLocationEdit(originalLocation!)}
+                  />
+                </MasonryItem>
               );
             })}
-          </div>
+          </MasonryGrid>
         ) : (
           <div className="text-center py-20">
             <div className="mb-6">
