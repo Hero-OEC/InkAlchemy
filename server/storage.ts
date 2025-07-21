@@ -642,6 +642,7 @@ export class MemStorage implements IStorage {
         source: "elemental",
         complexity: "medium",
         users: "Approximately 15% of the population shows elemental affinity, but only 3% develop usable skills through training.",
+        cost: "Physical and mental exhaustion with overuse, requires concentration and proximity to elements",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -656,6 +657,7 @@ export class MemStorage implements IStorage {
         source: "divine",
         complexity: "high",
         users: "Restricted to ordained clergy and paladins of the Seven Celestial Guardians. Approximately 500 active practitioners across all realms.",
+        cost: "Requires daily prayers, ritual components, and adherence to divine commandments",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -670,6 +672,7 @@ export class MemStorage implements IStorage {
         source: "shadow",
         complexity: "high",
         users: "Secretive practitioners organized in hidden guilds. Estimated 200-300 shadow weavers exist, mostly operating covertly.",
+        cost: "Risk of shadow addiction and gradual loss of connection to light and warmth",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -684,6 +687,7 @@ export class MemStorage implements IStorage {
         source: "psychic",
         complexity: "medium",
         users: "Genetic trait appearing in roughly 2% of the population. Most develop only minor abilities; true psychics number less than 50 known individuals.",
+        cost: "Severe mental fatigue and headaches with overuse, emotional stress required for activation",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -698,6 +702,7 @@ export class MemStorage implements IStorage {
         source: "technological",
         complexity: "low",
         users: "Modern development taught in specialized academies. Approximately 800 certified crystal fusion specialists work in various technological and defensive roles.",
+        cost: "Risk of crystalline scarring and crystal poisoning, requires physical contact with charged crystals",
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -899,7 +904,109 @@ export class MemStorage implements IStorage {
     ];
 
     defaultSpells.forEach(spell => this.spells.set(spell.id, spell));
-    this.currentId = 130;
+
+    // Add sample character spells to demonstrate both magic and power systems
+    const defaultCharacterSpells: CharacterSpell[] = [
+      // Aria (character 1) - Elemental magic user
+      {
+        id: 201,
+        characterId: 1,
+        spellId: 101, // Fireball
+        proficiency: "adept",
+        createdAt: new Date()
+      },
+      {
+        id: 202,
+        characterId: 1,
+        spellId: 102, // Water Shield
+        proficiency: "apprentice",
+        createdAt: new Date()
+      },
+      {
+        id: 203,
+        characterId: 1,
+        spellId: 103, // Earth Tremor
+        proficiency: "novice",
+        createdAt: new Date()
+      },
+      
+      // Master Theron (character 2) - Divine magic user with psychic abilities
+      {
+        id: 204,
+        characterId: 2,
+        spellId: 105, // Healing Light
+        proficiency: "master",
+        createdAt: new Date()
+      },
+      {
+        id: 205,
+        characterId: 2,
+        spellId: 106, // Guardian's Ward
+        proficiency: "expert",
+        createdAt: new Date()
+      },
+      {
+        id: 206,
+        characterId: 2,
+        spellId: 107, // Divine Insight
+        proficiency: "adept",
+        createdAt: new Date()
+      },
+      {
+        id: 207,
+        characterId: 2,
+        spellId: 111, // Mind Read (Psychic ability)
+        proficiency: "apprentice",
+        createdAt: new Date()
+      },
+      {
+        id: 208,
+        characterId: 2,
+        spellId: 114, // Mental Barrier (Psychic ability)
+        proficiency: "adept",
+        createdAt: new Date()
+      },
+      
+      // Kara (character 3) - Power system user (Crystal Fusion and Psychic)
+      {
+        id: 209,
+        characterId: 3,
+        spellId: 115, // Energy Amplification (Crystal ability)
+        proficiency: "expert",
+        createdAt: new Date()
+      },
+      {
+        id: 210,
+        characterId: 3,
+        spellId: 116, // Crystal Shield (Crystal ability)
+        proficiency: "adept",
+        createdAt: new Date()
+      },
+      {
+        id: 211,
+        characterId: 3,
+        spellId: 117, // Elemental Discharge (Crystal ability)
+        proficiency: "apprentice",
+        createdAt: new Date()
+      },
+      {
+        id: 212,
+        characterId: 3,
+        spellId: 112, // Telekinetic Push (Psychic ability)
+        proficiency: "adept",
+        createdAt: new Date()
+      },
+      {
+        id: 213,
+        characterId: 3,
+        spellId: 113, // Precognitive Flash (Psychic ability)
+        proficiency: "novice",
+        createdAt: new Date()
+      }
+    ];
+
+    defaultCharacterSpells.forEach(charSpell => this.characterSpells.set(charSpell.id, charSpell));
+    this.currentId = 250;
   }
 
   // Projects
