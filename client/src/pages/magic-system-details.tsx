@@ -1,5 +1,5 @@
 import { useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
@@ -8,6 +8,7 @@ import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
 import { ArrowLeft, Edit, Trash2, Sparkles, Zap, DollarSign, Users, BookOpen, Wand2, Plus, Scroll, Shield } from "lucide-react";
 import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 
 // Simple two-type system configuration
 const SYSTEM_TYPE_CONFIG = {
@@ -33,6 +34,8 @@ export default function MagicSystemDetails() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteSpell, setDeleteSpell] = useState<Spell | null>(null);
+  const queryClient = useQueryClient();
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -80,6 +83,24 @@ export default function MagicSystemDetails() {
 
   const handleCharacterClick = (characterId: number) => {
     setLocation(`/projects/${projectId}/characters/${characterId}`);
+  };
+
+  const deleteSpellMutation = useMutation({
+    mutationFn: (spellId: number) => apiRequest(`/api/spells/${spellId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/magic-systems/${systemId}/spells`] });
+      setDeleteSpell(null);
+    },
+  });
+
+  const handleDeleteSpell = (spell: Spell) => {
+    setDeleteSpell(spell);
+  };
+
+  const confirmDeleteSpell = () => {
+    if (deleteSpell) {
+      deleteSpellMutation.mutate(deleteSpell.id);
+    }
   };
 
   
@@ -270,6 +291,8 @@ export default function MagicSystemDetails() {
                     description={spell.description || "No description available"}
                     icon={system.type === "power" ? Zap : Wand2}
                     onClick={() => setLocation(`/projects/${projectId}/spells/${spell.id}`)}
+                    onEdit={() => setLocation(`/projects/${projectId}/spells/${spell.id}/edit`)}
+                    onDelete={() => handleDeleteSpell(spell)}
                   />
                 ))}
               </div>
@@ -445,6 +468,16 @@ export default function MagicSystemDetails() {
         title="Delete Magic System"
         description={`Are you sure you want to delete "${system?.name}"? This action cannot be undone and will remove all associated spells and data.`}
         itemName={system?.name || "this magic system"}
+      />
+
+      <DeleteConfirmation
+        isOpen={!!deleteSpell}
+        onClose={() => setDeleteSpell(null)}
+        onConfirm={confirmDeleteSpell}
+        title={`Delete ${system?.type === 'power' ? 'Ability' : 'Spell'}`}
+        description={`Are you sure you want to delete "${deleteSpell?.name}"? This action cannot be undone.`}
+        itemName={deleteSpell?.name || `this ${system?.type === 'power' ? 'ability' : 'spell'}`}
+        isLoading={deleteSpellMutation.isPending}
       />
     </div>
   );
