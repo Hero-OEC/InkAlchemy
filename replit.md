@@ -306,3 +306,15 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Implemented character click navigation to character details with proper referrer tracking
 - Added empty state for races with no characters with helpful creation guidance
 - Enhanced tab structure with 6 total tabs including the new Characters tab
+
+### January 2025 - Race Form Pages Redesign
+- Completely rewrote race create and edit pages to match race details page design exactly
+- Replaced old RaceForm component with individual CreateRace and EditRace pages
+- Applied consistent layout: bg-background, separate back button section, race header with icon and badge
+- Implemented tabbed form interface matching details page: Basic Info, Culture & Society, Traits & Abilities
+- Used same tab navigation styling (space-x-8, border styling) and tab content (bg-brand-50 with border)
+- Added proper form validation using insertRaceSchema and React Hook Form
+- Applied consistent text colors (brand-950 for headings, brand-900 for labels)
+- Enhanced form fields with appropriate placeholders and textarea sizing
+- Added loading and error states matching other pages
+- Integrated proper navigation and mutation handling with cache invalidation
