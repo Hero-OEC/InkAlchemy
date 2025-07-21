@@ -54,12 +54,11 @@ export default function Characters() {
         projectName={project?.name}
         onNavigate={handleNavigation}
       />
-      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-brand-900 mb-2">Characters</h1>
+            <h1 className="font-bold text-brand-900 mb-2 text-[36px]">Characters</h1>
             <p className="text-brand-600">Manage your story's cast of characters</p>
           </div>
           <Button
