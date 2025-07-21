@@ -176,13 +176,42 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
               
               {/* Character Image */}
               <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-6">
-                <div className="w-full h-full flex items-center justify-center">
-                  <Users className="w-16 h-16 text-brand-400" />
-                </div>
+                {form.watch("imageUrl") ? (
+                  <img 
+                    src={form.watch("imageUrl")} 
+                    alt="Character preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Users className="w-16 h-16 text-brand-400" />
+                  </div>
+                )}
               </div>
 
               {/* Basic Profile Fields */}
               <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Image URL</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="url"
+                          placeholder="https://example.com/image.jpg"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -262,16 +291,60 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
 
           {/* Right Column - Tabbed Content */}
           <div className="lg:col-span-2">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="background">Background</TabsTrigger>
-                <TabsTrigger value="details">Details</TabsTrigger>
-                <TabsTrigger value="magic">Magic & Abilities</TabsTrigger>
-              </TabsList>
+            {/* Tab Navigation - matching character details exactly */}
+            <div className="border-b border-brand-200">
+              <nav className="-mb-px flex space-x-8">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("overview")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === "overview"
+                      ? "border-brand-500 text-brand-600"
+                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
+                  }`}
+                >
+                  Overview
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("background")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === "background"
+                      ? "border-brand-500 text-brand-600"
+                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
+                  }`}
+                >
+                  Background
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("details")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === "details"
+                      ? "border-brand-500 text-brand-600"
+                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
+                  }`}
+                >
+                  Details
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("magic")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === "magic"
+                      ? "border-brand-500 text-brand-600"
+                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
+                  }`}
+                >
+                  Magic & Abilities
+                </button>
+              </nav>
+            </div>
 
-              <div className="mt-6">
-                <TabsContent value="overview" className="space-y-6">
+            {/* Tab Content */}
+            <div className="mt-6">
+              {activeTab === "overview" && (
+                <div className="space-y-6">
                   <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-900 mb-4">Basic Information</h3>
                     <div className="space-y-4">
@@ -337,9 +410,11 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       />
                     </div>
                   </div>
-                </TabsContent>
+                </div>
+              )}
 
-                <TabsContent value="background" className="space-y-6">
+              {activeTab === "background" && (
+                <div className="space-y-6">
                   <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-900 mb-4">Character History</h3>
                     <div className="space-y-4">
@@ -380,9 +455,11 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       />
                     </div>
                   </div>
-                </TabsContent>
+                </div>
+              )}
 
-                <TabsContent value="details" className="space-y-6">
+              {activeTab === "details" && (
+                <div className="space-y-6">
                   <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-900 mb-4">Physical & Personality</h3>
                     <div className="space-y-4">
@@ -423,9 +500,11 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       />
                     </div>
                   </div>
-                </TabsContent>
+                </div>
+              )}
 
-                <TabsContent value="magic" className="space-y-6">
+              {activeTab === "magic" && (
+                <div className="space-y-6">
                   <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-900 mb-4">Magic Systems & Abilities</h3>
                     <CharacterMagicSelector
@@ -444,132 +523,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       onSelectionChange={setSelectedSpells}
                     />
                   </div>
-                </TabsContent>
-              </div>
-            </Tabs>
-          </div>
-
-          {/* Sidebar for Image, Age, and Race */}
-          <div className="w-80 space-y-6">
-            <div className="bg-brand-50 rounded-lg p-6 space-y-6">
-              <h3 className="text-lg font-semibold text-brand-900">Character Profile</h3>
-              
-              <FormField
-                control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Character Image URL</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="url"
-                        placeholder="https://example.com/image.jpg"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {form.watch("imageUrl") && (
-                <div className="aspect-square rounded-lg overflow-hidden bg-brand-100">
-                  <img 
-                    src={form.watch("imageUrl")} 
-                    alt="Character preview"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
                 </div>
               )}
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="age"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Age</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="25"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="race"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Race</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Human, Elf, etc."
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="prefix"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Prefix</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Sir, Lady, Dr."
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="suffix"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Suffix</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Jr., III, PhD"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="powerType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Power Type</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Magic type, abilities..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
           </div>
         </div>
@@ -578,18 +533,16 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
         <div className="flex items-center justify-end gap-4 mt-8">
           <Button 
             type="button" 
-            variant="outline" 
+            variant="ghost" 
             onClick={onSuccess}
-            size="md"
           >
             Cancel
           </Button>
           <Button 
             type="submit" 
             variant="primary"
-            loading={isLoading}
+            disabled={isLoading}
             className="flex items-center gap-2"
-            size="md"
           >
             {character ? <Save size={16} /> : <Plus size={16} />}
             {character ? "Update Character" : "Create Character"}
