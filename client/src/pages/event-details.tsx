@@ -184,7 +184,7 @@ export default function EventDetails() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Timeline
+            Back
           </Button>
         </div>
 
