@@ -59,6 +59,15 @@ export default function Characters() {
     navigateWithReferrer(`/projects/${projectId}/races/${race.id}`, currentPath);
   };
 
+  const handleRaceEdit = (race: Race) => {
+    setLocation(`/projects/${projectId}/races/${race.id}/edit`);
+  };
+
+  const handleRaceDelete = (race: Race) => {
+    // TODO: Implement race deletion with confirmation dialog
+    console.log("Delete race:", race.name);
+  };
+
   return (
     <div className="min-h-screen bg-brand-50">
       <Navbar 
@@ -97,6 +106,8 @@ export default function Characters() {
                 description={race.description || "No description"}
                 icon={UserCheck}
                 onClick={() => handleRaceClick(race)}
+                onEdit={() => handleRaceEdit(race)}
+                onDelete={() => handleRaceDelete(race)}
                 createdAt={race.createdAt}
                 lastEditedAt={race.updatedAt}
               />
