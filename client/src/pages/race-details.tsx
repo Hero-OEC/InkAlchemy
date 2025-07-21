@@ -5,8 +5,9 @@ import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { CharacterCard } from "@/components/character-card";
 import { UserCheck, Edit, ArrowLeft, Trash2, FileText, Users, Clock, Sparkles, Languages } from "lucide-react";
-import type { Race, Project } from "@shared/schema";
+import type { Race, Project, Character } from "@shared/schema";
 
 export default function RaceDetails() {
   const { projectId, raceId } = useParams();
@@ -33,6 +34,10 @@ export default function RaceDetails() {
   const { data: race, isLoading } = useQuery<Race>({
     queryKey: [`/api/races/${raceId}`],
     enabled: raceId !== "new",
+  });
+
+  const { data: characters = [] } = useQuery<Character[]>({
+    queryKey: [`/api/projects/${projectId}/characters`],
   });
 
   // Set page title
@@ -119,12 +124,22 @@ export default function RaceDetails() {
     return null;
   }
 
+  const handleCharacterClick = (character: Character) => {
+    navigateWithReferrer(`/projects/${projectId}/characters/${character.id}`, currentPath);
+  };
+
+  // Filter characters that belong to this race
+  const raceCharacters = characters.filter(character => 
+    character.race?.toLowerCase() === race?.name.toLowerCase()
+  );
+
   const tabs = [
     { id: "description", label: "Description", icon: FileText },
     { id: "culture", label: "Culture & Society", icon: Users },
     { id: "lifespan", label: "Lifespan", icon: Clock },
     { id: "traits", label: "Traits & Abilities", icon: Sparkles },
     { id: "language", label: "Language", icon: Languages },
+    { id: "characters", label: "Characters", icon: Users },
   ];
 
   return (
@@ -256,6 +271,31 @@ export default function RaceDetails() {
                   {race.language || "No language information available"}
                 </p>
               </div>
+            </div>
+          )}
+
+          {activeTab === "characters" && (
+            <div>
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters of {race.name} Race</h3>
+              {raceCharacters.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {raceCharacters.map((character) => (
+                    <CharacterCard
+                      key={character.id}
+                      character={character}
+                      onClick={() => handleCharacterClick(character)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Users className="w-16 h-16 text-brand-400 mx-auto mb-4" />
+                  <p className="text-brand-600">No characters of this race found</p>
+                  <p className="text-sm text-brand-500 mt-2">
+                    Create characters and set their race to "{race.name}" to see them here.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>
