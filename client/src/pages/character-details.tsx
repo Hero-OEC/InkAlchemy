@@ -24,6 +24,12 @@ export default function CharacterDetails() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
 
+  // Early return if characterId is invalid (like "new")
+  if (!characterId || characterId === "new" || isNaN(Number(characterId))) {
+    setLocation(`/projects/${projectId}/characters`);
+    return null;
+  }
+
   const { data: character, isLoading: characterLoading, error: characterError } = useQuery<Character>({
     queryKey: [`/api/characters/${characterId}`],
   });
