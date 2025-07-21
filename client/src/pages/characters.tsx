@@ -22,7 +22,7 @@ export default function Characters() {
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
-  const { data: races = [] } = useQuery<Race[]>({
+  const { data: races = [], isLoading: racesLoading } = useQuery<Race[]>({
     queryKey: [`/api/projects/${projectId}/races`],
   });
 
@@ -86,7 +86,21 @@ export default function Characters() {
             </Button>
           </div>
 
-          {races.length === 0 ? (
+          {racesLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-lg border border-brand-200 p-4 animate-pulse">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-brand-200 rounded-lg"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-brand-200 rounded mb-2"></div>
+                      <div className="h-3 bg-brand-100 rounded w-3/4"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : races.length === 0 ? (
             <div className="bg-white rounded-lg border border-brand-200 p-8 text-center">
               <UserCheck className="w-12 h-12 text-brand-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-brand-900 mb-2">No races yet</h3>
@@ -141,11 +155,11 @@ export default function Characters() {
                   key={character.id}
                   id={character.id}
                   name={character.name}
-                  prefix={character.prefix}
-                  suffix={character.suffix}
+                  prefix={character.prefix || undefined}
+                  suffix={character.suffix || undefined}
                   type={character.type as any}
                   description={character.description || "No description available"}
-                  imageUrl={character.imageUrl}
+                  imageUrl={character.imageUrl || undefined}
                   createdAt={character.createdAt}
                   lastEditedAt={character.updatedAt}
                   onClick={() => handleCharacterClick(character)}
