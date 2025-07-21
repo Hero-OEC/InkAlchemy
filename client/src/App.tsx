@@ -72,7 +72,6 @@ function App() {
       <Route path="/projects/:projectId/races/:raceId/edit" component={EditRace} />
       <Route path="/projects/:projectId/races/:raceId" component={RaceDetails} />
       <Route path="/components" component={ComponentsShowcase} />
-      <Route path="*" component={NotFound} />
     </Router>
   );
 }
