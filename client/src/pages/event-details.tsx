@@ -1,9 +1,11 @@
 import { useParams, useLocation } from "wouter";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { MiniCard } from "@/components/mini-card";
 import { Button } from "@/components/button-variations";
-import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, CheckCircle } from "lucide-react";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, Trash2, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
 
@@ -57,6 +59,7 @@ const STAGE_COLORS = {
 export default function EventDetails() {
   const { projectId, eventId } = useParams();
   const [, setLocation] = useLocation();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -96,6 +99,20 @@ export default function EventDetails() {
 
   const handleEditEvent = () => {
     setLocation(`/projects/${projectId}/events/${event?.id}/edit`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/events/${eventId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        setLocation(`/projects/${projectId}/timeline`);
+      }
+    } catch (error) {
+      console.error('Error deleting event:', error);
+    }
   };
 
   if (!event) {
@@ -186,7 +203,7 @@ export default function EventDetails() {
               </div>
             </div>
           </div>
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 flex items-center gap-3">
             <Button
               variant="primary"
               size="md"
@@ -195,6 +212,15 @@ export default function EventDetails() {
             >
               <Edit className="w-4 h-4" />
               Edit Event
+            </Button>
+            <Button
+              variant="danger"
+              size="md"
+              onClick={() => setShowDeleteDialog(true)}
+              className="flex items-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete
             </Button>
           </div>
         </div>
@@ -266,6 +292,15 @@ export default function EventDetails() {
           </div>
         </div>
       </main>
+
+      <DeleteConfirmation
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete Event"
+        description={`Are you sure you want to delete "${event?.title}"? This action cannot be undone and will remove all associated relationships and data.`}
+        itemName={event?.title || "this event"}
+      />
     </div>
   );
 }
