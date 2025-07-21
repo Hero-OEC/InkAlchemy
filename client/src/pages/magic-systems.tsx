@@ -1,10 +1,13 @@
 import { useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { Button } from "@/components/button-variations";
 import { Plus, Sparkles, Zap } from "lucide-react";
 import type { Project, MagicSystem } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 
 // Simple two-type system configuration
 const SYSTEM_TYPE_CONFIG = {
@@ -29,6 +32,8 @@ const getSystemIcon = (system: MagicSystem) => {
 export default function MagicSystems() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
+  const [deleteItem, setDeleteItem] = useState<MagicSystem | null>(null);
+  const queryClient = useQueryClient();
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -52,6 +57,24 @@ export default function MagicSystems() {
 
   const handleEditSystem = (systemId: number) => {
     setLocation(`/projects/${projectId}/magic-systems/${systemId}/edit`);
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: (systemId: number) => apiRequest(`/api/magic-systems/${systemId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/magic-systems`] });
+      setDeleteItem(null);
+    },
+  });
+
+  const handleDeleteSystem = (system: MagicSystem) => {
+    setDeleteItem(system);
+  };
+
+  const confirmDelete = () => {
+    if (deleteItem) {
+      deleteMutation.mutate(deleteItem.id);
+    }
   };
 
   if (isLoading) {
@@ -132,11 +155,22 @@ export default function MagicSystems() {
                 lastEditedAt={system.updatedAt}
                 onClick={() => handleSystemClick(system.id)}
                 onEdit={() => handleEditSystem(system.id)}
+                onDelete={() => handleDeleteSystem(system)}
               />
             ))}
           </div>
         )}
       </main>
+
+      <DeleteConfirmation
+        isOpen={!!deleteItem}
+        onClose={() => setDeleteItem(null)}
+        onConfirm={confirmDelete}
+        title={`Delete ${deleteItem?.type === 'power' ? 'Power System' : 'Magic System'}`}
+        description={`Are you sure you want to delete "${deleteItem?.name}"? This action cannot be undone.`}
+        itemName={deleteItem?.name || `this ${deleteItem?.type === 'power' ? 'power system' : 'magic system'}`}
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }

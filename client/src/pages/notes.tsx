@@ -1,10 +1,13 @@
 import { useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { Button } from "@/components/button-variations";
 import { Plus, StickyNote, FileText, Lightbulb, AlertCircle, Tag } from "lucide-react";
 import type { Project, Note } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 
 // Note category icons
 const NOTE_CATEGORY_ICONS = {
@@ -22,6 +25,8 @@ const NOTE_CATEGORY_ICONS = {
 export default function Notes() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
+  const [deleteItem, setDeleteItem] = useState<Note | null>(null);
+  const queryClient = useQueryClient();
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -45,6 +50,24 @@ export default function Notes() {
 
   const handleNoteEdit = (note: Note) => {
     setLocation(`/projects/${projectId}/notes/${note.id}/edit`);
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: (noteId: number) => apiRequest(`/api/notes/${noteId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/notes`] });
+      setDeleteItem(null);
+    },
+  });
+
+  const handleNoteDelete = (note: Note) => {
+    setDeleteItem(note);
+  };
+
+  const confirmDelete = () => {
+    if (deleteItem) {
+      deleteMutation.mutate(deleteItem.id);
+    }
   };
 
   // Convert notes to ContentCard format
@@ -107,6 +130,7 @@ export default function Notes() {
                 lastEditedAt={noteCard.lastEditedAt}
                 onClick={() => handleNoteClick(notes.find(n => n.id === noteCard.id)!)}
                 onEdit={() => handleNoteEdit(notes.find(n => n.id === noteCard.id)!)}
+                onDelete={() => handleNoteDelete(notes.find(n => n.id === noteCard.id)!)}
               />
             ))}
           </div>
@@ -127,6 +151,16 @@ export default function Notes() {
           </div>
         )}
       </main>
+
+      <DeleteConfirmation
+        isOpen={!!deleteItem}
+        onClose={() => setDeleteItem(null)}
+        onConfirm={confirmDelete}
+        title="Delete Note"
+        description={`Are you sure you want to delete "${deleteItem?.title}"? This action cannot be undone.`}
+        itemName={deleteItem?.title || "this note"}
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }

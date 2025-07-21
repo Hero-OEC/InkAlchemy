@@ -1,10 +1,13 @@
 import { useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { Button } from "@/components/button-variations";
 import { Plus, Building2, Trees, Castle, Mountain, Home, Landmark, Globe } from "lucide-react";
 import type { Project, Location } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 
 // Location type icons
 const LOCATION_TYPE_ICONS = {
@@ -31,6 +34,8 @@ const LOCATION_TYPE_ICONS = {
 export default function Locations() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
+  const [deleteItem, setDeleteItem] = useState<Location | null>(null);
+  const queryClient = useQueryClient();
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -54,6 +59,24 @@ export default function Locations() {
 
   const handleLocationEdit = (location: Location) => {
     setLocation(`/projects/${projectId}/locations/${location.id}/edit`);
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: (locationId: number) => apiRequest(`/api/locations/${locationId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/locations`] });
+      setDeleteItem(null);
+    },
+  });
+
+  const handleLocationDelete = (location: Location) => {
+    setDeleteItem(location);
+  };
+
+  const confirmDelete = () => {
+    if (deleteItem) {
+      deleteMutation.mutate(deleteItem.id);
+    }
   };
 
   // Convert locations to ContentCard format
@@ -106,6 +129,7 @@ export default function Locations() {
                   {...card}
                   onClick={() => handleLocationClick(originalLocation!)}
                   onEdit={() => handleLocationEdit(originalLocation!)}
+                  onDelete={() => handleLocationDelete(originalLocation!)}
                 />
               );
             })}
@@ -124,6 +148,16 @@ export default function Locations() {
           </div>
         )}
       </main>
+
+      <DeleteConfirmation
+        isOpen={!!deleteItem}
+        onClose={() => setDeleteItem(null)}
+        onConfirm={confirmDelete}
+        title="Delete Location"
+        description={`Are you sure you want to delete "${deleteItem?.name}"? This action cannot be undone.`}
+        itemName={deleteItem?.name || "this location"}
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }

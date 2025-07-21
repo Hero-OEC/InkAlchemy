@@ -1,10 +1,13 @@
 import { useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { Button } from "@/components/button-variations";
 import { Plus, BookOpen, Crown, Scroll, Landmark, Sword, Users, Globe, Calendar } from "lucide-react";
 import type { Project, LoreEntry } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 
 // Lore category icons
 const LORE_CATEGORY_ICONS = {
@@ -22,6 +25,8 @@ const LORE_CATEGORY_ICONS = {
 export default function Lore() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
+  const [deleteItem, setDeleteItem] = useState<LoreEntry | null>(null);
+  const queryClient = useQueryClient();
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -45,6 +50,24 @@ export default function Lore() {
 
   const handleLoreEdit = (lore: LoreEntry) => {
     setLocation(`/projects/${projectId}/lore/${lore.id}/edit`);
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: (loreId: number) => apiRequest(`/api/lore/${loreId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/lore`] });
+      setDeleteItem(null);
+    },
+  });
+
+  const handleLoreDelete = (lore: LoreEntry) => {
+    setDeleteItem(lore);
+  };
+
+  const confirmDelete = () => {
+    if (deleteItem) {
+      deleteMutation.mutate(deleteItem.id);
+    }
   };
 
   // Convert lore entries to ContentCard format
@@ -107,6 +130,7 @@ export default function Lore() {
                 lastEditedAt={loreCard.lastEditedAt}
                 onClick={() => handleLoreClick(loreEntries.find(l => l.id === loreCard.id)!)}
                 onEdit={() => handleLoreEdit(loreEntries.find(l => l.id === loreCard.id)!)}
+                onDelete={() => handleLoreDelete(loreEntries.find(l => l.id === loreCard.id)!)}
               />
             ))}
           </div>
@@ -127,6 +151,16 @@ export default function Lore() {
           </div>
         )}
       </main>
+
+      <DeleteConfirmation
+        isOpen={!!deleteItem}
+        onClose={() => setDeleteItem(null)}
+        onConfirm={confirmDelete}
+        title="Delete Lore Entry"
+        description={`Are you sure you want to delete "${deleteItem?.title}"? This action cannot be undone.`}
+        itemName={deleteItem?.title || "this lore entry"}
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }

@@ -1,5 +1,12 @@
-import { LucideIcon, MapPin, Sparkles, BookOpen, StickyNote, FolderOpen } from "lucide-react";
+import { LucideIcon, MapPin, Sparkles, BookOpen, StickyNote, FolderOpen, MoreVertical, Edit, Trash2 } from "lucide-react";
 import { cn } from "../lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export interface ContentCardProps {
   id: number;
@@ -86,9 +93,52 @@ export function ContentCard({
             <Icon className="w-6 h-6 text-brand-700" />
           </div>
           
-          <h3 className="text-lg font-semibold text-brand-950 truncate">
+          <h3 className="text-lg font-semibold text-brand-950 truncate flex-1">
             {title}
           </h3>
+
+          {/* Three-dot dropdown menu */}
+          {(onEdit || onDelete) && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button 
+                  className="p-1 rounded-lg hover:bg-brand-200 transition-colors duration-200 text-brand-600 hover:text-brand-800"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent card click when clicking dropdown
+                  }}
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                {onEdit && (
+                  <DropdownMenuItem 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit();
+                    }}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <Edit className="w-4 h-4" />
+                    Edit
+                  </DropdownMenuItem>
+                )}
+                {onEdit && onDelete && <DropdownMenuSeparator />}
+                {onDelete && (
+                  <DropdownMenuItem 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete();
+                    }}
+                    className="flex items-center gap-2 cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
 
         {/* Subtype Badge - positioned below title in separate row */}
