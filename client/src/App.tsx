@@ -28,6 +28,9 @@ import NoteDetails from "./pages/note-details";
 import CreateNote from "./pages/create-note";
 import EditNote from "./pages/edit-note";
 import ComponentsShowcase from "./pages/components-showcase";
+import RaceDetails from "./pages/race-details";
+import CreateRace from "./pages/create-race";
+import EditRace from "./pages/edit-race";
 import NotFound from "./pages/not-found";
 
 function App() {
@@ -65,6 +68,9 @@ function App() {
       <Route path="/projects/:projectId/notes/new" component={CreateNote} />
       <Route path="/projects/:projectId/notes/:noteId/edit" component={EditNote} />
       <Route path="/projects/:projectId/notes/:noteId" component={NoteDetails} />
+      <Route path="/projects/:projectId/races/new" component={CreateRace} />
+      <Route path="/projects/:projectId/races/:raceId/edit" component={EditRace} />
+      <Route path="/projects/:projectId/races/:raceId" component={RaceDetails} />
       <Route path="/components" component={ComponentsShowcase} />
       <Route path="*" component={NotFound} />
     </Router>
