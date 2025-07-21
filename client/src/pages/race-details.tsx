@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
-import { UserCheck, Edit, ArrowLeft } from "lucide-react";
+import { UserCheck, Edit, ArrowLeft, FileText, Users, Clock, Sparkles, Languages } from "lucide-react";
 import type { Race, Project } from "@shared/schema";
 
 export default function RaceDetails() {
@@ -12,6 +12,7 @@ export default function RaceDetails() {
   const [, setLocation] = useLocation();
   const { navigateWithReferrer } = useNavigation();
   const currentPath = `/projects/${projectId}/races/${raceId}`;
+  const [activeTab, setActiveTab] = useState("description");
 
   // Set page title
   useEffect(() => {
@@ -130,68 +131,157 @@ export default function RaceDetails() {
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-xl border border-brand-200 p-6">
-          <div className="space-y-6">
-            {/* Description */}
-            {race.description && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-2">Description</h3>
-                <p className="text-brand-700 leading-relaxed">{race.description}</p>
+        <div className="bg-white rounded-xl border border-brand-200 overflow-hidden">
+          {/* Tabs */}
+          <div className="border-b border-brand-200">
+            <div className="flex">
+              <button
+                onClick={() => setActiveTab("description")}
+                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === "description"
+                    ? "border-brand-400 text-brand-600 bg-brand-50"
+                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
+                }`}
+              >
+                <FileText className="w-4 h-4" />
+                Description
+              </button>
+              <button
+                onClick={() => setActiveTab("culture")}
+                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === "culture"
+                    ? "border-brand-400 text-brand-600 bg-brand-50"
+                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                Culture & Society
+              </button>
+              <button
+                onClick={() => setActiveTab("lifespan")}
+                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === "lifespan"
+                    ? "border-brand-400 text-brand-600 bg-brand-50"
+                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
+                }`}
+              >
+                <Clock className="w-4 h-4" />
+                Lifespan
+              </button>
+              <button
+                onClick={() => setActiveTab("traits")}
+                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === "traits"
+                    ? "border-brand-400 text-brand-600 bg-brand-50"
+                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
+                }`}
+              >
+                <Sparkles className="w-4 h-4" />
+                Traits & Abilities
+              </button>
+              <button
+                onClick={() => setActiveTab("language")}
+                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === "language"
+                    ? "border-brand-400 text-brand-600 bg-brand-50"
+                    : "border-transparent text-brand-600 hover:text-brand-800 hover:border-brand-300"
+                }`}
+              >
+                <Languages className="w-4 h-4" />
+                Language
+              </button>
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-6">
+            {activeTab === "description" && (
+              <div className="space-y-4">
+                {race.description ? (
+                  <div className="prose prose-brand max-w-none">
+                    <p className="text-brand-700 leading-relaxed">{race.description}</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <FileText className="w-12 h-12 text-brand-400 mx-auto mb-4" />
+                    <p className="text-brand-600 mb-4">No description available for this race.</p>
+                    <Button variant="outline" onClick={handleEdit}>
+                      Add Description
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Biology */}
-            {race.biology && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-2">Biology & Physiology</h3>
-                <p className="text-brand-700 leading-relaxed">{race.biology}</p>
+            {activeTab === "culture" && (
+              <div className="space-y-4">
+                {race.culture ? (
+                  <div className="prose prose-brand max-w-none">
+                    <p className="text-brand-700 leading-relaxed">{race.culture}</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Users className="w-12 h-12 text-brand-400 mx-auto mb-4" />
+                    <p className="text-brand-600 mb-4">No cultural information available for this race.</p>
+                    <Button variant="outline" onClick={handleEdit}>
+                      Add Culture & Society
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Culture */}
-            {race.culture && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-2">Culture & Society</h3>
-                <p className="text-brand-700 leading-relaxed">{race.culture}</p>
+            {activeTab === "lifespan" && (
+              <div className="space-y-4">
+                {race.lifespan ? (
+                  <div className="prose prose-brand max-w-none">
+                    <p className="text-brand-700 leading-relaxed">{race.lifespan}</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Clock className="w-12 h-12 text-brand-400 mx-auto mb-4" />
+                    <p className="text-brand-600 mb-4">No lifespan information available for this race.</p>
+                    <Button variant="outline" onClick={handleEdit}>
+                      Add Lifespan Details
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Lifespan */}
-            {race.lifespan && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-2">Lifespan</h3>
-                <p className="text-brand-700 leading-relaxed">{race.lifespan}</p>
+            {activeTab === "traits" && (
+              <div className="space-y-4">
+                {race.traits ? (
+                  <div className="prose prose-brand max-w-none">
+                    <p className="text-brand-700 leading-relaxed">{race.traits}</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Sparkles className="w-12 h-12 text-brand-400 mx-auto mb-4" />
+                    <p className="text-brand-600 mb-4">No traits or abilities information available for this race.</p>
+                    <Button variant="outline" onClick={handleEdit}>
+                      Add Traits & Abilities
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Traits */}
-            {race.traits && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-2">Traits & Abilities</h3>
-                <p className="text-brand-700 leading-relaxed">{race.traits}</p>
-              </div>
-            )}
-
-            {/* Language */}
-            {race.language && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-2">Language</h3>
-                <p className="text-brand-700 leading-relaxed">{race.language}</p>
-              </div>
-            )}
-
-            {/* Empty state if no detailed information */}
-            {!race.description && !race.biology && !race.culture && !race.lifespan && !race.traits && !race.language && (
-              <div className="text-center py-8">
-                <UserCheck className="w-12 h-12 text-brand-400 mx-auto mb-4" />
-                <p className="text-brand-600">No detailed information available for this race.</p>
-                <Button
-                  variant="outline"
-                  onClick={handleEdit}
-                  className="mt-4"
-                >
-                  Add Details
-                </Button>
+            {activeTab === "language" && (
+              <div className="space-y-4">
+                {race.language ? (
+                  <div className="prose prose-brand max-w-none">
+                    <p className="text-brand-700 leading-relaxed">{race.language}</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Languages className="w-12 h-12 text-brand-400 mx-auto mb-4" />
+                    <p className="text-brand-600 mb-4">No language information available for this race.</p>
+                    <Button variant="outline" onClick={handleEdit}>
+                      Add Language Details
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </div>

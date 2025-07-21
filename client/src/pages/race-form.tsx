@@ -10,14 +10,13 @@ import { Button } from "@/components/button-variations";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { UserCheck, ArrowLeft } from "lucide-react";
+import { UserCheck, ArrowLeft, FileText, Users, Clock, Sparkles, Languages } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import type { Race, Project } from "@shared/schema";
 
 const raceFormSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   description: z.string().optional(),
-  biology: z.string().optional(),
   culture: z.string().optional(),
   language: z.string().optional(),
   traits: z.string().optional(),
@@ -35,6 +34,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
   const [, setLocation] = useLocation();
   const { navigateWithReferrer } = useNavigation();
   const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState("overview");
   const currentPath = mode === "create" 
     ? `/projects/${projectId}/races/new`
     : `/projects/${projectId}/races/${raceId}/edit`;
@@ -69,7 +69,6 @@ export default function RaceForm({ mode }: RaceFormProps) {
     defaultValues: {
       name: "",
       description: "",
-      biology: "",
       culture: "",
       language: "",
       traits: "",
@@ -83,7 +82,6 @@ export default function RaceForm({ mode }: RaceFormProps) {
       form.reset({
         name: race.name,
         description: race.description || "",
-        biology: race.biology || "",
         culture: race.culture || "",
         language: race.language || "",
         traits: race.traits || "",
@@ -219,25 +217,6 @@ export default function RaceForm({ mode }: RaceFormProps) {
                     <FormControl>
                       <Textarea 
                         placeholder="Brief overview of this race..."
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Biology */}
-              <FormField
-                control={form.control}
-                name="biology"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Biology & Physiology</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Physical characteristics, abilities..."
                         className="min-h-[100px]"
                         {...field} 
                       />
