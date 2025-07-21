@@ -1,6 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
@@ -24,9 +24,15 @@ export default function CharacterDetails() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
 
-  // Early return if characterId is invalid (like "new")
+  // Redirect if characterId is invalid (like "new")
+  useEffect(() => {
+    if (!characterId || characterId === "new" || isNaN(Number(characterId))) {
+      setLocation(`/projects/${projectId}/characters`);
+    }
+  }, [characterId, projectId, setLocation]);
+
+  // Don't render if characterId is invalid
   if (!characterId || characterId === "new" || isNaN(Number(characterId))) {
-    setLocation(`/projects/${projectId}/characters`);
     return null;
   }
 
