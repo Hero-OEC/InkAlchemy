@@ -271,14 +271,7 @@ export default function CharacterDetails() {
                     </div>
                   )}
 
-                  <div>
-                    <h3 className="text-lg font-semibold text-brand-900 mb-3">Power Type</h3>
-                    <div className="prose prose-brand max-w-none">
-                      <p className="text-brand-700 leading-relaxed">
-                        This character's magical abilities and power type will be displayed here. Click on power type cards to explore connected magic systems.
-                      </p>
-                    </div>
-                  </div>
+
                 </div>
               )}
 
@@ -349,12 +342,25 @@ export default function CharacterDetails() {
               )}
 
               {activeTab === "weapons" && (
-                <div>
-                  <h3 className="text-lg font-semibold text-brand-900 mb-3">Equipment & Skills</h3>
-                  <div className="prose prose-brand max-w-none">
-                    <p className="text-brand-700 leading-relaxed">
-                      Equipment and skill information will be available here. This section can be used to describe weapons, tools, special abilities, or combat skills the character possesses.
-                    </p>
+                <div className="space-y-6">
+                  {/* Weapons Section */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-brand-900 mb-3">Weapons</h3>
+                    <div className="prose prose-brand max-w-none">
+                      <p className="text-brand-700 leading-relaxed">
+                        {character.weapons || "No weapons information available."}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Equipment Section */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-brand-900 mb-3">Equipment & Gear</h3>
+                    <div className="prose prose-brand max-w-none">
+                      <p className="text-brand-700 leading-relaxed">
+                        {character.equipment || "No equipment information available."}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
