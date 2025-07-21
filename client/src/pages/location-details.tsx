@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
@@ -34,9 +35,17 @@ const LOCATION_TYPE_ICONS = {
 
 export default function LocationDetails() {
   const { projectId, locationId } = useParams();
-  const [, setLocation] = useLocation();
+  const [currentPath, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { goBack, updateHistory } = useNavigation();
+
+  // Track navigation history when component mounts
+  useEffect(() => {
+    if (locationId !== "new") {
+      updateHistory(currentPath);
+    }
+  }, [currentPath, updateHistory, locationId]);
 
   // Redirect if this is the create route
   useEffect(() => {
@@ -74,7 +83,7 @@ export default function LocationDetails() {
   };
 
   const handleBack = () => {
-    setLocation(`/projects/${projectId}/locations`);
+    goBack();
   };
 
   const handleEdit = () => {
@@ -186,7 +195,7 @@ export default function LocationDetails() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Locations
+            Back
           </Button>
         </div>
 

@@ -1,6 +1,7 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
@@ -22,9 +23,15 @@ const CHARACTER_TYPE_CONFIG = {
 
 export default function CharacterDetails() {
   const { projectId, characterId } = useParams();
-  const [, setLocation] = useLocation();
+  const [currentPath, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { goBack, updateHistory } = useNavigation();
+
+  // Track navigation history when component mounts
+  useEffect(() => {
+    updateHistory(currentPath);
+  }, [currentPath, updateHistory]);
 
   // Only render for valid numeric character IDs
   const numericCharacterId = Number(characterId);
@@ -169,11 +176,11 @@ export default function CharacterDetails() {
           <Button
             variant="ghost"
             size="md"
-            onClick={() => setLocation(`/projects/${projectId}/characters`)}
+            onClick={goBack}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Characters
+            Back
           </Button>
         </div>
 

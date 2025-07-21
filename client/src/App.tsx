@@ -66,7 +66,7 @@ function App() {
       <Route path="/projects/:projectId/notes/:noteId/edit" component={EditNote} />
       <Route path="/projects/:projectId/notes/:noteId" component={NoteDetails} />
       <Route path="/components" component={ComponentsShowcase} />
-
+      <Route path="*" component={NotFound} />
     </Router>
   );
 }

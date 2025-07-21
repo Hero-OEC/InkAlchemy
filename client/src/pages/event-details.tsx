@@ -1,10 +1,11 @@
 import { useParams, useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { MiniCard } from "@/components/mini-card";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { useNavigation } from "@/contexts/navigation-context";
 import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, Trash2, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
@@ -58,8 +59,14 @@ const STAGE_COLORS = {
 
 export default function EventDetails() {
   const { projectId, eventId } = useParams();
-  const [, setLocation] = useLocation();
+  const [currentPath, setLocation] = useLocation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { goBack, updateHistory } = useNavigation();
+
+  // Track navigation history when component mounts
+  useEffect(() => {
+    updateHistory(currentPath);
+  }, [currentPath, updateHistory]);
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -86,14 +93,16 @@ export default function EventDetails() {
   };
 
   const handleBack = () => {
-    setLocation(`/projects/${projectId}/timeline`);
+    goBack();
   };
 
   const handleCharacterClick = (characterId: number) => {
+    updateHistory(currentPath);
     setLocation(`/projects/${projectId}/characters/${characterId}`);
   };
 
   const handleLocationClick = (locationId: number) => {
+    updateHistory(currentPath);
     setLocation(`/projects/${projectId}/locations/${locationId}`);
   };
 
