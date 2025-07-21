@@ -7,6 +7,7 @@ import { ContentCardDemo } from "@/components/content-card";
 import { FormInputsDemo } from "@/components/form-inputs";
 import { MiniCardDemo } from "@/components/mini-card";
 import { CharacterMagicCardShowcase } from "@/components/character-magic-card-showcase";
+import { CharacterMagicSelectorShowcase } from "@/components/character-magic-selector-showcase";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { useQuery } from "@tanstack/react-query";
 import type { Event, Character, Location, Relationship } from "@shared/schema";
@@ -128,6 +129,11 @@ function ComponentsShowcase() {
       {/* Character Magic Cards Demo */}
       <section className="mb-12">
         <CharacterMagicCardShowcase />
+      </section>
+
+      {/* Character Magic Selector Demo */}
+      <section className="mb-12">
+        <CharacterMagicSelectorShowcase />
       </section>
 
       {/* Font Demo */}
