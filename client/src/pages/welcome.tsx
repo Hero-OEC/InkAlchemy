@@ -4,7 +4,9 @@ import { Button } from "@/components/button-variations";
 import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContentCard } from "@/components/content-card";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { Input, Select } from "@/components/form-inputs";
+import { apiRequest } from "@/lib/queryClient";
 import { 
   Plus, FolderOpen, Book,
   Castle, Globe, Building, Flame, Swords, Heart, DoorOpen, Wand, BookOpen, ScrollText,
@@ -84,9 +86,15 @@ const getGenreIcon = (genre: string) => {
 export default function Welcome() {
   const [, setLocation] = useLocation();
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [newProjectName, setNewProjectName] = useState("");
   const [newProjectGenre, setNewProjectGenre] = useState("");
   const [newProjectDescription, setNewProjectDescription] = useState("");
+  const [editName, setEditName] = useState("");
+  const [editGenre, setEditGenre] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [deleteProject, setDeleteProject] = useState<Project | null>(null);
   const queryClient = useQueryClient();
 
   const selectedGenreDescription = genreOptions.find(g => g.value === newProjectGenre)?.description;
@@ -130,6 +138,58 @@ export default function Welcome() {
     setLocation(`/projects/${projectId}/dashboard`);
   };
 
+  const updateProjectMutation = useMutation({
+    mutationFn: async (data: { id: number; name: string; genre?: string; description?: string }) => {
+      return apiRequest(`/api/projects/${data.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ name: data.name, genre: data.genre, description: data.description })
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      setShowEditForm(false);
+      setEditingProject(null);
+    },
+  });
+
+  const deleteProjectMutation = useMutation({
+    mutationFn: (projectId: number) => apiRequest(`/api/projects/${projectId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      setDeleteProject(null);
+    },
+  });
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setEditName(project.name);
+    setEditGenre(project.genre || "");
+    setEditDescription(project.description || "");
+    setShowEditForm(true);
+  };
+
+  const handleDeleteProject = (project: Project) => {
+    setDeleteProject(project);
+  };
+
+  const handleUpdateProject = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingProject && editName.trim()) {
+      updateProjectMutation.mutate({
+        id: editingProject.id,
+        name: editName,
+        genre: editGenre || undefined,
+        description: editDescription || undefined,
+      });
+    }
+  };
+
+  const confirmDeleteProject = () => {
+    if (deleteProject) {
+      deleteProjectMutation.mutate(deleteProject.id);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-brand-50">
@@ -171,6 +231,67 @@ export default function Welcome() {
               Create New Project
             </Button>
           </div>
+
+          {/* Edit Project Form */}
+          {showEditForm && editingProject && (
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Edit Project</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleUpdateProject} className="space-y-4">
+                  <Input
+                    label="Project Name"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    placeholder="Enter your project name"
+                    required
+                  />
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-brand-900">Genre (Optional)</label>
+                    <div className="space-y-2">
+                      <Select
+                        value={editGenre}
+                        onChange={setEditGenre}
+                        placeholder="Select a genre for your story"
+                        options={genreOptions}
+                      />
+                      {editGenre && genreOptions.find(g => g.value === editGenre)?.description && (
+                        <p className="text-sm text-brand-600 mt-2 italic">
+                          {genreOptions.find(g => g.value === editGenre)?.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <Input
+                    label="Description"
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    placeholder="Brief description of your story world..."
+                  />
+                  <div className="flex gap-3">
+                    <Button 
+                      type="submit" 
+                      variant="primary"
+                      loading={updateProjectMutation.isPending}
+                    >
+                      Update Project
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="outline"
+                      onClick={() => {
+                        setShowEditForm(false);
+                        setEditingProject(null);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Create Project Form */}
           {showCreateForm && (
@@ -261,6 +382,8 @@ export default function Welcome() {
                   createdAt={new Date(project.createdAt)}
                   lastEditedAt={project.lastEditedAt ? new Date(project.lastEditedAt) : undefined}
                   onClick={() => handleOpenProject(project.id)}
+                  onEdit={() => handleEditProject(project)}
+                  onDelete={() => handleDeleteProject(project)}
                 />
               ))}
             </div>
@@ -297,6 +420,16 @@ export default function Welcome() {
           </div>
         )}
       </div>
+      
+      <DeleteConfirmation
+        isOpen={!!deleteProject}
+        onClose={() => setDeleteProject(null)}
+        onConfirm={confirmDeleteProject}
+        title="Delete Project"
+        description={`Are you sure you want to delete "${deleteProject?.name}"? This action cannot be undone and will remove all associated content including characters, locations, magic systems, events, lore, and notes.`}
+        itemName={deleteProject?.name || "this project"}
+        isLoading={deleteProjectMutation.isPending}
+      />
     </div>
   );
 }
