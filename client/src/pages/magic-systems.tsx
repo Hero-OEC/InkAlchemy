@@ -2,7 +2,6 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
-import { MasonryGrid, MasonryItem } from "@/components/masonry-grid";
 import { Button } from "@/components/button-variations";
 import { Plus, Sparkles, Zap } from "lucide-react";
 import type { Project, MagicSystem } from "@shared/schema";
@@ -118,25 +117,24 @@ export default function MagicSystems() {
             </Button>
           </div>
         ) : (
-          // Systems Masonry Grid
-          <MasonryGrid>
+          // Systems Grid
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {magicSystems.map((system) => (
-              <MasonryItem key={system.id}>
-                <ContentCard
-                  id={system.id}
-                  title={system.name}
-                  type="magic"
-                  subtype={system.type === 'power' ? 'power' : 'magic'}
-                  description={system.description || 'No description available'}
-                  icon={getSystemIcon(system)}
-                  createdAt={system.createdAt}
-                  lastEditedAt={system.updatedAt}
-                  onClick={() => handleSystemClick(system.id)}
-                  onEdit={() => handleEditSystem(system.id)}
-                />
-              </MasonryItem>
+              <ContentCard
+                key={system.id}
+                id={system.id}
+                title={system.name}
+                type="magic"
+                subtype={system.type === 'power' ? 'power' : 'magic'}
+                description={system.description || 'No description available'}
+                icon={getSystemIcon(system)}
+                createdAt={system.createdAt}
+                lastEditedAt={system.updatedAt}
+                onClick={() => handleSystemClick(system.id)}
+                onEdit={() => handleEditSystem(system.id)}
+              />
             ))}
-          </MasonryGrid>
+          </div>
         )}
       </main>
     </div>
