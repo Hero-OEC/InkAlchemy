@@ -11,12 +11,7 @@ import type { Project, Character } from "@shared/schema";
 export default function Characters() {
   const { projectId } = useParams();
   const [currentPath, setLocation] = useLocation();
-  const { updateHistory } = useNavigation();
-
-  // Track when users visit this main page
-  useEffect(() => {
-    updateHistory(currentPath);
-  }, [currentPath, updateHistory]);
+  const { navigateWithReferrer } = useNavigation();
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -35,7 +30,7 @@ export default function Characters() {
   };
 
   const handleCharacterClick = (character: Character) => {
-    setLocation(`/projects/${projectId}/characters/${character.id}`);
+    navigateWithReferrer(`/projects/${projectId}/characters/${character.id}`, currentPath);
   };
 
   const handleCharacterEdit = (character: Character) => {

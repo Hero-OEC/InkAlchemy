@@ -1,6 +1,7 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { ContentCard } from "@/components/content-card";
@@ -31,11 +32,12 @@ const getSystemIcon = (system: MagicSystem) => {
 
 export default function MagicSystemDetails() {
   const { projectId, systemId } = useParams();
-  const [, setLocation] = useLocation();
+  const [currentPath, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteSpell, setDeleteSpell] = useState<Spell | null>(null);
   const queryClient = useQueryClient();
+  const { goBack, navigateWithReferrer } = useNavigation();
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -60,7 +62,7 @@ export default function MagicSystemDetails() {
   };
 
   const handleBack = () => {
-    setLocation(`/projects/${projectId}/magic-systems`);
+    goBack();
   };
 
   const handleEdit = () => {
@@ -82,7 +84,7 @@ export default function MagicSystemDetails() {
   };
 
   const handleCharacterClick = (characterId: number) => {
-    setLocation(`/projects/${projectId}/characters/${characterId}`);
+    navigateWithReferrer(`/projects/${projectId}/characters/${characterId}`, currentPath);
   };
 
   const deleteSpellMutation = useMutation({

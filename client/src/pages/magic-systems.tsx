@@ -35,12 +35,7 @@ export default function MagicSystems() {
   const [currentPath, setLocation] = useLocation();
   const [deleteItem, setDeleteItem] = useState<MagicSystem | null>(null);
   const queryClient = useQueryClient();
-  const { updateHistory } = useNavigation();
-
-  // Track when users visit this main page
-  useEffect(() => {
-    updateHistory(currentPath);
-  }, [currentPath, updateHistory]);
+  const { navigateWithReferrer } = useNavigation();
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -59,7 +54,7 @@ export default function MagicSystems() {
   };
 
   const handleSystemClick = (systemId: number) => {
-    setLocation(`/projects/${projectId}/magic-systems/${systemId}`);
+    navigateWithReferrer(`/projects/${projectId}/magic-systems/${systemId}`, currentPath);
   };
 
   const handleEditSystem = (systemId: number) => {
