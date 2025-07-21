@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { ContentCard } from "@/components/content-card";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
-import { ArrowLeft, Edit, Sparkles, Zap, DollarSign, Users, BookOpen, Wand2, Plus, Scroll, Shield } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Sparkles, Zap, DollarSign, Users, BookOpen, Wand2, Plus, Scroll, Shield } from "lucide-react";
 import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
 
 // Simple two-type system configuration
@@ -31,6 +32,7 @@ export default function MagicSystemDetails() {
   const { projectId, systemId } = useParams();
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -60,6 +62,20 @@ export default function MagicSystemDetails() {
 
   const handleEdit = () => {
     setLocation(`/projects/${projectId}/magic-systems/${systemId}/edit`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/magic-systems/${systemId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        setLocation(`/projects/${projectId}/magic-systems`);
+      }
+    } catch (error) {
+      console.error('Error deleting magic system:', error);
+    }
   };
 
   const handleCharacterClick = (characterId: number) => {
@@ -376,10 +392,16 @@ export default function MagicSystemDetails() {
               </div>
             </div>
           </div>
-          <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
-            <Edit size={16} />
-            Edit
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
+              <Edit size={16} />
+              Edit
+            </Button>
+            <Button variant="danger" onClick={() => setShowDeleteDialog(true)} className="flex items-center gap-2">
+              <Trash2 size={16} />
+              Delete
+            </Button>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -415,6 +437,15 @@ export default function MagicSystemDetails() {
           </div>
         )}
       </main>
+
+      <DeleteConfirmation
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete Magic System"
+        description={`Are you sure you want to delete "${system?.name}"? This action cannot be undone and will remove all associated spells and data.`}
+        itemName={system?.name || "this magic system"}
+      />
     </div>
   );
 }

@@ -3,7 +3,8 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
-import { Edit, ArrowLeft, StickyNote, FileText, Lightbulb, AlertCircle, Tag, Calendar } from "lucide-react";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { Edit, Trash2, ArrowLeft, StickyNote, FileText, Lightbulb, AlertCircle, Tag, Calendar } from "lucide-react";
 import type { Project, Note } from "@shared/schema";
 
 // Note category icons
@@ -22,6 +23,7 @@ const NOTE_CATEGORY_ICONS = {
 export default function NoteDetails() {
   const { projectId, noteId } = useParams();
   const [, setLocation] = useLocation();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -66,6 +68,20 @@ export default function NoteDetails() {
 
   const handleEdit = () => {
     setLocation(`/projects/${projectId}/notes/${noteId}/edit`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/notes/${noteId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        setLocation(`/projects/${projectId}/notes`);
+      }
+    } catch (error) {
+      console.error('Error deleting note:', error);
+    }
   };
 
   const formatDate = (date: Date | string) => {
@@ -119,10 +135,16 @@ export default function NoteDetails() {
                 </div>
               </div>
             </div>
-            <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
-              <Edit size={16} />
-              Edit Note
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
+                <Edit size={16} />
+                Edit Note
+              </Button>
+              <Button variant="danger" onClick={() => setShowDeleteDialog(true)} className="flex items-center gap-2">
+                <Trash2 size={16} />
+                Delete
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -136,6 +158,15 @@ export default function NoteDetails() {
           </div>
         </div>
       </main>
+
+      <DeleteConfirmation
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete Note"
+        description={`Are you sure you want to delete "${note?.title}"? This action cannot be undone.`}
+        itemName={note?.title || "this note"}
+      />
     </div>
   );
 }

@@ -5,7 +5,8 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
-import { ArrowLeft, Edit, Calendar, MapPin, Users, Landmark, Crown } from "lucide-react";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { ArrowLeft, Edit, Trash2, Calendar, MapPin, Users, Landmark, Crown } from "lucide-react";
 import type { Project, Location, Character, Event, Relationship } from "@shared/schema";
 import { Building2, Trees, Castle, Mountain, Home, Globe } from "lucide-react";
 
@@ -35,6 +36,7 @@ export default function LocationDetails() {
   const { projectId, locationId } = useParams();
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   // Redirect if this is the create route
   useEffect(() => {
@@ -77,6 +79,20 @@ export default function LocationDetails() {
 
   const handleEdit = () => {
     setLocation(`/projects/${projectId}/locations/${locationId}/edit`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/locations/${locationId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        setLocation(`/projects/${projectId}/locations`);
+      }
+    } catch (error) {
+      console.error('Error deleting location:', error);
+    }
   };
 
   const handleCharacterClick = (character: Character) => {
@@ -190,10 +206,16 @@ export default function LocationDetails() {
                 </div>
               </div>
             </div>
-            <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
-              <Edit size={16} />
-              Edit Location
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
+                <Edit size={16} />
+                Edit Location
+              </Button>
+              <Button variant="danger" onClick={() => setShowDeleteDialog(true)} className="flex items-center gap-2">
+                <Trash2 size={16} />
+                Delete
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -321,6 +343,15 @@ export default function LocationDetails() {
             )}
         </div>
       </main>
+
+      <DeleteConfirmation
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete Location"
+        description={`Are you sure you want to delete "${location?.name}"? This action cannot be undone and will remove all associated events and data.`}
+        itemName={location?.name || "this location"}
+      />
     </div>
   );
 }

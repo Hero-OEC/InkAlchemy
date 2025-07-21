@@ -6,7 +6,8 @@ import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
 import { CharacterMagicCard } from "@/components/character-magic-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
-import { Edit, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft } from "lucide-react";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft } from "lucide-react";
 import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell } from "@shared/schema";
 
 const CHARACTER_TYPE_CONFIG = {
@@ -23,6 +24,7 @@ export default function CharacterDetails() {
   const { projectId, characterId } = useParams();
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   // Only render for valid numeric character IDs
   const numericCharacterId = Number(characterId);
@@ -120,6 +122,20 @@ export default function CharacterDetails() {
     setLocation(`/projects/${projectId}/characters/${characterId}/edit`);
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/characters/${characterId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        setLocation(`/projects/${projectId}/characters`);
+      }
+    } catch (error) {
+      console.error('Error deleting character:', error);
+    }
+  };
+
   const handleMagicSystemClick = (magicSystemId: number) => {
     setLocation(`/projects/${projectId}/magic-systems/${magicSystemId}`);
   };
@@ -177,10 +193,16 @@ export default function CharacterDetails() {
                 </div>
               </div>
             </div>
-            <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
-              <Edit size={16} />
-              Edit Character
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
+                <Edit size={16} />
+                Edit Character
+              </Button>
+              <Button variant="danger" onClick={() => setShowDeleteDialog(true)} className="flex items-center gap-2">
+                <Trash2 size={16} />
+                Delete
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -435,6 +457,15 @@ export default function CharacterDetails() {
           </div>
         </div>
       </main>
+
+      <DeleteConfirmation
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete Character"
+        description={`Are you sure you want to delete "${character?.name}"? This action cannot be undone and will remove all associated relationships and data.`}
+        itemName={character?.name || "this character"}
+      />
     </div>
   );
 }

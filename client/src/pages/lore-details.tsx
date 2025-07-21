@@ -1,9 +1,10 @@
 import { useParams, useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
-import { ArrowLeft, Edit, BookOpen, Crown, Scroll, Landmark, Sword, Users, Globe, Calendar } from "lucide-react";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { ArrowLeft, Edit, Trash2, BookOpen, Crown, Scroll, Landmark, Sword, Users, Globe, Calendar } from "lucide-react";
 import type { Project, LoreEntry } from "@shared/schema";
 
 // Lore category config
@@ -22,6 +23,7 @@ const LORE_CATEGORY_CONFIG = {
 export default function LoreDetails() {
   const { projectId, loreId } = useParams();
   const [, setLocation] = useLocation();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -55,6 +57,20 @@ export default function LoreDetails() {
 
   const handleEdit = () => {
     setLocation(`/projects/${projectId}/lore/${loreId}/edit`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/lore/${loreId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        setLocation(`/projects/${projectId}/lore`);
+      }
+    } catch (error) {
+      console.error('Error deleting lore:', error);
+    }
   };
 
   if (isLoading) {
@@ -143,10 +159,16 @@ export default function LoreDetails() {
               </div>
             </div>
           </div>
-          <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
-            <Edit size={16} />
-            Edit
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
+              <Edit size={16} />
+              Edit
+            </Button>
+            <Button variant="danger" onClick={() => setShowDeleteDialog(true)} className="flex items-center gap-2">
+              <Trash2 size={16} />
+              Delete
+            </Button>
+          </div>
         </div>
 
         {/* Content */}
@@ -165,6 +187,15 @@ export default function LoreDetails() {
           </div>
         )}
       </main>
+
+      <DeleteConfirmation
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete Lore Entry"
+        description={`Are you sure you want to delete "${lore?.title}"? This action cannot be undone.`}
+        itemName={lore?.title || "this lore entry"}
+      />
     </div>
   );
 }
