@@ -272,19 +272,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                   />
                 </div>
 
-                <FormField
-                  control={form.control}
-                  name="powerType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Power Type</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Magic type, abilities..." {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
               </div>
             </div>
           </div>
@@ -410,6 +398,25 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       />
                     </div>
                   </div>
+
+                  <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Magic & Abilities</h3>
+                    <CharacterMagicSelector
+                      availableMagicSystems={magicSystems.map(system => ({
+                        id: system.id,
+                        name: system.name,
+                        type: system.type as "magic" | "power",
+                        spells: allSpells.filter(spell => spell.magicSystemId === system.id).map(spell => ({
+                          id: spell.id,
+                          name: spell.name,
+                          type: system.type === "magic" ? "spell" as const : "ability" as const,
+                          magicSystemId: spell.magicSystemId
+                        }))
+                      }))}
+                      selectedSpells={selectedSpells}
+                      onSelectionChange={setSelectedSpells}
+                    />
+                  </div>
                 </div>
               )}
 
@@ -506,7 +513,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
               {activeTab === "magic" && (
                 <div className="space-y-6">
                   <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Magic Systems & Abilities</h3>
+                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Advanced Magic Configuration</h3>
+                    <p className="text-brand-600 mb-4">Configure advanced magical abilities and spell combinations for this character.</p>
                     <CharacterMagicSelector
                       availableMagicSystems={magicSystems.map(system => ({
                         id: system.id,

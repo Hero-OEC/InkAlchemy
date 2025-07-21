@@ -24,14 +24,14 @@ export default function CharacterDetails() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
 
-  // Don't render if characterId is invalid
-  if (!characterId || characterId === "new" || isNaN(Number(characterId))) {
-    console.log('CharacterDetails: Invalid characterId detected:', characterId);
+  // Only render for valid numeric character IDs
+  const numericCharacterId = Number(characterId);
+  if (!characterId || characterId === "new" || characterId === "edit" || isNaN(numericCharacterId) || numericCharacterId <= 0) {
     return null;
   }
 
   const { data: character, isLoading: characterLoading, error: characterError } = useQuery<Character>({
-    queryKey: [`/api/characters/${characterId}`],
+    queryKey: [`/api/characters/${numericCharacterId}`],
   });
 
   // Only load other data if character exists
@@ -66,7 +66,7 @@ export default function CharacterDetails() {
   });
 
   const { data: characterSpells = [] } = useQuery<(Spell & { proficiency?: string })[]>({
-    queryKey: [`/api/characters/${characterId}/spells`],
+    queryKey: [`/api/characters/${numericCharacterId}/spells`],
     enabled: !!character,
   });
 
