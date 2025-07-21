@@ -106,12 +106,11 @@ export default function Lore() {
         projectName={project?.name}
         onNavigate={handleNavigation}
       />
-      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-brand-900 mb-2">World Lore</h1>
+            <h1 className="text-3xl font-bold text-brand-900 mb-2">Lore</h1>
             <p className="text-brand-600">The history, culture, and knowledge of your world</p>
           </div>
           <Button
@@ -162,7 +161,6 @@ export default function Lore() {
           </div>
         )}
       </main>
-
       <DeleteConfirmation
         isOpen={!!deleteItem}
         onClose={() => setDeleteItem(null)}
