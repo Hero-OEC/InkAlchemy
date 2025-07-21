@@ -28,10 +28,7 @@ export default function CharacterDetails() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goBack, updateHistory } = useNavigation();
 
-  // Track navigation history when component mounts
-  useEffect(() => {
-    updateHistory(currentPath);
-  }, [currentPath, updateHistory]);
+  // Don't track detail pages in history - only main pages should be tracked
 
   // Only render for valid numeric character IDs
   const numericCharacterId = Number(characterId);

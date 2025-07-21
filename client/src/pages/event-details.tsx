@@ -63,10 +63,7 @@ export default function EventDetails() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goBack, updateHistory } = useNavigation();
 
-  // Track navigation history when component mounts
-  useEffect(() => {
-    updateHistory(currentPath);
-  }, [currentPath, updateHistory]);
+  // Don't track detail pages in history - only main pages should be tracked
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -97,12 +94,10 @@ export default function EventDetails() {
   };
 
   const handleCharacterClick = (characterId: number) => {
-    updateHistory(currentPath);
     setLocation(`/projects/${projectId}/characters/${characterId}`);
   };
 
   const handleLocationClick = (locationId: number) => {
-    updateHistory(currentPath);
     setLocation(`/projects/${projectId}/locations/${locationId}`);
   };
 

@@ -40,12 +40,7 @@ export default function LocationDetails() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goBack, updateHistory } = useNavigation();
 
-  // Track navigation history when component mounts
-  useEffect(() => {
-    if (locationId !== "new") {
-      updateHistory(currentPath);
-    }
-  }, [currentPath, updateHistory, locationId]);
+  // Don't track detail pages in history - only main pages should be tracked
 
   // Redirect if this is the create route
   useEffect(() => {

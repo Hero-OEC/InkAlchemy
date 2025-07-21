@@ -1,5 +1,7 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { CharacterCard } from "@/components/character-card";
 import { Button } from "@/components/button-variations";
@@ -8,7 +10,13 @@ import type { Project, Character } from "@shared/schema";
 
 export default function Characters() {
   const { projectId } = useParams();
-  const [, setLocation] = useLocation();
+  const [currentPath, setLocation] = useLocation();
+  const { updateHistory } = useNavigation();
+
+  // Track when users visit this main page
+  useEffect(() => {
+    updateHistory(currentPath);
+  }, [currentPath, updateHistory]);
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],

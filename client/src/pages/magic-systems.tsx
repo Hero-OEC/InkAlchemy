@@ -1,6 +1,7 @@
 import { useParams, useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
@@ -31,9 +32,15 @@ const getSystemIcon = (system: MagicSystem) => {
 
 export default function MagicSystems() {
   const { projectId } = useParams();
-  const [, setLocation] = useLocation();
+  const [currentPath, setLocation] = useLocation();
   const [deleteItem, setDeleteItem] = useState<MagicSystem | null>(null);
   const queryClient = useQueryClient();
+  const { updateHistory } = useNavigation();
+
+  // Track when users visit this main page
+  useEffect(() => {
+    updateHistory(currentPath);
+  }, [currentPath, updateHistory]);
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
