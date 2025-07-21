@@ -38,7 +38,7 @@ export default function LocationDetails() {
   const [currentPath, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const { goBack, updateHistory } = useNavigation();
+  const { goBack, navigateWithReferrer } = useNavigation();
 
   // Don't track detail pages in history - only main pages should be tracked
 
@@ -100,11 +100,11 @@ export default function LocationDetails() {
   };
 
   const handleCharacterClick = (character: Character) => {
-    setLocation(`/projects/${projectId}/characters/${character.id}`);
+    navigateWithReferrer(`/projects/${projectId}/characters/${character.id}`, currentPath);
   };
 
   const handleEventClick = (event: Event) => {
-    setLocation(`/projects/${projectId}/events/${event.id}`);
+    navigateWithReferrer(`/projects/${projectId}/events/${event.id}`, currentPath);
   };
 
   if (!location) {

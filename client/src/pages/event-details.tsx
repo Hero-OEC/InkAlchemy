@@ -61,7 +61,7 @@ export default function EventDetails() {
   const { projectId, eventId } = useParams();
   const [currentPath, setLocation] = useLocation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const { goBack, updateHistory } = useNavigation();
+  const { goBack, navigateWithReferrer } = useNavigation();
 
   // Don't track detail pages in history - only main pages should be tracked
   
@@ -94,11 +94,11 @@ export default function EventDetails() {
   };
 
   const handleCharacterClick = (characterId: number) => {
-    setLocation(`/projects/${projectId}/characters/${characterId}`);
+    navigateWithReferrer(`/projects/${projectId}/characters/${characterId}`, currentPath);
   };
 
   const handleLocationClick = (locationId: number) => {
-    setLocation(`/projects/${projectId}/locations/${locationId}`);
+    navigateWithReferrer(`/projects/${projectId}/locations/${locationId}`, currentPath);
   };
 
   const handleEditEvent = () => {

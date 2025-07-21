@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useState } from "react";
+import { useNavigation } from "@/contexts/navigation-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
@@ -24,9 +25,10 @@ const LORE_CATEGORY_ICONS = {
 
 export default function Lore() {
   const { projectId } = useParams();
-  const [, setLocation] = useLocation();
+  const [currentPath, setLocation] = useLocation();
   const [deleteItem, setDeleteItem] = useState<LoreEntry | null>(null);
   const queryClient = useQueryClient();
+  const { navigateWithReferrer } = useNavigation();
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -45,7 +47,7 @@ export default function Lore() {
   };
 
   const handleLoreClick = (lore: LoreEntry) => {
-    setLocation(`/projects/${projectId}/lore/${lore.id}`);
+    navigateWithReferrer(`/projects/${projectId}/lore/${lore.id}`, currentPath);
   };
 
   const handleLoreEdit = (lore: LoreEntry) => {

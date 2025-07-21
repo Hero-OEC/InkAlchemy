@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { Button } from "@/components/button-variations";
@@ -8,7 +9,8 @@ import type { Project, Event, Character, Location, Relationship } from "@shared/
 
 export default function Timeline() {
   const { projectId } = useParams();
-  const [, setLocation] = useLocation();
+  const [currentPath, setLocation] = useLocation();
+  const { navigateWithReferrer } = useNavigation();
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -35,7 +37,7 @@ export default function Timeline() {
   };
 
   const handleEventClick = (event: Event) => {
-    setLocation(`/projects/${projectId}/events/${event.id}`);
+    navigateWithReferrer(`/projects/${projectId}/events/${event.id}`, currentPath);
   };
 
   const handleEventEdit = (event: Event) => {

@@ -26,7 +26,7 @@ export default function CharacterDetails() {
   const [currentPath, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const { goBack, updateHistory } = useNavigation();
+  const { goBack, navigateWithReferrer } = useNavigation();
 
   // Don't track detail pages in history - only main pages should be tracked
 
@@ -141,7 +141,7 @@ export default function CharacterDetails() {
   };
 
   const handleMagicSystemClick = (magicSystemId: number) => {
-    setLocation(`/projects/${projectId}/magic-systems/${magicSystemId}`);
+    navigateWithReferrer(`/projects/${projectId}/magic-systems/${magicSystemId}`, currentPath);
   };
 
   const tabs = [
