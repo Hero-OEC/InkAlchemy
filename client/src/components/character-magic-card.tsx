@@ -40,17 +40,17 @@ export function CharacterMagicCard({
       {/* Main Magic System Header - Mini Card Style */}
       <div 
         className={cn(
-          "flex items-center gap-3 p-3 rounded-lg border transition-colors",
-          "bg-brand-50 border-brand-200 hover:bg-brand-100 cursor-pointer"
+          "flex items-center gap-3 p-3 rounded-lg border transition-all duration-200",
+          "bg-brand-100 border-brand-200 hover:bg-brand-200 hover:border-brand-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
         )}
         onClick={() => onSystemClick?.(magicSystem)}
       >
-        <div className="p-2 rounded-lg bg-brand-200">
-          <SystemIcon className="w-5 h-5 text-brand-700" />
+        <div className="p-1.5 rounded-lg bg-brand-200">
+          <SystemIcon className="w-4 h-4 text-brand-700" />
         </div>
         <div className="flex-1">
-          <h4 className="font-semibold text-brand-900">{magicSystem.name}</h4>
-          <p className="text-sm text-brand-700">
+          <h4 className="text-sm font-medium text-brand-950">{magicSystem.name}</h4>
+          <p className="text-xs text-brand-700">
             {magicSystem.type === "magic" ? "Magic System" : "Power System"}
           </p>
         </div>
