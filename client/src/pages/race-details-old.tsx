@@ -47,7 +47,7 @@ export default function RaceDetails() {
     return (
       <div className="min-h-screen bg-brand-50">
         <Navbar 
-          hasActiveProject={true}
+          projectId={projectId || ""} 
           projectName={project?.name}
           onNavigate={(path) => setLocation(path)}
         />
@@ -65,7 +65,7 @@ export default function RaceDetails() {
     return (
       <div className="min-h-screen bg-brand-50">
         <Navbar 
-          hasActiveProject={true}
+          projectId={projectId || ""} 
           projectName={project?.name}
           onNavigate={(path) => setLocation(path)}
         />
@@ -85,7 +85,7 @@ export default function RaceDetails() {
   return (
     <div className="min-h-screen bg-brand-50">
       <Navbar 
-        hasActiveProject={true}
+        projectId={projectId || ""} 
         projectName={project?.name}
         onNavigate={(path) => setLocation(path)}
       />
@@ -149,11 +149,11 @@ export default function RaceDetails() {
               </div>
             )}
 
-            {/* Lifespan */}
-            {race.lifespan && (
+            {/* Homeland */}
+            {race.homeland && (
               <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-2">Lifespan</h3>
-                <p className="text-brand-700 leading-relaxed">{race.lifespan}</p>
+                <h3 className="text-lg font-semibold text-brand-900 mb-2">Homeland</h3>
+                <p className="text-brand-700 leading-relaxed">{race.homeland}</p>
               </div>
             )}
 
@@ -165,16 +165,8 @@ export default function RaceDetails() {
               </div>
             )}
 
-            {/* Language */}
-            {race.language && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-2">Language</h3>
-                <p className="text-brand-700 leading-relaxed">{race.language}</p>
-              </div>
-            )}
-
             {/* Empty state if no detailed information */}
-            {!race.description && !race.biology && !race.culture && !race.lifespan && !race.traits && !race.language && (
+            {!race.description && !race.biology && !race.culture && !race.homeland && !race.traits && (
               <div className="text-center py-8">
                 <UserCheck className="w-12 h-12 text-brand-400 mx-auto mb-4" />
                 <p className="text-brand-600">No detailed information available for this race.</p>

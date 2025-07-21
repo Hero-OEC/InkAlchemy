@@ -12,16 +12,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UserCheck, ArrowLeft } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
-import type { Race, Project } from "@shared/schema";
+import type { Race } from "@shared/schema";
 
 const raceFormSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   description: z.string().optional(),
   biology: z.string().optional(),
   culture: z.string().optional(),
-  language: z.string().optional(),
+  homeland: z.string().optional(),
   traits: z.string().optional(),
-  lifespan: z.string().optional(),
 });
 
 type RaceFormData = z.infer<typeof raceFormSchema>;
@@ -45,7 +44,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
   }, [mode]);
 
   // Fetch project data
-  const { data: project } = useQuery<Project>({
+  const { data: project } = useQuery({
     queryKey: [`/api/projects/${projectId}`],
   });
 
@@ -71,9 +70,8 @@ export default function RaceForm({ mode }: RaceFormProps) {
       description: "",
       biology: "",
       culture: "",
-      language: "",
+      homeland: "",
       traits: "",
-      lifespan: "",
     },
   });
 
@@ -85,9 +83,8 @@ export default function RaceForm({ mode }: RaceFormProps) {
         description: race.description || "",
         biology: race.biology || "",
         culture: race.culture || "",
-        language: race.language || "",
+        homeland: race.homeland || "",
         traits: race.traits || "",
-        lifespan: race.lifespan || "",
       });
     }
   }, [race, mode, form]);
@@ -139,7 +136,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
     return (
       <div className="min-h-screen bg-brand-50">
         <Navbar 
-          hasActiveProject={true}
+          projectId={projectId || ""} 
           projectName={project?.name}
           onNavigate={(path) => setLocation(path)}
         />
@@ -156,7 +153,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
   return (
     <div className="min-h-screen bg-brand-50">
       <Navbar 
-        hasActiveProject={true}
+        projectId={projectId || ""} 
         projectName={project?.name}
         onNavigate={(path) => setLocation(path)}
       />
@@ -237,7 +234,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
                     <FormLabel>Biology & Physiology</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Physical characteristics, abilities..."
+                        placeholder="Physical characteristics, lifespan, abilities..."
                         className="min-h-[100px]"
                         {...field} 
                       />
@@ -266,35 +263,16 @@ export default function RaceForm({ mode }: RaceFormProps) {
                 )}
               />
 
-              {/* Language */}
+              {/* Homeland */}
               <FormField
                 control={form.control}
-                name="language"
+                name="homeland"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Language</FormLabel>
+                    <FormLabel>Homeland</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Language information and characteristics..."
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Lifespan */}
-              <FormField
-                control={form.control}
-                name="lifespan"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Lifespan</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Average lifespan and aging information..."
+                        placeholder="Where this race originates from or primarily lives..."
                         className="min-h-[100px]"
                         {...field} 
                       />
