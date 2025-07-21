@@ -121,7 +121,7 @@ export function CharacterCard({
       {/* Character Name with Icon */}
       <div className="mb-2 flex items-center gap-2">
         <div className="p-1.5 rounded-lg bg-brand-200">
-          <Icon size={16} className="text-brand-700" />
+          <Icon size={24} className="text-brand-700" />
         </div>
         <h3 className="text-brand-950 font-semibold text-lg leading-tight">
           {prefix && <span className="text-sm text-brand-600 font-normal">{prefix} </span>}

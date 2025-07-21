@@ -56,7 +56,7 @@ export function MiniCard({
       <div className="flex items-center gap-3 flex-1 min-w-0" onClick={variant === "editable" ? onClick : undefined}>
         {/* Icon */}
         <div className="flex-shrink-0 p-1.5 rounded-lg bg-brand-200">
-          <IconComponent className="w-4 h-4 text-brand-700" />
+          <IconComponent className="w-6 h-6 text-brand-700" />
         </div>
         
         {/* Content Container */}

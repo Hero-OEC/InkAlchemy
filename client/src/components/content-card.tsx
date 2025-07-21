@@ -83,7 +83,7 @@ export function ContentCard({
       <div className="mb-4">
         <div className="flex items-center gap-2 mb-2">
           <div className="p-1.5 rounded-lg bg-brand-200 flex items-center justify-center flex-shrink-0">
-            <Icon className="w-4 h-4 text-brand-700" />
+            <Icon className="w-6 h-6 text-brand-700" />
           </div>
           
           <h3 className="text-lg font-semibold text-brand-950 truncate">

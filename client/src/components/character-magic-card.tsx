@@ -46,7 +46,7 @@ export function CharacterMagicCard({
         onClick={() => onSystemClick?.(magicSystem)}
       >
         <div className="p-1.5 rounded-lg bg-brand-200">
-          <SystemIcon className="w-4 h-4 text-brand-700" />
+          <SystemIcon className="w-6 h-6 text-brand-700" />
         </div>
         <div className="flex-1">
           <h4 className="text-sm font-medium text-brand-950">{magicSystem.name}</h4>
