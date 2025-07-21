@@ -68,32 +68,15 @@ export default function Characters() {
         onNavigate={handleNavigation}
       />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-bold text-brand-900 mb-2 text-[36px]">Characters</h1>
-            <p className="text-brand-600">Manage your story's cast of characters and races</p>
-          </div>
-          <Button
-            variant="primary"
-            size="md"
-            onClick={handleCreateCharacter}
-            className="flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Character
-          </Button>
-        </div>
-
         {/* Races Section */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-16">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-bold text-brand-900 mb-2">Races</h2>
+              <h1 className="font-bold text-brand-900 mb-2 text-[36px]">Races</h1>
               <p className="text-brand-600">Define the races that inhabit your world</p>
             </div>
             <Button
-              variant="outline"
+              variant="primary"
               size="md"
               onClick={handleCreateRace}
               className="flex items-center gap-2"
@@ -128,42 +111,61 @@ export default function Characters() {
           )}
         </div>
 
-        {/* Characters Grid */}
-        {characters.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {characters.map((character) => (
-              <CharacterCard
-                key={character.id}
-                id={character.id}
-                name={character.name}
-                prefix={character.prefix}
-                suffix={character.suffix}
-                type={character.type as any}
-                description={character.description || "No description available"}
-                imageUrl={character.imageUrl}
-                createdAt={character.createdAt}
-                lastEditedAt={character.updatedAt}
-                onClick={() => handleCharacterClick(character)}
-                onEdit={() => handleCharacterEdit(character)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <Users className="w-16 h-16 mx-auto mb-4 text-brand-300" />
-            <h2 className="text-xl font-semibold text-brand-900 mb-2">No Characters Yet</h2>
-            <p className="text-brand-600 mb-6">Create your first character to bring your story to life</p>
+        {/* Characters Section */}
+        <div>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="font-bold text-brand-900 mb-2 text-[36px]">Characters</h1>
+              <p className="text-brand-600">Manage your story's cast of characters</p>
+            </div>
             <Button
               variant="primary"
-              size="lg"
+              size="md"
               onClick={handleCreateCharacter}
               className="flex items-center gap-2"
             >
-              <Plus className="w-5 h-5" />
-              Create Your First Character
+              <Plus className="w-4 h-4" />
+              Add Character
             </Button>
           </div>
-        )}
+
+          {/* Characters Grid */}
+          {characters.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {characters.map((character) => (
+                <CharacterCard
+                  key={character.id}
+                  id={character.id}
+                  name={character.name}
+                  prefix={character.prefix}
+                  suffix={character.suffix}
+                  type={character.type as any}
+                  description={character.description || "No description available"}
+                  imageUrl={character.imageUrl}
+                  createdAt={character.createdAt}
+                  lastEditedAt={character.updatedAt}
+                  onClick={() => handleCharacterClick(character)}
+                  onEdit={() => handleCharacterEdit(character)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <Users className="w-16 h-16 mx-auto mb-4 text-brand-300" />
+              <h2 className="text-xl font-semibold text-brand-900 mb-2">No Characters Yet</h2>
+              <p className="text-brand-600 mb-6">Create your first character to bring your story to life</p>
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={handleCreateCharacter}
+                className="flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                Create Your First Character
+              </Button>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
