@@ -242,35 +242,32 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="prefix"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Prefix</FormLabel>
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Character Type *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <Input placeholder="Sir, Lady" {...field} />
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select character type" />
+                          </SelectTrigger>
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="suffix"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Suffix</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Jr., III" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                        <SelectContent>
+                          <SelectItem value="protagonist">Protagonist</SelectItem>
+                          <SelectItem value="antagonist">Antagonist</SelectItem>
+                          <SelectItem value="villain">Villain</SelectItem>
+                          <SelectItem value="supporting">Supporting</SelectItem>
+                          <SelectItem value="ally">Ally</SelectItem>
+                          <SelectItem value="neutral">Neutral</SelectItem>
+                          <SelectItem value="love-interest">Love Interest</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
 
               </div>
@@ -336,43 +333,44 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                   <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-900 mb-4">Basic Information</h3>
                     <div className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Character Name *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter character name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
                       <div className="grid grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
-                          name="name"
+                          name="prefix"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Character Name *</FormLabel>
+                              <FormLabel>Prefix</FormLabel>
                               <FormControl>
-                                <Input placeholder="Enter character name" {...field} />
+                                <Input placeholder="Sir, Lady" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={form.control}
-                          name="type"
+                          name="suffix"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Character Type *</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select character type" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="protagonist">Protagonist</SelectItem>
-                                  <SelectItem value="antagonist">Antagonist</SelectItem>
-                                  <SelectItem value="villain">Villain</SelectItem>
-                                  <SelectItem value="supporting">Supporting</SelectItem>
-                                  <SelectItem value="ally">Ally</SelectItem>
-                                  <SelectItem value="neutral">Neutral</SelectItem>
-                                  <SelectItem value="love-interest">Love Interest</SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <FormLabel>Suffix</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Jr., III" {...field} />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
