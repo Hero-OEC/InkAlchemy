@@ -1,5 +1,5 @@
 import { useParams, useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
@@ -37,6 +37,15 @@ export default function Notes() {
   const { data: notes = [] } = useQuery<Note[]>({
     queryKey: [`/api/projects/${projectId}/notes`],
   });
+
+  // Set page title
+  useEffect(() => {
+    if (project?.name) {
+      document.title = `Notes - ${project.name} | StoryForge`;
+    } else {
+      document.title = "Notes | StoryForge";
+    }
+  }, [project?.name]);
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);

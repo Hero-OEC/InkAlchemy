@@ -1,6 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
@@ -47,6 +47,17 @@ export default function MagicSystemDetails() {
     queryKey: [`/api/magic-systems/${systemId}`],
     enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
   });
+
+  // Set page title
+  useEffect(() => {
+    if (system?.name && project?.name) {
+      document.title = `${system.name} - ${project.name} | StoryForge`;
+    } else if (system?.name) {
+      document.title = `${system.name} | StoryForge`;
+    } else {
+      document.title = "Magic System Details | StoryForge";
+    }
+  }, [system?.name, project?.name]);
 
   const { data: characters } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],

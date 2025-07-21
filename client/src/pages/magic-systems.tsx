@@ -45,6 +45,15 @@ export default function MagicSystems() {
     queryKey: [`/api/projects/${projectId}/magic-systems`],
   });
 
+  // Set page title
+  useEffect(() => {
+    if (project?.name) {
+      document.title = `Magic Systems - ${project.name} | StoryForge`;
+    } else {
+      document.title = "Magic Systems | StoryForge";
+    }
+  }, [project?.name]);
+
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
   };

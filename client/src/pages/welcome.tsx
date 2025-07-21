@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button-variations";
 import { Navbar } from "@/components/navbar";
@@ -189,6 +189,11 @@ export default function Welcome() {
       deleteProjectMutation.mutate(deleteProject.id);
     }
   };
+
+  // Set page title
+  useEffect(() => {
+    document.title = "StoryForge - Worldbuilding Management Platform";
+  }, []);
 
   if (isLoading) {
     return (

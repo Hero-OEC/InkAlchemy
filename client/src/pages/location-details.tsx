@@ -58,6 +58,17 @@ export default function LocationDetails() {
     enabled: !!locationId && locationId !== "new" && !isNaN(Number(locationId))
   });
 
+  // Set page title
+  useEffect(() => {
+    if (location?.name && project?.name) {
+      document.title = `${location.name} - ${project.name} | StoryForge`;
+    } else if (location?.name) {
+      document.title = `${location.name} | StoryForge`;
+    } else {
+      document.title = "Location Details | StoryForge";
+    }
+  }, [location?.name, project?.name]);
+
   const { data: characters = [] } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });

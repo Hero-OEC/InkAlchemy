@@ -76,6 +76,17 @@ export default function CharacterDetails() {
     enabled: !!character,
   });
 
+  // Set page title
+  useEffect(() => {
+    if (character?.name && project?.name) {
+      document.title = `${character.name} - ${project.name} | StoryForge`;
+    } else if (character?.name) {
+      document.title = `${character.name} | StoryForge`;
+    } else {
+      document.title = "Character Details | StoryForge";
+    }
+  }, [character?.name, project?.name]);
+
   // Handle loading state - this must be first and exclusive
   if (characterLoading) {
     return (

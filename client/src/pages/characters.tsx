@@ -21,6 +21,15 @@ export default function Characters() {
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
+  // Set page title
+  useEffect(() => {
+    if (project?.name) {
+      document.title = `Characters - ${project.name} | StoryForge`;
+    } else {
+      document.title = "Characters | StoryForge";
+    }
+  }, [project?.name]);
+
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
   };

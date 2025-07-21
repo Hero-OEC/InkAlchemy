@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import SerpentineTimeline from "@/components/serpentine-timeline";
@@ -31,6 +32,15 @@ export default function Timeline() {
   const { data: relationships = [] } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
   });
+
+  // Set page title
+  useEffect(() => {
+    if (project?.name) {
+      document.title = `Timeline - ${project.name} | StoryForge`;
+    } else {
+      document.title = "Timeline | StoryForge";
+    }
+  }, [project?.name]);
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);

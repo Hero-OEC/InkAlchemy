@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { 
   Users, MapPin, Calendar, Sparkles, BookOpen, StickyNote,
@@ -42,6 +43,15 @@ export default function Dashboard() {
   const { data: notes } = useQuery<Note[]>({
     queryKey: [`/api/projects/${projectId}/notes`],
   });
+
+  // Set page title
+  useEffect(() => {
+    if (project?.name) {
+      document.title = `${project.name} | StoryForge`;
+    } else {
+      document.title = "Dashboard | StoryForge";
+    }
+  }, [project?.name]);
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);

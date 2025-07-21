@@ -73,6 +73,17 @@ export default function EventDetails() {
     queryKey: [`/api/events/${eventId}`],
   });
 
+  // Set page title
+  useEffect(() => {
+    if (event?.title && project?.name) {
+      document.title = `${event.title} - ${project.name} | StoryForge`;
+    } else if (event?.title) {
+      document.title = `${event.title} | StoryForge`;
+    } else {
+      document.title = "Event Details | StoryForge";
+    }
+  }, [event?.title, project?.name]);
+
   const { data: characters = [] } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
