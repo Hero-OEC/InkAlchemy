@@ -56,6 +56,7 @@ export default function CharacterDetails() {
     queryKey: [`/api/characters/${characterId}/spells`],
   });
 
+  // Show loading state
   if (characterLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
@@ -67,6 +68,7 @@ export default function CharacterDetails() {
     );
   }
 
+  // Show error state if character not found
   if (!character) {
     return (
       <div className="min-h-screen bg-background text-foreground">
