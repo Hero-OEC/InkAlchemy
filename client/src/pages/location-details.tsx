@@ -53,8 +53,9 @@ export default function LocationDetails() {
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: location } = useQuery<Location>({
+  const { data: location, isLoading: locationLoading } = useQuery<Location>({
     queryKey: [`/api/locations/${locationId}`],
+    enabled: !!locationId && locationId !== "new" && !isNaN(Number(locationId))
   });
 
   const { data: characters = [] } = useQuery<Character[]>({
@@ -107,6 +108,22 @@ export default function LocationDetails() {
     navigateWithReferrer(`/projects/${projectId}/events/${event.id}`, currentPath);
   };
 
+  if (locationLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="locations"
+          projectName={project?.name}
+          onNavigate={handleNavigation}
+        />
+        <div className="flex items-center justify-center py-20">
+          <p className="text-brand-600">Loading location...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!location) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -117,7 +134,16 @@ export default function LocationDetails() {
           onNavigate={handleNavigation}
         />
         <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Location not found</p>
+          <div className="text-center">
+            <p className="text-brand-600 mb-4">Location not found</p>
+            <p className="text-sm text-brand-500 mb-4">Location ID: {locationId}</p>
+            <button 
+              onClick={handleBack}
+              className="text-brand-600 hover:text-brand-700 underline"
+            >
+              ← Go Back
+            </button>
+          </div>
         </div>
       </div>
     );
