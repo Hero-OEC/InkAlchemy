@@ -37,8 +37,8 @@ function App() {
       <Route path="/projects/:projectId/dashboard" component={Dashboard} />
       <Route path="/projects/:projectId/characters" component={Characters} />
       <Route path="/projects/:projectId/characters/new" component={CreateCharacter} />
-      <Route path="/projects/:projectId/characters/:characterId" component={CharacterDetails} />
       <Route path="/projects/:projectId/characters/:characterId/edit" component={EditCharacter} />
+      <Route path="/projects/:projectId/characters/:characterId" component={CharacterDetails} />
       <Route path="/projects/:projectId/locations" component={Locations} />
       <Route path="/projects/:projectId/locations/new" component={CreateLocation} />
       <Route path="/projects/:projectId/locations/:locationId/edit" component={EditLocation} />

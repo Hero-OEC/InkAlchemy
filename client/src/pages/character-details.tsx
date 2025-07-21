@@ -24,39 +24,47 @@ export default function CharacterDetails() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
 
-  const { data: character, isLoading: characterLoading } = useQuery<Character>({
+  const { data: character, isLoading: characterLoading, error: characterError } = useQuery<Character>({
     queryKey: [`/api/characters/${characterId}`],
   });
 
+  // Only load other data if character exists
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
+    enabled: !!character,
   });
 
   const { data: magicSystems = [] } = useQuery<MagicSystem[]>({
     queryKey: [`/api/projects/${projectId}/magic-systems`],
+    enabled: !!character,
   });
 
   const { data: events = [] } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
+    enabled: !!character,
   });
 
   const { data: characters = [] } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
+    enabled: !!character,
   });
 
   const { data: locations = [] } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
+    enabled: !!character,
   });
 
   const { data: relationships = [] } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
+    enabled: !!character,
   });
 
   const { data: characterSpells = [] } = useQuery<(Spell & { proficiency?: string })[]>({
     queryKey: [`/api/characters/${characterId}/spells`],
+    enabled: !!character,
   });
 
-  // Show loading state
+  // Handle loading state - this must be first and exclusive
   if (characterLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
@@ -68,15 +76,15 @@ export default function CharacterDetails() {
     );
   }
 
-  // Show error state if character not found
-  if (!character) {
+  // Handle error/not found state - this must be second and exclusive  
+  if (!character || characterError) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navbar 
           hasActiveProject={true}
           currentPage="characters"
           onNavigate={() => setLocation(`/projects/${projectId}/characters`)}
-          projectName={project?.name}
+          projectName="StoryForge"
         />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-12">
