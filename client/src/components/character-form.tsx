@@ -1,14 +1,16 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CharacterMagicSelector } from "@/components/character-magic-selector";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { insertCharacterSchema, type Character } from "@shared/schema";
+import { insertCharacterSchema, type Character, type MagicSystem, type Spell } from "@shared/schema";
 import { z } from "zod";
 
 const formSchema = insertCharacterSchema.extend({
@@ -23,6 +25,59 @@ interface CharacterFormProps {
 
 export function CharacterForm({ character, projectId, onSuccess }: CharacterFormProps) {
   const { toast } = useToast();
+  const [selectedSpells, setSelectedSpells] = useState<number[]>([]);
+
+  // Fetch magic systems and character spells
+  const { data: magicSystems = [] } = useQuery<MagicSystem[]>({
+    queryKey: [`/api/projects/${projectId}/magic-systems`],
+  });
+
+  const { data: characterSpells = [] } = useQuery<(Spell & { proficiency?: string })[]>({
+    queryKey: [`/api/characters/${character?.id}/spells`],
+    enabled: !!character?.id,
+  });
+
+  // Fetch all spells for all magic systems
+  const { data: allSpells = [] } = useQuery<Spell[]>({
+    queryKey: [`/api/projects/${projectId}/spells`],
+  });
+
+  // Initialize selected spells when character data loads
+  useEffect(() => {
+    if (characterSpells.length > 0) {
+      setSelectedSpells(characterSpells.map(spell => spell.id));
+    }
+  }, [characterSpells]);
+
+  // Function to sync character spells
+  const updateCharacterSpells = async (characterId: number) => {
+    try {
+      // Get current character spells
+      const currentSpells = await queryClient.fetchQuery({
+        queryKey: [`/api/characters/${characterId}/spells`],
+        queryFn: () => fetch(`/api/characters/${characterId}/spells`).then(res => res.json())
+      });
+      
+      const currentSpellIds = currentSpells.map((spell: any) => spell.id);
+      
+      // Add new spells
+      const spellsToAdd = selectedSpells.filter(spellId => !currentSpellIds.includes(spellId));
+      for (const spellId of spellsToAdd) {
+        await apiRequest("POST", `/api/characters/${characterId}/spells`, {
+          spellId,
+          proficiency: "novice"
+        });
+      }
+      
+      // Remove spells that are no longer selected
+      const spellsToRemove = currentSpellIds.filter((spellId: number) => !selectedSpells.includes(spellId));
+      for (const spellId of spellsToRemove) {
+        await apiRequest("DELETE", `/api/characters/${characterId}/spells/${spellId}`, {});
+      }
+    } catch (error) {
+      console.error("Error updating character spells:", error);
+    }
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,7 +98,10 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest("POST", "/api/characters", data),
-    onSuccess: () => {
+    onSuccess: async (newCharacter) => {
+      // Add character spells
+      await updateCharacterSpells(newCharacter.id);
+      
       queryClient.invalidateQueries({ 
         queryKey: ["/api/projects", projectId, "characters"] 
       });
@@ -68,9 +126,15 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
   const updateMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest("PATCH", `/api/characters/${character?.id}`, data),
-    onSuccess: () => {
+    onSuccess: async (updatedCharacter) => {
+      // Update character spells
+      await updateCharacterSpells(updatedCharacter.id);
+      
       queryClient.invalidateQueries({ 
         queryKey: ["/api/projects", projectId, "characters"] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: [`/api/characters/${updatedCharacter.id}/spells`] 
       });
       toast({
         title: "Success",
@@ -261,7 +325,29 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
           )}
         />
 
-        <div className="flex justify-end space-x-2">
+        {/* Magic Systems & Abilities Section */}
+        <div className="col-span-2 space-y-4">
+          <div className="border-t pt-6">
+            <h3 className="text-lg font-semibold text-brand-900 mb-4">Magic Systems & Abilities</h3>
+            <CharacterMagicSelector
+              availableMagicSystems={magicSystems.map(system => ({
+                id: system.id,
+                name: system.name,
+                type: system.type as "magic" | "power",
+                spells: allSpells.filter(spell => spell.magicSystemId === system.id).map(spell => ({
+                  id: spell.id,
+                  name: spell.name,
+                  type: system.type === "magic" ? "spell" as const : "ability" as const,
+                  magicSystemId: spell.magicSystemId
+                }))
+              }))}
+              selectedSpells={selectedSpells}
+              onSelectionChange={setSelectedSpells}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end space-x-2 col-span-2">
           <Button type="button" variant="outline" onClick={onSuccess}>
             Cancel
           </Button>

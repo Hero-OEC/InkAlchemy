@@ -4,7 +4,8 @@ import { storage } from "./storage";
 import { 
   insertProjectSchema, insertCharacterSchema, insertLocationSchema, 
   insertEventSchema, insertMagicSystemSchema, insertSpellSchema, 
-  insertLoreEntrySchema, insertNoteSchema, insertRelationshipSchema 
+  insertLoreEntrySchema, insertNoteSchema, insertRelationshipSchema,
+  insertCharacterSpellSchema 
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -126,6 +127,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete character" });
+    }
+  });
+
+  // Character Spells
+  app.get("/api/characters/:characterId/spells", async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      const spells = await storage.getCharacterSpells(characterId);
+      res.json(spells);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch character spells" });
+    }
+  });
+
+  app.post("/api/characters/:characterId/spells", async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      const data = insertCharacterSpellSchema.parse({
+        ...req.body,
+        characterId
+      });
+      const characterSpell = await storage.addCharacterSpell(data);
+      res.status(201).json(characterSpell);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid character spell data" });
+    }
+  });
+
+  app.delete("/api/characters/:characterId/spells/:spellId", async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      const spellId = parseInt(req.params.spellId);
+      const deleted = await storage.removeCharacterSpell(characterId, spellId);
+      if (!deleted) {
+        return res.status(404).json({ message: "Character spell not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove character spell" });
     }
   });
 
@@ -313,6 +353,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Spells
+  app.get("/api/projects/:projectId/spells", async (req, res) => {
+    try {
+      const projectId = parseInt(req.params.projectId);
+      const spells = await storage.getAllSpellsForProject(projectId);
+      res.json(spells);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch spells" });
+    }
+  });
+
   app.get("/api/magic-systems/:magicSystemId/spells", async (req, res) => {
     try {
       const magicSystemId = parseInt(req.params.magicSystemId);

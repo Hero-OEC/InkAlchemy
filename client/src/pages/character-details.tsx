@@ -4,9 +4,10 @@ import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
+import { CharacterMagicCard } from "@/components/character-magic-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { Edit, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft } from "lucide-react";
-import type { Project, Character, MagicSystem, Event, Location, Relationship } from "@shared/schema";
+import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell } from "@shared/schema";
 
 const CHARACTER_TYPE_CONFIG = {
   protagonist: { icon: Crown, label: "Protagonist", bgColor: "bg-brand-500", textColor: "text-white" },
@@ -51,6 +52,10 @@ export default function CharacterDetails() {
     queryKey: [`/api/projects/${projectId}/relationships`],
   });
 
+  const { data: characterSpells = [] } = useQuery<(Spell & { proficiency?: string })[]>({
+    queryKey: [`/api/characters/${characterId}/spells`],
+  });
+
   if (!character) {
     return <div>Loading...</div>;
   }
@@ -75,6 +80,7 @@ export default function CharacterDetails() {
     { id: "details", label: "Details" },
     { id: "appearance", label: "Appearance" },
     { id: "backstory", label: "Backstory" },
+    { id: "magic", label: "Magic & Abilities" },
     { id: "weapons", label: "Weapons" },
     { id: "timeline", label: "Timeline" }
   ];
@@ -250,6 +256,50 @@ export default function CharacterDetails() {
                 </div>
               )}
 
+              {activeTab === "magic" && (
+                <div>
+                  <h3 className="text-lg font-semibold text-brand-900 mb-6">Magic Systems & Abilities</h3>
+                  {(() => {
+                    // Group character spells by magic system
+                    const magicSystemsWithSpells = magicSystems.map(system => {
+                      const systemSpells = characterSpells.filter(spell => 
+                        spell.magicSystemId === system.id
+                      );
+                      return {
+                        ...system,
+                        spells: systemSpells
+                      };
+                    }).filter(system => system.spells.length > 0);
+
+                    if (magicSystemsWithSpells.length === 0) {
+                      return (
+                        <div className="text-center py-8 bg-brand-50 rounded-lg">
+                          <Sparkles className="w-12 h-12 text-brand-400 mx-auto mb-3" />
+                          <p className="text-brand-600">No magic systems or abilities assigned to this character.</p>
+                          <p className="text-sm text-brand-500 mt-2">
+                            Edit this character to assign spells and abilities from available magic systems.
+                          </p>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="space-y-6">
+                        {magicSystemsWithSpells.map(system => (
+                          <CharacterMagicCard
+                            key={system.id}
+                            magicSystem={system}
+                            characterSpells={system.spells}
+                            onSpellClick={(spell) => setLocation(`/projects/${projectId}/spells/${spell.id}`)}
+                            onSystemClick={(system) => handleMagicSystemClick(system.id)}
+                          />
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
               {activeTab === "weapons" && (
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-3">Equipment & Skills</h3>
@@ -269,10 +319,10 @@ export default function CharacterDetails() {
                       // Filter events where this character is involved
                       const characterEvents = events.filter(event => {
                         const eventRelationships = relationships.filter(rel => 
-                          rel.fromElementType === 'event' && 
-                          rel.fromElementId === event.id &&
-                          rel.toElementType === 'character' &&
-                          rel.toElementId === character.id
+                          rel.sourceType === 'event' && 
+                          rel.sourceId === event.id &&
+                          rel.targetType === 'character' &&
+                          rel.targetId === character.id
                         );
                         return eventRelationships.length > 0;
                       });
@@ -280,12 +330,12 @@ export default function CharacterDetails() {
                       // Process events with relationships to add character and location data
                       const processedEvents = characterEvents.map(event => {
                         const eventRelationships = relationships.filter(rel => 
-                          rel.fromElementType === 'event' && rel.fromElementId === event.id
+                          rel.sourceType === 'event' && rel.sourceId === event.id
                         );
                         
                         const eventCharacters = eventRelationships
-                          .filter(rel => rel.toElementType === 'character')
-                          .map(rel => characters.find(char => char.id === rel.toElementId))
+                          .filter(rel => rel.targetType === 'character')
+                          .map(rel => characters.find(char => char.id === rel.targetId))
                           .filter(Boolean) as Character[];
                         
                         const eventLocation = event.locationId 

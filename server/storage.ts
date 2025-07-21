@@ -1,5 +1,5 @@
 import { 
-  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships,
+  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells,
   type Project, type InsertProject,
   type Character, type InsertCharacter,
   type Location, type InsertLocation,
@@ -8,7 +8,8 @@ import {
   type Spell, type InsertSpell,
   type LoreEntry, type InsertLoreEntry,
   type Note, type InsertNote,
-  type Relationship, type InsertRelationship
+  type Relationship, type InsertRelationship,
+  type CharacterSpell, type InsertCharacterSpell
 } from "@shared/schema";
 
 export interface IStorage {
@@ -49,10 +50,16 @@ export interface IStorage {
 
   // Spells
   getSpells(magicSystemId: number): Promise<Spell[]>;
+  getAllSpellsForProject(projectId: number): Promise<Spell[]>;
   getSpell(id: number): Promise<Spell | undefined>;
   createSpell(spell: InsertSpell): Promise<Spell>;
   updateSpell(id: number, spell: Partial<InsertSpell>): Promise<Spell | undefined>;
   deleteSpell(id: number): Promise<boolean>;
+
+  // Character Spells
+  getCharacterSpells(characterId: number): Promise<(Spell & { proficiency?: string })[]>;
+  addCharacterSpell(characterSpell: InsertCharacterSpell): Promise<CharacterSpell>;
+  removeCharacterSpell(characterId: number, spellId: number): Promise<boolean>;
 
   // Lore Entries
   getLoreEntries(projectId: number): Promise<LoreEntry[]>;
@@ -99,6 +106,7 @@ export class MemStorage implements IStorage {
   private loreEntries: Map<number, LoreEntry>;
   private notes: Map<number, Note>;
   private relationships: Map<number, Relationship>;
+  private characterSpells: Map<number, CharacterSpell>;
   private currentId: number;
 
   constructor() {
@@ -111,6 +119,7 @@ export class MemStorage implements IStorage {
     this.loreEntries = new Map();
     this.notes = new Map();
     this.relationships = new Map();
+    this.characterSpells = new Map();
     this.currentId = 10;
 
     // Create a default project
@@ -1130,6 +1139,10 @@ export class MemStorage implements IStorage {
     return Array.from(this.spells.values()).filter(s => s.magicSystemId === magicSystemId);
   }
 
+  async getAllSpellsForProject(projectId: number): Promise<Spell[]> {
+    return Array.from(this.spells.values()).filter(s => s.projectId === projectId);
+  }
+
   async getSpell(id: number): Promise<Spell | undefined> {
     return this.spells.get(id);
   }
@@ -1360,6 +1373,49 @@ export class MemStorage implements IStorage {
     });
 
     return results;
+  }
+
+  // Character Spells
+  async getCharacterSpells(characterId: number): Promise<(Spell & { proficiency?: string })[]> {
+    const characterSpellsData = Array.from(this.characterSpells.values())
+      .filter(cs => cs.characterId === characterId);
+    
+    const results: (Spell & { proficiency?: string })[] = [];
+    for (const cs of characterSpellsData) {
+      const spell = this.spells.get(cs.spellId);
+      if (spell) {
+        results.push({
+          ...spell,
+          proficiency: cs.proficiency || 'novice'
+        });
+      }
+    }
+    
+    return results;
+  }
+
+  async addCharacterSpell(characterSpell: InsertCharacterSpell): Promise<CharacterSpell> {
+    const id = this.currentId++;
+    const newCharacterSpell: CharacterSpell = {
+      id,
+      characterId: characterSpell.characterId,
+      spellId: characterSpell.spellId,
+      proficiency: characterSpell.proficiency || 'novice',
+      createdAt: new Date()
+    };
+    this.characterSpells.set(id, newCharacterSpell);
+    return newCharacterSpell;
+  }
+
+  async removeCharacterSpell(characterId: number, spellId: number): Promise<boolean> {
+    const toDelete = Array.from(this.characterSpells.entries())
+      .find(([_, cs]) => cs.characterId === characterId && cs.spellId === spellId);
+    
+    if (toDelete) {
+      this.characterSpells.delete(toDelete[0]);
+      return true;
+    }
+    return false;
   }
 
   // Stats

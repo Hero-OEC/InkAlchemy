@@ -118,6 +118,15 @@ export const notes = pgTable("notes", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Character Spells junction table - linking characters to their spells/abilities
+export const characterSpells = pgTable("character_spells", {
+  id: serial("id").primaryKey(),
+  characterId: integer("character_id").references(() => characters.id).notNull(),
+  spellId: integer("spell_id").references(() => spells.id).notNull(),
+  proficiency: text("proficiency").default("novice"), // novice, apprentice, adept, expert, master
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Relationships table for connecting different elements
 export const relationships = pgTable("relationships", {
   id: serial("id").primaryKey(),
@@ -181,6 +190,11 @@ export const insertNoteSchema = createInsertSchema(notes).omit({
   updatedAt: true,
 });
 
+export const insertCharacterSpellSchema = createInsertSchema(characterSpells).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertRelationshipSchema = createInsertSchema(relationships).omit({
   id: true,
   createdAt: true,
@@ -204,6 +218,9 @@ export type InsertMagicSystem = z.infer<typeof insertMagicSystemSchema>;
 
 export type Spell = typeof spells.$inferSelect;
 export type InsertSpell = z.infer<typeof insertSpellSchema>;
+
+export type CharacterSpell = typeof characterSpells.$inferSelect;
+export type InsertCharacterSpell = z.infer<typeof insertCharacterSpellSchema>;
 
 export type LoreEntry = typeof loreEntries.$inferSelect;
 export type InsertLoreEntry = z.infer<typeof insertLoreEntrySchema>;
