@@ -30,48 +30,64 @@ export default function CharacterDetails() {
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
-    enabled: !!character, // Only load project once character is loaded
   });
 
   const { data: magicSystems = [] } = useQuery<MagicSystem[]>({
     queryKey: [`/api/projects/${projectId}/magic-systems`],
-    enabled: !!character,
   });
 
   const { data: events = [] } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
-    enabled: !!character,
   });
 
   const { data: characters = [] } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
-    enabled: !!character,
   });
 
   const { data: locations = [] } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
-    enabled: !!character,
   });
 
   const { data: relationships = [] } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
-    enabled: !!character,
   });
 
   const { data: characterSpells = [] } = useQuery<(Spell & { proficiency?: string })[]>({
     queryKey: [`/api/characters/${characterId}/spells`],
-    enabled: !!character,
   });
 
-  if (characterLoading || !character) {
+  if (characterLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto mb-4"></div>
+          <p className="text-brand-600">Loading character...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!character) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto mb-4"></div>
-            <p className="text-brand-600">Loading character...</p>
+        <Navbar 
+          hasActiveProject={true}
+          currentPage="characters"
+          onNavigate={() => setLocation(`/projects/${projectId}/characters`)}
+          projectName={project?.name}
+        />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center py-12">
+            <h1 className="text-2xl font-bold text-brand-900 mb-4">Character Not Found</h1>
+            <p className="text-brand-600 mb-6">The character you're looking for doesn't exist or may have been deleted.</p>
+            <Button 
+              variant="primary" 
+              onClick={() => setLocation(`/projects/${projectId}/characters`)}
+            >
+              Back to Characters
+            </Button>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
