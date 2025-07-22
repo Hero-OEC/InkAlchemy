@@ -27,7 +27,7 @@ export const characters = pgTable("characters", {
   goals: text("goals"),
   powerType: text("power_type"),
   age: text("age"),
-  race: text("race"),
+  raceId: integer("race_id").references(() => races.id),
   weapons: text("weapons"),
   equipment: text("equipment"),
   imageUrl: text("image_url"),

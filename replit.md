@@ -372,3 +372,14 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Enhanced form validation and error handling with proper React Hook Form integration
 - Applied consistent brand styling and max-w-6xl container with px-8 padding throughout
 - Race management now provides clean, focused interface for essential race information only
+
+### January 2025 - Expanded Race Schema and Database Relationship Fix
+- Enhanced race database schema with comprehensive race properties: homelandId, lifespan, sizeCategory, magicalAffinity, specialTraits
+- Fixed critical database relationship by replacing text-based race field in characters table with proper foreign key reference (raceId)
+- Added homeland selection linking races to locations table for proper geographical relationships
+- Implemented physical characteristics options: lifespan (5 levels from short to immortal), size categories (tiny to huge)
+- Added magical abilities system: 5 affinity levels from none to innate magic powers
+- Included special traits selection: enhanced senses, flight, shapeshifting, telepathy, elemental control, regeneration
+- Updated both race creation and editing forms with functional dropdowns for all new properties
+- Connected character filtering to use proper race ID relationships instead of name matching
+- Applied database schema migration with proper foreign key constraints and referential integrity

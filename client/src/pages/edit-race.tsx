@@ -53,8 +53,7 @@ export default function EditRace() {
 
   // Filter characters of this race
   const raceCharacters = characters.filter(character => 
-    character.race && race?.name && 
-    character.race.toLowerCase() === race.name.toLowerCase()
+    character.raceId === race?.id
   );
 
   const form = useForm<RaceFormData>({
