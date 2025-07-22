@@ -17,13 +17,16 @@
 }
 
 .ce-toolbar__plus {
-  left: 0 !important;
-  right: auto !important;
+  left: -40px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
-.ce-toolbar__settings-btn {
-  left: 30px !important;
-  right: auto !important;
+.ce-toolbar__settings {
+  left: -40px !important;
+  top: 30px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .ce-header {
