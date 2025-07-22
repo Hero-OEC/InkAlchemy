@@ -77,7 +77,8 @@ RESTful API endpoints following convention:
 ## External Dependencies
 
 ### Core Dependencies
-- **Database**: Neon Database (PostgreSQL) via `@neondatabase/serverless`
+- **Database**: PostgreSQL (currently Neon, planned migration to Supabase)
+- **Image Storage**: Local file system (planned migration to Supabase Storage)
 - **UI Components**: Radix UI primitives for accessible components
 - **Validation**: Zod for runtime type checking and validation
 - **Date Handling**: date-fns for date manipulation and formatting
@@ -327,3 +328,6 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Added comprehensive rich text features: headers, lists, quotes, code blocks, tables, images, links
 - Component available in components showcase at /components route
 - Uses standard Editor.js appearance without custom StoryForge styling per user preference
+- Image upload currently uses local file system storage, planned migration to Supabase Storage for production
+- Created EditorContentRenderer component for displaying saved Editor.js content on details pages
+- Applied consistent brand styling (brand-950, brand-900) to rendered content with proper typography hierarchy
