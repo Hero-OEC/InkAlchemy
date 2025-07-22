@@ -3,16 +3,22 @@
 .codex-editor {
   font-family: Cairo, sans-serif !important;
   border: none !important;
+  position: relative !important;
+  padding-left: 70px !important; /* Add more space for toolbar */
+  min-height: 200px !important;
 }
 
 .codex-editor__redactor {
   padding: 0 !important;
   border: none !important;
+  position: relative !important;
 }
 
 .ce-block {
   border: none !important;
   outline: none !important;
+  position: relative !important;
+  margin: 8px 0 !important;
 }
 
 .ce-block__content {
@@ -20,6 +26,8 @@
   margin: 0 !important;
   border: none !important;
   outline: none !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 /* Paragraph styling */
@@ -162,12 +170,22 @@
   font-family: Cairo, sans-serif !important;
 }
 
-/* Toolbar styling */
+/* Toolbar styling - Fixed positioning to prevent overlapping */
 .ce-toolbar {
   background: white !important;
   border: 1px solid hsl(var(--color-200)) !important; /* brand-200 */
   border-radius: 8px !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  z-index: 10 !important;
+  position: absolute !important;
+  left: -50px !important; /* Position further to the left */
+  margin-top: 2px !important;
+  transform: none !important;
+}
+
+.ce-toolbar--opened {
+  left: -50px !important;
+  transform: none !important;
 }
 
 .ce-toolbar__plus {
@@ -175,6 +193,12 @@
   background: hsl(var(--color-50)) !important; /* brand-50 */
   border-radius: 6px !important;
   border: none !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 2px !important;
 }
 
 .ce-toolbar__plus:hover {
@@ -185,11 +209,18 @@
 .ce-toolbar__settings-btn {
   color: hsl(var(--color-600)) !important; /* brand-600 */
   border: none !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 2px !important;
 }
 
 .ce-toolbar__settings-btn:hover {
   color: hsl(var(--color-950)) !important; /* brand-950 */
   background: hsl(var(--color-100)) !important; /* brand-100 */
+  border-radius: 6px !important;
 }
 
 /* Inline toolbar styling */
@@ -269,6 +300,8 @@
   border-radius: 6px;
   border: none !important;
   outline: none !important;
+  padding: 8px !important;
+  margin: -8px !important;
 }
 
 .ce-block:hover .ce-block__content {
@@ -290,6 +323,28 @@
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+}
+
+/* Fix toolbar positioning issues */
+.ce-toolbar--opened ~ .ce-block {
+  position: relative !important;
+}
+
+/* Ensure text is never overlapped by toolbar */
+.ce-block--selected {
+  margin-left: 0 !important;
+}
+
+.ce-toolbar__actions {
+  position: relative !important;
+}
+
+/* Fix settings menu positioning */
+.ce-settings {
+  position: absolute !important;
+  left: -40px !important;
+  top: 0 !important;
+  z-index: 4 !important;
 }
 
 /* Placeholder styling */
@@ -345,4 +400,23 @@
 .codex-editor .ce-block__content::after {
   border: none !important;
   box-shadow: none !important;
+}
+
+/* Ensure toolbar never overlaps text content */
+.ce-block--focused .ce-block__content,
+.ce-block--selected .ce-block__content {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Position toolbar correctly */
+.ce-toolbar {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Fix inline toolbar positioning */
+.ce-inline-toolbar {
+  z-index: 15 !important;
+  position: fixed !important;
 }

@@ -9,10 +9,14 @@ import { MiniCardDemo } from "@/components/mini-card";
 import { CharacterMagicCardShowcase } from "@/components/character-magic-card-showcase";
 import { CharacterMagicSelectorShowcase } from "@/components/character-magic-selector-showcase";
 import SerpentineTimeline from "@/components/serpentine-timeline";
+import { WordProcessor } from "@/components/word-processor";
 import { useQuery } from "@tanstack/react-query";
 import type { Event, Character, Location, Relationship } from "@shared/schema";
+import { useState } from "react";
 
 function ComponentsShowcase() {
+  const [editorData, setEditorData] = useState<any>(null);
+
   // Fetch data for the timeline demo
   const { data: events = [] } = useQuery<Event[]>({
     queryKey: ["/api/projects", "1", "events"]
@@ -235,6 +239,22 @@ function ComponentsShowcase() {
               <p className="text-muted-foreground">This shows how the color system works with semantic UI tokens.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Word Processor Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Word Processor</h2>
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+          <p className="text-brand-700 mb-4 text-sm">
+            A rich text editor built with Editor.js, styled with StoryForge brand colors. Features headers, lists, quotes, code blocks, and more.
+          </p>
+          <WordProcessor
+            data={editorData}
+            onChange={setEditorData}
+            placeholder="Start writing your story..."
+            className="bg-white border border-brand-200 rounded-lg"
+          />
         </div>
       </section>
 

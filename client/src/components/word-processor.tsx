@@ -122,7 +122,7 @@ export function WordProcessor({
     <div className={`word-processor relative ${className}`}>
       <div 
         ref={holderRef}
-        className="editor-container bg-white rounded-xl p-6 min-h-[300px] font-[Cairo]"
+        className="editor-container bg-white rounded-xl p-6 min-h-[300px] font-[Cairo] overflow-hidden"
       />
     </div>
   );
