@@ -1,0 +1,282 @@
+/* Editor.js Custom Styling with StoryForge Brand Colors */
+
+.codex-editor {
+  font-family: Cairo, sans-serif !important;
+}
+
+.codex-editor__redactor {
+  padding: 0 !important;
+}
+
+.ce-block__content {
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+/* Paragraph styling */
+.ce-paragraph {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  font-family: Cairo, sans-serif !important;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 8px 0 !important;
+}
+
+/* Header styling */
+.ce-header {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  font-family: Cairo, sans-serif !important;
+  font-weight: 700;
+  margin: 16px 0 8px 0 !important;
+}
+
+.ce-header[data-level="1"] {
+  font-size: 2.5rem;
+  color: hsl(20, 14.3%, 11.1%) !important; /* brand-900 */
+}
+
+.ce-header[data-level="2"] {
+  font-size: 2rem;
+  color: hsl(20, 14.3%, 11.1%) !important; /* brand-900 */
+}
+
+.ce-header[data-level="3"] {
+  font-size: 1.5rem;
+  color: hsl(20, 14.3%, 20.9%) !important; /* brand-800 */
+}
+
+.ce-header[data-level="4"] {
+  font-size: 1.25rem;
+  color: hsl(20, 14.3%, 20.9%) !important; /* brand-800 */
+}
+
+/* List styling */
+.ce-list {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  font-family: Cairo, sans-serif !important;
+}
+
+.ce-list__item {
+  line-height: 1.6;
+  margin: 4px 0;
+}
+
+/* Quote styling */
+.ce-quote {
+  background-color: hsl(20, 14.3%, 97.3%) !important; /* brand-50 */
+  border-left: 4px solid hsl(20, 14.3%, 65.9%) !important; /* brand-400 */
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-radius: 8px;
+}
+
+.ce-quote__text {
+  color: hsl(20, 14.3%, 11.1%) !important; /* brand-900 */
+  font-family: Cairo, sans-serif !important;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.ce-quote__caption {
+  color: hsl(20, 14.3%, 35.9%) !important; /* brand-600 */
+  font-family: Cairo, sans-serif !important;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* Code block styling */
+.ce-code {
+  background-color: hsl(20, 14.3%, 95.9%) !important; /* brand-100 */
+  border: 1px solid hsl(20, 14.3%, 91.1%) !important; /* brand-200 */
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.ce-code__textarea {
+  background: transparent !important;
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  font-family: 'Monaco', 'Menlo', monospace !important;
+  font-size: 14px;
+  border: none !important;
+  outline: none !important;
+  resize: none;
+}
+
+/* Inline code styling */
+.ce-inline-tool--active {
+  background-color: hsl(20, 14.3%, 95.9%) !important; /* brand-100 */
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', monospace !important;
+}
+
+/* Marker/highlight styling */
+.cdx-marker {
+  background-color: hsl(20, 14.3%, 85.9%) !important; /* brand-300 */
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* Table styling */
+.tc-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0;
+}
+
+.tc-table__cell {
+  border: 1px solid hsl(20, 14.3%, 91.1%) !important; /* brand-200 */
+  padding: 12px;
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  font-family: Cairo, sans-serif !important;
+}
+
+/* Toolbar styling */
+.ce-toolbar {
+  background: white !important;
+  border: 1px solid hsl(20, 14.3%, 91.1%) !important; /* brand-200 */
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ce-toolbar__plus {
+  color: hsl(20, 14.3%, 35.9%) !important; /* brand-600 */
+  background: hsl(20, 14.3%, 97.3%) !important; /* brand-50 */
+  border-radius: 6px !important;
+}
+
+.ce-toolbar__plus:hover {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  background: hsl(20, 14.3%, 95.9%) !important; /* brand-100 */
+}
+
+.ce-toolbar__settings-btn {
+  color: hsl(20, 14.3%, 35.9%) !important; /* brand-600 */
+}
+
+.ce-toolbar__settings-btn:hover {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  background: hsl(20, 14.3%, 95.9%) !important; /* brand-100 */
+}
+
+/* Inline toolbar styling */
+.ce-inline-toolbar {
+  background: white !important;
+  border: 1px solid hsl(20, 14.3%, 91.1%) !important; /* brand-200 */
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ce-inline-tool {
+  color: hsl(20, 14.3%, 35.9%) !important; /* brand-600 */
+  border-radius: 4px !important;
+}
+
+.ce-inline-tool:hover {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  background-color: hsl(20, 14.3%, 95.9%) !important; /* brand-100 */
+}
+
+.ce-inline-tool--active {
+  color: white !important;
+  background-color: hsl(20, 14.3%, 35.9%) !important; /* brand-600 */
+}
+
+/* Popover styling */
+.ce-popover {
+  background: white !important;
+  border: 1px solid hsl(20, 14.3%, 91.1%) !important; /* brand-200 */
+  border-radius: 8px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ce-popover-item {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  font-family: Cairo, sans-serif !important;
+  border-radius: 4px !important;
+}
+
+.ce-popover-item:hover {
+  background-color: hsl(20, 14.3%, 95.9%) !important; /* brand-100 */
+}
+
+.ce-popover-item__icon {
+  color: hsl(20, 14.3%, 35.9%) !important; /* brand-600 */
+}
+
+.ce-popover-item__title {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  font-weight: 500;
+}
+
+.ce-popover-item__description {
+  color: hsl(20, 14.3%, 35.9%) !important; /* brand-600 */
+}
+
+/* Delimiter styling */
+.ce-delimiter {
+  text-align: center;
+  margin: 24px 0;
+}
+
+.ce-delimiter::before {
+  content: "***";
+  color: hsl(20, 14.3%, 65.9%) !important; /* brand-400 */
+  font-size: 24px;
+  letter-spacing: 8px;
+}
+
+/* Focus and selection styling */
+.ce-block--selected .ce-block__content {
+  background-color: hsl(20, 14.3%, 97.3%) !important; /* brand-50 */
+  border-radius: 6px;
+}
+
+.ce-block:hover .ce-block__content {
+  background-color: hsl(20, 14.3%, 98.6%) !important; /* Very light brand */
+  border-radius: 6px;
+}
+
+/* Placeholder styling */
+.ce-paragraph[data-placeholder]::before {
+  color: hsl(20, 14.3%, 65.9%) !important; /* brand-400 */
+  font-family: Cairo, sans-serif !important;
+}
+
+/* Link tool styling */
+.ce-link-tool {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  font-family: Cairo, sans-serif !important;
+}
+
+.ce-link-tool__input {
+  background: white !important;
+  border: 1px solid hsl(20, 14.3%, 91.1%) !important; /* brand-200 */
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  font-family: Cairo, sans-serif !important;
+}
+
+.ce-link-tool__input:focus {
+  border-color: hsl(20, 14.3%, 65.9%) !important; /* brand-400 */
+  outline: none !important;
+}
+
+/* Settings button styling */
+.ce-settings {
+  background: white !important;
+  border: 1px solid hsl(20, 14.3%, 91.1%) !important; /* brand-200 */
+  border-radius: 8px !important;
+}
+
+.ce-settings__button {
+  color: hsl(20, 14.3%, 35.9%) !important; /* brand-600 */
+}
+
+.ce-settings__button:hover {
+  color: hsl(20, 14.3%, 4.1%) !important; /* brand-950 */
+  background: hsl(20, 14.3%, 95.9%) !important; /* brand-100 */
+}
