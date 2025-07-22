@@ -108,6 +108,19 @@ function ComponentsShowcase() {
         }
       },
       {
+        id: "image1",
+        type: "image",
+        data: {
+          file: {
+            url: "/uploads/1753210377400-814214746.png"
+          },
+          caption: "Aria Stormwind in battle stance, channeling lightning magic",
+          withBorder: true,
+          withBackground: false,
+          stretched: false
+        }
+      },
+      {
         id: "code1",
         type: "code",
         data: {
@@ -362,6 +375,13 @@ function ComponentsShowcase() {
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-brand-900 mb-6">Word Processor Editor (Create/Edit Pages)</h2>
         <div className="bg-white border border-brand-200 rounded-xl p-6">
+          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h4 className="text-blue-800 font-semibold mb-2">✅ Image Upload Ready!</h4>
+            <p className="text-blue-700 text-sm">
+              Image upload is fully functional! Use the Image tool in the toolbar to upload files or add images by URL. 
+              Uploaded images are stored in <code>/public/uploads/</code> and served automatically.
+            </p>
+          </div>
           <p className="text-brand-700 mb-4 text-sm">
             Clean Editor.js component with no custom styling - just the base functionality. Fully responsive to container width.
           </p>
