@@ -108,6 +108,9 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
       data: data || { blocks: [] },
       readOnly,
       placeholder,
+      autofocus: true,
+      logLevel: 'WARN',
+      minHeight: 300,
       onChange: async () => {
         if (onChange && editorRef.current) {
           try {
