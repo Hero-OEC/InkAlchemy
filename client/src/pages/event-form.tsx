@@ -335,7 +335,7 @@ export default function EventForm() {
         onNavigate={handleNavigation}
       />
       
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -473,10 +473,10 @@ export default function EventForm() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Main Content Area */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
                 <h2 className="text-xl font-semibold text-brand-900 mb-4">Event Description</h2>
                 <Textarea
                   placeholder="Describe what happens in this event..."
@@ -491,7 +491,7 @@ export default function EventForm() {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Location Section */}
-              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
                 <h3 className="text-lg font-semibold text-brand-900 mb-4">Locations</h3>
                 
                 {/* Add Location */}
@@ -539,7 +539,7 @@ export default function EventForm() {
               </div>
 
               {/* Characters Section */}
-              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
                 <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters Involved</h3>
                 
                 {/* Add Character */}

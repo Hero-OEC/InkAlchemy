@@ -139,7 +139,7 @@ export default function EventDetails() {
           projectName={project?.name}
           onNavigate={handleNavigation}
         />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-7xl mx-auto px-8 py-8">
           <div className="text-center py-20">
             <h1 className="text-2xl font-bold text-brand-900 mb-4">Event not found</h1>
             <button 
@@ -180,7 +180,7 @@ export default function EventDetails() {
         onNavigate={handleNavigation}
       />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -241,10 +241,10 @@ export default function EventDetails() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Main Content - Event Description */}
           <div className="lg:col-span-2">
-            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
               <h2 className="text-xl font-semibold text-brand-900 mb-4">Event Description</h2>
               {event.description ? (
                 <div className="prose prose-brand max-w-none">
@@ -263,7 +263,7 @@ export default function EventDetails() {
           {/* Sidebar - Location & Characters */}
           <div className="space-y-6">
             {/* Location Section */}
-            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
               <h3 className="text-lg font-semibold text-brand-900 mb-4">Location</h3>
               {eventLocation ? (
                 <MiniCard
@@ -282,7 +282,7 @@ export default function EventDetails() {
             </div>
 
             {/* Characters Section */}
-            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
               <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters Involved</h3>
               {eventCharacters.length > 0 ? (
                 <div className="space-y-3">
