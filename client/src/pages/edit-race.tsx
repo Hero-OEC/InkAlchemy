@@ -220,120 +220,19 @@ export default function EditRace() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Main Content Area */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Description Section */}
               <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
-                <h2 className="text-xl font-semibold text-brand-900 mb-6">Description</h2>
-                <div className="border border-brand-200 rounded-lg">
-                  <WordProcessor
-                    value={description ? JSON.stringify(description) : undefined}
-                    onChange={(data) => {
-                      try {
-                        setDescription(JSON.parse(data));
-                      } catch {
-                        setDescription(null);
-                      }
-                    }}
-                    placeholder="Describe the race's characteristics, appearance, culture, and abilities..."
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Sidebar - Race Properties */}
-            <div className="lg:col-span-1 space-y-6">
-              {/* Race Origin */}
-              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Origin & Homeland</h3>
-                <div className="space-y-4">
-                  <div>
-                    <Select
-                      label="Primary Homeland"
-                      placeholder="Select homeland location..."
-                      options={[
-                        { value: "unknown", label: "Unknown/Nomadic" },
-                        { value: "multiple", label: "Multiple Regions" }
-                      ]}
-                      value=""
-                      onChange={() => {}}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Physical Traits */}
-              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Physical Characteristics</h3>
-                <div className="space-y-4">
-                  <div>
-                    <Select
-                      label="Average Lifespan"
-                      placeholder="Select lifespan..."
-                      options={[
-                        { value: "short", label: "Short (20-50 years)" },
-                        { value: "human", label: "Human-like (60-100 years)" },
-                        { value: "long", label: "Long-lived (100-500 years)" },
-                        { value: "immortal", label: "Near Immortal (500+ years)" },
-                        { value: "eternal", label: "Truly Immortal" }
-                      ]}
-                      value=""
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div>
-                    <Select
-                      label="Size Category"
-                      placeholder="Select size..."
-                      options={[
-                        { value: "tiny", label: "Tiny (< 3 feet)" },
-                        { value: "small", label: "Small (3-4 feet)" },
-                        { value: "medium", label: "Medium (4-7 feet)" },
-                        { value: "large", label: "Large (7-10 feet)" },
-                        { value: "huge", label: "Huge (10+ feet)" }
-                      ]}
-                      value=""
-                      onChange={() => {}}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Special Abilities */}
-              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Abilities & Powers</h3>
-                <div className="space-y-4">
-                  <div>
-                    <Select
-                      label="Magical Affinity"
-                      placeholder="Select magical ability..."
-                      options={[
-                        { value: "none", label: "No Magic" },
-                        { value: "low", label: "Low Magic Sensitivity" },
-                        { value: "medium", label: "Moderate Magic User" },
-                        { value: "high", label: "Highly Magical" },
-                        { value: "innate", label: "Innate Magic Powers" }
-                      ]}
-                      value=""
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div>
-                    <Select
-                      label="Special Traits"
-                      placeholder="Select special traits..."
-                      options={[
-                        { value: "enhanced-senses", label: "Enhanced Senses" },
-                        { value: "flight", label: "Natural Flight" },
-                        { value: "shapeshifting", label: "Shapeshifting" },
-                        { value: "telepathy", label: "Telepathic" },
-                        { value: "elemental", label: "Elemental Control" },
-                        { value: "regeneration", label: "Regeneration" },
-                        { value: "other", label: "Other Unique Traits" }
-                      ]}
-                      value=""
-                      onChange={() => {}}
-                    />
-                  </div>
-                </div>
+                <h2 className="text-xl font-semibold text-brand-900 mb-6">Race Description</h2>
+                <WordProcessor
+                  value={description ? JSON.stringify(description) : undefined}
+                  onChange={(data) => {
+                    try {
+                      setDescription(JSON.parse(data));
+                    } catch {
+                      setDescription(null);
+                    }
+                  }}
+                  placeholder="Describe the race's characteristics, appearance, culture, and abilities..."
+                />
               </div>
             </div>
           </div>
