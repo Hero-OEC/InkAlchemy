@@ -15,15 +15,15 @@ import './editor-styles.css';
 
 
 interface WordProcessorProps {
-  data?: any;
-  onChange?: (data: any) => void;
+  value?: string;
+  onChange?: (data: string) => void;
   placeholder?: string;
   readOnly?: boolean;
   className?: string;
 }
 
 export const WordProcessor: React.FC<WordProcessorProps> = ({
-  data,
+  value,
   onChange,
   placeholder = "Start writing...",
   readOnly = false,
@@ -35,17 +35,26 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
   useEffect(() => {
     if (!holderRef.current) return;
 
-    const editor = new EditorJS({
-      holder: holderRef.current,
-      tools: {
+    let initialData;
+    try {
+      initialData = value ? JSON.parse(value) : { blocks: [] };
+    } catch {
+      initialData = { blocks: [] };
+    }
+
+    let editor: EditorJS;
+    
+    try {
+      editor = new EditorJS({
+        holder: holderRef.current,
+        tools: {
         header: {
           class: Header,
           config: {
             placeholder: 'Enter a header',
             levels: [1, 2, 3, 4, 5, 6],
             defaultLevel: 1
-          },
-          shortcut: 'CMD+SHIFT+H'
+          }
         },
         paragraph: {
           class: Paragraph,
@@ -53,8 +62,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
         },
         list: {
           class: List,
-          inlineToolbar: true,
-          shortcut: 'CMD+SHIFT+L'
+          inlineToolbar: true
         },
         quote: {
           class: Quote,
@@ -62,12 +70,10 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           config: {
             quotePlaceholder: 'Enter a quote',
             captionPlaceholder: "Quote's author"
-          },
-          shortcut: 'CMD+SHIFT+O'
+          }
         },
         delimiter: {
-          class: Delimiter,
-          shortcut: 'CMD+SHIFT+D'
+          class: Delimiter
         },
         table: {
           class: Table,
@@ -75,12 +81,10 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           config: {
             rows: 2,
             cols: 3
-          },
-          shortcut: 'CMD+ALT+T'
+          }
         },
         code: {
-          class: CodeTool,
-          shortcut: 'CMD+SHIFT+C'
+          class: CodeTool
         },
         linkTool: {
           class: LinkTool,
@@ -89,12 +93,10 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           }
         },
         marker: {
-          class: Marker,
-          shortcut: 'CMD+SHIFT+M'
+          class: Marker
         },
         inlineCode: {
-          class: InlineCode,
-          shortcut: 'CMD+SHIFT+I'
+          class: InlineCode
         },
         image: {
           class: ImageTool,
@@ -106,29 +108,35 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           }
         }
       },
-      data: data || { blocks: [] },
+      data: initialData,
       readOnly,
       placeholder,
       autofocus: true,
-
       minHeight: 300,
       onChange: async () => {
         if (onChange && editorRef.current) {
           try {
             const outputData = await editorRef.current.save();
-            onChange(outputData);
+            onChange(JSON.stringify(outputData));
           } catch (error) {
             console.error('Error saving editor data:', error);
           }
         }
       }
-    });
+      });
 
-    editorRef.current = editor;
+      editorRef.current = editor;
+    } catch (error) {
+      console.error('Error initializing Editor.js:', error);
+    }
 
     return () => {
       if (editorRef.current) {
-        editorRef.current.destroy();
+        try {
+          editorRef.current.destroy();
+        } catch (error) {
+          console.error('Error destroying editor:', error);
+        }
         editorRef.current = null;
       }
     };
