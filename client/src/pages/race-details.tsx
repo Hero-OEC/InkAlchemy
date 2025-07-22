@@ -21,7 +21,10 @@ export default function RaceDetails() {
   // Redirect if this is the create route
   useEffect(() => {
     if (raceId === "new") {
-      setLocation(`/projects/${projectId}/races/new`);
+      // Use setTimeout to avoid setState during render
+      setTimeout(() => {
+        setLocation(`/projects/${projectId}/races/new`);
+      }, 0);
     }
   }, [raceId, projectId, setLocation]);
 
