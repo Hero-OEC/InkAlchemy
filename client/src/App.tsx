@@ -31,7 +31,6 @@ import ComponentsShowcase from "./pages/components-showcase";
 import RaceDetails from "./pages/race-details";
 import CreateRace from "./pages/create-race";
 import EditRace from "./pages/edit-race";
-import WordProcessorDemoPage from "./pages/word-processor-demo-page";
 import NotFound from "./pages/not-found";
 
 function App() {
@@ -74,7 +73,6 @@ function App() {
       <Route path="/projects/:projectId/races/:raceId/edit" component={EditRace} />
       <Route path="/projects/:projectId/races/:raceId" component={RaceDetails} />
       <Route path="/components" component={ComponentsShowcase} />
-      <Route path="/word-processor" component={WordProcessorDemoPage} />
     </Router>
   );
 }

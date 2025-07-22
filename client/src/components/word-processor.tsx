@@ -21,65 +21,28 @@ interface WordProcessorProps {
 }
 
 const EDITOR_TOOLS = {
-  header: {
-    class: Header,
-    config: {
-      placeholder: 'Enter a header',
-      levels: [1, 2, 3, 4],
-      defaultLevel: 2
-    }
-  },
+  header: Header,
   paragraph: {
     class: Paragraph,
-    inlineToolbar: true,
-    config: {
-      placeholder: 'Write your story...'
-    }
+    inlineToolbar: true
   },
   list: {
     class: List,
-    inlineToolbar: true,
-    config: {
-      defaultStyle: 'unordered'
-    }
+    inlineToolbar: true
   },
   quote: {
     class: Quote,
-    inlineToolbar: true,
-    config: {
-      quotePlaceholder: 'Enter a quote',
-      captionPlaceholder: 'Quote author',
-    }
+    inlineToolbar: true
   },
   delimiter: Delimiter,
   table: {
     class: Table,
-    inlineToolbar: true,
-    config: {
-      rows: 2,
-      cols: 3,
-    }
+    inlineToolbar: true
   },
-  code: {
-    class: CodeTool,
-    config: {
-      placeholder: 'Enter code...'
-    }
-  },
-  linkTool: {
-    class: LinkTool,
-    config: {
-      endpoint: '/api/link-preview' // You can implement this endpoint later if needed
-    }
-  },
-  marker: {
-    class: Marker,
-    shortcut: 'CMD+SHIFT+M'
-  },
-  inlineCode: {
-    class: InlineCode,
-    shortcut: 'CMD+SHIFT+C'
-  }
+  code: CodeTool,
+  linkTool: LinkTool,
+  marker: Marker,
+  inlineCode: InlineCode
 };
 
 export function WordProcessor({ 
@@ -159,7 +122,7 @@ export function WordProcessor({
     <div className={`word-processor relative ${className}`}>
       <div 
         ref={holderRef}
-        className="editor-container bg-white border-2 border-brand-200 rounded-xl p-6 min-h-[300px] font-[Cairo]"
+        className="editor-container bg-white rounded-xl p-6 min-h-[300px] font-[Cairo]"
       />
     </div>
   );
