@@ -136,6 +136,55 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           padding-right: 0 !important;
         }
         
+        /* Header styling to make them visually distinct */
+        .word-processor :global(.ce-header) {
+          font-weight: bold !important;
+          line-height: 1.2 !important;
+          margin: 1em 0 0.5em 0 !important;
+        }
+        .word-processor :global(.ce-header[data-level="1"]) {
+          font-size: 2em !important;
+        }
+        .word-processor :global(.ce-header[data-level="2"]) {
+          font-size: 1.5em !important;
+        }
+        .word-processor :global(.ce-header[data-level="3"]) {
+          font-size: 1.3em !important;
+        }
+        .word-processor :global(.ce-header[data-level="4"]) {
+          font-size: 1.1em !important;
+        }
+        .word-processor :global(.ce-header[data-level="5"]) {
+          font-size: 1em !important;
+          font-weight: 600 !important;
+        }
+        .word-processor :global(.ce-header[data-level="6"]) {
+          font-size: 1em !important;
+          font-weight: 500 !important;
+        }
+        
+        /* List styling improvements */
+        .word-processor :global(.ce-list) {
+          margin: 0.5em 0 !important;
+        }
+        
+        /* Quote styling improvements */
+        .word-processor :global(.ce-quote) {
+          border-left: 4px solid #ddd !important;
+          padding-left: 1em !important;
+          margin: 1em 0 !important;
+          font-style: italic !important;
+        }
+        
+        /* Code block styling improvements */
+        .word-processor :global(.ce-code) {
+          background-color: #f5f5f5 !important;
+          border: 1px solid #ddd !important;
+          border-radius: 4px !important;
+          padding: 1em !important;
+          margin: 1em 0 !important;
+        }
+        
         /* Responsive toolbar positioning */
         @media (max-width: 768px) {
           .word-processor :global(.ce-toolbar) {
