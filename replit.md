@@ -360,18 +360,18 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Applied consistent spacing improvements across timeline, event details, and location pages
 - Updated "complete" status color from brand-950 (near black) to brand-700 for better brand consistency
 
-### January 2025 - Race Management System Simplification and WordProcessor Integration
-- Simplified races database schema to only include essential fields: name, description, projectId
-- Removed unnecessary fields: culture, language, homeland_id, traits, lifespan from races table
-- Updated race details page to show only 2 tabs: Description and Characters (removed 4 complex tabs)
-- Completely redesigned race create and edit pages to match event form layout design
-- Implemented WordProcessor component for race descriptions instead of simple textarea input
-- Added EditorContentRenderer to race details page for proper rich text content display
-- Applied event-form-style header layout with race name input and action buttons (Save/Cancel)
-- Used 2/3 main content + 1/3 sidebar grid layout matching event form structure
+### January 2025 - Race Management System Optimization and Schema Cleanup
+- Streamlined races database schema by removing specialTraits field for cleaner interface
+- Updated race create and edit forms to match event form structure with proper WordProcessor integration
+- Applied consistent container styling with bg-brand-50 rounded-xl backgrounds for proper visual hierarchy
+- Organized sidebar with 4 logical sections: Homeland, Physical Characteristics, Abilities & Powers, Characters
+- Enhanced homeland selection with proper location foreign key relationships
+- Maintained magical affinity system while removing redundant special traits dropdown
+- Fixed WordProcessor display issues by applying proper container backgrounds
+- Characters section now appears in sidebar with compact card display for better form organization
+- Applied event-form-style layout with 2/3 main content + 1/3 sidebar grid structure
 - Enhanced form validation and error handling with proper React Hook Form integration
-- Applied consistent brand styling and max-w-6xl container with px-8 padding throughout
-- Race management now provides clean, focused interface for essential race information only
+- Race management now provides clean, focused interface optimized for essential race information
 
 ### January 2025 - Expanded Race Schema and Database Relationship Fix
 - Enhanced race database schema with comprehensive race properties: homelandId, lifespan, sizeCategory, magicalAffinity, specialTraits

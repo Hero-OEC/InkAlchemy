@@ -30,7 +30,7 @@ export default function EditRace() {
   const [lifespan, setLifespan] = useState<string>("");
   const [sizeCategory, setSizeCategory] = useState<string>("");
   const [magicalAffinity, setMagicalAffinity] = useState<string>("");
-  const [specialTraits, setSpecialTraits] = useState<string>("");
+
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -79,7 +79,6 @@ export default function EditRace() {
       setLifespan(race.lifespan || "");
       setSizeCategory(race.sizeCategory || "");
       setMagicalAffinity(race.magicalAffinity || "");
-      setSpecialTraits(race.specialTraits || "");
       
       // Initialize description for WordProcessor
       if (race.description) {
@@ -143,7 +142,6 @@ export default function EditRace() {
       lifespan: lifespan || null,
       sizeCategory: sizeCategory || null,
       magicalAffinity: magicalAffinity || null,
-      specialTraits: specialTraits || null,
     };
     updateMutation.mutate(submissionData);
   };
@@ -352,24 +350,7 @@ export default function EditRace() {
                       onChange={setMagicalAffinity}
                     />
                   </div>
-                  <div>
-                    <Select
-                      label="Special Traits"
-                      placeholder="Select special traits..."
-                      options={[
-                        { value: "", label: "No special traits" },
-                        { value: "enhanced-senses", label: "Enhanced Senses" },
-                        { value: "flight", label: "Natural Flight" },
-                        { value: "shapeshifting", label: "Shapeshifting" },
-                        { value: "telepathy", label: "Telepathic" },
-                        { value: "elemental", label: "Elemental Control" },
-                        { value: "regeneration", label: "Regeneration" },
-                        { value: "other", label: "Other Unique Traits" }
-                      ]}
-                      value={specialTraits}
-                      onChange={setSpecialTraits}
-                    />
-                  </div>
+
                 </div>
               </div>
 
