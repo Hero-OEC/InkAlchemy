@@ -48,15 +48,23 @@
   display: inline-block;
   border: 2px transparent solid;
   border-radius: 8px;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.1s ease;
   user-select: none;
 }
 
 .word-processor-content .image-container:hover {
   border-color: #3b82f6 !important;
+  transform: scale(1.02);
 }
 
 .word-processor-content .image-container.selected {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.word-processor-content .image-container.dragging {
+  transform: rotate(2deg) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   border-color: #3b82f6 !important;
 }
 
@@ -96,8 +104,6 @@
 }
 
 .word-processor-content .image-controls button {
-  width: 24px;
-  height: 24px;
   border: 1px solid #d1d5db;
   background: white;
   border-radius: 4px;
@@ -108,12 +114,20 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  height: 24px;
+  min-width: 24px;
+  padding: 0 4px;
 }
 
 .word-processor-content .image-controls button:hover {
   background: #f8fafc;
   border-color: #3b82f6;
   color: #3b82f6;
+  transform: scale(1.05);
+}
+
+.word-processor-content .image-controls button:active {
+  transform: scale(0.95);
 }
 
 /* Text wrapping around images */

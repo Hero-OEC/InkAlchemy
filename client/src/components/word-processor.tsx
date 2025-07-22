@@ -144,9 +144,9 @@ export function WordProcessor({
         margin: 8px;
         border: 2px transparent solid;
         border-radius: 8px;
-        cursor: move;
-        max-width: 300px;
-        float: left;
+        cursor: grab;
+        width: 300px;
+        max-width: 100%;
       `;
       
       // Create the image element
@@ -192,11 +192,12 @@ export function WordProcessor({
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       `;
       
-      // Position buttons
+      // Position buttons with better labels
       const positions = [
-        { label: 'L', value: 'left', title: 'Float Left' },
-        { label: 'C', value: 'center', title: 'Center' },
-        { label: 'R', value: 'right', title: 'Float Right' }
+        { label: '⇤', value: 'left', title: 'Float Left' },
+        { label: '⬌', value: 'center', title: 'Center' },
+        { label: '⇥', value: 'right', title: 'Float Right' },
+        { label: '↕', value: 'inline', title: 'Inline' }
       ];
       
       positions.forEach(pos => {
@@ -204,14 +205,17 @@ export function WordProcessor({
         btn.textContent = pos.label;
         btn.title = pos.title;
         btn.style.cssText = `
-          width: 24px;
+          width: 28px;
           height: 24px;
           border: 1px solid #d1d5db;
           background: white;
           border-radius: 4px;
           cursor: pointer;
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 500;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         `;
         btn.onclick = (e) => {
           e.preventDefault();
@@ -228,9 +232,9 @@ export function WordProcessor({
       controls.appendChild(sizeLabel);
       
       const sizes = [
-        { label: 'S', width: '150px' },
-        { label: 'M', width: '250px' },
-        { label: 'L', width: '400px' }
+        { label: 'S', width: 150 },
+        { label: 'M', width: 250 },
+        { label: 'L', width: 400 }
       ];
       
       sizes.forEach(size => {
@@ -249,7 +253,7 @@ export function WordProcessor({
         btn.onclick = (e) => {
           e.preventDefault();
           e.stopPropagation();
-          imageContainer.style.maxWidth = size.width;
+          imageContainer.style.width = size.width + 'px';
         };
         controls.appendChild(btn);
       });
@@ -283,27 +287,118 @@ export function WordProcessor({
       imageContainer.appendChild(resizeHandle);
       imageContainer.appendChild(controls);
       
-      // Add event listeners
+      // Add event listeners for selection
       imageContainer.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         selectImage(imageContainer);
       });
       
       imageContainer.addEventListener('mouseenter', () => {
-        imageContainer.style.border = '2px solid #3b82f6';
-        controls.style.display = 'flex';
-        resizeHandle.style.display = 'block';
+        if (!imageContainer.classList.contains('dragging')) {
+          imageContainer.style.border = '2px solid #3b82f6';
+          controls.style.display = 'flex';
+          resizeHandle.style.display = 'block';
+        }
       });
       
       imageContainer.addEventListener('mouseleave', () => {
-        if (!imageContainer.classList.contains('selected')) {
+        if (!imageContainer.classList.contains('selected') && !imageContainer.classList.contains('dragging')) {
           imageContainer.style.border = '2px transparent solid';
           controls.style.display = 'none';
           resizeHandle.style.display = 'none';
         }
       });
       
-      // Resize functionality
+      // Drag functionality for moving images
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let dragPlaceholder: HTMLElement | null = null;
+      
+      imageContainer.addEventListener('mousedown', (e) => {
+        if (e.target === resizeHandle || (e.target as HTMLElement).closest('.image-controls')) {
+          return; // Don't start drag if clicking controls or resize handle
+        }
+        
+        e.preventDefault();
+        isDragging = true;
+        imageContainer.classList.add('dragging');
+        imageContainer.style.cursor = 'grabbing';
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        
+        // Create placeholder
+        dragPlaceholder = document.createElement('div');
+        dragPlaceholder.style.cssText = `
+          width: ${imageContainer.offsetWidth}px;
+          height: ${imageContainer.offsetHeight}px;
+          background: #f1f5f9;
+          border: 2px dashed #94a3b8;
+          border-radius: 8px;
+          display: inline-block;
+          margin: 8px;
+          opacity: 0.5;
+        `;
+        imageContainer.parentNode?.insertBefore(dragPlaceholder, imageContainer);
+        
+        // Make image float during drag
+        imageContainer.style.position = 'fixed';
+        imageContainer.style.zIndex = '1000';
+        imageContainer.style.pointerEvents = 'none';
+        
+        const updatePosition = (e: MouseEvent) => {
+          if (!isDragging) return;
+          
+          const rect = editorRef.current?.getBoundingClientRect();
+          if (rect) {
+            imageContainer.style.left = (e.clientX - dragStartX + imageContainer.offsetLeft) + 'px';
+            imageContainer.style.top = (e.clientY - dragStartY + imageContainer.offsetTop) + 'px';
+          }
+        };
+        
+        const stopDrag = (e: MouseEvent) => {
+          if (!isDragging) return;
+          
+          isDragging = false;
+          imageContainer.classList.remove('dragging');
+          imageContainer.style.cursor = 'grab';
+          imageContainer.style.position = 'relative';
+          imageContainer.style.zIndex = 'auto';
+          imageContainer.style.pointerEvents = 'auto';
+          imageContainer.style.left = 'auto';
+          imageContainer.style.top = 'auto';
+          
+          // Find drop target
+          const elementsBelow = document.elementsFromPoint(e.clientX, e.clientY);
+          const dropTarget = elementsBelow.find(el => 
+            el !== imageContainer && 
+            el !== dragPlaceholder && 
+            (el.tagName === 'P' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'H4' || el.tagName === 'H5' || el === editorRef.current)
+          );
+          
+          if (dropTarget && dropTarget !== editorRef.current) {
+            // Insert before the target element
+            dropTarget.parentNode?.insertBefore(imageContainer, dropTarget);
+          } else if (editorRef.current) {
+            // Append to editor if no specific target
+            editorRef.current.appendChild(imageContainer);
+          }
+          
+          // Remove placeholder
+          dragPlaceholder?.remove();
+          dragPlaceholder = null;
+          
+          document.removeEventListener('mousemove', updatePosition);
+          document.removeEventListener('mouseup', stopDrag);
+          handleContentChange();
+        };
+        
+        document.addEventListener('mousemove', updatePosition);
+        document.addEventListener('mouseup', stopDrag);
+      });
+      
+      // Resize functionality with better constraints
       let isResizing = false;
       resizeHandle.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -315,7 +410,8 @@ export function WordProcessor({
         
         const handleMouseMove = (e: MouseEvent) => {
           const newWidth = startWidth + (e.clientX - startX);
-          imageContainer.style.maxWidth = Math.max(100, Math.min(600, newWidth)) + 'px';
+          const constrainedWidth = Math.max(100, Math.min(800, newWidth));
+          imageContainer.style.width = constrainedWidth + 'px';
         };
         
         const handleMouseUp = () => {
@@ -368,21 +464,29 @@ export function WordProcessor({
   };
 
   const setImagePosition = (container: HTMLElement, position: string) => {
+    // Reset all positioning styles first
+    container.style.float = 'none';
+    container.style.display = 'inline-block';
+    container.style.margin = '8px';
+    
     switch (position) {
       case 'left':
         container.style.float = 'left';
-        container.style.display = 'block';
         container.style.margin = '8px 16px 8px 0';
         break;
       case 'right':
         container.style.float = 'right';
-        container.style.display = 'block';
         container.style.margin = '8px 0 8px 16px';
         break;
       case 'center':
-        container.style.float = 'none';
         container.style.display = 'block';
         container.style.margin = '16px auto';
+        container.style.textAlign = 'center';
+        break;
+      case 'inline':
+        container.style.display = 'inline-block';
+        container.style.margin = '4px 8px';
+        container.style.verticalAlign = 'middle';
         break;
     }
     handleContentChange();
