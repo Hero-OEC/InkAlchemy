@@ -36,28 +36,64 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
     const editor = new EditorJS({
       holder: holderRef.current,
       tools: {
-        header: Header,
+        header: {
+          class: Header,
+          config: {
+            placeholder: 'Enter a header',
+            levels: [1, 2, 3, 4, 5, 6],
+            defaultLevel: 1
+          },
+          shortcut: 'CMD+SHIFT+H'
+        },
         paragraph: {
           class: Paragraph,
           inlineToolbar: true
         },
         list: {
           class: List,
-          inlineToolbar: true
+          inlineToolbar: true,
+          shortcut: 'CMD+SHIFT+L'
         },
         quote: {
           class: Quote,
-          inlineToolbar: true
+          inlineToolbar: true,
+          config: {
+            quotePlaceholder: 'Enter a quote',
+            captionPlaceholder: "Quote's author"
+          },
+          shortcut: 'CMD+SHIFT+O'
         },
-        delimiter: Delimiter,
+        delimiter: {
+          class: Delimiter,
+          shortcut: 'CMD+SHIFT+D'
+        },
         table: {
           class: Table,
-          inlineToolbar: true
+          inlineToolbar: true,
+          config: {
+            rows: 2,
+            cols: 3
+          },
+          shortcut: 'CMD+ALT+T'
         },
-        code: CodeTool,
-        linkTool: LinkTool,
-        marker: Marker,
-        inlineCode: InlineCode,
+        code: {
+          class: CodeTool,
+          shortcut: 'CMD+SHIFT+C'
+        },
+        linkTool: {
+          class: LinkTool,
+          config: {
+            endpoint: '/api/fetch-url'
+          }
+        },
+        marker: {
+          class: Marker,
+          shortcut: 'CMD+SHIFT+M'
+        },
+        inlineCode: {
+          class: InlineCode,
+          shortcut: 'CMD+SHIFT+I'
+        },
         image: {
           class: ImageTool,
           config: {
@@ -150,25 +186,35 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           line-height: 1.2 !important;
           margin: 1em 0 0.5em 0 !important;
         }
-        .word-processor :global(.ce-header[data-level="1"]) {
+        .word-processor :global(.ce-header h1) {
           font-size: 2em !important;
+          font-weight: bold !important;
+          margin: 0 !important;
         }
-        .word-processor :global(.ce-header[data-level="2"]) {
+        .word-processor :global(.ce-header h2) {
           font-size: 1.5em !important;
+          font-weight: bold !important;
+          margin: 0 !important;
         }
-        .word-processor :global(.ce-header[data-level="3"]) {
+        .word-processor :global(.ce-header h3) {
           font-size: 1.3em !important;
+          font-weight: bold !important;
+          margin: 0 !important;
         }
-        .word-processor :global(.ce-header[data-level="4"]) {
+        .word-processor :global(.ce-header h4) {
           font-size: 1.1em !important;
+          font-weight: bold !important;
+          margin: 0 !important;
         }
-        .word-processor :global(.ce-header[data-level="5"]) {
+        .word-processor :global(.ce-header h5) {
           font-size: 1em !important;
           font-weight: 600 !important;
+          margin: 0 !important;
         }
-        .word-processor :global(.ce-header[data-level="6"]) {
+        .word-processor :global(.ce-header h6) {
           font-size: 1em !important;
           font-weight: 500 !important;
+          margin: 0 !important;
         }
         
         /* List styling improvements */
