@@ -76,6 +76,7 @@ export default function EventForm() {
   const { goBack } = useNavigation();
   const isEditing = !!eventId;
   const [selectedCharacters, setSelectedCharacters] = useState<Character[]>([]);
+  const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -146,6 +147,14 @@ export default function EventForm() {
       
       const eventCharacters = characters.filter(char => eventCharacterIds.includes(char.id));
       setSelectedCharacters(eventCharacters);
+      
+      // Load selected location
+      if (event.locationId) {
+        const eventLocation = locations.find(loc => loc.id === event.locationId);
+        if (eventLocation) {
+          setSelectedLocations([eventLocation]);
+        }
+      }
     }
   }, [event, isEditing, form, relationships, characters]);
 
@@ -282,6 +291,10 @@ export default function EventForm() {
     !selectedCharacters.some(selected => selected.id === char.id)
   );
 
+  const availableLocations = locations.filter(location => 
+    !selectedLocations.some(selected => selected.id === location.id)
+  );
+
   const handleAddCharacter = (characterId: string) => {
     const character = characters.find(c => c.id === parseInt(characterId));
     if (character) {
@@ -291,6 +304,26 @@ export default function EventForm() {
 
   const handleRemoveCharacter = (characterId: number) => {
     setSelectedCharacters(selectedCharacters.filter(c => c.id !== characterId));
+  };
+
+  const handleAddLocation = (locationId: string) => {
+    const location = locations.find(l => l.id === parseInt(locationId));
+    if (location) {
+      setSelectedLocations([...selectedLocations, location]);
+      // Set the first selected location as the primary location for the event
+      if (selectedLocations.length === 0) {
+        form.setValue("locationId", location.id);
+      }
+    }
+  };
+
+  const handleRemoveLocation = (locationId: number) => {
+    const newLocations = selectedLocations.filter(l => l.id !== locationId);
+    setSelectedLocations(newLocations);
+    // Update primary location
+    if (form.watch("locationId") === locationId) {
+      form.setValue("locationId", newLocations.length > 0 ? newLocations[0].id : undefined);
+    }
   };
 
   return (
@@ -317,88 +350,121 @@ export default function EventForm() {
         </div>
 
         {/* Form Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className={cn("p-3 rounded-lg", stageConfig.bg, stageConfig.border)}>
-            <IconComponent className={cn("w-6 h-6", stageConfig.icon)} />
+        <div className="flex items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <div className={cn("p-3 rounded-lg", stageConfig.bg, stageConfig.border)}>
+              <IconComponent className={cn("w-6 h-6", stageConfig.icon)} />
+            </div>
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-brand-900 mb-2">
+                {isEditing ? `Edit Event` : "Create New Event"}
+              </h1>
+              <p className="text-brand-600">
+                {isEditing ? "Update event details and timeline information" : "Add a new event to your project timeline"}
+              </p>
+            </div>
           </div>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-brand-900 mb-2">
-              {isEditing ? "Edit Event" : "Create New Event"}
-            </h1>
-            <p className="text-brand-600">
-              {isEditing ? "Update event details and timeline information" : "Add a new event to your project timeline"}
-            </p>
+          
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="md"
+              type="button"
+              onClick={handleBack}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
+              type="submit"
+              loading={createMutation.isPending || updateMutation.isPending}
+              form="event-form"
+            >
+              {isEditing ? (
+                <>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Update Event
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Event
+                </>
+              )}
+            </Button>
           </div>
         </div>
 
         {/* Event Header Form */}
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form id="event-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {/* Event Title and Status Row */}
           <div className="space-y-6">
             {/* Event Title */}
             <div>
               <Input
-                label=""
                 placeholder="Enter event title..."
                 {...form.register("title")}
                 error={form.formState.errors.title?.message}
-                className="text-3xl font-bold text-brand-900 border-none bg-transparent px-0 py-2 placeholder:text-brand-400"
+                className="text-3xl font-bold text-brand-900 bg-transparent border-none px-0 focus:ring-0 focus:border-none placeholder:text-brand-400"
               />
             </div>
 
             {/* Status and Type Badges Row */}
-            <div className="flex flex-wrap gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-brand-700">Writing Stage</label>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium text-brand-700 uppercase tracking-wide">Writing Stage</label>
                 <Select
                   options={stageOptions}
                   value={form.watch("stage") || ""}
                   onChange={(value) => form.setValue("stage", value as any)}
                   error={form.formState.errors.stage?.message}
-                  className="min-w-[120px]"
                 />
               </div>
 
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-brand-700">Event Type</label>
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium text-brand-700 uppercase tracking-wide">Event Type</label>
                 <Select
                   options={eventTypeOptions}
                   value={form.watch("type") || ""}
                   onChange={(value) => form.setValue("type", value as any)}
                   error={form.formState.errors.type?.message}
-                  className="min-w-[120px]"
                 />
               </div>
 
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-brand-700">Date</label>
-                <div className="flex gap-2 items-center bg-brand-100 px-3 py-2 rounded-lg border border-brand-200">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium text-brand-700 uppercase tracking-wide">Date</label>
+                <div className="flex gap-2 items-center">
                   <Calendar className="w-4 h-4 text-brand-600" />
-                  <div className="flex gap-1 text-sm">
+                  <div className="flex gap-2 items-center">
                     <Input
                       type="number"
                       min={1}
                       placeholder="Year"
                       {...form.register("year", { valueAsNumber: true })}
-                      className="w-16 text-center border-none bg-transparent p-0 text-brand-900"
+                      error={form.formState.errors.year?.message}
+                      className="w-20 text-center"
                     />
-                    <span className="text-brand-600">,</span>
+                    <span className="text-brand-600 font-medium">,</span>
                     <Input
                       type="number"
                       min={1}
                       max={12}
-                      placeholder="M"
+                      placeholder="Month"
                       {...form.register("month", { valueAsNumber: true })}
-                      className="w-8 text-center border-none bg-transparent p-0 text-brand-900"
+                      error={form.formState.errors.month?.message}
+                      className="w-20 text-center"
                     />
-                    <span className="text-brand-600">,</span>
+                    <span className="text-brand-600 font-medium">,</span>
                     <Input
                       type="number"
                       min={1}
                       max={31}
-                      placeholder="D"
+                      placeholder="Day"
                       {...form.register("day", { valueAsNumber: true })}
-                      className="w-8 text-center border-none bg-transparent p-0 text-brand-900"
+                      error={form.formState.errors.day?.message}
+                      className="w-16 text-center"
                     />
                   </div>
                 </div>
@@ -426,23 +492,49 @@ export default function EventForm() {
             <div className="space-y-6">
               {/* Location Section */}
               <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Location</h3>
-                <Select
-                  placeholder="Select a location..."
-                  options={locationOptions}
-                  value={form.watch("locationId")?.toString() || ""}
-                  onChange={(value) => form.setValue("locationId", value ? parseInt(value) : undefined)}
-                  error={form.formState.errors.locationId?.message}
-                />
-                {form.watch("locationId") && (
-                  <div className="mt-3">
-                    <MiniCard
-                      icon={MapPin}
-                      title={locations.find(l => l.id === form.watch("locationId"))?.name || "Selected Location"}
-                      badge="Location"
-                      badgeVariant="type"
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Locations</h3>
+                
+                {/* Add Location */}
+                {availableLocations.length > 0 && (
+                  <div className="mb-4">
+                    <Select
+                      placeholder="Add a location..."
+                      options={[
+                        { value: "", label: "Select a location..." },
+                        ...availableLocations.map(location => ({
+                          value: location.id.toString(),
+                          label: location.name,
+                        })),
+                      ]}
+                      value=""
+                      onChange={(value) => {
+                        if (value) {
+                          handleAddLocation(value);
+                        }
+                      }}
                     />
                   </div>
+                )}
+
+                {/* Selected Locations */}
+                {selectedLocations.length > 0 ? (
+                  <div className="space-y-3">
+                    {selectedLocations.map((location, index) => (
+                      <MiniCard
+                        key={location.id}
+                        icon={MapPin}
+                        title={location.name}
+                        badge={index === 0 ? "Primary Location" : "Additional Location"}
+                        badgeVariant="type"
+                        variant="editable"
+                        onDelete={() => handleRemoveLocation(location.id)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-brand-500 italic text-sm">
+                    No locations specified for this event.
+                  </p>
                 )}
               </div>
 
@@ -496,35 +588,7 @@ export default function EventForm() {
             </div>
           </div>
 
-          {/* Form Actions */}
-          <div className="flex items-center justify-end gap-4">
-            <Button
-              variant="outline"
-              size="md"
-              type="button"
-              onClick={handleBack}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              size="md"
-              type="submit"
-              loading={createMutation.isPending || updateMutation.isPending}
-            >
-              {isEditing ? (
-                <>
-                  <Edit className="w-4 h-4 mr-2" />
-                  Update Event
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Event
-                </>
-              )}
-            </Button>
-          </div>
+
         </form>
       </main>
     </div>
