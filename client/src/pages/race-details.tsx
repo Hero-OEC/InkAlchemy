@@ -174,11 +174,6 @@ export default function RaceDetails() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-brand-950">{race.name}</h1>
-                <div className="mt-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-200 text-brand-700">
-                    Race
-                  </span>
-                </div>
               </div>
             </div>
             <div className="flex items-center gap-3">
