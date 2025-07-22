@@ -50,8 +50,8 @@ const STAGE_COLORS = {
     stageIcon: Edit
   },
   complete: {
-    bg: "bg-brand-950",
-    border: "border-brand-950",
+    bg: "bg-brand-700",
+    border: "border-brand-800",
     icon: "text-white",
     stageIcon: CheckCircle
   }
