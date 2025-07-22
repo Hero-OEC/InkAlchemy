@@ -180,64 +180,12 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           padding-right: 0 !important;
         }
         
-        /* Header styling to make them visually distinct */
-        .word-processor :global(.ce-header) {
-          font-weight: bold !important;
-          line-height: 1.2 !important;
-          margin: 1em 0 0.5em 0 !important;
-          font-size: 2em !important;
-        }
-        
-        /* Target the actual header elements Editor.js creates */
-        .word-processor :global(.ce-block .ce-header) {
+        /* Header styling - targeting the actual DOM structure Editor.js creates */
+        .word-processor :global(.ce-block[data-tool="header"] .ce-block__content) {
           font-size: 2em !important;
           font-weight: bold !important;
           line-height: 1.2 !important;
-          margin: 0 !important;
-        }
-        
-        /* Alternative targeting methods for Editor.js headers */
-        .word-processor :global([data-tool="header"]) {
-          font-size: 2em !important;
-          font-weight: bold !important;
-          line-height: 1.2 !important;
-        }
-        
-        .word-processor :global(.ce-header[data-placeholder]) {
-          font-size: 2em !important;
-          font-weight: bold !important;
-        }
-        
-        /* Direct content targeting */
-        .word-processor :global(.ce-header .ce-block__content) {
-          font-size: 2em !important;
-          font-weight: bold !important;
-        }
-        
-        /* Fallback for any header-related divs */
-        .word-processor :global(div[data-tool="header"]),
-        .word-processor :global(div.ce-header),
-        .word-processor :global(.ce-block[data-tool="header"]) {
-          font-size: 2em !important;
-          font-weight: bold !important;
-        }
-        
-        /* More aggressive universal header targeting */
-        .word-processor :global(*[class*="header"]) {
-          font-size: 2em !important;
-          font-weight: bold !important;
-        }
-        
-        /* Target any contenteditable div that might be a header */
-        .word-processor :global(.ce-block__content[contenteditable="true"]) {
-          /* This will apply to all content, but we'll override for specific elements */
-        }
-        
-        /* Very specific Editor.js header targeting */
-        .word-processor :global(.ce-block:has(.ce-header)),
-        .word-processor :global(.ce-block.ce-header) {
-          font-size: 2em !important;
-          font-weight: bold !important;
+          margin: 0.5em 0 !important;
         }
         
         /* List styling improvements */
