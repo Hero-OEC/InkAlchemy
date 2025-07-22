@@ -10,6 +10,7 @@ import InlineCode from '@editorjs/inline-code';
 import LinkTool from '@editorjs/link';
 import Marker from '@editorjs/marker';
 import Paragraph from '@editorjs/paragraph';
+import ImageTool from '@editorjs/image';
 
 interface WordProcessorProps {
   data?: any;
@@ -56,7 +57,16 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
         code: CodeTool,
         linkTool: LinkTool,
         marker: Marker,
-        inlineCode: InlineCode
+        inlineCode: InlineCode,
+        image: {
+          class: ImageTool,
+          config: {
+            endpoints: {
+              byFile: '/api/upload-image',
+              byUrl: '/api/upload-image-by-url',
+            }
+          }
+        }
       },
       data: data || { blocks: [] },
       readOnly,
@@ -84,10 +94,43 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
   }, []);
 
   return (
-    <div className={`word-processor ${className}`}>
+    <div className={`word-processor w-full ${className}`}>
+      <style jsx>{`
+        .word-processor :global(.codex-editor) {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        .word-processor :global(.codex-editor__redactor) {
+          padding-bottom: 200px !important;
+        }
+        .word-processor :global(.ce-block__content) {
+          max-width: 100% !important;
+          margin: 0 !important;
+        }
+        .word-processor :global(.ce-toolbar) {
+          margin-left: -30px !important;
+        }
+        .word-processor :global(.ce-block) {
+          margin: 0.5em 0 !important;
+        }
+        @media (max-width: 768px) {
+          .word-processor :global(.ce-toolbar) {
+            margin-left: -20px !important;
+          }
+          .word-processor :global(.ce-block__content) {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .word-processor :global(.ce-toolbar) {
+            margin-left: -15px !important;
+          }
+        }
+      `}</style>
       <div 
         ref={holderRef}
-        className="min-h-[300px]"
+        className="min-h-[300px] w-full"
       />
     </div>
   );

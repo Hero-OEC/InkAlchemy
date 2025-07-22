@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { uploadImage, handleImageUpload, handleImageUploadByUrl } from "./image-upload";
 import { 
   insertProjectSchema, insertCharacterSchema, insertLocationSchema, 
   insertEventSchema, insertMagicSystemSchema, insertSpellSchema, 
@@ -665,6 +666,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch project stats" });
     }
   });
+
+  // Image upload endpoints for Editor.js
+  app.post("/api/upload-image", uploadImage, handleImageUpload);
+  app.post("/api/upload-image-by-url", handleImageUploadByUrl);
 
   const httpServer = createServer(app);
   return httpServer;
