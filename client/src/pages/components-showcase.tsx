@@ -10,12 +10,113 @@ import { CharacterMagicCardShowcase } from "@/components/character-magic-card-sh
 import { CharacterMagicSelectorShowcase } from "@/components/character-magic-selector-showcase";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { WordProcessor } from "@/components/word-processor";
+import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { useQuery } from "@tanstack/react-query";
 import type { Event, Character, Location, Relationship } from "@shared/schema";
 import { useState } from "react";
 
 function ComponentsShowcase() {
   const [editorData, setEditorData] = useState<any>(null);
+
+  // Sample Editor.js data to show how content would look when rendered
+  const sampleEditorContent = {
+    time: 1753213500000,
+    blocks: [
+      {
+        id: "header1",
+        type: "header",
+        data: {
+          text: "Character Background: Aria Stormwind",
+          level: 1
+        }
+      },
+      {
+        id: "para1",
+        type: "paragraph",
+        data: {
+          text: "Aria Stormwind was born during the <b>Great Storm of Aethermoor</b>, a supernatural tempest that raged for seven days and nights. The storm's raw magical energy infused her very being, granting her unprecedented control over wind and lightning."
+        }
+      },
+      {
+        id: "header2",
+        type: "header",
+        data: {
+          text: "Early Life and Training",
+          level: 2
+        }
+      },
+      {
+        id: "list1",
+        type: "list",
+        data: {
+          style: "unordered",
+          items: [
+            "Trained under <i>Master Theron Windcaller</i> at the Storm Academy",
+            "Mastered basic weather manipulation by age 16",
+            "First to successfully summon a <b>controlled lightning strike</b> in academy history",
+            "Graduated with highest honors in Storm Magic and Combat Theory"
+          ]
+        }
+      },
+      {
+        id: "quote1",
+        type: "quote",
+        data: {
+          text: "The storm does not rage against the mountain because it hates the stone. It simply knows no other way to be.",
+          caption: "Aria's personal philosophy"
+        }
+      },
+      {
+        id: "header3",
+        type: "header",
+        data: {
+          text: "Current Mission",
+          level: 3
+        }
+      },
+      {
+        id: "para2",
+        type: "paragraph",
+        data: {
+          text: "Now <mark>Lady Aria Stormwind the Brave</mark> seeks to restore the ancient balance between the elemental forces that have been disrupted by dark magic. Her quest will take her through treacherous lands and face-to-face with enemies who seek to harness the storm's power for their own ends."
+        }
+      },
+      {
+        id: "delimiter1",
+        type: "delimiter",
+        data: {}
+      },
+      {
+        id: "abilities",
+        type: "header",
+        data: {
+          text: "Storm Powers & Abilities",
+          level: 2
+        }
+      },
+      {
+        id: "abilities-list",
+        type: "list",
+        data: {
+          style: "ordered",
+          items: [
+            "<b>Lightning Strike</b> - Can call down precise bolts of lightning",
+            "<b>Wind Manipulation</b> - Controls air currents and wind speeds", 
+            "<b>Storm Sight</b> - Can see through any weather conditions",
+            "<b>Thunder Voice</b> - Her voice can carry across vast distances during storms"
+          ]
+        }
+      },
+      {
+        id: "code1",
+        type: "code",
+        data: {
+          code: "// Storm Magic Incantation\nfunction summonLightning(target, intensity) {\n  const stormEnergy = channelElementalForce('lightning');\n  const strike = focusEnergy(stormEnergy, target);\n  return castSpell(strike, intensity);\n}"
+        }
+      }
+    ],
+    version: "2.30.6"
+  };
 
   // Fetch data for the timeline demo
   const { data: events = [] } = useQuery<Event[]>({
@@ -242,9 +343,24 @@ function ComponentsShowcase() {
         </div>
       </section>
 
+      {/* Editor.js Content Rendering Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">How Editor.js Content Looks on Details Pages</h2>
+        <div className="bg-white border border-brand-200 rounded-xl p-8">
+          <div className="mb-4 p-4 bg-brand-50 rounded-lg">
+            <h3 className="text-lg font-semibold text-brand-800 mb-2">Preview: Character Details Page Content</h3>
+            <p className="text-brand-700 text-sm">
+              This shows how rich content created with Editor.js would appear on character detail pages after saving. 
+              The content maintains professional styling while being fully responsive.
+            </p>
+          </div>
+          <EditorContentRenderer data={sampleEditorContent} />
+        </div>
+      </section>
+
       {/* Word Processor Demo */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold text-brand-900 mb-6">Word Processor (Base Editor.js)</h2>
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Word Processor Editor (Create/Edit Pages)</h2>
         <div className="bg-white border border-brand-200 rounded-xl p-6">
           <p className="text-brand-700 mb-4 text-sm">
             Clean Editor.js component with no custom styling - just the base functionality. Fully responsive to container width.
