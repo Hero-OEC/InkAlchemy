@@ -292,25 +292,23 @@ export default function CreateRace() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Characters Section */}
-          <div className="mt-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-brand-950">Characters of This Race</h2>
-            </div>
-            
-            <div className="text-center py-12 bg-brand-50 rounded-xl border border-brand-200">
-              <UserCheck size={48} className="mx-auto text-brand-300 mb-4" />
-              <h3 className="text-lg font-medium text-brand-700 mb-2">No Characters Yet</h3>
-              <p className="text-brand-600 mb-4">Create this race first, then characters can be assigned to it.</p>
-              <Button
-                variant="outline"
-                onClick={() => setLocation(`/projects/${projectId}/characters`)}
-              >
-                View All Characters
-              </Button>
+              {/* Characters Section */}
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters of This Race</h3>
+                
+                <div className="text-center py-6">
+                  <UserCheck size={24} className="mx-auto text-brand-300 mb-2" />
+                  <p className="text-sm text-brand-600 mb-3">Create this race first, then assign characters</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setLocation(`/projects/${projectId}/characters`)}
+                  >
+                    View Characters
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </form>

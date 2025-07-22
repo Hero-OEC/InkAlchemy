@@ -369,47 +369,46 @@ export default function EditRace() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Characters Section */}
-          <div className="mt-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-brand-950">Characters of This Race</h2>
+              {/* Characters Section */}
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters of This Race</h3>
+                
+                {raceCharacters.length > 0 ? (
+                  <div className="space-y-3">
+                    {raceCharacters.map((character) => (
+                      <div
+                        key={character.id}
+                        onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
+                        className="p-3 bg-white rounded-lg border border-brand-200 cursor-pointer hover:border-brand-300 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <UserCheck size={16} className="text-brand-600" />
+                          <div className="flex-1">
+                            <p className="font-medium text-brand-900 text-sm">
+                              {[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
+                            </p>
+                            <p className="text-xs text-brand-600 capitalize">{character.type || "supporting"}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-6">
+                    <UserCheck size={24} className="mx-auto text-brand-300 mb-2" />
+                    <p className="text-sm text-brand-600 mb-3">No characters of this race yet</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setLocation(`/projects/${projectId}/characters`)}
+                    >
+                      View Characters
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
-            
-            {raceCharacters.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {raceCharacters.map((character) => (
-                  <CharacterCard
-                    key={character.id}
-                    id={character.id}
-                    name={character.name}
-                    prefix={character.prefix || undefined}
-                    suffix={character.suffix || undefined}
-                    type={character.type as any || "supporting"}
-                    description={character.description || "No description available"}
-                    imageUrl={character.imageUrl || undefined}
-                    createdAt={character.createdAt}
-                    onClick={() => {
-                      setLocation(`/projects/${projectId}/characters/${character.id}`);
-                    }}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12 bg-brand-50 rounded-xl border border-brand-200">
-                <UserCheck size={48} className="mx-auto text-brand-300 mb-4" />
-                <h3 className="text-lg font-medium text-brand-700 mb-2">No Characters Yet</h3>
-                <p className="text-brand-600 mb-4">No characters have been assigned to this race yet.</p>
-                <Button
-                  variant="outline"
-                  onClick={() => setLocation(`/projects/${projectId}/characters`)}
-                >
-                  View All Characters
-                </Button>
-              </div>
-            )}
           </div>
         </form>
       </main>
