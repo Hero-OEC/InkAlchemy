@@ -408,7 +408,7 @@ export default function EventForm() {
                 placeholder="Enter event title..."
                 {...form.register("title")}
                 error={form.formState.errors.title?.message}
-                className="text-3xl font-bold text-brand-900 bg-transparent border-none px-0 focus:ring-0 focus:border-none placeholder:text-brand-400"
+                className="text-lg font-semibold"
               />
             </div>
 
