@@ -11,7 +11,7 @@ import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { CharacterCard } from "@/components/character-card";
 import { useNavigation } from "@/contexts/navigation-context";
 import { ArrowLeft, UserCheck, Save, X } from "lucide-react";
-import { insertRaceSchema, type Project, type Race, type Character } from "@shared/schema";
+import { insertRaceSchema, type Project, type Race, type Character, type Location } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { z } from "zod";
 
@@ -25,6 +25,13 @@ export default function EditRace() {
   const [description, setDescription] = useState<any>(null);
   const [descriptionInitialized, setDescriptionInitialized] = useState(false);
 
+  // Additional form state for race properties
+  const [homelandId, setHomelandId] = useState<string>("");
+  const [lifespan, setLifespan] = useState<string>("");
+  const [sizeCategory, setSizeCategory] = useState<string>("");
+  const [magicalAffinity, setMagicalAffinity] = useState<string>("");
+  const [specialTraits, setSpecialTraits] = useState<string>("");
+
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
@@ -36,6 +43,12 @@ export default function EditRace() {
 
   const { data: characters = [] } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
+  });
+
+  // Query for locations to populate homeland dropdown
+  const { data: locations = [] } = useQuery<Location[]>({
+    queryKey: [`/api/projects/${projectId}/locations`],
+    enabled: !!projectId,
   });
 
   // Filter characters of this race
@@ -61,6 +74,13 @@ export default function EditRace() {
         description: race.description || "",
         projectId: race.projectId,
       });
+      
+      // Initialize additional race properties
+      setHomelandId(race.homelandId?.toString() || "");
+      setLifespan(race.lifespan || "");
+      setSizeCategory(race.sizeCategory || "");
+      setMagicalAffinity(race.magicalAffinity || "");
+      setSpecialTraits(race.specialTraits || "");
       
       // Initialize description for WordProcessor
       if (race.description) {
@@ -120,6 +140,11 @@ export default function EditRace() {
     const submissionData = {
       ...data,
       description: description ? JSON.stringify(description) : "",
+      homelandId: homelandId ? parseInt(homelandId) : null,
+      lifespan: lifespan || null,
+      sizeCategory: sizeCategory || null,
+      magicalAffinity: magicalAffinity || null,
+      specialTraits: specialTraits || null,
     };
     updateMutation.mutate(submissionData);
   };
@@ -261,11 +286,15 @@ export default function EditRace() {
                       label="Primary Homeland"
                       placeholder="Select homeland location..."
                       options={[
-                        { value: "unknown", label: "Unknown/Nomadic" },
-                        { value: "multiple", label: "Multiple Regions" }
+                        { value: "", label: "No homeland specified" },
+                        { value: "nomadic", label: "Nomadic/No Fixed Home" },
+                        ...locations.map(location => ({
+                          value: location.id.toString(),
+                          label: location.name
+                        }))
                       ]}
-                      value=""
-                      onChange={() => {}}
+                      value={homelandId}
+                      onChange={setHomelandId}
                     />
                   </div>
                 </div>
@@ -286,8 +315,8 @@ export default function EditRace() {
                         { value: "immortal", label: "Near Immortal (500+ years)" },
                         { value: "eternal", label: "Truly Immortal" }
                       ]}
-                      value=""
-                      onChange={() => {}}
+                      value={lifespan}
+                      onChange={setLifespan}
                     />
                   </div>
                   <div>
@@ -301,8 +330,8 @@ export default function EditRace() {
                         { value: "large", label: "Large (7-10 feet)" },
                         { value: "huge", label: "Huge (10+ feet)" }
                       ]}
-                      value=""
-                      onChange={() => {}}
+                      value={sizeCategory}
+                      onChange={setSizeCategory}
                     />
                   </div>
                 </div>
@@ -323,8 +352,8 @@ export default function EditRace() {
                         { value: "high", label: "Highly Magical" },
                         { value: "innate", label: "Innate Magic Powers" }
                       ]}
-                      value=""
-                      onChange={() => {}}
+                      value={magicalAffinity}
+                      onChange={setMagicalAffinity}
                     />
                   </div>
                   <div>
@@ -332,6 +361,7 @@ export default function EditRace() {
                       label="Special Traits"
                       placeholder="Select special traits..."
                       options={[
+                        { value: "", label: "No special traits" },
                         { value: "enhanced-senses", label: "Enhanced Senses" },
                         { value: "flight", label: "Natural Flight" },
                         { value: "shapeshifting", label: "Shapeshifting" },
@@ -340,8 +370,8 @@ export default function EditRace() {
                         { value: "regeneration", label: "Regeneration" },
                         { value: "other", label: "Other Unique Traits" }
                       ]}
-                      value=""
-                      onChange={() => {}}
+                      value={specialTraits}
+                      onChange={setSpecialTraits}
                     />
                   </div>
                 </div>

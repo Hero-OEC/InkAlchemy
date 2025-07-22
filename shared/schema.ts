@@ -126,6 +126,14 @@ export const races = pgTable("races", {
   projectId: integer("project_id").references(() => projects.id).notNull(),
   name: text("name").notNull(),
   description: text("description"),
+  // Origin & Homeland
+  homelandId: integer("homeland_id").references(() => locations.id),
+  // Physical Characteristics
+  lifespan: text("lifespan"), // short, human, long, immortal, eternal
+  sizeCategory: text("size_category"), // tiny, small, medium, large, huge
+  // Abilities & Powers
+  magicalAffinity: text("magical_affinity"), // none, low, medium, high, innate
+  specialTraits: text("special_traits"), // enhanced-senses, flight, shapeshifting, telepathy, elemental, regeneration, other
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
