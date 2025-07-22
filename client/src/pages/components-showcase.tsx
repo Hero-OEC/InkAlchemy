@@ -9,6 +9,7 @@ import { MiniCardDemo } from "@/components/mini-card";
 import { CharacterMagicCardShowcase } from "@/components/character-magic-card-showcase";
 import { CharacterMagicSelectorShowcase } from "@/components/character-magic-selector-showcase";
 import SerpentineTimeline from "@/components/serpentine-timeline";
+import { WordProcessorDemo } from "@/components/word-processor";
 import { useQuery } from "@tanstack/react-query";
 import type { Event, Character, Location, Relationship } from "@shared/schema";
 
@@ -254,6 +255,12 @@ function ComponentsShowcase() {
             onEventEdit={(event) => console.log("Edit event:", event)}
           />
         </div>
+      </section>
+
+      {/* Word Processor Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Word Processor</h2>
+        <WordProcessorDemo />
       </section>
     </div>
   );
