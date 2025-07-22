@@ -6,7 +6,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
-import { UserCheck, Edit, ArrowLeft, Trash2, FileText, Users, Clock, Sparkles, Languages } from "lucide-react";
+import { UserCheck, Edit, ArrowLeft, Trash2, FileText, Users } from "lucide-react";
 import type { Race, Project, Character } from "@shared/schema";
 
 export default function RaceDetails() {
@@ -138,10 +138,6 @@ export default function RaceDetails() {
 
   const tabs = [
     { id: "description", label: "Description", icon: FileText },
-    { id: "culture", label: "Culture & Society", icon: Users },
-    { id: "lifespan", label: "Lifespan", icon: Clock },
-    { id: "traits", label: "Traits & Abilities", icon: Sparkles },
-    { id: "language", label: "Language", icon: Languages },
     { id: "characters", label: "Characters", icon: Users },
   ];
 
@@ -228,50 +224,6 @@ export default function RaceDetails() {
               <div className="prose prose-brand max-w-none">
                 <p className="text-brand-700 leading-relaxed">
                   {race.description || "No description available"}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "culture" && (
-            <div>
-              <h3 className="text-lg font-semibold text-brand-900 mb-3">Culture & Society</h3>
-              <div className="prose prose-brand max-w-none">
-                <p className="text-brand-700 leading-relaxed">
-                  {race.culture || "No cultural information available"}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "lifespan" && (
-            <div>
-              <h3 className="text-lg font-semibold text-brand-900 mb-3">Lifespan</h3>
-              <div className="prose prose-brand max-w-none">
-                <p className="text-brand-700 leading-relaxed">
-                  {race.lifespan || "No lifespan information available"}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "traits" && (
-            <div>
-              <h3 className="text-lg font-semibold text-brand-900 mb-3">Traits & Abilities</h3>
-              <div className="prose prose-brand max-w-none">
-                <p className="text-brand-700 leading-relaxed">
-                  {race.traits || "No traits or abilities information available"}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "language" && (
-            <div>
-              <h3 className="text-lg font-semibold text-brand-900 mb-3">Language</h3>
-              <div className="prose prose-brand max-w-none">
-                <p className="text-brand-700 leading-relaxed">
-                  {race.language || "No language information available"}
                 </p>
               </div>
             </div>

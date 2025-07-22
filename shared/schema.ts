@@ -126,11 +126,6 @@ export const races = pgTable("races", {
   projectId: integer("project_id").references(() => projects.id).notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  culture: text("culture"), // cultural practices, traditions, social structure
-  language: text("language"), // linguistic information
-  homelandId: integer("homeland_id").references(() => locations.id), // default homeland location
-  traits: text("traits"), // special abilities, characteristics
-  lifespan: text("lifespan"), // average lifespan information
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
