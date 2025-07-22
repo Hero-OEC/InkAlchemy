@@ -79,6 +79,26 @@ export function WordProcessor({
     }
   }, [initialContent]);
 
+  // Click outside to deselect images
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (editorRef.current && !editorRef.current.contains(e.target as Node)) {
+        const allImages = editorRef.current.querySelectorAll('.image-container');
+        allImages.forEach(img => {
+          img.classList.remove('selected');
+          (img as HTMLElement).style.border = '2px transparent solid';
+          const controls = img.querySelector('.image-controls') as HTMLElement;
+          const handle = img.querySelector('.resize-handle') as HTMLElement;
+          if (controls) controls.style.display = 'none';
+          if (handle) handle.style.display = 'none';
+        });
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   // Update word count and notify parent of changes
   const handleContentChange = () => {
     if (!editorRef.current) return;
@@ -105,25 +125,215 @@ export function WordProcessor({
     handleContentChange();
   };
 
-  // Image upload handling
+  // Image upload handling with enhanced features
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = (e) => {
+      const imageId = `img-${Date.now()}`;
+      
+      // Create container div for the image
+      const imageContainer = document.createElement('div');
+      imageContainer.className = 'image-container';
+      imageContainer.contentEditable = 'false';
+      imageContainer.style.cssText = `
+        position: relative;
+        display: inline-block;
+        margin: 8px;
+        border: 2px transparent solid;
+        border-radius: 8px;
+        cursor: move;
+        max-width: 300px;
+        float: left;
+      `;
+      
+      // Create the image element
       const img = document.createElement('img');
+      img.id = imageId;
       img.src = e.target?.result as string;
-      img.style.maxWidth = '100%';
-      img.style.height = 'auto';
-      img.style.margin = '16px 0';
-      img.style.borderRadius = '8px';
+      img.style.cssText = `
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 6px;
+      `;
+      
+      // Create resize handles
+      const resizeHandle = document.createElement('div');
+      resizeHandle.className = 'resize-handle';
+      resizeHandle.style.cssText = `
+        position: absolute;
+        bottom: -5px;
+        right: -5px;
+        width: 12px;
+        height: 12px;
+        background: #3b82f6;
+        border: 2px solid white;
+        border-radius: 50%;
+        cursor: se-resize;
+        display: none;
+      `;
+      
+      // Create positioning controls
+      const controls = document.createElement('div');
+      controls.className = 'image-controls';
+      controls.style.cssText = `
+        position: absolute;
+        top: -35px;
+        left: 0;
+        display: none;
+        gap: 4px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      `;
+      
+      // Position buttons
+      const positions = [
+        { label: 'L', value: 'left', title: 'Float Left' },
+        { label: 'C', value: 'center', title: 'Center' },
+        { label: 'R', value: 'right', title: 'Float Right' }
+      ];
+      
+      positions.forEach(pos => {
+        const btn = document.createElement('button');
+        btn.textContent = pos.label;
+        btn.title = pos.title;
+        btn.style.cssText = `
+          width: 24px;
+          height: 24px;
+          border: 1px solid #d1d5db;
+          background: white;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 11px;
+          font-weight: 500;
+        `;
+        btn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setImagePosition(imageContainer, pos.value);
+        };
+        controls.appendChild(btn);
+      });
+      
+      // Size controls
+      const sizeLabel = document.createElement('span');
+      sizeLabel.textContent = '|';
+      sizeLabel.style.cssText = 'color: #d1d5db; margin: 0 4px;';
+      controls.appendChild(sizeLabel);
+      
+      const sizes = [
+        { label: 'S', width: '150px' },
+        { label: 'M', width: '250px' },
+        { label: 'L', width: '400px' }
+      ];
+      
+      sizes.forEach(size => {
+        const btn = document.createElement('button');
+        btn.textContent = size.label;
+        btn.style.cssText = `
+          width: 24px;
+          height: 24px;
+          border: 1px solid #d1d5db;
+          background: white;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 11px;
+          font-weight: 500;
+        `;
+        btn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          imageContainer.style.maxWidth = size.width;
+        };
+        controls.appendChild(btn);
+      });
+      
+      // Delete button
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '×';
+      deleteBtn.title = 'Delete Image';
+      deleteBtn.style.cssText = `
+        width: 24px;
+        height: 24px;
+        border: 1px solid #ef4444;
+        background: #fef2f2;
+        color: #ef4444;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        margin-left: 4px;
+      `;
+      deleteBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        imageContainer.remove();
+        handleContentChange();
+      };
+      controls.appendChild(deleteBtn);
+      
+      // Assemble the image container
+      imageContainer.appendChild(img);
+      imageContainer.appendChild(resizeHandle);
+      imageContainer.appendChild(controls);
+      
+      // Add event listeners
+      imageContainer.addEventListener('click', (e) => {
+        e.preventDefault();
+        selectImage(imageContainer);
+      });
+      
+      imageContainer.addEventListener('mouseenter', () => {
+        imageContainer.style.border = '2px solid #3b82f6';
+        controls.style.display = 'flex';
+        resizeHandle.style.display = 'block';
+      });
+      
+      imageContainer.addEventListener('mouseleave', () => {
+        if (!imageContainer.classList.contains('selected')) {
+          imageContainer.style.border = '2px transparent solid';
+          controls.style.display = 'none';
+          resizeHandle.style.display = 'none';
+        }
+      });
+      
+      // Resize functionality
+      let isResizing = false;
+      resizeHandle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizing = true;
+        
+        const startX = e.clientX;
+        const startWidth = imageContainer.offsetWidth;
+        
+        const handleMouseMove = (e: MouseEvent) => {
+          const newWidth = startWidth + (e.clientX - startX);
+          imageContainer.style.maxWidth = Math.max(100, Math.min(600, newWidth)) + 'px';
+        };
+        
+        const handleMouseUp = () => {
+          isResizing = false;
+          document.removeEventListener('mousemove', handleMouseMove);
+          document.removeEventListener('mouseup', handleMouseUp);
+          handleContentChange();
+        };
+        
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      });
       
       // Insert image at cursor position
       const selection = window.getSelection();
       if (selection && selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
-        range.insertNode(img);
+        range.insertNode(imageContainer);
         range.collapse(false);
       }
       
@@ -133,6 +343,49 @@ export function WordProcessor({
     
     // Reset input
     event.target.value = '';
+  };
+
+  // Helper functions for image manipulation
+  const selectImage = (container: HTMLElement) => {
+    // Remove selection from other images
+    const allImages = editorRef.current?.querySelectorAll('.image-container');
+    allImages?.forEach(img => {
+      img.classList.remove('selected');
+      (img as HTMLElement).style.border = '2px transparent solid';
+      const controls = img.querySelector('.image-controls') as HTMLElement;
+      const handle = img.querySelector('.resize-handle') as HTMLElement;
+      if (controls) controls.style.display = 'none';
+      if (handle) handle.style.display = 'none';
+    });
+    
+    // Select current image
+    container.classList.add('selected');
+    container.style.border = '2px solid #3b82f6';
+    const controls = container.querySelector('.image-controls') as HTMLElement;
+    const handle = container.querySelector('.resize-handle') as HTMLElement;
+    if (controls) controls.style.display = 'flex';
+    if (handle) handle.style.display = 'block';
+  };
+
+  const setImagePosition = (container: HTMLElement, position: string) => {
+    switch (position) {
+      case 'left':
+        container.style.float = 'left';
+        container.style.display = 'block';
+        container.style.margin = '8px 16px 8px 0';
+        break;
+      case 'right':
+        container.style.float = 'right';
+        container.style.display = 'block';
+        container.style.margin = '8px 0 8px 16px';
+        break;
+      case 'center':
+        container.style.float = 'none';
+        container.style.display = 'block';
+        container.style.margin = '16px auto';
+        break;
+    }
+    handleContentChange();
   };
 
 
@@ -519,7 +772,7 @@ export function WordProcessorDemo() {
       </div>
       
       <WordProcessor
-        initialContent="<h1>Welcome to the Word Processor</h1><h2>Rich Text Formatting</h2><p>Start typing to create your article. Use the toolbar above to format your text with headings, styles, colors, and more.</p><h3>Sample Heading 3</h3><p>This paragraph demonstrates the spacing and typography.</p><h4>Sample Heading 4</h4><h5>This is a subtitle style</h5><p>Regular paragraph text with proper line spacing and formatting.</p>"
+        initialContent="<h1>Welcome to the Word Processor</h1><h2>Rich Text Formatting</h2><p>Start typing to create your article. Use the toolbar above to format your text with headings, styles, colors, and more. Try uploading an image and see how you can resize it, reposition it, and let text wrap around it naturally.</p><h3>Image Features</h3><p>Upload an image using the image button in the toolbar. Once uploaded, you can click on the image to see positioning controls (Left, Center, Right), size controls (Small, Medium, Large), and a delete option. You can also drag the blue handle in the bottom-right corner to resize the image manually.</p><h4>Sample Heading 4</h4><h5>This is a subtitle style</h5><p>Regular paragraph text with proper line spacing and formatting. Text will flow naturally around images when they are positioned to the left or right, creating professional document layouts.</p>"
         onContentChange={setContent}
         maxWidth="max-w-4xl mx-auto"
       />
