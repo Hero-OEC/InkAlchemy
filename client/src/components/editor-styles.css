@@ -1,9 +1,13 @@
 /* Editor.js Header Styles - Required for proper header display */
-
 .ce-header {
   padding: 0.6em 0 3px;
   margin: 0;
   outline: none;
+}
+
+/* Essential base styles for proper Editor.js functionality */
+.codex-editor__redactor {
+  padding-bottom: 200px;
 }
 
 h1.ce-header {
