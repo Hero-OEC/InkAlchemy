@@ -8,6 +8,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { Input, Textarea, Select } from "@/components/form-inputs";
 import { MiniCard } from "@/components/mini-card";
+import { useNavigation } from "@/contexts/navigation-context";
 import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, CheckCircle, X, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { insertEventSchema, type Project, type Event, type Location, type Character, type Relationship } from "@shared/schema";
@@ -72,6 +73,7 @@ export default function EventForm() {
   const { projectId, eventId } = useParams();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+  const { goBack } = useNavigation();
   const isEditing = !!eventId;
   const [selectedCharacters, setSelectedCharacters] = useState<Character[]>([]);
 
@@ -112,6 +114,16 @@ export default function EventForm() {
     },
   });
 
+  // Set page title
+  useEffect(() => {
+    if (project?.name) {
+      const pageTitle = isEditing ? `Edit Event - ${project.name} | StoryForge` : `Create Event - ${project.name} | StoryForge`;
+      document.title = pageTitle;
+    } else {
+      document.title = isEditing ? "Edit Event | StoryForge" : "Create Event | StoryForge";
+    }
+  }, [project?.name, isEditing]);
+
   // Reset form when event data loads
   useEffect(() => {
     if (event && isEditing && relationships.length > 0) {
@@ -129,8 +141,8 @@ export default function EventForm() {
 
       // Load selected characters from relationships
       const eventCharacterIds = relationships
-        .filter(rel => rel.fromElementType === 'event' && rel.fromElementId === event.id && rel.toElementType === 'character')
-        .map(rel => rel.toElementId);
+        .filter(rel => rel.sourceType === 'event' && rel.sourceId === event.id && rel.targetType === 'character')
+        .map(rel => rel.targetId);
       
       const eventCharacters = characters.filter(char => eventCharacterIds.includes(char.id));
       setSelectedCharacters(eventCharacters);
@@ -150,10 +162,10 @@ export default function EventForm() {
           method: "POST",
           body: JSON.stringify({
             projectId: parseInt(projectId!),
-            fromElementType: 'event',
-            fromElementId: event.id,
-            toElementType: 'character',
-            toElementId: character.id,
+            sourceType: 'event',
+            sourceId: event.id,
+            targetType: 'character',
+            targetId: character.id,
             relationshipType: 'involved',
             description: `${character.name} is involved in ${event.title}`,
           }),
@@ -178,7 +190,7 @@ export default function EventForm() {
       
       // Delete existing character relationships for this event
       const existingRelationships = relationships.filter(rel => 
-        rel.fromElementType === 'event' && rel.fromElementId === parseInt(eventId!) && rel.toElementType === 'character'
+        rel.sourceType === 'event' && rel.sourceId === parseInt(eventId!) && rel.targetType === 'character'
       );
       
       for (const rel of existingRelationships) {
@@ -193,10 +205,10 @@ export default function EventForm() {
           method: "POST",
           body: JSON.stringify({
             projectId: parseInt(projectId!),
-            fromElementType: 'event',
-            fromElementId: parseInt(eventId!),
-            toElementType: 'character',
-            toElementId: character.id,
+            sourceType: 'event',
+            sourceId: parseInt(eventId!),
+            targetType: 'character',
+            targetId: character.id,
             relationshipType: 'involved',
             description: `${character.name} is involved in ${updatedEvent.title}`,
           }),
@@ -320,7 +332,8 @@ export default function EventForm() {
         </div>
 
         {/* Form */}
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* Basic Information */}
           <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
             <h2 className="text-xl font-semibold text-brand-900 mb-6">Event Information</h2>
             
@@ -337,7 +350,7 @@ export default function EventForm() {
               <Select
                 label="Event Type"
                 options={eventTypeOptions}
-                value={form.watch("type")}
+                value={form.watch("type") || ""}
                 onChange={(value) => form.setValue("type", value as any)}
                 error={form.formState.errors.type?.message}
               />
@@ -345,7 +358,7 @@ export default function EventForm() {
               <Select
                 label="Writing Stage"
                 options={stageOptions}
-                value={form.watch("stage")}
+                value={form.watch("stage") || ""}
                 onChange={(value) => form.setValue("stage", value as any)}
                 error={form.formState.errors.stage?.message}
               />
@@ -434,7 +447,7 @@ export default function EventForm() {
                     key={character.id}
                     icon={Users}
                     title={character.name}
-                    badge={character.type}
+                    badge={character.type || "Character"}
                     badgeVariant="type"
                     variant="editable"
                     onDelete={() => handleRemoveCharacter(character.id)}
