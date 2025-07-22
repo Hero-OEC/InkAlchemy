@@ -19,7 +19,12 @@ import {
   Type,
   Palette,
   Settings,
-  Upload
+  Upload,
+  Heading1,
+  Heading2,
+  Heading3,
+  Heading4,
+  FileText
 } from "lucide-react";
 
 interface WordProcessorProps {
@@ -72,6 +77,13 @@ export function WordProcessor({
   // Formatting commands
   const execCommand = (command: string, value?: string) => {
     document.execCommand(command, false, value);
+    editorRef.current?.focus();
+    handleContentChange();
+  };
+
+  // Format block commands for headings
+  const formatBlock = (tag: string) => {
+    document.execCommand('formatBlock', false, tag);
     editorRef.current?.focus();
     handleContentChange();
   };
@@ -180,6 +192,73 @@ export function WordProcessor({
               <AlignJustify className="w-4 h-4" />
             </Button>
           </div>
+
+          <Separator orientation="vertical" className="h-6" />
+
+          {/* Text Formatting Blocks */}
+          <div className="flex items-center gap-1">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => formatBlock('h1')}
+              className="w-8 h-8 p-0"
+              title="Heading 1"
+            >
+              <Heading1 className="w-4 h-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => formatBlock('h2')}
+              className="w-8 h-8 p-0"
+              title="Heading 2"
+            >
+              <Heading2 className="w-4 h-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => formatBlock('h3')}
+              className="w-8 h-8 p-0"
+              title="Heading 3"
+            >
+              <Heading3 className="w-4 h-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => formatBlock('h4')}
+              className="w-8 h-8 p-0"
+              title="Heading 4"
+            >
+              <Heading4 className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Text Style Dropdown */}
+          <Select
+            onValueChange={(value) => {
+              if (value === 'subtitle') {
+                formatBlock('h5');
+              } else if (value === 'paragraph') {
+                formatBlock('p');
+              } else {
+                formatBlock(value);
+              }
+            }}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Style" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="h1">Heading 1</SelectItem>
+              <SelectItem value="h2">Heading 2</SelectItem>
+              <SelectItem value="h3">Heading 3</SelectItem>
+              <SelectItem value="h4">Heading 4</SelectItem>
+              <SelectItem value="subtitle">Subtitle</SelectItem>
+              <SelectItem value="paragraph">Paragraph</SelectItem>
+            </SelectContent>
+          </Select>
 
           <Separator orientation="vertical" className="h-6" />
 
@@ -325,7 +404,7 @@ export function WordProcessor({
           ref={editorRef}
           contentEditable
           onInput={handleContentChange}
-          className="min-h-[600px] p-8 bg-white rounded-b-lg border-l border-r border-b border-brand-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent prose prose-brand max-w-none"
+          className="min-h-[600px] p-8 bg-white rounded-b-lg border-l border-r border-b border-brand-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent prose prose-brand max-w-none [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:mb-3 [&_h2]:mt-5 [&_h3]:text-xl [&_h3]:font-medium [&_h3]:mb-2 [&_h3]:mt-4 [&_h4]:text-lg [&_h4]:font-medium [&_h4]:mb-2 [&_h4]:mt-3 [&_h5]:text-base [&_h5]:font-normal [&_h5]:text-brand-600 [&_h5]:mb-2 [&_h5]:mt-2 [&_p]:mb-3 [&_p]:leading-relaxed"
           style={{
             fontSize: `${settings.fontSize}px`,
             lineHeight: settings.lineHeight,
@@ -354,7 +433,7 @@ export function WordProcessorDemo() {
       </div>
       
       <WordProcessor
-        initialContent="<h1>Welcome to the Word Processor</h1><p>Start typing to create your article. Use the toolbar above to format your text, add images, and customize the document layout.</p>"
+        initialContent="<h1>Welcome to the Word Processor</h1><h2>Rich Text Formatting</h2><p>Start typing to create your article. Use the toolbar above to format your text with headings, styles, colors, and more.</p><h3>Sample Heading 3</h3><p>This paragraph demonstrates the spacing and typography.</p><h4>Sample Heading 4</h4><h5>This is a subtitle style</h5><p>Regular paragraph text with proper line spacing and formatting.</p>"
         onContentChange={setContent}
         maxWidth="max-w-4xl mx-auto"
       />
