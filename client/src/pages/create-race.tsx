@@ -217,7 +217,7 @@ export default function CreateRace() {
                     </label>
                     <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
                       <option value="">Select size...</option>
-                      <option value="tiny">Tiny (< 3 feet)</option>
+                      <option value="tiny">Tiny (&lt; 3 feet)</option>
                       <option value="small">Small (3-4 feet)</option>
                       <option value="medium">Medium (4-7 feet)</option>
                       <option value="large">Large (7-10 feet)</option>
