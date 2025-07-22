@@ -8,9 +8,10 @@ import { Button } from "@/components/button-variations";
 import { Input, Select } from "@/components/form-inputs";
 import { WordProcessor } from "@/components/word-processor";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
+import { CharacterCard } from "@/components/character-card";
 import { useNavigation } from "@/contexts/navigation-context";
 import { ArrowLeft, UserCheck, Save, X } from "lucide-react";
-import { insertRaceSchema, type Project, type Race } from "@shared/schema";
+import { insertRaceSchema, type Project, type Race, type Character } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { z } from "zod";
 
@@ -32,6 +33,16 @@ export default function EditRace() {
     queryKey: [`/api/races/${raceId}`],
     enabled: !!raceId && raceId !== "new" && !isNaN(Number(raceId))
   });
+
+  const { data: characters = [] } = useQuery<Character[]>({
+    queryKey: [`/api/projects/${projectId}/characters`],
+  });
+
+  // Filter characters of this race
+  const raceCharacters = characters.filter(character => 
+    character.race && race?.name && 
+    character.race.toLowerCase() === race.name.toLowerCase()
+  );
 
   const form = useForm<RaceFormData>({
     resolver: zodResolver(insertRaceSchema),
@@ -336,6 +347,46 @@ export default function EditRace() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Characters Section */}
+          <div className="mt-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-brand-950">Characters of This Race</h2>
+            </div>
+            
+            {raceCharacters.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {raceCharacters.map((character) => (
+                  <CharacterCard
+                    key={character.id}
+                    id={character.id}
+                    name={character.name}
+                    prefix={character.prefix || undefined}
+                    suffix={character.suffix || undefined}
+                    type={character.type as any || "supporting"}
+                    description={character.description || "No description available"}
+                    imageUrl={character.imageUrl || undefined}
+                    createdAt={character.createdAt}
+                    onClick={() => {
+                      setLocation(`/projects/${projectId}/characters/${character.id}`);
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-brand-50 rounded-xl border border-brand-200">
+                <UserCheck size={48} className="mx-auto text-brand-300 mb-4" />
+                <h3 className="text-lg font-medium text-brand-700 mb-2">No Characters Yet</h3>
+                <p className="text-brand-600 mb-4">No characters have been assigned to this race yet.</p>
+                <Button
+                  variant="outline"
+                  onClick={() => setLocation(`/projects/${projectId}/characters`)}
+                >
+                  View All Characters
+                </Button>
+              </div>
+            )}
           </div>
         </form>
       </main>

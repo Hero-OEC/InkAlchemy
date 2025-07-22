@@ -7,9 +7,10 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { Input, Select } from "@/components/form-inputs";
 import { WordProcessor } from "@/components/word-processor";
+import { CharacterCard } from "@/components/character-card";
 import { useNavigation } from "@/contexts/navigation-context";
 import { ArrowLeft, UserCheck, Save, X } from "lucide-react";
-import { insertRaceSchema, type Project } from "@shared/schema";
+import { insertRaceSchema, type Project, type Character } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { z } from "zod";
 
@@ -25,6 +26,13 @@ export default function CreateRace() {
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
+
+  const { data: characters = [] } = useQuery<Character[]>({
+    queryKey: [`/api/projects/${projectId}/characters`],
+  });
+
+  // For create mode, no race characters exist yet
+  const raceCharacters: Character[] = [];
 
   const form = useForm<RaceFormData>({
     resolver: zodResolver(insertRaceSchema),
@@ -267,6 +275,25 @@ export default function CreateRace() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Characters Section */}
+          <div className="mt-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-brand-950">Characters of This Race</h2>
+            </div>
+            
+            <div className="text-center py-12 bg-brand-50 rounded-xl border border-brand-200">
+              <UserCheck size={48} className="mx-auto text-brand-300 mb-4" />
+              <h3 className="text-lg font-medium text-brand-700 mb-2">No Characters Yet</h3>
+              <p className="text-brand-600 mb-4">Create this race first, then characters can be assigned to it.</p>
+              <Button
+                variant="outline"
+                onClick={() => setLocation(`/projects/${projectId}/characters`)}
+              >
+                View All Characters
+              </Button>
             </div>
           </div>
         </form>
