@@ -11,7 +11,6 @@ import LinkTool from '@editorjs/link';
 import Marker from '@editorjs/marker';
 import Paragraph from '@editorjs/paragraph';
 import ImageTool from '@editorjs/image';
-import './word-processor.css';
 
 interface WordProcessorProps {
   data?: any;
