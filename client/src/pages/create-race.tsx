@@ -175,14 +175,90 @@ export default function CreateRace() {
               </div>
             </div>
 
-            {/* Sidebar - Future expansion area */}
-            <div className="lg:col-span-1">
+            {/* Sidebar - Race Properties */}
+            <div className="lg:col-span-1 space-y-6">
+              {/* Race Origin */}
               <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                <div className="text-center py-8">
-                  <UserCheck className="w-12 h-12 text-brand-400 mx-auto mb-3" />
-                  <p className="text-brand-600 text-sm">
-                    Additional race properties can be added here in the future
-                  </p>
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Origin & Homeland</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-brand-900 mb-2">
+                      Primary Homeland
+                    </label>
+                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                      <option value="">Select homeland location...</option>
+                      <option value="unknown">Unknown/Nomadic</option>
+                      <option value="multiple">Multiple Regions</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Physical Traits */}
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Physical Characteristics</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-brand-900 mb-2">
+                      Average Lifespan
+                    </label>
+                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                      <option value="">Select lifespan...</option>
+                      <option value="short">Short (20-50 years)</option>
+                      <option value="human">Human-like (60-100 years)</option>
+                      <option value="long">Long-lived (100-500 years)</option>
+                      <option value="immortal">Near Immortal (500+ years)</option>
+                      <option value="eternal">Truly Immortal</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-brand-900 mb-2">
+                      Size Category
+                    </label>
+                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                      <option value="">Select size...</option>
+                      <option value="tiny">Tiny (< 3 feet)</option>
+                      <option value="small">Small (3-4 feet)</option>
+                      <option value="medium">Medium (4-7 feet)</option>
+                      <option value="large">Large (7-10 feet)</option>
+                      <option value="huge">Huge (10+ feet)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Special Abilities */}
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Abilities & Powers</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-brand-900 mb-2">
+                      Magical Affinity
+                    </label>
+                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                      <option value="">Select magical ability...</option>
+                      <option value="none">No Magic</option>
+                      <option value="low">Low Magic Sensitivity</option>
+                      <option value="medium">Moderate Magic User</option>
+                      <option value="high">Highly Magical</option>
+                      <option value="innate">Innate Magic Powers</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-brand-900 mb-2">
+                      Special Traits
+                    </label>
+                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                      <option value="">Select special traits...</option>
+                      <option value="enhanced-senses">Enhanced Senses</option>
+                      <option value="flight">Natural Flight</option>
+                      <option value="shapeshifting">Shapeshifting</option>
+                      <option value="telepathy">Telepathic</option>
+                      <option value="elemental">Elemental Control</option>
+                      <option value="regeneration">Regeneration</option>
+                      <option value="other">Other Unique Traits</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
