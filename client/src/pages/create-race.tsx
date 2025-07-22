@@ -193,13 +193,13 @@ export default function CreateRace() {
 
             {/* Sidebar - Race Properties */}
             <div className="lg:col-span-1 space-y-6">
-              {/* Race Origin */}
+              {/* Homeland */}
               <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Origin & Homeland</h3>
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Homeland</h3>
                 <div className="space-y-4">
                   <div>
                     <Select
-                      label="Primary Homeland"
+                      label="Homeland Location"
                       placeholder="Select homeland location..."
                       options={[
                         { value: "", label: "No homeland specified" },
