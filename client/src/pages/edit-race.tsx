@@ -202,26 +202,24 @@ export default function EditRace() {
           </div>
         </div>
 
-        {/* Main Content */}
-        <form id="race-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Race Name Section */}
-              <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
-                <h2 className="text-xl font-semibold text-brand-900 mb-6">Race Name</h2>
-                <div>
-                  <Input
-                    {...form.register("name")}
-                    placeholder="Enter race name..."
-                    className="text-2xl font-bold h-14 bg-transparent border-none shadow-none text-brand-950 placeholder:text-brand-400"
-                  />
-                  {form.formState.errors.name && (
-                    <p className="text-red-500 text-sm mt-2">{form.formState.errors.name.message}</p>
-                  )}
-                </div>
-              </div>
+        {/* Race Header Form */}
+        <form id="race-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* Race Title */}
+          <div className="space-y-6">
+            <div>
+              <Input
+                {...form.register("name")}
+                placeholder="Enter race name..."
+                error={form.formState.errors.name?.message}
+                className="text-lg font-semibold"
+              />
+            </div>
+          </div>
 
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Main Content Area */}
+            <div className="lg:col-span-2 space-y-6">
               {/* Description Section */}
               <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
                 <h2 className="text-xl font-semibold text-brand-900 mb-6">Description</h2>
