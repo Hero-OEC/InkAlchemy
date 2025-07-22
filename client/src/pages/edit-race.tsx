@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
-import { Input } from "@/components/form-inputs";
+import { Input, Select } from "@/components/form-inputs";
 import { WordProcessor } from "@/components/word-processor";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { useNavigation } from "@/contexts/navigation-context";
@@ -246,14 +246,16 @@ export default function EditRace() {
                 <h3 className="text-lg font-semibold text-brand-900 mb-4">Origin & Homeland</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-brand-900 mb-2">
-                      Primary Homeland
-                    </label>
-                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
-                      <option value="">Select homeland location...</option>
-                      <option value="unknown">Unknown/Nomadic</option>
-                      <option value="multiple">Multiple Regions</option>
-                    </select>
+                    <Select
+                      label="Primary Homeland"
+                      placeholder="Select homeland location..."
+                      options={[
+                        { value: "unknown", label: "Unknown/Nomadic" },
+                        { value: "multiple", label: "Multiple Regions" }
+                      ]}
+                      value=""
+                      onChange={() => {}}
+                    />
                   </div>
                 </div>
               </div>
@@ -263,30 +265,34 @@ export default function EditRace() {
                 <h3 className="text-lg font-semibold text-brand-900 mb-4">Physical Characteristics</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-brand-900 mb-2">
-                      Average Lifespan
-                    </label>
-                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
-                      <option value="">Select lifespan...</option>
-                      <option value="short">Short (20-50 years)</option>
-                      <option value="human">Human-like (60-100 years)</option>
-                      <option value="long">Long-lived (100-500 years)</option>
-                      <option value="immortal">Near Immortal (500+ years)</option>
-                      <option value="eternal">Truly Immortal</option>
-                    </select>
+                    <Select
+                      label="Average Lifespan"
+                      placeholder="Select lifespan..."
+                      options={[
+                        { value: "short", label: "Short (20-50 years)" },
+                        { value: "human", label: "Human-like (60-100 years)" },
+                        { value: "long", label: "Long-lived (100-500 years)" },
+                        { value: "immortal", label: "Near Immortal (500+ years)" },
+                        { value: "eternal", label: "Truly Immortal" }
+                      ]}
+                      value=""
+                      onChange={() => {}}
+                    />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-brand-900 mb-2">
-                      Size Category
-                    </label>
-                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
-                      <option value="">Select size...</option>
-                      <option value="tiny">Tiny (&lt; 3 feet)</option>
-                      <option value="small">Small (3-4 feet)</option>
-                      <option value="medium">Medium (4-7 feet)</option>
-                      <option value="large">Large (7-10 feet)</option>
-                      <option value="huge">Huge (10+ feet)</option>
-                    </select>
+                    <Select
+                      label="Size Category"
+                      placeholder="Select size..."
+                      options={[
+                        { value: "tiny", label: "Tiny (< 3 feet)" },
+                        { value: "small", label: "Small (3-4 feet)" },
+                        { value: "medium", label: "Medium (4-7 feet)" },
+                        { value: "large", label: "Large (7-10 feet)" },
+                        { value: "huge", label: "Huge (10+ feet)" }
+                      ]}
+                      value=""
+                      onChange={() => {}}
+                    />
                   </div>
                 </div>
               </div>
@@ -296,32 +302,36 @@ export default function EditRace() {
                 <h3 className="text-lg font-semibold text-brand-900 mb-4">Abilities & Powers</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-brand-900 mb-2">
-                      Magical Affinity
-                    </label>
-                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
-                      <option value="">Select magical ability...</option>
-                      <option value="none">No Magic</option>
-                      <option value="low">Low Magic Sensitivity</option>
-                      <option value="medium">Moderate Magic User</option>
-                      <option value="high">Highly Magical</option>
-                      <option value="innate">Innate Magic Powers</option>
-                    </select>
+                    <Select
+                      label="Magical Affinity"
+                      placeholder="Select magical ability..."
+                      options={[
+                        { value: "none", label: "No Magic" },
+                        { value: "low", label: "Low Magic Sensitivity" },
+                        { value: "medium", label: "Moderate Magic User" },
+                        { value: "high", label: "Highly Magical" },
+                        { value: "innate", label: "Innate Magic Powers" }
+                      ]}
+                      value=""
+                      onChange={() => {}}
+                    />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-brand-900 mb-2">
-                      Special Traits
-                    </label>
-                    <select className="w-full px-3 py-2 border border-brand-200 rounded-lg text-brand-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
-                      <option value="">Select special traits...</option>
-                      <option value="enhanced-senses">Enhanced Senses</option>
-                      <option value="flight">Natural Flight</option>
-                      <option value="shapeshifting">Shapeshifting</option>
-                      <option value="telepathy">Telepathic</option>
-                      <option value="elemental">Elemental Control</option>
-                      <option value="regeneration">Regeneration</option>
-                      <option value="other">Other Unique Traits</option>
-                    </select>
+                    <Select
+                      label="Special Traits"
+                      placeholder="Select special traits..."
+                      options={[
+                        { value: "enhanced-senses", label: "Enhanced Senses" },
+                        { value: "flight", label: "Natural Flight" },
+                        { value: "shapeshifting", label: "Shapeshifting" },
+                        { value: "telepathy", label: "Telepathic" },
+                        { value: "elemental", label: "Elemental Control" },
+                        { value: "regeneration", label: "Regeneration" },
+                        { value: "other", label: "Other Unique Traits" }
+                      ]}
+                      value=""
+                      onChange={() => {}}
+                    />
                   </div>
                 </div>
               </div>
