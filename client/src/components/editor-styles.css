@@ -10,6 +10,26 @@
   padding-bottom: 200px;
 }
 
+/* Fix toolbar positioning to stay with blocks */
+.ce-block {
+  position: relative;
+}
+
+.ce-toolbar {
+  position: absolute;
+  left: -34px;
+  top: 0;
+  z-index: 10;
+}
+
+.ce-toolbar__plus {
+  position: relative;
+}
+
+.ce-toolbar__settings-btn {
+  position: relative;
+}
+
 h1.ce-header {
   font-size: 2.5em;
   font-weight: 700;
