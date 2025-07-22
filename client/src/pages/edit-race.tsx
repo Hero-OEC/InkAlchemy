@@ -255,23 +255,17 @@ export default function EditRace() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Main Content Area */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Description Section */}
-              <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
-                <h2 className="text-xl font-semibold text-brand-900 mb-6">Description</h2>
-                <div className="border border-brand-200 rounded-lg">
-                  <WordProcessor
-                    value={description ? JSON.stringify(description) : undefined}
-                    onChange={(data) => {
-                      try {
-                        setDescription(JSON.parse(data));
-                      } catch {
-                        setDescription(null);
-                      }
-                    }}
-                    placeholder="Describe the race's characteristics, appearance, culture, and abilities..."
-                  />
-                </div>
-              </div>
+              <WordProcessor
+                value={description ? JSON.stringify(description) : undefined}
+                onChange={(data) => {
+                  try {
+                    setDescription(JSON.parse(data));
+                  } catch {
+                    setDescription(null);
+                  }
+                }}
+                placeholder="Describe the race's characteristics, appearance, culture, and abilities..."
+              />
             </div>
 
             {/* Sidebar - Race Properties */}
