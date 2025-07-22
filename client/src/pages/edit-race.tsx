@@ -176,7 +176,7 @@ export default function EditRace() {
                 <UserCheck size={24} className="text-brand-700" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-brand-950">Edit {race.name}</h1>
+                <h1 className="text-3xl font-bold text-brand-950">Edit Race</h1>
               </div>
             </div>
             <div className="flex items-center gap-3">
