@@ -359,7 +359,7 @@ export default function EditRace() {
               <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
                 <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters of This Race</h3>
                 
-                {/* Character Assignment Dropdown */}
+                {/* Character Assignment Dropdown - only show if there are unassigned characters */}
                 {characters.filter(char => !char.raceId || char.raceId !== race?.id).length > 0 && (
                   <div className="mb-4">
                     <Select
