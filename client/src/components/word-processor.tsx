@@ -110,9 +110,11 @@ export function WordProcessor({
 
   return (
     <div className={`w-full ${className}`}>
-      {/* Toolbar */}
-      <div className="sticky top-0 z-10 bg-brand-50 border border-brand-200 rounded-t-lg p-4">
-        <div className="flex flex-wrap items-center gap-2">
+      {/* Container with responsive width */}
+      <div className={`${maxWidth}`}>
+        {/* Toolbar */}
+        <div className="sticky top-0 z-10 bg-white border border-brand-200 rounded-t-lg p-4">
+          <div className="flex flex-wrap items-center gap-2">
           {/* Text Formatting */}
           <div className="flex items-center gap-1">
             <Button
@@ -302,30 +304,28 @@ export function WordProcessor({
             </PopoverContent>
           </Popover>
 
-          {/* Word Count */}
-          <div className="ml-auto text-sm text-brand-600">
-            {wordCount} words
+            {/* Word Count */}
+            <div className="ml-auto text-sm text-brand-600">
+              {wordCount} words
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Hidden file input */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        className="hidden"
-      />
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+        />
 
-      {/* Editor Container */}
-      <div className={`${maxWidth}`}>
         {/* Document Canvas */}
         <div
           ref={editorRef}
           contentEditable
           onInput={handleContentChange}
-          className="min-h-[600px] p-8 bg-white rounded-b-lg border-l border-r border-b border-brand-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent prose prose-brand max-w-none"
+          className="min-h-[600px] p-8 bg-brand-25 rounded-b-lg border-l border-r border-b border-brand-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent prose prose-brand max-w-none"
           style={{
             fontSize: `${settings.fontSize}px`,
             lineHeight: settings.lineHeight,
