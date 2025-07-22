@@ -1,20 +1,4 @@
-/* Editor.js Base Styles - Only what's needed for proper functionality */
-.codex-editor {
-  width: 100%;
-  max-width: 100%;
-}
-
-.codex-editor__redactor {
-  padding-bottom: 300px;
-}
-
-.ce-block {
-  margin: 8px 0;
-}
-
-.ce-block__content {
-  max-width: 100%;
-}
+/* Editor.js Header Styles - Required for proper header display */
 
 .ce-header {
   padding: 0.6em 0 3px;
