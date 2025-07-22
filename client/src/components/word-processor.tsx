@@ -129,99 +129,96 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
     };
   }, []);
 
+  useEffect(() => {
+    // Add global CSS for Editor.js styling
+    const style = document.createElement('style');
+    style.textContent = `
+      .word-processor .codex-editor {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .word-processor .codex-editor__redactor {
+        padding: 0 !important;
+        margin: 0 !important;
+        padding-bottom: 200px !important;
+        max-width: none !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      .word-processor .ce-block__content {
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .word-processor .ce-block {
+        margin: 0.5em 0 !important;
+        padding: 0 !important;
+      }
+      .word-processor .ce-toolbar {
+        margin-left: -35px !important;
+        z-index: 10 !important;
+      }
+      .word-processor .ce-paragraph,
+      .word-processor .ce-header,
+      .word-processor .ce-list,
+      .word-processor .ce-quote,
+      .word-processor .ce-code,
+      .word-processor .ce-delimiter {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: none !important;
+        width: 100% !important;
+      }
+      
+      /* Header styling that works */
+      .word-processor h1, .word-processor h2, .word-processor h3, 
+      .word-processor h4, .word-processor h5, .word-processor h6 {
+        font-size: 2em !important;
+        font-weight: bold !important;
+        line-height: 1.2 !important;
+        margin: 0.5em 0 !important;
+      }
+      
+      /* Quote styling */
+      .word-processor .ce-quote {
+        border-left: 4px solid #ddd !important;
+        padding-left: 1em !important;
+        margin: 1em 0 !important;
+        font-style: italic !important;
+      }
+      
+      /* Code block styling */
+      .word-processor .ce-code {
+        background-color: #f5f5f5 !important;
+        border: 1px solid #ddd !important;
+        border-radius: 4px !important;
+        padding: 1em !important;
+        margin: 1em 0 !important;
+      }
+      
+      @media (max-width: 768px) {
+        .word-processor .ce-toolbar {
+          margin-left: -25px !important;
+        }
+      }
+      @media (max-width: 480px) {
+        .word-processor .ce-toolbar {
+          margin-left: -20px !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   return (
     <div className={`word-processor w-full ${className}`}>
-      <style jsx>{`
-        .word-processor :global(.codex-editor) {
-          width: 100% !important;
-          max-width: 100% !important;
-          margin: 0 !important;
-          padding: 0 !important;
-        }
-        .word-processor :global(.codex-editor__redactor) {
-          padding: 0 !important;
-          margin: 0 !important;
-          padding-bottom: 200px !important;
-          max-width: none !important;
-        }
-        .word-processor :global(.ce-block__content) {
-          max-width: none !important;
-          width: 100% !important;
-          margin: 0 !important;
-          padding: 0 !important;
-        }
-        .word-processor :global(.ce-block__content),
-        .word-processor :global(.ce-block__content *) {
-          max-width: none !important;
-        }
-        .word-processor :global(.ce-block) {
-          margin: 0.5em 0 !important;
-          padding: 0 !important;
-        }
-        .word-processor :global(.ce-toolbar) {
-          margin-left: -35px !important;
-          z-index: 10 !important;
-        }
-        .word-processor :global(.ce-paragraph),
-        .word-processor :global(.ce-header),
-        .word-processor :global(.ce-list),
-        .word-processor :global(.ce-quote),
-        .word-processor :global(.ce-code),
-        .word-processor :global(.ce-delimiter) {
-          margin: 0 !important;
-          padding: 0 !important;
-          max-width: none !important;
-          width: 100% !important;
-        }
-        
-        /* Remove default Editor.js margins that cause the side spacing */
-        .word-processor :global(.codex-editor__redactor) {
-          padding-left: 0 !important;
-          padding-right: 0 !important;
-        }
-        
-        /* Simple header styling that actually works */
-        .word-processor h1, .word-processor h2, .word-processor h3, .word-processor h4, .word-processor h5, .word-processor h6 {
-          font-size: 2em !important;
-          font-weight: bold !important;
-          line-height: 1.2 !important;
-          margin: 0.5em 0 !important;
-        }
-        
-        /* List styling improvements */
-        .word-processor :global(.ce-list) {
-          margin: 0.5em 0 !important;
-        }
-        
-        /* Quote styling improvements */
-        .word-processor :global(.ce-quote) {
-          border-left: 4px solid #ddd !important;
-          padding-left: 1em !important;
-          margin: 1em 0 !important;
-          font-style: italic !important;
-        }
-        
-        /* Code block styling improvements */
-        .word-processor :global(.ce-code) {
-          background-color: #f5f5f5 !important;
-          border: 1px solid #ddd !important;
-          border-radius: 4px !important;
-          padding: 1em !important;
-          margin: 1em 0 !important;
-        }
-        
-        /* Responsive toolbar positioning */
-        @media (max-width: 768px) {
-          .word-processor :global(.ce-toolbar) {
-            margin-left: -25px !important;
-          }
-        }
-        @media (max-width: 480px) {
-          .word-processor :global(.ce-toolbar) {
-            margin-left: -20px !important;
-          }
-        }
-      `}</style>
       <div 
         ref={holderRef}
         className="min-h-[300px] w-full"
