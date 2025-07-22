@@ -9,6 +9,7 @@ import { Input, Select } from "@/components/form-inputs";
 import { WordProcessor } from "@/components/word-processor";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { CharacterCard } from "@/components/character-card";
+import { MiniCard } from "@/components/mini-card";
 import { useNavigation } from "@/contexts/navigation-context";
 import { ArrowLeft, UserCheck, Save, X } from "lucide-react";
 import { insertRaceSchema, type Project, type Race, type Character, type Location } from "@shared/schema";
@@ -393,44 +394,26 @@ export default function EditRace() {
                 {raceCharacters.length > 0 ? (
                   <div className="space-y-3">
                     {raceCharacters.map((character) => (
-                      <div
+                      <MiniCard
                         key={character.id}
-                        className="p-3 bg-white rounded-lg border border-brand-200"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div 
-                            className="flex items-center gap-3 cursor-pointer flex-1"
-                            onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
-                          >
-                            <UserCheck size={16} className="text-brand-600" />
-                            <div className="flex-1">
-                              <p className="font-medium text-brand-900 text-sm">
-                                {[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
-                              </p>
-                              <p className="text-xs text-brand-600 capitalize">{character.type || "supporting"}</p>
-                            </div>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              try {
-                                await apiRequest(`/api/characters/${character.id}`, {
-                                  method: "PATCH",
-                                  body: JSON.stringify({ raceId: null }),
-                                });
-                                queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/characters`] });
-                              } catch (error) {
-                                console.error('Failed to remove character from race:', error);
-                              }
-                            }}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      </div>
+                        icon={UserCheck}
+                        title={[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
+                        badge={character.type || "supporting"}
+                        badgeVariant="type"
+                        variant="dropdown"
+                        onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
+                        onDelete={async () => {
+                          try {
+                            await apiRequest(`/api/characters/${character.id}`, {
+                              method: "PATCH",
+                              body: JSON.stringify({ raceId: null }),
+                            });
+                            queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/characters`] });
+                          } catch (error) {
+                            console.error('Failed to remove character from race:', error);
+                          }
+                        }}
+                      />
                     ))}
                   </div>
                 ) : (

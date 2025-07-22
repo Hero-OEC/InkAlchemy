@@ -368,7 +368,7 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Enhanced homeland selection with proper location foreign key relationships
 - Maintained magical affinity system while removing redundant special traits dropdown
 - Fixed WordProcessor display issues by applying proper container backgrounds
-- Characters section now appears in sidebar with compact card display for better form organization
+- Characters section now appears in sidebar with proper MiniCard components using dropdown variant for remove functionality
 - Applied event-form-style layout with 2/3 main content + 1/3 sidebar grid structure
 - Enhanced form validation and error handling with proper React Hook Form integration
 - Race management now provides clean, focused interface optimized for essential race information
