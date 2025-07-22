@@ -247,13 +247,39 @@ function ComponentsShowcase() {
         <h2 className="text-2xl font-bold text-brand-900 mb-6">Word Processor (Base Editor.js)</h2>
         <div className="bg-white border border-brand-200 rounded-xl p-6">
           <p className="text-brand-700 mb-4 text-sm">
-            Clean Editor.js component with no custom styling - just the base functionality.
+            Clean Editor.js component with no custom styling - just the base functionality. Fully responsive to container width.
           </p>
           <WordProcessor
             data={editorData}
             onChange={setEditorData}
             placeholder="Start writing your story..."
           />
+        </div>
+        
+        {/* Show responsive demo with different container sizes */}
+        <div className="mt-8 space-y-4">
+          <h3 className="text-lg font-semibold text-brand-800">Responsive Demo - Different Container Sizes</h3>
+          
+          {/* Small container */}
+          <div className="bg-brand-50 p-4 rounded-lg">
+            <h4 className="text-sm font-medium text-brand-700 mb-2">Small Container (300px width)</h4>
+            <div className="w-[300px] bg-white border border-brand-200 rounded p-3">
+              <WordProcessor
+                placeholder="Small container test..."
+                className="text-sm"
+              />
+            </div>
+          </div>
+          
+          {/* Medium container */}
+          <div className="bg-brand-50 p-4 rounded-lg">
+            <h4 className="text-sm font-medium text-brand-700 mb-2">Medium Container (500px width)</h4>
+            <div className="w-[500px] bg-white border border-brand-200 rounded p-4">
+              <WordProcessor
+                placeholder="Medium container test..."
+              />
+            </div>
+          </div>
         </div>
       </section>
 

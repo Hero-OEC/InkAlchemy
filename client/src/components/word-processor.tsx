@@ -99,32 +99,52 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
         .word-processor :global(.codex-editor) {
           width: 100% !important;
           max-width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
         .word-processor :global(.codex-editor__redactor) {
+          padding: 0 !important;
+          margin: 0 !important;
           padding-bottom: 200px !important;
         }
         .word-processor :global(.ce-block__content) {
           max-width: 100% !important;
           margin: 0 !important;
-        }
-        .word-processor :global(.ce-toolbar) {
-          margin-left: -30px !important;
+          padding: 0 !important;
         }
         .word-processor :global(.ce-block) {
           margin: 0.5em 0 !important;
+          padding: 0 !important;
         }
+        .word-processor :global(.ce-toolbar) {
+          margin-left: -35px !important;
+          z-index: 10 !important;
+        }
+        .word-processor :global(.ce-paragraph),
+        .word-processor :global(.ce-header),
+        .word-processor :global(.ce-list),
+        .word-processor :global(.ce-quote),
+        .word-processor :global(.ce-code),
+        .word-processor :global(.ce-delimiter) {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        /* Remove default Editor.js margins that cause the side spacing */
+        .word-processor :global(.codex-editor__redactor) {
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+        }
+        
+        /* Responsive toolbar positioning */
         @media (max-width: 768px) {
           .word-processor :global(.ce-toolbar) {
-            margin-left: -20px !important;
-          }
-          .word-processor :global(.ce-block__content) {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
+            margin-left: -25px !important;
           }
         }
         @media (max-width: 480px) {
           .word-processor :global(.ce-toolbar) {
-            margin-left: -15px !important;
+            margin-left: -20px !important;
           }
         }
       `}</style>
