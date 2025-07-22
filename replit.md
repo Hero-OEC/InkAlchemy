@@ -331,3 +331,13 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Image upload currently uses local file system storage, planned migration to Supabase Storage for production
 - Created EditorContentRenderer component for displaying saved Editor.js content on details pages
 - Applied consistent brand styling (brand-950, brand-900) to rendered content with proper typography hierarchy
+
+### January 2025 - Event Form Redesign to Match Details Page Layout
+- Completely redesigned event create and edit forms to mirror the event details page structure
+- Implemented header layout with large title input field and inline badge selectors for stage, type, and date
+- Created main content grid with 2/3 description area and 1/3 sidebar matching details page
+- Added inline date picker with calendar icon matching the details page badge style
+- Moved location and characters to right sidebar with preview cards when selected
+- Applied consistent brand-50 backgrounds and rounded containers throughout
+- Enhanced user experience with real-time preview of selected location and characters
+- Maintained all form validation and submission functionality while improving visual consistency

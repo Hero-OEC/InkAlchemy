@@ -331,138 +331,169 @@ export default function EventForm() {
           </div>
         </div>
 
-        {/* Form */}
+        {/* Event Header Form */}
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {/* Basic Information */}
-          <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-            <h2 className="text-xl font-semibold text-brand-900 mb-6">Event Information</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="md:col-span-2">
-                <Input
-                  label="Event Title"
-                  placeholder="Enter event title..."
-                  {...form.register("title")}
-                  error={form.formState.errors.title?.message}
+          {/* Event Title and Status Row */}
+          <div className="space-y-6">
+            {/* Event Title */}
+            <div>
+              <Input
+                label=""
+                placeholder="Enter event title..."
+                {...form.register("title")}
+                error={form.formState.errors.title?.message}
+                className="text-3xl font-bold text-brand-900 border-none bg-transparent px-0 py-2 placeholder:text-brand-400"
+              />
+            </div>
+
+            {/* Status and Type Badges Row */}
+            <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-brand-700">Writing Stage</label>
+                <Select
+                  options={stageOptions}
+                  value={form.watch("stage") || ""}
+                  onChange={(value) => form.setValue("stage", value as any)}
+                  error={form.formState.errors.stage?.message}
+                  className="min-w-[120px]"
                 />
               </div>
 
-              <Select
-                label="Event Type"
-                options={eventTypeOptions}
-                value={form.watch("type") || ""}
-                onChange={(value) => form.setValue("type", value as any)}
-                error={form.formState.errors.type?.message}
-              />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-brand-700">Event Type</label>
+                <Select
+                  options={eventTypeOptions}
+                  value={form.watch("type") || ""}
+                  onChange={(value) => form.setValue("type", value as any)}
+                  error={form.formState.errors.type?.message}
+                  className="min-w-[120px]"
+                />
+              </div>
 
-              <Select
-                label="Writing Stage"
-                options={stageOptions}
-                value={form.watch("stage") || ""}
-                onChange={(value) => form.setValue("stage", value as any)}
-                error={form.formState.errors.stage?.message}
-              />
-
-              <Select
-                label="Location"
-                options={locationOptions}
-                value={form.watch("locationId")?.toString() || ""}
-                onChange={(value) => form.setValue("locationId", value ? parseInt(value) : undefined)}
-                error={form.formState.errors.locationId?.message}
-              />
-
-              <div className="md:col-span-2">
-                <h3 className="text-sm font-medium text-brand-900 mb-3">Event Date</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <Input
-                    label="Year"
-                    type="number"
-                    min={1}
-                    {...form.register("year", { valueAsNumber: true })}
-                    error={form.formState.errors.year?.message}
-                  />
-                  <Input
-                    label="Month"
-                    type="number"
-                    min={1}
-                    max={12}
-                    {...form.register("month", { valueAsNumber: true })}
-                    error={form.formState.errors.month?.message}
-                  />
-                  <Input
-                    label="Day"
-                    type="number"
-                    min={1}
-                    max={31}
-                    {...form.register("day", { valueAsNumber: true })}
-                    error={form.formState.errors.day?.message}
-                  />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-brand-700">Date</label>
+                <div className="flex gap-2 items-center bg-brand-100 px-3 py-2 rounded-lg border border-brand-200">
+                  <Calendar className="w-4 h-4 text-brand-600" />
+                  <div className="flex gap-1 text-sm">
+                    <Input
+                      type="number"
+                      min={1}
+                      placeholder="Year"
+                      {...form.register("year", { valueAsNumber: true })}
+                      className="w-16 text-center border-none bg-transparent p-0 text-brand-900"
+                    />
+                    <span className="text-brand-600">,</span>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={12}
+                      placeholder="M"
+                      {...form.register("month", { valueAsNumber: true })}
+                      className="w-8 text-center border-none bg-transparent p-0 text-brand-900"
+                    />
+                    <span className="text-brand-600">,</span>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={31}
+                      placeholder="D"
+                      {...form.register("day", { valueAsNumber: true })}
+                      className="w-8 text-center border-none bg-transparent p-0 text-brand-900"
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div className="md:col-span-2">
-                <Textarea
-                  label="Event Description"
-                  placeholder="Describe what happens in this event..."
-                  rows={6}
-                  {...form.register("description")}
-                  error={form.formState.errors.description?.message}
-                />
               </div>
             </div>
           </div>
 
-          {/* Characters Section */}
-          <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-            <h2 className="text-xl font-semibold text-brand-900 mb-6">Characters Involved</h2>
-            
-            {/* Add Character */}
-            {availableCharacters.length > 0 && (
-              <div className="mb-4">
-                <Select
-                  label="Add Character"
-                  placeholder="Select a character to add..."
-                  options={[
-                    { value: "", label: "Select a character..." },
-                    ...availableCharacters.map(char => ({
-                      value: char.id.toString(),
-                      label: char.name,
-                    })),
-                  ]}
-                  value=""
-                  onChange={(value) => {
-                    if (value) {
-                      handleAddCharacter(value);
-                    }
-                  }}
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content Area */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+                <h2 className="text-xl font-semibold text-brand-900 mb-4">Event Description</h2>
+                <Textarea
+                  placeholder="Describe what happens in this event..."
+                  rows={12}
+                  {...form.register("description")}
+                  error={form.formState.errors.description?.message}
+                  className="resize-none"
                 />
               </div>
-            )}
+            </div>
 
-            {/* Selected Characters */}
-            {selectedCharacters.length > 0 ? (
-              <div className="space-y-2">
-                {selectedCharacters.map(character => (
-                  <MiniCard
-                    key={character.id}
-                    icon={Users}
-                    title={character.name}
-                    badge={character.type || "Character"}
-                    badgeVariant="type"
-                    variant="editable"
-                    onDelete={() => handleRemoveCharacter(character.id)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-brand-500">
-                <Users className="w-12 h-12 mx-auto mb-3 text-brand-300" />
-                <p>No characters added to this event yet.</p>
-                {availableCharacters.length === 0 && (
-                  <p className="text-sm mt-1">Create characters first to add them to events.</p>
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Location Section */}
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Location</h3>
+                <Select
+                  placeholder="Select a location..."
+                  options={locationOptions}
+                  value={form.watch("locationId")?.toString() || ""}
+                  onChange={(value) => form.setValue("locationId", value ? parseInt(value) : undefined)}
+                  error={form.formState.errors.locationId?.message}
+                />
+                {form.watch("locationId") && (
+                  <div className="mt-3">
+                    <MiniCard
+                      icon={MapPin}
+                      title={locations.find(l => l.id === form.watch("locationId"))?.name || "Selected Location"}
+                      badge="Location"
+                      badgeVariant="type"
+                    />
+                  </div>
                 )}
               </div>
-            )}
+
+              {/* Characters Section */}
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters Involved</h3>
+                
+                {/* Add Character */}
+                {availableCharacters.length > 0 && (
+                  <div className="mb-4">
+                    <Select
+                      placeholder="Add a character..."
+                      options={[
+                        { value: "", label: "Select a character..." },
+                        ...availableCharacters.map(char => ({
+                          value: char.id.toString(),
+                          label: char.name,
+                        })),
+                      ]}
+                      value=""
+                      onChange={(value) => {
+                        if (value) {
+                          handleAddCharacter(value);
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Selected Characters */}
+                {selectedCharacters.length > 0 ? (
+                  <div className="space-y-3">
+                    {selectedCharacters.map(character => (
+                      <MiniCard
+                        key={character.id}
+                        icon={Users}
+                        title={character.name}
+                        badge={character.type || "Character"}
+                        badgeVariant="type"
+                        variant="editable"
+                        onDelete={() => handleRemoveCharacter(character.id)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-brand-500 italic text-sm">
+                    No characters specified for this event.
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Form Actions */}
