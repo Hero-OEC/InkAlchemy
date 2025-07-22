@@ -7,6 +7,7 @@ import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
 import { UserCheck, Edit, ArrowLeft, Trash2, FileText, Users } from "lucide-react";
+import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import type { Race, Project, Character } from "@shared/schema";
 
 export default function RaceDetails() {
@@ -222,9 +223,11 @@ export default function RaceDetails() {
             <div>
               <h3 className="text-lg font-semibold text-brand-900 mb-3">Description</h3>
               <div className="prose prose-brand max-w-none">
-                <p className="text-brand-700 leading-relaxed">
-                  {race.description || "No description available"}
-                </p>
+                {race.description ? (
+                  <EditorContentRenderer content={race.description} />
+                ) : (
+                  <p className="text-brand-700 leading-relaxed">No description available</p>
+                )}
               </div>
             </div>
           )}
