@@ -1,5 +1,4 @@
-/* Import Editor.js custom styles */
-@import './styles/editor.css';
+
 
 @tailwind base;
 @tailwind components;
