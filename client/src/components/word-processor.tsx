@@ -180,12 +180,24 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           padding-right: 0 !important;
         }
         
-        /* Header styling - targeting the actual DOM structure Editor.js creates */
-        .word-processor :global(.ce-block[data-tool="header"] .ce-block__content) {
-          font-size: 2em !important;
-          font-weight: bold !important;
+        /* Ultra-specific header targeting with maximum CSS specificity */
+        .word-processor.word-processor.word-processor :global(.codex-editor .ce-block[data-tool="header"] .ce-block__content) {
+          font-size: 32px !important;
+          font-weight: 700 !important;
           line-height: 1.2 !important;
           margin: 0.5em 0 !important;
+          color: inherit !important;
+        }
+        
+        .word-processor.word-processor.word-processor :global(.codex-editor .ce-block[data-tool="header"]) {
+          font-size: 32px !important;
+          font-weight: 700 !important;
+        }
+        
+        /* Nuclear option - force all child elements */
+        .word-processor.word-processor.word-processor :global(.codex-editor .ce-block[data-tool="header"] *) {
+          font-size: 32px !important;
+          font-weight: 700 !important;
         }
         
         /* List styling improvements */
