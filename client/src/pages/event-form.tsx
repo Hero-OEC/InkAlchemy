@@ -473,14 +473,118 @@ export default function EventForm() {
             </div>
           </div>
 
-          {/* WordProcessor for Event Description */}
-          <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
-            <h2 className="text-xl font-semibold text-brand-900 mb-6">Event Description</h2>
-            <WordProcessor
-              placeholder="Describe what happens in this event..."
-              value={form.watch("description") || ""}
-              onChange={(value) => form.setValue("description", value)}
-            />
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Main Content Area */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
+                <h2 className="text-xl font-semibold text-brand-900 mb-6">Event Description</h2>
+                <WordProcessor
+                  placeholder="Describe what happens in this event..."
+                  value={form.watch("description") || ""}
+                  onChange={(value) => form.setValue("description", value)}
+                />
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Location Section */}
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Locations</h3>
+                
+                {/* Add Location */}
+                {availableLocations.length > 0 && (
+                  <div className="mb-4">
+                    <Select
+                      placeholder="Add a location..."
+                      options={[
+                        { value: "", label: "Select a location..." },
+                        ...availableLocations.map(location => ({
+                          value: location.id.toString(),
+                          label: location.name,
+                        })),
+                      ]}
+                      value=""
+                      onChange={(value) => {
+                        if (value) {
+                          handleAddLocation(value);
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Selected Locations */}
+                {selectedLocations.length > 0 ? (
+                  <div className="space-y-3">
+                    {selectedLocations.map((location, index) => (
+                      <MiniCard
+                        key={location.id}
+                        icon={MapPin}
+                        title={location.name}
+                        badge={index === 0 ? "Primary Location" : "Additional Location"}
+                        badgeVariant="type"
+                        variant="editable"
+                        onDelete={() => handleRemoveLocation(location.id)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-brand-500 italic text-sm">
+                    No locations specified for this event.
+                  </p>
+                )}
+              </div>
+
+              {/* Characters Section */}
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters Involved</h3>
+                
+                {/* Add Character */}
+                {availableCharacters.length > 0 && (
+                  <div className="mb-4">
+                    <Select
+                      placeholder="Add a character..."
+                      options={[
+                        { value: "", label: "Select a character..." },
+                        ...availableCharacters.map(char => ({
+                          value: char.id.toString(),
+                          label: char.name,
+                        })),
+                      ]}
+                      value=""
+                      onChange={(value) => {
+                        if (value) {
+                          handleAddCharacter(value);
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Selected Characters */}
+                {selectedCharacters.length > 0 ? (
+                  <div className="space-y-3">
+                    {selectedCharacters.map(character => (
+                      <MiniCard
+                        key={character.id}
+                        icon={Users}
+                        title={character.name}
+                        badge={character.type || "Character"}
+                        badgeVariant="type"
+                        variant="editable"
+                        onDelete={() => handleRemoveCharacter(character.id)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-brand-500 italic text-sm">
+                    No characters specified for this event.
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
 
 
