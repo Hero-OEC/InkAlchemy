@@ -106,11 +106,17 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           padding: 0 !important;
           margin: 0 !important;
           padding-bottom: 200px !important;
+          max-width: none !important;
         }
         .word-processor :global(.ce-block__content) {
-          max-width: 100% !important;
+          max-width: none !important;
+          width: 100% !important;
           margin: 0 !important;
           padding: 0 !important;
+        }
+        .word-processor :global(.ce-block__content),
+        .word-processor :global(.ce-block__content *) {
+          max-width: none !important;
         }
         .word-processor :global(.ce-block) {
           margin: 0.5em 0 !important;
@@ -128,6 +134,8 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
         .word-processor :global(.ce-delimiter) {
           margin: 0 !important;
           padding: 0 !important;
+          max-width: none !important;
+          width: 100% !important;
         }
         
         /* Remove default Editor.js margins that cause the side spacing */
