@@ -26,19 +26,20 @@ interface WordProcessorProps {
   initialContent?: string;
   onContentChange?: (content: string) => void;
   className?: string;
+  maxWidth?: string; // Allow parent to control max width
 }
 
 interface DocumentSettings {
   fontSize: number;
   lineHeight: number;
-  maxWidth: 'narrow' | 'standard' | 'wide' | 'full';
   fontFamily: string;
 }
 
 export function WordProcessor({ 
   initialContent = "", 
   onContentChange,
-  className = "" 
+  className = "",
+  maxWidth = "w-full"
 }: WordProcessorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,7 +47,6 @@ export function WordProcessor({
   const [settings, setSettings] = useState<DocumentSettings>({
     fontSize: 16,
     lineHeight: 1.6,
-    maxWidth: 'standard',
     fontFamily: 'Cairo'
   });
 
@@ -106,21 +106,12 @@ export function WordProcessor({
     event.target.value = '';
   };
 
-  // Get width class based on setting
-  const getMaxWidthClass = () => {
-    switch (settings.maxWidth) {
-      case 'narrow': return 'max-w-2xl';
-      case 'standard': return 'max-w-4xl';
-      case 'wide': return 'max-w-6xl';
-      case 'full': return 'max-w-full';
-      default: return 'max-w-4xl';
-    }
-  };
+
 
   return (
     <div className={`w-full ${className}`}>
       {/* Toolbar */}
-      <div className="sticky top-0 z-10 bg-white border-b border-brand-200 p-4 mb-6">
+      <div className="sticky top-0 z-10 bg-brand-50 border border-brand-200 rounded-t-lg p-4">
         <div className="flex flex-wrap items-center gap-2">
           {/* Text Formatting */}
           <div className="flex items-center gap-1">
@@ -292,25 +283,7 @@ export function WordProcessor({
             </PopoverTrigger>
             <PopoverContent className="w-80">
               <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium">Document Width</label>
-                  <Select
-                    value={settings.maxWidth}
-                    onValueChange={(value: 'narrow' | 'standard' | 'wide' | 'full') => 
-                      setSettings(prev => ({ ...prev, maxWidth: value }))
-                    }
-                  >
-                    <SelectTrigger className="mt-2">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="narrow">Narrow (672px)</SelectItem>
-                      <SelectItem value="standard">Standard (896px)</SelectItem>
-                      <SelectItem value="wide">Wide (1152px)</SelectItem>
-                      <SelectItem value="full">Full Width</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
                 
                 <div>
                   <label className="text-sm font-medium">Line Height</label>
@@ -346,23 +319,21 @@ export function WordProcessor({
       />
 
       {/* Editor Container */}
-      <div className="w-full flex justify-center">
-        <div className={`${getMaxWidthClass()} w-full`}>
-          {/* Document Canvas */}
-          <div
-            ref={editorRef}
-            contentEditable
-            onInput={handleContentChange}
-            className="min-h-[600px] p-8 bg-white rounded-lg border border-brand-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent prose prose-brand max-w-none"
-            style={{
-              fontSize: `${settings.fontSize}px`,
-              lineHeight: settings.lineHeight,
-              fontFamily: settings.fontFamily,
-            }}
-            suppressContentEditableWarning={true}
-            placeholder="Start writing your article..."
-          />
-        </div>
+      <div className={`${maxWidth}`}>
+        {/* Document Canvas */}
+        <div
+          ref={editorRef}
+          contentEditable
+          onInput={handleContentChange}
+          className="min-h-[600px] p-8 bg-white rounded-b-lg border-l border-r border-b border-brand-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent prose prose-brand max-w-none"
+          style={{
+            fontSize: `${settings.fontSize}px`,
+            lineHeight: settings.lineHeight,
+            fontFamily: settings.fontFamily,
+          }}
+          suppressContentEditableWarning={true}
+          placeholder="Start writing your article..."
+        />
       </div>
     </div>
   );
@@ -385,6 +356,7 @@ export function WordProcessorDemo() {
       <WordProcessor
         initialContent="<h1>Welcome to the Word Processor</h1><p>Start typing to create your article. Use the toolbar above to format your text, add images, and customize the document layout.</p>"
         onContentChange={setContent}
+        maxWidth="max-w-4xl mx-auto"
       />
       
       {content && (
