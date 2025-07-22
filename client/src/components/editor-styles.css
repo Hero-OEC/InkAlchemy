@@ -6,7 +6,7 @@
 
 .codex-editor__redactor {
   padding-bottom: 300px;
-  padding-right: 50px;
+  padding-left: 50px;
 }
 
 .ce-block {
@@ -19,13 +19,11 @@
 }
 
 .ce-toolbar__plus {
-  left: auto !important;
-  right: -45px !important;
+  left: -45px !important;
 }
 
 .ce-toolbar__settings-btn {
-  left: auto !important;
-  right: -80px !important;
+  left: -80px !important;
 }
 
 .ce-header {
