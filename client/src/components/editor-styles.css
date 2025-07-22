@@ -2,6 +2,7 @@
 .codex-editor {
   width: 100%;
   max-width: 100%;
+  margin-left: 60px;
 }
 
 .codex-editor__redactor {
@@ -10,23 +11,30 @@
 
 .ce-block {
   margin: 8px 0;
+  position: relative;
 }
 
 .ce-block__content {
   max-width: 100%;
+  position: relative;
 }
 
 .ce-toolbar__plus {
-  left: -40px !important;
+  position: absolute !important;
+  left: -50px !important;
+  top: 0 !important;
   opacity: 1 !important;
   visibility: visible !important;
+  z-index: 10 !important;
 }
 
 .ce-toolbar__settings {
-  left: -40px !important;
-  top: 30px !important;
+  position: absolute !important;
+  left: -50px !important;
+  top: 35px !important;
   opacity: 1 !important;
   visibility: visible !important;
+  z-index: 10 !important;
 }
 
 .ce-header {
