@@ -358,22 +358,77 @@ export default function EditRace() {
               <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
                 <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters of This Race</h3>
                 
+                {/* Character Assignment Dropdown */}
+                {characters.filter(char => !char.raceId || char.raceId !== race?.id).length > 0 && (
+                  <div className="mb-4">
+                    <Select
+                      placeholder="Assign a character to this race..."
+                      options={[
+                        { value: "", label: "Select a character..." },
+                        ...characters
+                          .filter(char => !char.raceId || char.raceId !== race?.id)
+                          .map(character => ({
+                            value: character.id.toString(),
+                            label: [character.prefix, character.name, character.suffix].filter(Boolean).join(" "),
+                          }))
+                      ]}
+                      value=""
+                      onChange={async (characterId) => {
+                        if (characterId && race?.id) {
+                          try {
+                            await apiRequest(`/api/characters/${characterId}`, {
+                              method: "PATCH",
+                              body: JSON.stringify({ raceId: race.id }),
+                            });
+                            queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/characters`] });
+                          } catch (error) {
+                            console.error('Failed to assign character to race:', error);
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+                
                 {raceCharacters.length > 0 ? (
                   <div className="space-y-3">
                     {raceCharacters.map((character) => (
                       <div
                         key={character.id}
-                        onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
-                        className="p-3 bg-white rounded-lg border border-brand-200 cursor-pointer hover:border-brand-300 transition-colors"
+                        className="p-3 bg-white rounded-lg border border-brand-200"
                       >
-                        <div className="flex items-center gap-3">
-                          <UserCheck size={16} className="text-brand-600" />
-                          <div className="flex-1">
-                            <p className="font-medium text-brand-900 text-sm">
-                              {[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
-                            </p>
-                            <p className="text-xs text-brand-600 capitalize">{character.type || "supporting"}</p>
+                        <div className="flex items-center justify-between">
+                          <div 
+                            className="flex items-center gap-3 cursor-pointer flex-1"
+                            onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
+                          >
+                            <UserCheck size={16} className="text-brand-600" />
+                            <div className="flex-1">
+                              <p className="font-medium text-brand-900 text-sm">
+                                {[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
+                              </p>
+                              <p className="text-xs text-brand-600 capitalize">{character.type || "supporting"}</p>
+                            </div>
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                await apiRequest(`/api/characters/${character.id}`, {
+                                  method: "PATCH",
+                                  body: JSON.stringify({ raceId: null }),
+                                });
+                                queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/characters`] });
+                              } catch (error) {
+                                console.error('Failed to remove character from race:', error);
+                              }
+                            }}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            Remove
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -381,13 +436,13 @@ export default function EditRace() {
                 ) : (
                   <div className="text-center py-6">
                     <UserCheck size={24} className="mx-auto text-brand-300 mb-2" />
-                    <p className="text-sm text-brand-600 mb-3">No characters of this race yet</p>
+                    <p className="text-sm text-brand-600 mb-3">No characters assigned to this race yet</p>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setLocation(`/projects/${projectId}/characters`)}
                     >
-                      View Characters
+                      View All Characters
                     </Button>
                   </div>
                 )}
