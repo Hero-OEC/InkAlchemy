@@ -205,13 +205,12 @@ export default function EditRace() {
         {/* Main Content */}
         <form id="race-form" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Main Content - Race Name */}
-            <div className="lg:col-span-2">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Race Name Section */}
               <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-brand-900 mb-2">
-                    Race Name
-                  </label>
+                <h2 className="text-xl font-semibold text-brand-900 mb-6">Race Name</h2>
+                <div>
                   <Input
                     {...form.register("name")}
                     placeholder="Enter race name..."
@@ -221,24 +220,23 @@ export default function EditRace() {
                     <p className="text-red-500 text-sm mt-2">{form.formState.errors.name.message}</p>
                   )}
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-brand-900 mb-4">
-                    Description
-                  </label>
-                  <div className="border border-brand-200 rounded-lg">
-                    <WordProcessor
-                      value={description ? JSON.stringify(description) : undefined}
-                      onChange={(data) => {
-                        try {
-                          setDescription(JSON.parse(data));
-                        } catch {
-                          setDescription(null);
-                        }
-                      }}
-                      placeholder="Describe the race's characteristics, appearance, culture, and abilities..."
-                    />
-                  </div>
+              {/* Description Section */}
+              <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
+                <h2 className="text-xl font-semibold text-brand-900 mb-6">Description</h2>
+                <div className="border border-brand-200 rounded-lg">
+                  <WordProcessor
+                    value={description ? JSON.stringify(description) : undefined}
+                    onChange={(data) => {
+                      try {
+                        setDescription(JSON.parse(data));
+                      } catch {
+                        setDescription(null);
+                      }
+                    }}
+                    placeholder="Describe the race's characteristics, appearance, culture, and abilities..."
+                  />
                 </div>
               </div>
             </div>
