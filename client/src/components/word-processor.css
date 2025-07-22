@@ -63,9 +63,17 @@
 }
 
 .word-processor-content .image-container.dragging {
-  transform: rotate(2deg) scale(1.05);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  opacity: 0.3 !important;
   border-color: #3b82f6 !important;
+}
+
+/* Drag placeholder styles */
+.word-processor-content .drag-placeholder {
+  height: 4px;
+  background: #3b82f6;
+  border-radius: 2px;
+  margin: 8px 0;
+  transition: opacity 0.2s ease;
 }
 
 .word-processor-content .image-container img {

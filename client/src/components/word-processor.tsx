@@ -225,38 +225,7 @@ export function WordProcessor({
         controls.appendChild(btn);
       });
       
-      // Size controls
-      const sizeLabel = document.createElement('span');
-      sizeLabel.textContent = '|';
-      sizeLabel.style.cssText = 'color: #d1d5db; margin: 0 4px;';
-      controls.appendChild(sizeLabel);
-      
-      const sizes = [
-        { label: 'S', width: 150 },
-        { label: 'M', width: 250 },
-        { label: 'L', width: 400 }
-      ];
-      
-      sizes.forEach(size => {
-        const btn = document.createElement('button');
-        btn.textContent = size.label;
-        btn.style.cssText = `
-          width: 24px;
-          height: 24px;
-          border: 1px solid #d1d5db;
-          background: white;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 11px;
-          font-weight: 500;
-        `;
-        btn.onclick = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          imageContainer.style.width = size.width + 'px';
-        };
-        controls.appendChild(btn);
-      });
+
       
       // Delete button
       const deleteBtn = document.createElement('button');
@@ -310,11 +279,12 @@ export function WordProcessor({
         }
       });
       
-      // Drag functionality for moving images
+      // Enhanced drag functionality with better visual feedback
       let isDragging = false;
       let dragStartX = 0;
       let dragStartY = 0;
       let dragPlaceholder: HTMLElement | null = null;
+      let dragPreview: HTMLElement | null = null;
       
       imageContainer.addEventListener('mousedown', (e) => {
         if (e.target === resizeHandle || (e.target as HTMLElement).closest('.image-controls')) {
@@ -325,35 +295,97 @@ export function WordProcessor({
         isDragging = true;
         imageContainer.classList.add('dragging');
         imageContainer.style.cursor = 'grabbing';
-        dragStartX = e.clientX;
-        dragStartY = e.clientY;
         
-        // Create placeholder
-        dragPlaceholder = document.createElement('div');
-        dragPlaceholder.style.cssText = `
-          width: ${imageContainer.offsetWidth}px;
-          height: ${imageContainer.offsetHeight}px;
-          background: #f1f5f9;
-          border: 2px dashed #94a3b8;
-          border-radius: 8px;
-          display: inline-block;
-          margin: 8px;
-          opacity: 0.5;
+        const rect = imageContainer.getBoundingClientRect();
+        dragStartX = e.clientX - rect.left;
+        dragStartY = e.clientY - rect.top;
+        
+        // Create drag preview
+        dragPreview = imageContainer.cloneNode(true) as HTMLElement;
+        dragPreview.style.cssText = `
+          position: fixed;
+          pointer-events: none;
+          z-index: 1000;
+          opacity: 0.8;
+          transform: rotate(5deg) scale(0.9);
+          transition: none;
+          left: ${e.clientX - dragStartX}px;
+          top: ${e.clientY - dragStartY}px;
         `;
-        imageContainer.parentNode?.insertBefore(dragPlaceholder, imageContainer);
+        document.body.appendChild(dragPreview);
         
-        // Make image float during drag
-        imageContainer.style.position = 'fixed';
-        imageContainer.style.zIndex = '1000';
-        imageContainer.style.pointerEvents = 'none';
+        // Create insertion placeholder
+        dragPlaceholder = document.createElement('div');
+        dragPlaceholder.className = 'drag-placeholder';
+        dragPlaceholder.style.cssText = `
+          height: 4px;
+          background: #3b82f6;
+          border-radius: 2px;
+          margin: 8px 0;
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        `;
+        
+        // Hide original image during drag
+        imageContainer.style.opacity = '0.3';
         
         const updatePosition = (e: MouseEvent) => {
-          if (!isDragging) return;
+          if (!isDragging || !dragPreview) return;
           
-          const rect = editorRef.current?.getBoundingClientRect();
-          if (rect) {
-            imageContainer.style.left = (e.clientX - dragStartX + imageContainer.offsetLeft) + 'px';
-            imageContainer.style.top = (e.clientY - dragStartY + imageContainer.offsetTop) + 'px';
+          // Update preview position
+          dragPreview.style.left = (e.clientX - dragStartX) + 'px';
+          dragPreview.style.top = (e.clientY - dragStartY) + 'px';
+          
+          // Find insertion point
+          const editorRect = editorRef.current?.getBoundingClientRect();
+          if (!editorRect) return;
+          
+          // Only show placeholder if mouse is over editor area
+          if (e.clientX >= editorRect.left && e.clientX <= editorRect.right &&
+              e.clientY >= editorRect.top && e.clientY <= editorRect.bottom) {
+            
+            const elements = Array.from(editorRef.current?.children || []).filter(el => 
+              el !== imageContainer && el.tagName !== 'INPUT'
+            ) as HTMLElement[];
+            
+            let insertTarget: HTMLElement | null = null;
+            let insertBefore = true;
+            
+            for (const element of elements) {
+              const elementRect = element.getBoundingClientRect();
+              const elementCenter = elementRect.top + elementRect.height / 2;
+              
+              if (e.clientY < elementCenter) {
+                insertTarget = element;
+                insertBefore = true;
+                break;
+              } else {
+                insertTarget = element;
+                insertBefore = false;
+              }
+            }
+            
+            // Remove existing placeholder
+            if (dragPlaceholder && dragPlaceholder.parentNode) {
+              dragPlaceholder.remove();
+            }
+            
+            // Insert placeholder at correct position
+            if (insertTarget && editorRef.current) {
+              if (insertBefore) {
+                editorRef.current.insertBefore(dragPlaceholder, insertTarget);
+              } else {
+                if (insertTarget.nextSibling) {
+                  editorRef.current.insertBefore(dragPlaceholder, insertTarget.nextSibling);
+                } else {
+                  editorRef.current.appendChild(dragPlaceholder);
+                }
+              }
+              dragPlaceholder.style.opacity = '1';
+            }
+          } else {
+            // Hide placeholder when outside editor
+            dragPlaceholder.style.opacity = '0';
           }
         };
         
@@ -363,31 +395,24 @@ export function WordProcessor({
           isDragging = false;
           imageContainer.classList.remove('dragging');
           imageContainer.style.cursor = 'grab';
-          imageContainer.style.position = 'relative';
-          imageContainer.style.zIndex = 'auto';
-          imageContainer.style.pointerEvents = 'auto';
-          imageContainer.style.left = 'auto';
-          imageContainer.style.top = 'auto';
+          imageContainer.style.opacity = '1';
           
-          // Find drop target
-          const elementsBelow = document.elementsFromPoint(e.clientX, e.clientY);
-          const dropTarget = elementsBelow.find(el => 
-            el !== imageContainer && 
-            el !== dragPlaceholder && 
-            (el.tagName === 'P' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'H4' || el.tagName === 'H5' || el === editorRef.current)
-          );
-          
-          if (dropTarget && dropTarget !== editorRef.current) {
-            // Insert before the target element
-            dropTarget.parentNode?.insertBefore(imageContainer, dropTarget);
-          } else if (editorRef.current) {
-            // Append to editor if no specific target
-            editorRef.current.appendChild(imageContainer);
+          // Remove drag preview
+          if (dragPreview) {
+            dragPreview.remove();
+            dragPreview = null;
           }
           
-          // Remove placeholder
-          dragPlaceholder?.remove();
-          dragPlaceholder = null;
+          // Move image to placeholder position if placeholder is visible
+          if (dragPlaceholder && dragPlaceholder.style.opacity === '1' && dragPlaceholder.parentNode) {
+            dragPlaceholder.parentNode.insertBefore(imageContainer, dragPlaceholder);
+          }
+          
+          // Clean up placeholder
+          if (dragPlaceholder) {
+            dragPlaceholder.remove();
+            dragPlaceholder = null;
+          }
           
           document.removeEventListener('mousemove', updatePosition);
           document.removeEventListener('mouseup', stopDrag);
