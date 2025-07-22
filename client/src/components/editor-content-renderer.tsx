@@ -87,7 +87,7 @@ export const EditorContentRenderer: React.FC<EditorContentRendererProps> = ({
             <table className="min-w-full border border-brand-200 rounded-lg">
               <tbody>
                 {block.data.content.map((row: string[], rowIndex: number) => (
-                  <tr key={rowIndex} className={rowIndex === 0 ? "bg-brand-100" : "bg-white"}>
+                  <tr key={rowIndex} className={rowIndex === 0 ? "bg-brand-100" : "bg-brand-50"}>
                     {row.map((cell: string, cellIndex: number) => (
                       <td key={cellIndex} 
                           className={`border border-brand-200 px-4 py-2 text-brand-900 ${

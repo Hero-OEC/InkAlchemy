@@ -359,7 +359,7 @@ function ComponentsShowcase() {
       {/* Editor.js Content Rendering Demo */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-brand-900 mb-6">How Editor.js Content Looks on Details Pages</h2>
-        <div className="bg-white border border-brand-200 rounded-xl p-8">
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
           <div className="mb-4 p-4 bg-brand-50 rounded-lg">
             <h3 className="text-lg font-semibold text-brand-800 mb-2">Preview: Character Details Page Content</h3>
             <p className="text-brand-700 text-sm">
@@ -374,7 +374,7 @@ function ComponentsShowcase() {
       {/* Word Processor Demo */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-brand-900 mb-6">Word Processor Editor (Create/Edit Pages)</h2>
-        <div className="bg-white border border-brand-200 rounded-xl p-6">
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
           <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <h4 className="text-blue-800 font-semibold mb-2">✅ Image Upload Ready!</h4>
             <p className="text-blue-700 text-sm">
@@ -399,7 +399,7 @@ function ComponentsShowcase() {
           {/* Small container */}
           <div className="bg-brand-50 p-4 rounded-lg">
             <h4 className="text-sm font-medium text-brand-700 mb-2">Small Container (300px width)</h4>
-            <div className="w-[300px] bg-white border border-brand-200 rounded p-3">
+            <div className="w-[300px] bg-brand-50 border border-brand-200 rounded p-3">
               <WordProcessor
                 placeholder="Small container test..."
                 className="text-sm"
@@ -410,7 +410,7 @@ function ComponentsShowcase() {
           {/* Medium container */}
           <div className="bg-brand-50 p-4 rounded-lg">
             <h4 className="text-sm font-medium text-brand-700 mb-2">Medium Container (500px width)</h4>
-            <div className="w-[500px] bg-white border border-brand-200 rounded p-4">
+            <div className="w-[500px] bg-brand-50 border border-brand-200 rounded p-4">
               <WordProcessor
                 placeholder="Medium container test..."
               />
