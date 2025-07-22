@@ -92,19 +92,26 @@
 }
 
 .word-processor .ce-toolbar {
-  margin-left: -35px !important;
+  margin-left: -30px !important;
   z-index: 10 !important;
 }
 
-/* HEADER STYLING - This is the key fix */
-.word-processor .ce-block[data-tool="header"] .ce-block__content {
+/* HEADER STYLING - More targeted approach */
+.word-processor .ce-block[data-tool="header"] .ce-block__content div[contenteditable="true"] {
   font-size: 2em !important;
   font-weight: bold !important;
   line-height: 1.2 !important;
   margin: 0.5em 0 !important;
 }
 
-.word-processor .ce-block[data-tool="header"] {
+/* Alternative targeting for different Editor.js versions */
+.word-processor .ce-block[data-tool="header"] [contenteditable="true"] {
+  font-size: 2em !important;
+  font-weight: bold !important;
+}
+
+/* Fallback for any header content */
+.word-processor [data-tool="header"] * {
   font-size: 2em !important;
   font-weight: bold !important;
 }
@@ -129,13 +136,13 @@
 /* Responsive toolbar */
 @media (max-width: 768px) {
   .word-processor .ce-toolbar {
-    margin-left: -25px !important;
+    margin-left: -20px !important;
   }
 }
 
 @media (max-width: 480px) {
   .word-processor .ce-toolbar {
-    margin-left: -20px !important;
+    margin-left: -15px !important;
   }
 }
 
