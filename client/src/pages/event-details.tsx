@@ -6,6 +6,7 @@ import { MiniCard } from "@/components/mini-card";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { useNavigation } from "@/contexts/navigation-context";
+import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, Trash2, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
@@ -247,11 +248,7 @@ export default function EventDetails() {
             <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
               <h2 className="text-xl font-semibold text-brand-900 mb-4">Event Description</h2>
               {event.description ? (
-                <div className="prose prose-brand max-w-none">
-                  <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                    {event.description}
-                  </p>
-                </div>
+                <EditorContentRenderer content={event.description} />
               ) : (
                 <p className="text-brand-500 italic">
                   No description provided for this event.
