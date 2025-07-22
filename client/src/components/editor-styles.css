@@ -6,12 +6,10 @@
 
 .codex-editor__redactor {
   padding-bottom: 300px;
-  padding-left: 50px;
 }
 
 .ce-block {
   margin: 8px 0;
-  position: relative;
 }
 
 .ce-block__content {
@@ -19,11 +17,13 @@
 }
 
 .ce-toolbar__plus {
-  left: -45px !important;
+  left: 0 !important;
+  right: auto !important;
 }
 
 .ce-toolbar__settings-btn {
-  left: -80px !important;
+  left: 30px !important;
+  right: auto !important;
 }
 
 .ce-header {
