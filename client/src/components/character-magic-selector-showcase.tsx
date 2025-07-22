@@ -63,7 +63,6 @@ export function CharacterMagicSelectorShowcase() {
 
   const handleSelectionChange = (spellIds: number[]) => {
     setSelectedSpells(spellIds);
-    console.log("Selected spell IDs:", spellIds);
   };
 
   return (
