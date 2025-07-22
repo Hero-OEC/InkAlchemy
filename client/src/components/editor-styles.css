@@ -17,11 +17,7 @@
 }
 
 .ce-toolbar {
-  position: absolute;
-  left: -34px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
+  margin-left: -34px;
 }
 
 .ce-header {
