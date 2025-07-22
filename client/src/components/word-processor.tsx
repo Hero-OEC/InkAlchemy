@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import "./word-processor.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -38,6 +39,14 @@ interface DocumentSettings {
   fontSize: number;
   lineHeight: number;
   fontFamily: string;
+  headingStyles: {
+    h1: { size: number; weight: string; spacing: number };
+    h2: { size: number; weight: string; spacing: number };
+    h3: { size: number; weight: string; spacing: number };
+    h4: { size: number; weight: string; spacing: number };
+    subtitle: { size: number; weight: string; spacing: number; color: string };
+    paragraph: { size: number; weight: string; spacing: number };
+  };
 }
 
 export function WordProcessor({ 
@@ -52,7 +61,15 @@ export function WordProcessor({
   const [settings, setSettings] = useState<DocumentSettings>({
     fontSize: 16,
     lineHeight: 1.6,
-    fontFamily: 'Cairo'
+    fontFamily: 'Cairo',
+    headingStyles: {
+      h1: { size: 32, weight: 'bold', spacing: 6 },
+      h2: { size: 24, weight: 'semibold', spacing: 5 },
+      h3: { size: 20, weight: 'medium', spacing: 4 },
+      h4: { size: 18, weight: 'medium', spacing: 3 },
+      subtitle: { size: 16, weight: 'normal', spacing: 2, color: '#64748b' },
+      paragraph: { size: 16, weight: 'normal', spacing: 3 }
+    }
   });
 
   // Initialize content
@@ -195,46 +212,6 @@ export function WordProcessor({
 
           <Separator orientation="vertical" className="h-6" />
 
-          {/* Text Formatting Blocks */}
-          <div className="flex items-center gap-1">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => formatBlock('h1')}
-              className="w-8 h-8 p-0"
-              title="Heading 1"
-            >
-              <Heading1 className="w-4 h-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => formatBlock('h2')}
-              className="w-8 h-8 p-0"
-              title="Heading 2"
-            >
-              <Heading2 className="w-4 h-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => formatBlock('h3')}
-              className="w-8 h-8 p-0"
-              title="Heading 3"
-            >
-              <Heading3 className="w-4 h-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => formatBlock('h4')}
-              className="w-8 h-8 p-0"
-              title="Heading 4"
-            >
-              <Heading4 className="w-4 h-4" />
-            </Button>
-          </div>
-
           {/* Text Style Dropdown */}
           <Select
             onValueChange={(value) => {
@@ -362,10 +339,8 @@ export function WordProcessor({
                 <Settings className="w-4 h-4" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80">
+            <PopoverContent className="w-96 max-h-80 overflow-y-auto">
               <div className="space-y-4">
-
-                
                 <div>
                   <label className="text-sm font-medium">Line Height</label>
                   <div className="mt-2">
@@ -378,6 +353,97 @@ export function WordProcessor({
                     />
                     <div className="text-xs text-brand-600 mt-1">{settings.lineHeight}</div>
                   </div>
+                </div>
+
+                {/* Heading Styles Customization */}
+                <div className="border-t pt-4">
+                  <h4 className="text-sm font-medium mb-3">Text Style Settings</h4>
+                  
+                  {Object.entries(settings.headingStyles).map(([key, style]) => (
+                    <div key={key} className="mb-4 p-3 bg-brand-25 rounded border">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium capitalize">
+                          {key === 'subtitle' ? 'Subtitle' : key.toUpperCase()}
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <label className="block mb-1">Size (px)</label>
+                          <Input
+                            type="number"
+                            value={style.size}
+                            onChange={(e) => setSettings(prev => ({
+                              ...prev,
+                              headingStyles: {
+                                ...prev.headingStyles,
+                                [key]: { ...style, size: parseInt(e.target.value) || 16 }
+                              }
+                            }))}
+                            className="h-7"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block mb-1">Weight</label>
+                          <Select
+                            value={style.weight}
+                            onValueChange={(value) => setSettings(prev => ({
+                              ...prev,
+                              headingStyles: {
+                                ...prev.headingStyles,
+                                [key]: { ...style, weight: value }
+                              }
+                            }))}
+                          >
+                            <SelectTrigger className="h-7">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="normal">Normal</SelectItem>
+                              <SelectItem value="medium">Medium</SelectItem>
+                              <SelectItem value="semibold">Semibold</SelectItem>
+                              <SelectItem value="bold">Bold</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <label className="block mb-1">Spacing</label>
+                          <Input
+                            type="number"
+                            value={style.spacing}
+                            onChange={(e) => setSettings(prev => ({
+                              ...prev,
+                              headingStyles: {
+                                ...prev.headingStyles,
+                                [key]: { ...style, spacing: parseInt(e.target.value) || 1 }
+                              }
+                            }))}
+                            className="h-7"
+                          />
+                        </div>
+                        
+                        {key === 'subtitle' && (
+                          <div>
+                            <label className="block mb-1">Color</label>
+                            <Input
+                              type="color"
+                              value={(style as any).color}
+                              onChange={(e) => setSettings(prev => ({
+                                ...prev,
+                                headingStyles: {
+                                  ...prev.headingStyles,
+                                  [key]: { ...style, color: e.target.value }
+                                }
+                              }))}
+                              className="h-7 w-full"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </PopoverContent>
@@ -404,12 +470,32 @@ export function WordProcessor({
           ref={editorRef}
           contentEditable
           onInput={handleContentChange}
-          className="min-h-[600px] p-8 bg-white rounded-b-lg border-l border-r border-b border-brand-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent prose prose-brand max-w-none [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:mb-3 [&_h2]:mt-5 [&_h3]:text-xl [&_h3]:font-medium [&_h3]:mb-2 [&_h3]:mt-4 [&_h4]:text-lg [&_h4]:font-medium [&_h4]:mb-2 [&_h4]:mt-3 [&_h5]:text-base [&_h5]:font-normal [&_h5]:text-brand-600 [&_h5]:mb-2 [&_h5]:mt-2 [&_p]:mb-3 [&_p]:leading-relaxed"
+          className="word-processor-content min-h-[600px] p-8 bg-white rounded-b-lg border-l border-r border-b border-brand-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent prose prose-brand max-w-none"
           style={{
             fontSize: `${settings.fontSize}px`,
             lineHeight: settings.lineHeight,
             fontFamily: settings.fontFamily,
-          }}
+            // Apply custom heading styles
+            '--h1-size': `${settings.headingStyles.h1.size}px`,
+            '--h1-weight': settings.headingStyles.h1.weight,
+            '--h1-spacing': `${settings.headingStyles.h1.spacing * 4}px`,
+            '--h2-size': `${settings.headingStyles.h2.size}px`,
+            '--h2-weight': settings.headingStyles.h2.weight,
+            '--h2-spacing': `${settings.headingStyles.h2.spacing * 4}px`,
+            '--h3-size': `${settings.headingStyles.h3.size}px`,
+            '--h3-weight': settings.headingStyles.h3.weight,
+            '--h3-spacing': `${settings.headingStyles.h3.spacing * 4}px`,
+            '--h4-size': `${settings.headingStyles.h4.size}px`,
+            '--h4-weight': settings.headingStyles.h4.weight,
+            '--h4-spacing': `${settings.headingStyles.h4.spacing * 4}px`,
+            '--subtitle-size': `${settings.headingStyles.subtitle.size}px`,
+            '--subtitle-weight': settings.headingStyles.subtitle.weight,
+            '--subtitle-spacing': `${settings.headingStyles.subtitle.spacing * 4}px`,
+            '--subtitle-color': settings.headingStyles.subtitle.color,
+            '--p-size': `${settings.headingStyles.paragraph.size}px`,
+            '--p-weight': settings.headingStyles.paragraph.weight,
+            '--p-spacing': `${settings.headingStyles.paragraph.spacing * 4}px`,
+          } as React.CSSProperties}
           suppressContentEditableWarning={true}
           placeholder="Start writing your article..."
         />

@@ -1,0 +1,43 @@
+/* Custom styles for word processor headings */
+.word-processor-content h1 {
+  font-size: var(--h1-size) !important;
+  font-weight: var(--h1-weight) !important;
+  margin-bottom: var(--h1-spacing) !important;
+  margin-top: var(--h1-spacing) !important;
+}
+
+.word-processor-content h2 {
+  font-size: var(--h2-size) !important;
+  font-weight: var(--h2-weight) !important;
+  margin-bottom: var(--h2-spacing) !important;
+  margin-top: var(--h2-spacing) !important;
+}
+
+.word-processor-content h3 {
+  font-size: var(--h3-size) !important;
+  font-weight: var(--h3-weight) !important;
+  margin-bottom: var(--h3-spacing) !important;
+  margin-top: var(--h3-spacing) !important;
+}
+
+.word-processor-content h4 {
+  font-size: var(--h4-size) !important;
+  font-weight: var(--h4-weight) !important;
+  margin-bottom: var(--h4-spacing) !important;
+  margin-top: var(--h4-spacing) !important;
+}
+
+.word-processor-content h5 {
+  font-size: var(--subtitle-size) !important;
+  font-weight: var(--subtitle-weight) !important;
+  margin-bottom: var(--subtitle-spacing) !important;
+  margin-top: var(--subtitle-spacing) !important;
+  color: var(--subtitle-color) !important;
+}
+
+.word-processor-content p {
+  font-size: var(--p-size) !important;
+  font-weight: var(--p-weight) !important;
+  margin-bottom: var(--p-spacing) !important;
+  line-height: 1.6 !important;
+}
