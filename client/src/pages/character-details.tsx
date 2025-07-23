@@ -171,7 +171,7 @@ export default function CharacterDetails() {
   };
 
   const tabs = [
-    { id: "details", label: "Details", icon: FileText },
+    { id: "details", label: "Details", icon: User },
     { id: "magic", label: "Magic & Abilities", icon: Zap },
     { id: "timeline", label: "Timeline", icon: Clock }
   ];
