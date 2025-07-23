@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertMagicSystemSchema, type MagicSystem } from "@shared/schema";
-import { BookOpen, Scroll, Shield } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { z } from "zod";
 
 const formSchema = insertMagicSystemSchema.extend({
@@ -35,10 +35,8 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
       name: magicSystem?.name || "",
       type: magicSystem?.type || "magic",
       description: magicSystem?.description || "",
-      rules: magicSystem?.rules || "",
-      limitations: magicSystem?.limitations || "",
       source: magicSystem?.source || "",
-      complexity: magicSystem?.complexity || "medium",
+      complexity: (magicSystem?.complexity as "low" | "medium" | "high") || "medium",
     },
   });
 
@@ -109,8 +107,6 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
   
   const tabs = [
     { id: "details", label: "Details", icon: BookOpen },
-    { id: "rules", label: "Rules", icon: Scroll },
-    { id: "limitations", label: "Limitations", icon: Shield },
   ];
 
   const renderTabContent = () => {
@@ -195,7 +191,8 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
                     <Textarea 
                       placeholder="Overview of how this system works"
                       className="min-h-[100px]"
-                      {...field} 
+                      {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -213,7 +210,8 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
                     <Textarea 
                       placeholder="Where does this power come from? (e.g., elemental forces, divine blessing, life energy)"
                       className="min-h-[80px]"
-                      {...field} 
+                      {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -225,51 +223,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
           </div>
         );
 
-      case "rules":
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="rules"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>System Rules</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="How does the system work? Gestures, incantations, focus requirements, activation methods, etc."
-                      className="min-h-[200px]"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
 
-      case "limitations":
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="limitations"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Limitations & Drawbacks</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="What are the restrictions? Physical costs, mental strain, cooldowns, materials needed, etc."
-                      className="min-h-[200px]"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
 
 
 
