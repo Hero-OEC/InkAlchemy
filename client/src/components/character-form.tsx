@@ -236,7 +236,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                             <FormItem>
                               <FormLabel>Prefix</FormLabel>
                               <FormControl>
-                                <Input placeholder="Sir, Lady, Dr." {...field} />
+                                <Input placeholder="Sir, Lady, Dr." value={field.value || ""} onChange={field.onChange} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -250,7 +250,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                             <FormItem>
                               <FormLabel>Suffix</FormLabel>
                               <FormControl>
-                                <Input placeholder="Jr., III, PhD" {...field} />
+                                <Input placeholder="Jr., III, PhD" value={field.value || ""} onChange={field.onChange} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -272,7 +272,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                         <FormItem>
                           <FormControl>
                             <WordProcessor
-                              content={field.value || ""}
+                              value={field.value || ""}
                               onChange={field.onChange}
                               placeholder="Write a detailed description of your character..."
                             />
@@ -297,7 +297,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                               <Textarea 
                                 placeholder="Character's personality traits, quirks, and behavioral patterns"
                                 className="min-h-[100px]"
-                                {...field} 
+                                value={field.value || ""}
+                                onChange={field.onChange}
                               />
                             </FormControl>
                             <FormMessage />
@@ -315,7 +316,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                               <Textarea 
                                 placeholder="Character's history, upbringing, and past experiences"
                                 className="min-h-[100px]"
-                                {...field} 
+                                value={field.value || ""}
+                                onChange={field.onChange}
                               />
                             </FormControl>
                             <FormMessage />
@@ -333,7 +335,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                               <Textarea 
                                 placeholder="What drives this character? What are their objectives?"
                                 className="min-h-[100px]"
-                                {...field} 
+                                value={field.value || ""}
+                                onChange={field.onChange}
                               />
                             </FormControl>
                             <FormMessage />
@@ -343,28 +346,32 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                     </div>
                   </div>
 
-                  {/* Physical & Role Details */}
+                  {/* Physical Appearance */}
                   <div>
-                    <h3 className="text-lg font-semibold text-brand-950 mb-4">Physical & Role Details</h3>
-                    <div className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="appearance"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Physical Appearance</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="Height, build, hair, eyes, distinguishing features"
-                                className="min-h-[100px]"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    <h3 className="text-lg font-semibold text-brand-950 mb-4">Physical Appearance</h3>
+                    <FormField
+                      control={form.control}
+                      name="appearance"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Height, build, hair, eyes, distinguishing features"
+                              className="min-h-[100px]"
+                              value={field.value || ""}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
+                  {/* Role Details */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-brand-950 mb-4">Role Details</h3>
+                    <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
@@ -373,7 +380,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                             <FormItem>
                               <FormLabel>Role in Story</FormLabel>
                               <FormControl>
-                                <Input placeholder="Protagonist, Mentor, etc." {...field} />
+                                <Input placeholder="Protagonist, Mentor, etc." value={field.value || ""} onChange={field.onChange} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -387,7 +394,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                             <FormItem>
                               <FormLabel>Power Type</FormLabel>
                               <FormControl>
-                                <Input placeholder="Magic, Tech, Physical, etc." {...field} />
+                                <Input placeholder="Magic, Tech, Physical, etc." value={field.value || ""} onChange={field.onChange} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -411,7 +418,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                               <Textarea 
                                 placeholder="Swords, bows, staffs, or other combat tools"
                                 className="min-h-[100px]"
-                                {...field} 
+                                value={field.value || ""}
+                                onChange={field.onChange}
                               />
                             </FormControl>
                             <FormMessage />
@@ -429,7 +437,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                               <Textarea 
                                 placeholder="Armor, tools, magical items, and other equipment"
                                 className="min-h-[100px]"
-                                {...field} 
+                                value={field.value || ""}
+                                onChange={field.onChange}
                               />
                             </FormControl>
                             <FormMessage />
@@ -487,7 +496,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
               
               {/* Character Image */}
               <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-6">
-                {form.watch("imageUrl") ? (
+                {(form.watch("imageUrl") || "") ? (
                   <img 
                     src={form.watch("imageUrl")} 
                     alt="Character preview"
@@ -515,7 +524,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                         <Input 
                           type="url"
                           placeholder="https://example.com/image.jpg"
-                          {...field} 
+                          value={field.value || ""}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />
@@ -531,7 +541,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       <FormItem>
                         <FormLabel>Age</FormLabel>
                         <FormControl>
-                          <Input placeholder="25" {...field} />
+                          <Input placeholder="25" value={field.value || ""} onChange={field.onChange} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
