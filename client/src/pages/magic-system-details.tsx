@@ -40,6 +40,12 @@ export default function MagicSystemDetails() {
   const queryClient = useQueryClient();
   const { goBack, navigateWithReferrer } = useNavigation();
 
+  // If systemId is "new", this component shouldn't render - redirect to create page
+  if (systemId === "new") {
+    setLocation(`/projects/${projectId}/magic-systems/new`);
+    return null;
+  }
+
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
