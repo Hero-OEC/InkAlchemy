@@ -23,9 +23,10 @@ interface CharacterFormProps {
   character?: Character | null;
   projectId: number;
   onSuccess: () => void;
+  isEdit?: boolean;
 }
 
-export function CharacterForm({ character, projectId, onSuccess }: CharacterFormProps) {
+export function CharacterForm({ character, projectId, onSuccess, isEdit = false }: CharacterFormProps) {
   const { toast } = useToast();
   const [selectedSpells, setSelectedSpells] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
