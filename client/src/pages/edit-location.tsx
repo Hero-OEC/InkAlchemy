@@ -102,8 +102,6 @@ export default function EditLocation() {
     );
   }
 
-  const Icon = getCurrentIcon();
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar 
@@ -130,7 +128,10 @@ export default function EditLocation() {
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <div className="bg-brand-500 p-3 rounded-xl">
-            <Icon size={24} className="text-white" />
+            {(() => {
+              const Icon = getCurrentIcon();
+              return <Icon size={24} className="text-white" />;
+            })()}
           </div>
           <div>
             <h1 className="text-3xl font-bold text-brand-950">Edit {location.name}</h1>

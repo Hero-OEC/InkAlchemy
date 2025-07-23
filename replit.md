@@ -399,6 +399,16 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - All race-related UI components now use Users icon for visual consistency
 - Migration completed with full functionality preserved and UI improvements applied
 
+### January 2025 - Location Form Redesign and Icon Fix
+- Restructured location create and edit forms to match character form layout with separate containers
+- Created "Basic Information" container for name and location type fields with brand-50 background
+- Created dedicated "Content" container for WordProcessor rich text editing
+- Removed outer form containers from create/edit pages since forms now have their own styling
+- Fixed dynamic icon updating when location type changes using reactive icon rendering pattern
+- Applied consistent container styling with rounded borders and proper spacing throughout location forms
+- Enhanced form labels to match character form style ("Location Name *", "Location Type")
+- Location forms now provide clean, organized interface consistent with character management pages
+
 ### January 2025 - Location System Simplification
 - Simplified location database schema by removing geography and politics fields, keeping only essential information
 - Updated location details page to use just two tabs: "Details" and "Timeline" instead of complex multi-tab structure
