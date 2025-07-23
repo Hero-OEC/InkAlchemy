@@ -11,7 +11,7 @@ import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { CharacterCard } from "@/components/character-card";
 import { MiniCard } from "@/components/mini-card";
 import { useNavigation } from "@/contexts/navigation-context";
-import { ArrowLeft, UserCheck, Save, X } from "lucide-react";
+import { ArrowLeft, Users, Save, X } from "lucide-react";
 import { insertRaceSchema, type Project, type Race, type Character, type Location } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { z } from "zod";
@@ -206,8 +206,8 @@ export default function EditRace() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-brand-200">
-                <UserCheck size={24} className="text-brand-700" />
+              <div className="p-3 rounded-xl bg-brand-500">
+                <Users size={24} className="text-white" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-brand-950">Edit Race</h1>
@@ -396,7 +396,7 @@ export default function EditRace() {
                     {raceCharacters.map((character) => (
                       <MiniCard
                         key={character.id}
-                        icon={UserCheck}
+                        icon={Users}
                         title={[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
                         badge={character.type || "supporting"}
                         badgeVariant="type"
@@ -418,7 +418,7 @@ export default function EditRace() {
                   </div>
                 ) : (
                   <div className="text-center py-6">
-                    <UserCheck size={24} className="mx-auto text-brand-300 mb-2" />
+                    <Users size={24} className="mx-auto text-brand-300 mb-2" />
                     <p className="text-sm text-brand-600 mb-3">No characters assigned to this race yet</p>
                     <Button
                       variant="outline"

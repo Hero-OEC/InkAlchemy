@@ -9,7 +9,7 @@ import { Input, Select } from "@/components/form-inputs";
 import { WordProcessor } from "@/components/word-processor";
 import { CharacterCard } from "@/components/character-card";
 import { useNavigation } from "@/contexts/navigation-context";
-import { ArrowLeft, UserCheck, Save, X } from "lucide-react";
+import { ArrowLeft, Users, Save, X } from "lucide-react";
 import { insertRaceSchema, type Project, type Character, type Location } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { z } from "zod";
@@ -130,8 +130,8 @@ export default function CreateRace() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-brand-200">
-                <UserCheck size={24} className="text-brand-700" />
+              <div className="p-3 rounded-xl bg-brand-500">
+                <Users size={24} className="text-white" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-brand-950">Create New Race</h1>
