@@ -7,6 +7,7 @@ import { Button } from "@/components/button-variations";
 import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
+import { MiniCard } from "@/components/mini-card";
 import { ArrowLeft, Edit, Trash2, Sparkles, Zap, DollarSign, Users, BookOpen, Wand2, Plus, Scroll, Shield } from "lucide-react";
 import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -158,15 +159,13 @@ export default function MagicSystemDetails() {
         { id: "details", label: "Details", icon: BookOpen },
         { id: "rules", label: "Rules", icon: Scroll },
         { id: "limitations", label: "Limitations", icon: Shield },
-        { id: "abilities", label: "Abilities", icon: Zap },
-        { id: "characters", label: "Characters", icon: Users }
+        { id: "abilities", label: "Abilities", icon: Zap }
       ]
     : [
         { id: "details", label: "Details", icon: BookOpen },
         { id: "rules", label: "Rules", icon: Scroll },
         { id: "limitations", label: "Limitations", icon: Shield },
-        { id: "spells", label: "Spells", icon: Wand2 },
-        { id: "characters", label: "Characters", icon: Users }
+        { id: "spells", label: "Spells", icon: Wand2 }
       ];
 
   // Filter characters that might use this system (placeholder logic)
@@ -197,27 +196,7 @@ export default function MagicSystemDetails() {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-3">Source</h3>
-                <div className="bg-brand-50 border border-brand-200 rounded-xl p-4">
-                  <p className="text-brand-700 capitalize">{system.source || "Unknown"}</p>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-3">Complexity</h3>
-                <div className="bg-brand-50 border border-brand-200 rounded-xl p-4">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${
-                    system.complexity === "low" ? "bg-green-100 text-green-800" :
-                    system.complexity === "medium" ? "bg-yellow-100 text-yellow-800" :
-                    "bg-red-100 text-red-800"
-                  }`}>
-                    {system.complexity || "Medium"}
-                  </span>
-                </div>
-              </div>
-            </div>
+
 
 
           </div>
@@ -321,42 +300,7 @@ export default function MagicSystemDetails() {
           </div>
         );
 
-      case "characters":
-        return (
-          <div>
-            <h3 className="text-lg font-semibold text-brand-900 mb-6">Characters Using This System</h3>
-            
-            {systemUsers.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="bg-brand-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users size={24} className="text-brand-500" />
-                </div>
-                <h4 className="text-xl font-semibold text-brand-900 mb-2">No Characters Assigned</h4>
-                <p className="text-brand-600">
-                  No characters are currently using this {system.type} system.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {systemUsers.map((character) => (
-                  <CharacterCard
-                    key={character.id}
-                    id={character.id}
-                    name={character.name}
-                    prefix={character.prefix || undefined}
-                    suffix={character.suffix || undefined}
-                    type={character.role as "protagonist" | "antagonist" | "supporting" | "ally" | "neutral" | "love-interest" | "villain" || "supporting"}
-                    description={character.description || ""}
-                    imageUrl={character.imageUrl || undefined}
-                    createdAt={character.createdAt}
-                    lastEditedAt={character.updatedAt}
-                    onClick={() => handleCharacterClick(character.id)}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        );
+
 
       default:
         return null;
@@ -443,8 +387,65 @@ export default function MagicSystemDetails() {
           </nav>
         </div>
 
-        {/* Tab Content */}
-        <div>{renderTabContent()}</div>
+        {/* Content Grid - 2/3 main content + 1/3 sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Main Content - Tabs */}
+          <div className="lg:col-span-2">
+            <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
+              {renderTabContent()}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-8">
+            {/* Source */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Source</h3>
+              <p className="text-brand-700 capitalize">{system.source || "Unknown"}</p>
+            </div>
+
+            {/* Complexity */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Complexity</h3>
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${
+                system.complexity === "low" ? "bg-green-100 text-green-800" :
+                system.complexity === "medium" ? "bg-yellow-100 text-yellow-800" :
+                "bg-red-100 text-red-800"
+              }`}>
+                {system.complexity || "Medium"}
+              </span>
+            </div>
+
+            {/* Characters Using This System */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters Using This System</h3>
+              {systemUsers.length > 0 ? (
+                <div className="space-y-3">
+                  {systemUsers.slice(0, 3).map((character) => (
+                    <MiniCard
+                      key={character.id}
+                      icon={Users}
+                      title={character.name}
+                      badge={character.role || "character"}
+                      badgeVariant="type"
+                      onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
+                    />
+                  ))}
+                  {systemUsers.length > 3 && (
+                    <p className="text-sm text-brand-600 text-center pt-2">
+                      +{systemUsers.length - 3} more characters
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-4">
+                  <Users size={20} className="mx-auto text-brand-300 mb-2" />
+                  <p className="text-sm text-brand-600">No characters using this system</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Metadata */}
         {system.createdAt && (
