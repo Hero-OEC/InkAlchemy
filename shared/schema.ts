@@ -42,8 +42,7 @@ export const locations = pgTable("locations", {
   projectId: integer("project_id").references(() => projects.id).notNull(),
   name: text("name").notNull(),
   type: text("type"), // city, forest, building, etc.
-  description: text("description"),
-  culture: text("culture"), // keeping culture as it represents significance/importance
+  content: text("content"), // rich text content using WordProcessor
   parentLocationId: integer("parent_location_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

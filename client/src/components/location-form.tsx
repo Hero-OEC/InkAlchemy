@@ -3,9 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { WordProcessor } from "@/components/word-processor";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertLocationSchema, type Location } from "@shared/schema";
@@ -31,8 +31,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
       projectId,
       name: location?.name || "",
       type: location?.type || "",
-      description: location?.description || "",
-      culture: location?.culture || "",
+      content: location?.content || "",
     },
   });
 
@@ -41,10 +40,10 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
       apiRequest("POST", "/api/locations", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/projects", projectId, "locations"] 
+        queryKey: [`/api/projects/${projectId}/locations`] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/projects", projectId, "stats"] 
+        queryKey: [`/api/projects/${projectId}/stats`] 
       });
       toast({
         title: "Success",
@@ -66,7 +65,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
       apiRequest("PATCH", `/api/locations/${location?.id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/projects", projectId, "locations"] 
+        queryKey: [`/api/projects/${projectId}/locations`] 
       });
       queryClient.invalidateQueries({ 
         queryKey: [`/api/locations/${location?.id}`] 
@@ -158,33 +157,16 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
 
           <FormField
             control={form.control}
-            name="description"
+            name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Content</FormLabel>
                 <FormControl>
-                  <Textarea 
-                    placeholder="General overview of the location"
-                    className="min-h-[150px]"
-                    {...field} 
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="culture"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Culture & Significance</FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder="Inhabitants, customs, traditions, beliefs, language, cultural significance"
-                    className="min-h-[120px]"
-                    {...field} 
+                  <WordProcessor
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    placeholder="Describe this location - its appearance, culture, history, significance, and any important details..."
+                    className="min-h-[400px]"
                   />
                 </FormControl>
                 <FormMessage />

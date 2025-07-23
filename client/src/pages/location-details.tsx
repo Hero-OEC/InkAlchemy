@@ -7,6 +7,7 @@ import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { ArrowLeft, Edit, Trash2, Calendar, MapPin, Users, Landmark, Crown } from "lucide-react";
 import type { Project, Location, Character, Event, Relationship } from "@shared/schema";
 import { Building2, Trees, Castle, Mountain, Home, Globe } from "lucide-react";
@@ -286,24 +287,28 @@ export default function LocationDetails() {
             {activeTab === "details" && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-brand-900 mb-3">Description</h3>
-                  <div className="prose prose-brand max-w-none">
-                    <p className="text-brand-700 leading-relaxed">
-                      {location.description || "No description available"}
-                    </p>
-                  </div>
-                </div>
-                
-                {location.culture && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-brand-900 mb-3">Culture & Significance</h3>
+                  <h3 className="text-lg font-semibold text-brand-900 mb-3">Content</h3>
+                  {location.content ? (
                     <div className="prose prose-brand max-w-none">
-                      <p className="text-brand-700 leading-relaxed">
-                        {location.culture}
-                      </p>
+                      {(() => {
+                        try {
+                          // Try to parse as JSON first (new format from WordProcessor)
+                          const parsedData = JSON.parse(location.content);
+                          return <EditorContentRenderer data={parsedData} />;
+                        } catch {
+                          // Fallback to plain text display (old format)
+                          return (
+                            <div className="prose prose-brand max-w-none">
+                              <p className="text-brand-700 leading-relaxed">{location.content}</p>
+                            </div>
+                          );
+                        }
+                      })()}
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <p className="text-brand-700 leading-relaxed">No content available</p>
+                  )}
+                </div>
               </div>
             )}
 
