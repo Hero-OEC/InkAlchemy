@@ -25,24 +25,15 @@ interface CharacterFormProps {
   onSuccess: () => void;
 }
 
-// Helper function to convert null values to empty strings
+// Helper function to convert null values to empty strings for form fields
 const normalizeCharacterData = (character: Character | null) => ({
   name: character?.name || "",
   description: character?.description || "",
   prefix: character?.prefix || "",
   suffix: character?.suffix || "",
-  role: character?.role || "",
-  appearance: character?.appearance || "",
-  personality: character?.personality || "",
-  background: character?.background || "",
-  goals: character?.goals || "",
-  powerType: character?.powerType || "",
   age: character?.age || "",
   raceId: character?.raceId || undefined,
-  weapons: character?.weapons || "",
-  equipment: character?.equipment || "",
   imageUrl: character?.imageUrl || "",
-  status: character?.status || "active",
 });
 
 export function CharacterForm({ character, projectId, onSuccess }: CharacterFormProps) {
