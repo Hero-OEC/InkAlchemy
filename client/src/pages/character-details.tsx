@@ -262,7 +262,7 @@ export default function CharacterDetails() {
                     </div>
                   )}
 
-                  {character.personality && (
+                  {character.personality && character.personality.trim() !== "" && (
                     <div>
                       <h3 className="text-lg font-semibold text-brand-900 mb-3">Personality</h3>
                       <div className="prose prose-brand max-w-none">
@@ -271,7 +271,7 @@ export default function CharacterDetails() {
                     </div>
                   )}
 
-                  {character.background && (
+                  {character.background && character.background.trim() !== "" && (
                     <div>
                       <h3 className="text-lg font-semibold text-brand-900 mb-3">Background</h3>
                       <div className="prose prose-brand max-w-none">
@@ -280,7 +280,7 @@ export default function CharacterDetails() {
                     </div>
                   )}
 
-                  {character.goals && (
+                  {character.goals && character.goals.trim() !== "" && (
                     <div>
                       <h3 className="text-lg font-semibold text-brand-900 mb-3">Goals & Motivations</h3>
                       <div className="prose prose-brand max-w-none">
@@ -289,7 +289,7 @@ export default function CharacterDetails() {
                     </div>
                   )}
 
-                  {character.appearance && (
+                  {character.appearance && character.appearance.trim() !== "" && (
                     <div>
                       <h3 className="text-lg font-semibold text-brand-900 mb-3">Appearance</h3>
                       <div className="prose prose-brand max-w-none">
@@ -298,15 +298,15 @@ export default function CharacterDetails() {
                     </div>
                   )}
 
-                  {(character.role || character.powerType) && (
+                  {((character.role && character.role.trim() !== "") || (character.powerType && character.powerType.trim() !== "")) && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {character.role && (
+                      {character.role && character.role.trim() !== "" && (
                         <div className="bg-brand-100 rounded-lg p-4">
                           <h4 className="text-md font-semibold text-brand-900 mb-2">Role</h4>
                           <p className="text-brand-700">{character.role}</p>
                         </div>
                       )}
-                      {character.powerType && (
+                      {character.powerType && character.powerType.trim() !== "" && (
                         <div className="bg-brand-100 rounded-lg p-4">
                           <h4 className="text-md font-semibold text-brand-900 mb-2">Power Type</h4>
                           <p className="text-brand-700">{character.powerType}</p>
@@ -315,17 +315,17 @@ export default function CharacterDetails() {
                     </div>
                   )}
 
-                  {(character.weapons || character.equipment) && (
+                  {((character.weapons && character.weapons.trim() !== "") || (character.equipment && character.equipment.trim() !== "")) && (
                     <div>
                       <h3 className="text-lg font-semibold text-brand-900 mb-3">Equipment & Weapons</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {character.weapons && (
+                        {character.weapons && character.weapons.trim() !== "" && (
                           <div className="bg-brand-100 rounded-lg p-4">
                             <h4 className="text-md font-semibold text-brand-900 mb-2">Weapons</h4>
                             <p className="text-brand-700">{character.weapons}</p>
                           </div>
                         )}
-                        {character.equipment && (
+                        {character.equipment && character.equipment.trim() !== "" && (
                           <div className="bg-brand-100 rounded-lg p-4">
                             <h4 className="text-md font-semibold text-brand-900 mb-2">Equipment</h4>
                             <p className="text-brand-700">{character.equipment}</p>
@@ -498,7 +498,7 @@ export default function CharacterDetails() {
                   </div>
                   <div>
                     <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Race</div>
-                    <div className="text-sm font-semibold text-brand-900">{characterRace?.name || "Unknown"}</div>
+                    <div className="text-sm font-semibold text-brand-900">{characterRace?.name || (character as any).race || "Unknown"}</div>
                   </div>
                 </div>
               </div>
