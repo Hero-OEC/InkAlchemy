@@ -132,7 +132,7 @@ export default function CharacterDetails() {
     );
   }
 
-  const config = CHARACTER_TYPE_CONFIG[character.type as keyof typeof CHARACTER_TYPE_CONFIG];
+  const config = CHARACTER_TYPE_CONFIG[(character as any).type as keyof typeof CHARACTER_TYPE_CONFIG];
   const Icon = config?.icon || Users;
   const fullName = [character.prefix, character.name, character.suffix].filter(Boolean).join(" ");
   
