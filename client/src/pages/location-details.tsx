@@ -36,7 +36,7 @@ const LOCATION_TYPE_ICONS = {
 export default function LocationDetails() {
   const { projectId, locationId } = useParams();
   const [currentPath, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goBack, navigateWithReferrer } = useNavigation();
 
@@ -170,10 +170,6 @@ export default function LocationDetails() {
 
   // Filter related data
   const relatedEvents = events.filter(event => event.locationId === location.id);
-  const relatedCharacters = characters.filter(character => 
-    character.background?.toLowerCase().includes(location.name.toLowerCase()) ||
-    character.description?.toLowerCase().includes(location.name.toLowerCase())
-  );
 
   // Process events for the timeline component
   const processedEvents = relatedEvents.map(event => {
@@ -198,10 +194,7 @@ export default function LocationDetails() {
   });
 
   const tabs = [
-    { id: "overview", label: "Overview", icon: MapPin },
-    { id: "geography", label: "Geography", icon: Mountain },
-    { id: "politics", label: "Politics", icon: Crown },
-    { id: "characters", label: "Characters", icon: Users },
+    { id: "details", label: "Details", icon: MapPin },
     { id: "timeline", label: "Timeline", icon: Calendar },
   ];
 
@@ -290,7 +283,7 @@ export default function LocationDetails() {
 
         {/* Tab Content */}
         <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-            {activeTab === "overview" && (
+            {activeTab === "details" && (
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-3">Description</h3>
@@ -311,28 +304,6 @@ export default function LocationDetails() {
                     </div>
                   </div>
                 )}
-              </div>
-            )}
-
-            {activeTab === "geography" && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-3">Geography & Environment</h3>
-                <div className="prose prose-brand max-w-none">
-                  <p className="text-brand-700 leading-relaxed">
-                    {location.geography || "No geographical information available"}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "politics" && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-3">Political Structure</h3>
-                <div className="prose prose-brand max-w-none">
-                  <p className="text-brand-700 leading-relaxed">
-                    {location.politics || "No political information available"}
-                  </p>
-                </div>
               </div>
             )}
 
@@ -361,29 +332,6 @@ export default function LocationDetails() {
                       Create events and set their location to see them here.
                     </p>
                   </div>
-                )}
-              </div>
-            )}
-
-            {activeTab === "characters" && (
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Related Characters</h3>
-                {relatedCharacters.length > 0 ? (
-                  <div className="space-y-3">
-                    {relatedCharacters.map((character) => (
-                      <MiniCard
-                        key={character.id}
-                        icon={Users}
-                        title={character.name}
-                        badge={(character as any).type || "character"}
-                        badgeVariant="type"
-                        onClick={() => handleCharacterClick(character)}
-                        variant="editable"
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-brand-600 italic">No characters directly connected to this location</p>
                 )}
               </div>
             )}

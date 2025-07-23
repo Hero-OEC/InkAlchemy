@@ -43,9 +43,7 @@ export const locations = pgTable("locations", {
   name: text("name").notNull(),
   type: text("type"), // city, forest, building, etc.
   description: text("description"),
-  geography: text("geography"),
-  culture: text("culture"),
-  politics: text("politics"),
+  culture: text("culture"), // keeping culture as it represents significance/importance
   parentLocationId: integer("parent_location_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
