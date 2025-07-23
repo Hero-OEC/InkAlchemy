@@ -11,14 +11,14 @@ import { format } from "date-fns";
 
 // Lore category config
 const LORE_CATEGORY_CONFIG = {
-  history: { icon: Calendar, label: "History", bgColor: "bg-amber-500", textColor: "text-white" },
-  culture: { icon: Users, label: "Culture", bgColor: "bg-purple-500", textColor: "text-white" },
-  religion: { icon: Landmark, label: "Religion", bgColor: "bg-blue-500", textColor: "text-white" },
-  politics: { icon: Crown, label: "Politics", bgColor: "bg-red-500", textColor: "text-white" },
-  geography: { icon: Globe, label: "Geography", bgColor: "bg-green-500", textColor: "text-white" },
-  technology: { icon: Sword, label: "Technology", bgColor: "bg-gray-500", textColor: "text-white" },
-  magic: { icon: Scroll, label: "Magic", bgColor: "bg-indigo-500", textColor: "text-white" },
-  language: { icon: BookOpen, label: "Language", bgColor: "bg-teal-500", textColor: "text-white" },
+  history: { icon: Calendar, label: "History", bgColor: "bg-brand-500", textColor: "text-white" },
+  culture: { icon: Users, label: "Culture", bgColor: "bg-brand-500", textColor: "text-white" },
+  religion: { icon: Landmark, label: "Religion", bgColor: "bg-brand-500", textColor: "text-white" },
+  politics: { icon: Crown, label: "Politics", bgColor: "bg-brand-500", textColor: "text-white" },
+  geography: { icon: Globe, label: "Geography", bgColor: "bg-brand-500", textColor: "text-white" },
+  technology: { icon: Sword, label: "Technology", bgColor: "bg-brand-500", textColor: "text-white" },
+  magic: { icon: Scroll, label: "Magic", bgColor: "bg-brand-500", textColor: "text-white" },
+  language: { icon: BookOpen, label: "Language", bgColor: "bg-brand-500", textColor: "text-white" },
   other: { icon: BookOpen, label: "Other", bgColor: "bg-brand-500", textColor: "text-white" }
 };
 
