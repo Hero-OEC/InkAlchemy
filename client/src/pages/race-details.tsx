@@ -5,10 +5,10 @@ import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
-import { CharacterCard } from "@/components/character-card";
-import { UserCheck, Edit, ArrowLeft, Trash2, FileText, Users } from "lucide-react";
+import { MiniCard } from "@/components/mini-card";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
-import type { Race, Project, Character } from "@shared/schema";
+import { UserCheck, Edit, ArrowLeft, Trash2, MapPin, Mountain, Crown } from "lucide-react";
+import type { Race, Project, Character, Location } from "@shared/schema";
 
 export default function RaceDetails() {
   const { projectId, raceId } = useParams();
@@ -43,6 +43,20 @@ export default function RaceDetails() {
   const { data: characters = [] } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
+
+  const { data: locations = [] } = useQuery<Location[]>({
+    queryKey: [`/api/projects/${projectId}/locations`],
+  });
+
+  // Filter characters of this race
+  const raceCharacters = characters.filter(character => 
+    character.raceId === race?.id
+  );
+
+  // Find homeland location
+  const homelandLocation = race?.homelandId 
+    ? locations.find(loc => loc.id === race.homelandId)
+    : null;
 
   // Set page title
   useEffect(() => {
@@ -132,16 +146,6 @@ export default function RaceDetails() {
     navigateWithReferrer(`/projects/${projectId}/characters/${character.id}`, currentPath);
   };
 
-  // Filter characters that belong to this race
-  const raceCharacters = characters.filter(character => 
-    character.race?.toLowerCase() === race?.name.toLowerCase()
-  );
-
-  const tabs = [
-    { id: "description", label: "Description", icon: FileText },
-    { id: "characters", label: "Characters", icon: Users },
-  ];
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar 
@@ -151,7 +155,7 @@ export default function RaceDetails() {
         onNavigate={handleNavigation}
       />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-6xl mx-auto px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -173,7 +177,7 @@ export default function RaceDetails() {
                 <UserCheck size={24} className="text-brand-700" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-brand-950">{race.name}</h1>
+                <h1 className="text-3xl font-bold text-brand-950">{race?.name}</h1>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -189,68 +193,101 @@ export default function RaceDetails() {
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="border-b border-brand-200 mb-6">
-          <nav className="flex space-x-8">
-            {tabs.map((tab) => {
-              const TabIcon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? 'border-brand-500 text-brand-600'
-                      : 'border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300'
-                  }`}
-                >
-                  <TabIcon size={16} />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Tab Content */}
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-          {activeTab === "description" && (
-            <div>
-              <h3 className="text-lg font-semibold text-brand-900 mb-3">Description</h3>
+        {/* Content Grid - 2/3 main content + 1/3 sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Main Content - Description */}
+          <div className="lg:col-span-2">
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
               <div className="prose prose-brand max-w-none">
-                {race.description ? (
-                  <EditorContentRenderer content={race.description} />
+                {race?.description ? (
+                  <EditorContentRenderer data={race.description} />
                 ) : (
                   <p className="text-brand-700 leading-relaxed">No description available</p>
                 )}
               </div>
             </div>
-          )}
+          </div>
 
-          {activeTab === "characters" && (
-            <div>
-              <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters of {race.name} Race</h3>
+          {/* Sidebar */}
+          <div className="space-y-8">
+            {/* Homeland */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Homeland</h3>
+              {homelandLocation ? (
+                <MiniCard
+                  icon={MapPin}
+                  title={homelandLocation.name}
+                  badge={homelandLocation.type || "location"}
+                  badgeVariant="type"
+                  onClick={() => setLocation(`/projects/${projectId}/locations/${homelandLocation.id}`)}
+                />
+              ) : (
+                <div className="text-center py-4">
+                  <MapPin size={20} className="mx-auto text-brand-300 mb-2" />
+                  <p className="text-sm text-brand-600">No homeland set</p>
+                </div>
+              )}
+            </div>
+
+            {/* Physical Characteristics */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Physical Characteristics</h3>
+              <div className="space-y-3">
+                {race?.lifespan && (
+                  <div className="flex justify-between">
+                    <span className="text-brand-600">Lifespan:</span>
+                    <span className="text-brand-900 capitalize">{race.lifespan}</span>
+                  </div>
+                )}
+                {race?.sizeCategory && (
+                  <div className="flex justify-between">
+                    <span className="text-brand-600">Size:</span>
+                    <span className="text-brand-900 capitalize">{race.sizeCategory}</span>
+                  </div>
+                )}
+                {!race?.lifespan && !race?.sizeCategory && (
+                  <p className="text-sm text-brand-600 text-center py-2">No characteristics set</p>
+                )}
+              </div>
+            </div>
+
+            {/* Abilities & Powers */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Abilities & Powers</h3>
+              {race?.magicalAffinity ? (
+                <div className="flex justify-between">
+                  <span className="text-brand-600">Magical Affinity:</span>
+                  <span className="text-brand-900 capitalize">{race.magicalAffinity.replace('_', ' ')}</span>
+                </div>
+              ) : (
+                <p className="text-sm text-brand-600 text-center py-2">No magical abilities set</p>
+              )}
+            </div>
+
+            {/* Characters */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters of This Race</h3>
               {raceCharacters.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-3">
                   {raceCharacters.map((character) => (
-                    <CharacterCard
+                    <MiniCard
                       key={character.id}
-                      character={character}
-                      onClick={() => handleCharacterClick(character)}
+                      icon={UserCheck}
+                      title={[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
+                      badge={character.type || "supporting"}
+                      badgeVariant="type"
+                      onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
                     />
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <Users className="w-16 h-16 text-brand-400 mx-auto mb-4" />
-                  <p className="text-brand-600">No characters of this race found</p>
-                  <p className="text-sm text-brand-500 mt-2">
-                    Create characters and set their race to "{race.name}" to see them here.
-                  </p>
+                <div className="text-center py-4">
+                  <UserCheck size={20} className="mx-auto text-brand-300 mb-2" />
+                  <p className="text-sm text-brand-600">No characters assigned</p>
                 </div>
               )}
             </div>
-          )}
+          </div>
         </div>
 
         {/* Delete Confirmation Dialog */}
@@ -259,7 +296,7 @@ export default function RaceDetails() {
           onClose={() => setShowDeleteDialog(false)}
           onConfirm={handleDelete}
           title="Delete Race"
-          description={`Are you sure you want to delete "${race.name}"? This action cannot be undone.`}
+          description={`Are you sure you want to delete "${race?.name}"? This action cannot be undone.`}
         />
       </main>
     </div>

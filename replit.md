@@ -372,6 +372,10 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Applied event-form-style layout with 2/3 main content + 1/3 sidebar grid structure
 - Enhanced form validation and error handling with proper React Hook Form integration
 - Race management now provides clean, focused interface optimized for essential race information
+- Updated race details page to match edit/create page design with 2/3 main content + 1/3 sidebar grid layout
+- Enhanced description section to use EditorContentRenderer for proper rich text display from WordProcessor
+- Organized sidebar with 4 sections: Homeland (with MiniCard), Physical Characteristics, Abilities & Powers, Characters
+- Applied consistent styling with bg-brand-50 containers and proper spacing throughout race details page
 
 ### January 2025 - Expanded Race Schema and Database Relationship Fix
 - Enhanced race database schema with comprehensive race properties: homelandId, lifespan, sizeCategory, magicalAffinity, specialTraits
