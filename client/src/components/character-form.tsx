@@ -214,11 +214,11 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
             </div>
 
             {/* Tab Content */}
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6 mt-6">
+            <div className="space-y-6 mt-6">
               {activeTab === "details" && (
-                <div className="space-y-8">
+                <>
                   {/* Basic Information */}
-                  <div>
+                  <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-950 mb-4">Basic Information</h3>
                     <div className="space-y-4">
                       <FormField
@@ -264,8 +264,6 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                           )}
                         />
                       </div>
-
-
                     </div>
                   </div>
 
@@ -289,17 +287,17 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       )}
                     />
                   </div>
-
-
-                </div>
+                </>
               )}
 
               {activeTab === "magic" && (
-                <CharacterMagicSelector
-                  availableMagicSystems={magicSystemsWithSpells}
-                  selectedSpells={selectedSpells}
-                  onSelectionChange={setSelectedSpells}
-                />
+                <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+                  <CharacterMagicSelector
+                    availableMagicSystems={magicSystemsWithSpells}
+                    selectedSpells={selectedSpells}
+                    onSelectionChange={setSelectedSpells}
+                  />
+                </div>
               )}
             </div>
           </div>
