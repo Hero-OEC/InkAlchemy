@@ -47,7 +47,7 @@ const normalizeCharacterData = (character: Character | null) => ({
 export function CharacterForm({ character, projectId, onSuccess }: CharacterFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("details");
   const [selectedSpells, setSelectedSpells] = useState<number[]>([]);
 
   const { data: magicSystems = [] } = useQuery<MagicSystem[]>({
@@ -183,28 +183,6 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
               <nav className="-mb-px flex space-x-8">
                 <button
                   type="button"
-                  onClick={() => setActiveTab("overview")}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === "overview"
-                      ? "border-brand-500 text-brand-600"
-                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
-                  }`}
-                >
-                  Overview
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("background")}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === "background"
-                      ? "border-brand-500 text-brand-600"
-                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
-                  }`}
-                >
-                  Background
-                </button>
-                <button
-                  type="button"
                   onClick={() => setActiveTab("details")}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === "details"
@@ -213,17 +191,6 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                   }`}
                 >
                   Details
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("weapons")}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === "weapons"
-                      ? "border-brand-500 text-brand-600"
-                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
-                  }`}
-                >
-                  Weapons
                 </button>
                 <button
                   type="button"
@@ -241,8 +208,9 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
 
             {/* Tab Content */}
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6 mt-6">
-              {activeTab === "overview" && (
+              {activeTab === "details" && (
                 <div className="space-y-6">
+                  {/* Basic Information */}
                   <div className="bg-white border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-900 mb-4">Basic Information</h3>
                     <div className="space-y-4">
@@ -309,11 +277,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       />
                     </div>
                   </div>
-                </div>
-              )}
 
-              {activeTab === "background" && (
-                <div className="space-y-6">
+                  {/* Character Background */}
                   <div className="bg-white border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-900 mb-4">Character Background</h3>
                     <div className="space-y-4">
@@ -372,11 +337,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       />
                     </div>
                   </div>
-                </div>
-              )}
 
-              {activeTab === "details" && (
-                <div className="space-y-6">
+                  {/* Physical & Role Details */}
                   <div className="bg-white border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-900 mb-4">Physical & Role Details</h3>
                     <div className="space-y-4">
@@ -429,11 +391,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
 
-              {activeTab === "weapons" && (
-                <div className="space-y-6">
+                  {/* Equipment & Combat */}
                   <div className="bg-white border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-900 mb-4">Equipment & Combat</h3>
                     <div className="space-y-4">

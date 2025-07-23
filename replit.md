@@ -414,4 +414,7 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Recreated CharacterForm component with clean tabbed interface maintaining all existing functionality
 - Updated container width on edit/create pages from max-w-4xl to max-w-7xl matching character details page for consistent wide layout
 - Applied responsive padding (px-4 sm:px-6 lg:px-8) to match details page relaxed margins and spacing
-- Fixed all TypeScript errors and maintained form validation across all tabs (overview, background, details, weapons, magic)
+- Updated tab structure to match character details page: only "Details" and "Magic & Abilities" tabs (removed timeline)
+- Reorganized form content into logical sections within Details tab: Basic Information, Character Background, Physical & Role Details, Equipment & Combat
+- Fixed all TypeScript errors with proper null handling using normalizeCharacterData helper function
+- Updated race field to use proper raceId dropdown instead of text-based race field with database foreign key relationship
