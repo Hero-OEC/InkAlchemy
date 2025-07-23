@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { WordProcessor } from "@/components/word-processor";
+import { CharacterMagicSelector } from "@/components/character-magic-selector";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/button-variations";
 import { useToast } from "@/hooks/use-toast";
@@ -57,6 +58,12 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
   const { data: projectSpells = [] } = useQuery<Spell[]>({
     queryKey: [`/api/projects/${projectId}/spells`],
   });
+
+  // Prepare magic systems with spells for CharacterMagicSelector
+  const magicSystemsWithSpells = magicSystems.map(system => ({
+    ...system,
+    spells: projectSpells.filter(spell => spell.magicSystemId === system.id)
+  }));
 
   const { data: characterSpells = [] } = useQuery<Spell[]>({
     queryKey: [`/api/characters/${character?.id}/spells`],
@@ -288,40 +295,11 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
               )}
 
               {activeTab === "magic" && (
-                <div>
-                  <h3 className="text-lg font-semibold text-brand-950 mb-4">Magical Abilities</h3>
-                  <div>
-                    <h4 className="text-md font-semibold text-brand-900 mb-3">Character Spells & Abilities</h4>
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
-                      {projectSpells.map((spell) => {
-                        const magicSystem = magicSystems.find(ms => ms.id === spell.magicSystemId);
-                        return (
-                          <label key={spell.id} className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-brand-200">
-                            <input
-                              type="checkbox"
-                              checked={selectedSpells.includes(spell.id)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedSpells([...selectedSpells, spell.id]);
-                                } else {
-                                  setSelectedSpells(selectedSpells.filter(id => id !== spell.id));
-                                }
-                              }}
-                              className="w-4 h-4 text-brand-600 bg-brand-100 border-brand-300 rounded"
-                            />
-                            <div className="flex-1">
-                              <div className="font-medium text-brand-900">{spell.name}</div>
-                              <div className="text-sm text-brand-600">{magicSystem?.name}</div>
-                            </div>
-                          </label>
-                        );
-                      })}
-                    </div>
-                    {projectSpells.length === 0 && (
-                      <p className="text-brand-500 text-center py-8">No spells available. Create spells in Magic Systems first.</p>
-                    )}
-                  </div>
-                </div>
+                <CharacterMagicSelector
+                  availableMagicSystems={magicSystemsWithSpells}
+                  selectedSpells={selectedSpells}
+                  onSelectionChange={setSelectedSpells}
+                />
               )}
             </div>
           </div>
