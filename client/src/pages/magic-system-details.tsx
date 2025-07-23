@@ -7,7 +7,7 @@ import { Button } from "@/components/button-variations";
 import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
-import { ArrowLeft, Edit, Trash2, Sparkles, Zap, DollarSign, Users, BookOpen, Wand2, Plus, Scroll, Shield } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Sparkles, Zap, Users, BookOpen, Wand2, Plus } from "lucide-react";
 import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -116,8 +116,6 @@ export default function MagicSystemDetails() {
     }
   };
 
-  
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -152,21 +150,15 @@ export default function MagicSystemDetails() {
 
   const Icon = getSystemIcon(system);
   
-  // Get tabs based on system type
+  // Simplified tabs - only Details, Spells/Abilities, and Characters
   const tabs = system.type === "power" 
     ? [
         { id: "details", label: "Details", icon: BookOpen },
-        { id: "rules", label: "Rules", icon: Scroll },
-        { id: "limitations", label: "Limitations", icon: Shield },
-        { id: "cost", label: "Cost", icon: DollarSign },
         { id: "abilities", label: "Abilities", icon: Zap },
         { id: "characters", label: "Characters", icon: Users }
       ]
     : [
         { id: "details", label: "Details", icon: BookOpen },
-        { id: "rules", label: "Rules", icon: Scroll },
-        { id: "limitations", label: "Limitations", icon: Shield },
-        { id: "cost", label: "Cost", icon: DollarSign },
         { id: "spells", label: "Spells", icon: Wand2 },
         { id: "characters", label: "Characters", icon: Users }
       ];
@@ -190,151 +182,66 @@ export default function MagicSystemDetails() {
     switch (activeTab) {
       case "details":
         return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-brand-900 mb-3">Description</h3>
-              <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-                <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                  {system.description || "No description available"}
-                </p>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-3">Source</h3>
-                <div className="bg-brand-50 border border-brand-200 rounded-xl p-4">
-                  <p className="text-brand-700 capitalize">{system.source || "Unknown"}</p>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-3">Complexity</h3>
-                <div className="bg-brand-50 border border-brand-200 rounded-xl p-4">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${
-                    system.complexity === "low" ? "bg-green-100 text-green-800" :
-                    system.complexity === "medium" ? "bg-yellow-100 text-yellow-800" :
-                    "bg-red-100 text-red-800"
-                  }`}>
-                    {system.complexity || "Medium"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-brand-900 mb-3">Users & Practitioners</h3>
-              <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-                <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                  {system.users || "No information about users available"}
-                </p>
-              </div>
+          <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
+            <div className="prose prose-brand max-w-none">
+              {system.description ? (
+                <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">{system.description}</p>
+              ) : (
+                <p className="text-brand-700 leading-relaxed">No description available</p>
+              )}
             </div>
           </div>
         );
 
-      case "rules":
-        return (
-          <div>
-            <h3 className="text-lg font-semibold text-brand-900 mb-3">System Rules</h3>
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                {system.rules || "No rules defined yet"}
-              </p>
-            </div>
-          </div>
-        );
-
-      case "limitations":
-        return (
-          <div>
-            <h3 className="text-lg font-semibold text-brand-900 mb-3">Limitations & Drawbacks</h3>
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                {system.limitations || "No limitations defined yet"}
-              </p>
-            </div>
-          </div>
-        );
-
-      case "cost":
-        return (
-          <div>
-            <h3 className="text-lg font-semibold text-brand-900 mb-3">Cost & Requirements</h3>
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                {system.cost || "No cost information defined yet"}
-              </p>
-            </div>
-          </div>
-        );
-
-      case "abilities":
       case "spells":
-        const contentType = system.type === "power" ? "abilities" : "spells";
-        const actualSpells = spells || [];
-
+      case "abilities":
         return (
-          <div>
-            <div className="flex items-center justify-between mb-6">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-brand-900">
                 {system.type === "power" ? "Abilities" : "Spells"}
               </h3>
-              <Button 
-                variant="primary" 
+              <Button
+                variant="primary"
                 size="sm"
-                onClick={() => {
-                  setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
-                }}
+                onClick={() => setLocation(`/projects/${projectId}/magic-systems/${systemId}/${system.type === "power" ? "abilities" : "spells"}/new`)}
+                className="flex items-center gap-2"
               >
-                <Plus size={16} className="mr-2" />
+                <Plus size={16} />
                 Add {system.type === "power" ? "Ability" : "Spell"}
               </Button>
             </div>
-            
-            {actualSpells.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {actualSpells.map((spell) => (
+
+            {spells && spells.length > 0 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {spells.map((spell) => (
                   <ContentCard
                     key={spell.id}
-                    id={spell.id}
                     title={spell.name}
-                    type="magic"
-                    subtype={spell.level}
-                    description={spell.description || "No description available"}
-                    icon={system.type === "power" ? Zap : Wand2}
-                    onClick={() => setLocation(`/projects/${projectId}/spells/${spell.id}`)}
-                    onEdit={() => setLocation(`/projects/${projectId}/spells/${spell.id}/edit`)}
+                    description={spell.description}
+                    badge={spell.level}
+                    badgeVariant="level"
+                    onClick={() => setLocation(`/projects/${projectId}/${system.type === "power" ? "abilities" : "spells"}/${spell.id}`)}
                     onDelete={() => handleDeleteSpell(spell)}
                   />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <div className="bg-brand-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  {system.type === "power" ? (
-                    <Zap size={24} className="text-brand-500" />
-                  ) : (
-                    <Wand2 size={24} className="text-brand-500" />
-                  )}
-                </div>
-                <h4 className="text-xl font-semibold text-brand-900 mb-2">No {system.type === "power" ? "Abilities" : "Spells"} Yet</h4>
+              <div className="text-center py-12 bg-brand-50 rounded-xl border border-brand-200">
+                <Wand2 className="w-12 h-12 mx-auto mb-4 text-brand-300" />
+                <h3 className="text-lg font-semibold text-brand-900 mb-2">
+                  No {system.type === "power" ? "abilities" : "spells"} yet
+                </h3>
                 <p className="text-brand-600 mb-4">
-                  Start building your {system.type === "power" ? "ability" : "spell"} collection for this system.
+                  Create your first {system.type === "power" ? "ability" : "spell"} to get started.
                 </p>
-                <Button 
-                  variant="primary" 
-                  size="sm"
-                  onClick={() => {
-                    if (system.type === "power") {
-                      setLocation(`/projects/${projectId}/magic-systems/${systemId}/abilities/new`);
-                    } else {
-                      setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
-                    }
-                  }}
+                <Button
+                  variant="primary"
+                  onClick={() => setLocation(`/projects/${projectId}/magic-systems/${systemId}/${system.type === "power" ? "abilities" : "spells"}/new`)}
+                  className="flex items-center gap-2"
                 >
-                  <Plus size={16} className="mr-2" />
-                  Create First {system.type === "power" ? "Ability" : "Spell"}
+                  <Plus size={16} />
+                  Add {system.type === "power" ? "Ability" : "Spell"}
                 </Button>
               </div>
             )}
@@ -343,43 +250,30 @@ export default function MagicSystemDetails() {
 
       case "characters":
         return (
-          <div>
-            <h3 className="text-lg font-semibold text-brand-900 mb-6">Characters Using This System</h3>
-            
-            {systemUsers.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="bg-brand-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users size={24} className="text-brand-500" />
-                </div>
-                <h4 className="text-xl font-semibold text-brand-900 mb-2">No Characters Assigned</h4>
-                <p className="text-brand-600">
-                  No characters are currently using this {system.type} system.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-brand-900">Characters</h3>
+            {systemUsers && systemUsers.length > 0 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {systemUsers.map((character) => (
                   <CharacterCard
                     key={character.id}
-                    id={character.id}
-                    name={character.name}
-                    prefix={character.prefix}
-                    suffix={character.suffix}
-                    type={character.type as any}
-                    description={character.description || ""}
-                    imageUrl={character.imageUrl}
-                    createdAt={character.createdAt}
-                    lastEditedAt={character.updatedAt}
+                    character={character}
                     onClick={() => handleCharacterClick(character.id)}
                   />
                 ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-brand-50 rounded-xl border border-brand-200">
+                <Users className="w-12 h-12 mx-auto mb-4 text-brand-300" />
+                <h3 className="text-lg font-semibold text-brand-900 mb-2">No characters found</h3>
+                <p className="text-brand-600">No characters are currently associated with this system.</p>
               </div>
             )}
           </div>
         );
 
       default:
-        return null;
+        return <div>Content not available</div>;
     }
   };
 
@@ -392,7 +286,7 @@ export default function MagicSystemDetails() {
         onNavigate={handleNavigation}
       />
       
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -402,95 +296,118 @@ export default function MagicSystemDetails() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Magic Systems
+            Back
           </Button>
         </div>
 
-        {/* System Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="bg-brand-500 p-3 rounded-xl">
-              <Icon size={24} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-brand-950 mb-2">{system.name}</h1>
-              <div className="flex items-center gap-3">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                  system.type === "magic" ? "bg-brand-100 text-brand-800" : "bg-brand-200 text-brand-900"
-                }`}>
-                  {system.type === "power" ? "Power System" : "Magic System"}
-                </span>
-                {system.updatedAt && (
-                  <span className="text-sm text-brand-500">
-                    Updated {formatDate(system.updatedAt)}
+        {/* Magic System Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-brand-500">
+                <Icon size={24} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-brand-950">{system.name}</h1>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-500 text-white">
+                    {system.type === "power" ? "Power System" : "Magic System"}
                   </span>
-                )}
+                  {system.updatedAt && (
+                    <span className="text-sm text-brand-500">
+                      Updated {formatDate(system.updatedAt)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
+                <Edit size={16} />
+                Edit
+              </Button>
+              <Button variant="danger" onClick={() => setShowDeleteDialog(true)} className="flex items-center gap-2">
+                <Trash2 size={16} />
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Grid - 2/3 main content + 1/3 sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Main Content - Tabs */}
+          <div className="lg:col-span-2">
+            {/* Tabs */}
+            <div className="border-b border-brand-200 mb-8">
+              <nav className="flex space-x-8">
+                {tabs.map((tab) => {
+                  const TabIcon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === tab.id
+                          ? "border-brand-500 text-brand-600"
+                          : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
+                      }`}
+                    >
+                      <TabIcon size={16} />
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+
+            {/* Tab Content */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200">
+              <div className="p-8">
+                {renderTabContent()}
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
-              <Edit size={16} />
-              Edit
-            </Button>
-            <Button variant="danger" onClick={() => setShowDeleteDialog(true)} className="flex items-center gap-2">
-              <Trash2 size={16} />
-              Delete
-            </Button>
+
+          {/* Sidebar */}
+          <div className="space-y-8">
+            {/* Source */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Source</h3>
+              <p className="text-brand-700 capitalize">{system.source || "Unknown"}</p>
+            </div>
+
+            {/* Complexity */}
+            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Complexity</h3>
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${
+                system.complexity === "low" ? "bg-green-100 text-green-800" :
+                system.complexity === "medium" ? "bg-yellow-100 text-yellow-800" :
+                "bg-red-100 text-red-800"
+              }`}>
+                {system.complexity || "Medium"}
+              </span>
+            </div>
           </div>
         </div>
-
-        {/* Tabs */}
-        <div className="border-b border-brand-200 mb-8">
-          <nav className="flex space-x-8">
-            {tabs.map((tab) => {
-              const TabIcon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? "border-brand-500 text-brand-600"
-                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
-                  }`}
-                >
-                  <TabIcon size={16} />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Tab Content */}
-        <div>{renderTabContent()}</div>
-
-        {/* Metadata */}
-        {system.createdAt && (
-          <div className="mt-8 text-center text-sm text-brand-500">
-            Created {formatDate(system.createdAt)}
-          </div>
-        )}
       </main>
 
+      {/* Delete Confirmation Dialog */}
       <DeleteConfirmation
         isOpen={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
         onConfirm={handleDelete}
         title="Delete Magic System"
-        description={`Are you sure you want to delete "${system?.name}"? This action cannot be undone and will remove all associated spells and data.`}
-        itemName={system?.name || "this magic system"}
+        description={`Are you sure you want to delete "${system.name}"? This action cannot be undone.`}
       />
 
+      {/* Delete Spell Confirmation Dialog */}
       <DeleteConfirmation
         isOpen={!!deleteSpell}
         onClose={() => setDeleteSpell(null)}
         onConfirm={confirmDeleteSpell}
-        title={`Delete ${system?.type === 'power' ? 'Ability' : 'Spell'}`}
+        title={`Delete ${system.type === "power" ? "Ability" : "Spell"}`}
         description={`Are you sure you want to delete "${deleteSpell?.name}"? This action cannot be undone.`}
-        itemName={deleteSpell?.name || `this ${system?.type === 'power' ? 'ability' : 'spell'}`}
-        isLoading={deleteSpellMutation.isPending}
       />
     </div>
   );
