@@ -239,7 +239,7 @@ export default function LocationDetails() {
               <div>
                 <h1 className="text-3xl font-bold text-brand-950">{location.name}</h1>
                 <div className="mt-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-100 text-brand-800 capitalize">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-500 text-white capitalize">
                     {locationType}
                   </span>
                 </div>
