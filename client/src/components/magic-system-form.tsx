@@ -10,12 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertMagicSystemSchema, type MagicSystem } from "@shared/schema";
-import { BookOpen, Scroll, Shield, DollarSign } from "lucide-react";
+import { BookOpen, Scroll, Shield } from "lucide-react";
 import { z } from "zod";
 
 const formSchema = insertMagicSystemSchema.extend({
   complexity: z.enum(["low", "medium", "high"]).optional(),
-  cost: z.string().optional(),
 });
 
 interface MagicSystemFormProps {
@@ -40,8 +39,6 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
       limitations: magicSystem?.limitations || "",
       source: magicSystem?.source || "",
       complexity: magicSystem?.complexity || "medium",
-      users: magicSystem?.users || "",
-      cost: magicSystem?.cost || "",
     },
   });
 
@@ -114,7 +111,6 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
     { id: "details", label: "Details", icon: BookOpen },
     { id: "rules", label: "Rules", icon: Scroll },
     { id: "limitations", label: "Limitations", icon: Shield },
-    { id: "cost", label: "Cost", icon: DollarSign },
   ];
 
   const renderTabContent = () => {
@@ -225,23 +221,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="users"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Users & Practitioners</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Who has access to this system? Requirements, bloodlines, training needed, etc."
-                      className="min-h-[80px]"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
           </div>
         );
 
@@ -291,28 +271,7 @@ export function MagicSystemForm({ magicSystem, projectId, onSuccess, onTypeChang
           </div>
         );
 
-      case "cost":
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="cost"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cost & Requirements</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="What does it cost to use this system? Materials, energy, time, training requirements, etc."
-                      className="min-h-[200px]"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
+
 
       default:
         return null;

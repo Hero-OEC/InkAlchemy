@@ -158,7 +158,6 @@ export default function MagicSystemDetails() {
         { id: "details", label: "Details", icon: BookOpen },
         { id: "rules", label: "Rules", icon: Scroll },
         { id: "limitations", label: "Limitations", icon: Shield },
-        { id: "cost", label: "Cost", icon: DollarSign },
         { id: "abilities", label: "Abilities", icon: Zap },
         { id: "characters", label: "Characters", icon: Users }
       ]
@@ -166,7 +165,6 @@ export default function MagicSystemDetails() {
         { id: "details", label: "Details", icon: BookOpen },
         { id: "rules", label: "Rules", icon: Scroll },
         { id: "limitations", label: "Limitations", icon: Shield },
-        { id: "cost", label: "Cost", icon: DollarSign },
         { id: "spells", label: "Spells", icon: Wand2 },
         { id: "characters", label: "Characters", icon: Users }
       ];
@@ -174,8 +172,7 @@ export default function MagicSystemDetails() {
   // Filter characters that might use this system (placeholder logic)
   const systemUsers = characters?.filter(char => 
     char.powerType?.toLowerCase().includes(system.source?.toLowerCase() || '') ||
-    char.powerType?.toLowerCase().includes(system.name.toLowerCase()) ||
-    char.type === "protagonist" || char.type === "ally"
+    char.powerType?.toLowerCase().includes(system.name.toLowerCase())
   ) || [];
 
   const formatDate = (date: Date) => {
@@ -222,14 +219,7 @@ export default function MagicSystemDetails() {
               </div>
             </div>
 
-            <div>
-              <h3 className="text-lg font-semibold text-brand-900 mb-3">Users & Practitioners</h3>
-              <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-                <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                  {system.users || "No information about users available"}
-                </p>
-              </div>
-            </div>
+
           </div>
         );
 
@@ -257,17 +247,7 @@ export default function MagicSystemDetails() {
           </div>
         );
 
-      case "cost":
-        return (
-          <div>
-            <h3 className="text-lg font-semibold text-brand-900 mb-3">Cost & Requirements</h3>
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                {system.cost || "No cost information defined yet"}
-              </p>
-            </div>
-          </div>
-        );
+
 
       case "abilities":
       case "spells":
@@ -300,7 +280,7 @@ export default function MagicSystemDetails() {
                     id={spell.id}
                     title={spell.name}
                     type="magic"
-                    subtype={spell.level}
+                    subtype={spell.level || ""}
                     description={spell.description || "No description available"}
                     icon={system.type === "power" ? Zap : Wand2}
                     onClick={() => setLocation(`/projects/${projectId}/spells/${spell.id}`)}
@@ -363,11 +343,11 @@ export default function MagicSystemDetails() {
                     key={character.id}
                     id={character.id}
                     name={character.name}
-                    prefix={character.prefix}
-                    suffix={character.suffix}
-                    type={character.type as any}
+                    prefix={character.prefix || undefined}
+                    suffix={character.suffix || undefined}
+                    type={character.role as "protagonist" | "antagonist" | "supporting" | "ally" | "neutral" | "love-interest" | "villain" || "supporting"}
                     description={character.description || ""}
-                    imageUrl={character.imageUrl}
+                    imageUrl={character.imageUrl || undefined}
                     createdAt={character.createdAt}
                     lastEditedAt={character.updatedAt}
                     onClick={() => handleCharacterClick(character.id)}
