@@ -2,16 +2,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/button-variations";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { WordProcessor } from "@/components/word-processor";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertNoteSchema, type Note } from "@shared/schema";
 import { z } from "zod";
 
 const formSchema = insertNoteSchema.extend({
-  title: z.string().min(1, "Title is required"),
   category: z.string().optional(),
 });
 
@@ -19,9 +19,10 @@ interface NoteFormProps {
   note?: Note | null;
   projectId: number;
   onSuccess: () => void;
+  onCategoryChange?: (category: string) => void;
 }
 
-export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
+export function NoteForm({ note, projectId, onSuccess, onCategoryChange }: NoteFormProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -29,8 +30,8 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
     defaultValues: {
       projectId,
       title: note?.title || "",
+      category: note?.category || "",
       content: note?.content || "",
-      category: note?.category || "general",
     },
   });
 
@@ -103,78 +104,88 @@ export function NoteForm({ note, projectId, onSuccess }: NoteFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Basic Information Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Basic Information */}
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
+          <h3 className="text-lg font-semibold text-brand-950 mb-6">Basic Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-brand-900">Note Title *</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter note title..."
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-brand-900">Category</FormLabel>
+                  <Select 
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      onCategoryChange?.(value);
+                    }} 
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="general">General</SelectItem>
+                      <SelectItem value="idea">Idea</SelectItem>
+                      <SelectItem value="reminder">Reminder</SelectItem>
+                      <SelectItem value="plot">Plot</SelectItem>
+                      <SelectItem value="character">Character</SelectItem>
+                      <SelectItem value="location">Location</SelectItem>
+                      <SelectItem value="research">Research</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
+          <h3 className="text-lg font-semibold text-brand-950 mb-6">Content</h3>
           <FormField
             control={form.control}
-            name="title"
+            name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title *</FormLabel>
                 <FormControl>
-                  <input 
-                    type="text"
-                    placeholder="Enter note title..."
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    {...field} 
+                  <WordProcessor
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Write your note content..."
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="idea">Idea</SelectItem>
-                    <SelectItem value="reminder">Reminder</SelectItem>
-                    <SelectItem value="plot">Plot</SelectItem>
-                    <SelectItem value="character">Character</SelectItem>
-                    <SelectItem value="location">Location</SelectItem>
-                    <SelectItem value="research">Research</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
-
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Note Content *</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Write your note here..."
-                  className="min-h-[120px]"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <div className="flex justify-end space-x-4">
           <Button type="button" variant="outline" onClick={onSuccess}>
             Cancel
           </Button>
-          <Button type="submit" variant="primary" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading}>
             {isLoading ? "Saving..." : note ? "Update Note" : "Create Note"}
           </Button>
         </div>
