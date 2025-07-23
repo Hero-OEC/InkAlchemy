@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { ArrowLeft, Edit, Trash2, BookOpen, Crown, Scroll, Landmark, Sword, Users, Globe, Calendar } from "lucide-react";
 import type { Project, LoreEntry } from "@shared/schema";
 
@@ -173,11 +174,24 @@ export default function LoreDetails() {
 
         {/* Content */}
         <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
-          <div className="prose prose-brand max-w-none">
-            <div className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-              {lore.content}
-            </div>
-          </div>
+          {lore.content ? (
+            (() => {
+              try {
+                // Try to parse as JSON first (new format from WordProcessor)
+                const parsedData = JSON.parse(lore.content);
+                return <EditorContentRenderer data={parsedData} />;
+              } catch {
+                // Fallback to plain text display (old format)
+                return (
+                  <div className="prose prose-brand max-w-none">
+                    <p className="text-brand-700 leading-relaxed">{lore.content}</p>
+                  </div>
+                );
+              }
+            })()
+          ) : (
+            <p className="text-brand-700 leading-relaxed">No content available</p>
+          )}
         </div>
 
         {/* Metadata */}
