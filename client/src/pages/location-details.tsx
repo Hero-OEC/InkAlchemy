@@ -292,22 +292,20 @@ export default function LocationDetails() {
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-3">Content</h3>
                   {location.content ? (
-                    <div className="prose prose-brand max-w-none">
-                      {(() => {
-                        try {
-                          // Try to parse as JSON first (new format from WordProcessor)
-                          const parsedData = JSON.parse(location.content);
-                          return <EditorContentRenderer data={parsedData} />;
-                        } catch {
-                          // Fallback to plain text display (old format)
-                          return (
-                            <div className="prose prose-brand max-w-none">
-                              <p className="text-brand-700 leading-relaxed">{location.content}</p>
-                            </div>
-                          );
-                        }
-                      })()}
-                    </div>
+                    (() => {
+                      try {
+                        // Try to parse as JSON first (new format from WordProcessor)
+                        const parsedData = JSON.parse(location.content);
+                        return <EditorContentRenderer data={parsedData} />;
+                      } catch {
+                        // Fallback to plain text display (old format)
+                        return (
+                          <div className="prose prose-brand max-w-none">
+                            <p className="text-brand-700 leading-relaxed">{location.content}</p>
+                          </div>
+                        );
+                      }
+                    })()
                   ) : (
                     <p className="text-brand-700 leading-relaxed">No content available</p>
                   )}
