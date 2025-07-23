@@ -263,7 +263,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                   </div>
 
                   {/* Description */}
-                  <div>
+                  <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-brand-950 mb-4">Description</h3>
                     <FormField
                       control={form.control}
