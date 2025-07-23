@@ -335,81 +335,69 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                     <FormItem>
                       <FormLabel>Character Image</FormLabel>
                       <FormControl>
-                        <div className="space-y-3">
-                          {/* File Upload Button */}
-                          <div className="flex gap-2">
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const input = document.createElement('input');
+                              input.type = 'file';
+                              input.accept = 'image/*';
+                              input.onchange = async (e) => {
+                                const file = (e.target as HTMLInputElement).files?.[0];
+                                if (file) {
+                                  setIsUploading(true);
+                                  try {
+                                    const formData = new FormData();
+                                    formData.append('image', file);
+                                    
+                                    const response = await fetch('/api/upload-image', {
+                                      method: 'POST',
+                                      body: formData,
+                                    });
+                                    
+                                    if (response.ok) {
+                                      const data = await response.json();
+                                      field.onChange(data.url);
+                                      toast({
+                                        title: "Image uploaded successfully",
+                                        description: "Your character image has been uploaded.",
+                                      });
+                                    } else {
+                                      throw new Error('Upload failed');
+                                    }
+                                  } catch (error) {
+                                    toast({
+                                      title: "Upload failed",
+                                      description: "Failed to upload image. Please try again.",
+                                      variant: "destructive",
+                                    });
+                                  } finally {
+                                    setIsUploading(false);
+                                  }
+                                }
+                              };
+                              input.click();
+                            }}
+                            disabled={isUploading}
+                            className="flex-1"
+                          >
+                            <Upload className="w-4 h-4 mr-2" />
+                            {isUploading ? "Uploading..." : "Upload Image"}
+                          </Button>
+                          
+                          {field.value && (
                             <Button
                               type="button"
                               variant="outline"
                               size="sm"
-                              onClick={() => {
-                                const input = document.createElement('input');
-                                input.type = 'file';
-                                input.accept = 'image/*';
-                                input.onchange = async (e) => {
-                                  const file = (e.target as HTMLInputElement).files?.[0];
-                                  if (file) {
-                                    setIsUploading(true);
-                                    try {
-                                      const formData = new FormData();
-                                      formData.append('image', file);
-                                      
-                                      const response = await fetch('/api/upload-image', {
-                                        method: 'POST',
-                                        body: formData,
-                                      });
-                                      
-                                      if (response.ok) {
-                                        const data = await response.json();
-                                        field.onChange(data.url);
-                                        toast({
-                                          title: "Image uploaded successfully",
-                                          description: "Your character image has been uploaded.",
-                                        });
-                                      } else {
-                                        throw new Error('Upload failed');
-                                      }
-                                    } catch (error) {
-                                      toast({
-                                        title: "Upload failed",
-                                        description: "Failed to upload image. Please try again.",
-                                        variant: "destructive",
-                                      });
-                                    } finally {
-                                      setIsUploading(false);
-                                    }
-                                  }
-                                };
-                                input.click();
-                              }}
-                              disabled={isUploading}
-                              className="flex-1"
+                              onClick={() => field.onChange("")}
+                              className="px-3"
                             >
-                              <Upload className="w-4 h-4 mr-2" />
-                              {isUploading ? "Uploading..." : "Upload Image"}
+                              <X className="w-4 h-4" />
                             </Button>
-                            
-                            {field.value && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => field.onChange("")}
-                                className="px-3"
-                              >
-                                <X className="w-4 h-4" />
-                              </Button>
-                            )}
-                          </div>
-                          
-                          {/* Manual URL Input (optional) */}
-                          <Input 
-                            type="url"
-                            placeholder="Or paste image URL..."
-                            value={field.value || ""}
-                            onChange={field.onChange}
-                            className="text-sm"
-                          />
+                          )}
                         </div>
                       </FormControl>
                       <FormMessage />
