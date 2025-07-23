@@ -242,9 +242,20 @@ export default function CharacterDetails() {
                   {character.description && (
                     <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
                       <h3 className="text-lg font-semibold text-brand-950 mb-4">Description</h3>
-                      <EditorContentRenderer 
-                        data={character.description ? JSON.parse(character.description || '{"blocks":[]}') : null}
-                      />
+                      {(() => {
+                        try {
+                          // Try to parse as JSON first (new format)
+                          const parsedData = JSON.parse(character.description);
+                          return <EditorContentRenderer data={parsedData} />;
+                        } catch {
+                          // Fallback to plain text display (old format)
+                          return (
+                            <div className="prose prose-brand max-w-none">
+                              <p className="text-brand-900 leading-relaxed">{character.description}</p>
+                            </div>
+                          );
+                        }
+                      })()}
                     </div>
                   )}
                 </>
