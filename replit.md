@@ -398,3 +398,13 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Applied consistent color scheme for race header icon matching character details pattern
 - All race-related UI components now use Users icon for visual consistency
 - Migration completed with full functionality preserved and UI improvements applied
+
+### January 2025 - Character Management System Redesign and Schema Alignment
+- Redesigned character details page layout: moved tabs to left (2/3 width), character info to right sidebar (1/3 width)
+- Removed appearance, backstory, and weapons tabs per user request, kept only details, magic & abilities, and timeline
+- Fixed race data fetching to use proper raceId foreign key relationship instead of deprecated text field
+- Updated race management pages (create/edit) to use Users icon with brand-500 background matching details page
+- Enhanced character details tab to display all available schema fields: description, personality, background, goals, appearance, role, powerType, weapons, equipment, and status
+- Added proper conditional rendering with organized sections and visual hierarchy using brand color system
+- Applied responsive grid layouts for role/powerType and weapons/equipment sections with brand-100 background cards
+- Character details page now fully utilizes all available database fields providing comprehensive character information display

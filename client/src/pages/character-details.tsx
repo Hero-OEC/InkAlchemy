@@ -271,6 +271,82 @@ export default function CharacterDetails() {
                     </div>
                   )}
 
+                  {character.background && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-brand-900 mb-3">Background</h3>
+                      <div className="prose prose-brand max-w-none">
+                        <p className="text-brand-700 leading-relaxed">{character.background}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {character.goals && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-brand-900 mb-3">Goals & Motivations</h3>
+                      <div className="prose prose-brand max-w-none">
+                        <p className="text-brand-700 leading-relaxed">{character.goals}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {character.appearance && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-brand-900 mb-3">Appearance</h3>
+                      <div className="prose prose-brand max-w-none">
+                        <p className="text-brand-700 leading-relaxed">{character.appearance}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {(character.role || character.powerType) && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {character.role && (
+                        <div className="bg-brand-100 rounded-lg p-4">
+                          <h4 className="text-md font-semibold text-brand-900 mb-2">Role</h4>
+                          <p className="text-brand-700">{character.role}</p>
+                        </div>
+                      )}
+                      {character.powerType && (
+                        <div className="bg-brand-100 rounded-lg p-4">
+                          <h4 className="text-md font-semibold text-brand-900 mb-2">Power Type</h4>
+                          <p className="text-brand-700">{character.powerType}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {(character.weapons || character.equipment) && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-brand-900 mb-3">Equipment & Weapons</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {character.weapons && (
+                          <div className="bg-brand-100 rounded-lg p-4">
+                            <h4 className="text-md font-semibold text-brand-900 mb-2">Weapons</h4>
+                            <p className="text-brand-700">{character.weapons}</p>
+                          </div>
+                        )}
+                        {character.equipment && (
+                          <div className="bg-brand-100 rounded-lg p-4">
+                            <h4 className="text-md font-semibold text-brand-900 mb-2">Equipment</h4>
+                            <p className="text-brand-700">{character.equipment}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {character.status && character.status !== "active" && (
+                    <div className="bg-brand-100 rounded-lg p-4">
+                      <h4 className="text-md font-semibold text-brand-900 mb-2">Status</h4>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        character.status === "developing" ? "bg-yellow-100 text-yellow-800" :
+                        character.status === "inactive" ? "bg-gray-100 text-gray-800" :
+                        "bg-green-100 text-green-800"
+                      }`}>
+                        {character.status.charAt(0).toUpperCase() + character.status.slice(1)}
+                      </span>
+                    </div>
+                  )}
 
                 </div>
               )}
