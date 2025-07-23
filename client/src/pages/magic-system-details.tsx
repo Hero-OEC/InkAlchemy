@@ -375,33 +375,33 @@ export default function MagicSystemDetails() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="border-b border-brand-200 mb-8">
-          <nav className="flex space-x-8">
-            {tabs.map((tab) => {
-              const TabIcon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? "border-brand-500 text-brand-600"
-                      : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
-                  }`}
-                >
-                  <TabIcon size={16} />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
         {/* Content Grid - 2/3 main content + 1/3 sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Main Content - Tabs */}
           <div className="lg:col-span-2">
+            {/* Tabs */}
+            <div className="border-b border-brand-200 mb-8">
+              <nav className="flex space-x-8">
+                {tabs.map((tab) => {
+                  const TabIcon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === tab.id
+                          ? "border-brand-500 text-brand-600"
+                          : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
+                      }`}
+                    >
+                      <TabIcon size={16} />
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+            
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
               {renderTabContent()}
             </div>
