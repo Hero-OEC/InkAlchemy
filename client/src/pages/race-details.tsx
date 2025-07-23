@@ -7,7 +7,7 @@ import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { MiniCard } from "@/components/mini-card";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
-import { UserCheck, Edit, ArrowLeft, Trash2, MapPin, Mountain, Crown } from "lucide-react";
+import { Users, Edit, ArrowLeft, Trash2, MapPin, Mountain, Crown } from "lucide-react";
 import type { Race, Project, Character, Location } from "@shared/schema";
 
 export default function RaceDetails() {
@@ -173,8 +173,8 @@ export default function RaceDetails() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-brand-200">
-                <UserCheck size={24} className="text-brand-700" />
+              <div className="p-3 rounded-xl bg-brand-500">
+                <Users size={24} className="text-white" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-brand-950">{race?.name}</h1>
@@ -272,7 +272,7 @@ export default function RaceDetails() {
                   {raceCharacters.map((character) => (
                     <MiniCard
                       key={character.id}
-                      icon={UserCheck}
+                      icon={Users}
                       title={[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
                       badge={character.type || "supporting"}
                       badgeVariant="type"
@@ -282,7 +282,7 @@ export default function RaceDetails() {
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <UserCheck size={20} className="mx-auto text-brand-300 mb-2" />
+                  <Users size={20} className="mx-auto text-brand-300 mb-2" />
                   <p className="text-sm text-brand-600">No characters assigned</p>
                 </div>
               )}
