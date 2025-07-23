@@ -8,7 +8,7 @@ import { MiniCard } from "@/components/mini-card";
 import { CharacterMagicCard } from "@/components/character-magic-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
-import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft } from "lucide-react";
+import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft, FileText, Clock } from "lucide-react";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell, Race } from "@shared/schema";
 
@@ -171,9 +171,9 @@ export default function CharacterDetails() {
   };
 
   const tabs = [
-    { id: "details", label: "Details" },
-    { id: "magic", label: "Magic & Abilities" },
-    { id: "timeline", label: "Timeline" }
+    { id: "details", label: "Details", icon: FileText },
+    { id: "magic", label: "Magic & Abilities", icon: Zap },
+    { id: "timeline", label: "Timeline", icon: Clock }
   ];
 
   // Find the power type magic system
@@ -240,19 +240,23 @@ export default function CharacterDetails() {
             {/* Tab Navigation */}
             <div className="border-b border-brand-200 mb-6">
               <nav className="flex space-x-8">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                      activeTab === tab.id
-                        ? 'border-brand-500 text-brand-600'
-                        : 'border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
+                {tabs.map((tab) => {
+                  const TabIcon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === tab.id
+                          ? 'border-brand-500 text-brand-600'
+                          : 'border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300'
+                      }`}
+                    >
+                      <TabIcon size={16} />
+                      {tab.label}
+                    </button>
+                  );
+                })}
               </nav>
             </div>
 
