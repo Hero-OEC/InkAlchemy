@@ -135,6 +135,11 @@ export default function LocationDetails() {
     );
   }
 
+  // Don't render if locationId is "new" - this is handled by CreateLocation component
+  if (locationId === "new") {
+    return null;
+  }
+
   if (!location) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -173,12 +178,12 @@ export default function LocationDetails() {
   // Process events for the timeline component
   const processedEvents = relatedEvents.map(event => {
     const eventRelationships = relationships.filter(rel => 
-      rel.fromElementType === 'event' && rel.fromElementId === event.id
+      rel.sourceType === 'event' && rel.sourceId === event.id
     );
     
     const eventCharacters = eventRelationships
-      .filter(rel => rel.toElementType === 'character')
-      .map(rel => characters.find(char => char.id === rel.toElementId))
+      .filter(rel => rel.targetType === 'character')
+      .map(rel => characters.find(char => char.id === rel.targetId))
       .filter(Boolean) as Character[];
     
     const eventLocation = event.locationId 
@@ -370,7 +375,7 @@ export default function LocationDetails() {
                         key={character.id}
                         icon={Users}
                         title={character.name}
-                        badge={character.type || "character"}
+                        badge={(character as any).type || "character"}
                         badgeVariant="type"
                         onClick={() => handleCharacterClick(character)}
                         variant="editable"

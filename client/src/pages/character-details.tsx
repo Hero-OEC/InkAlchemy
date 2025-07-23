@@ -106,6 +106,11 @@ export default function CharacterDetails() {
     );
   }
 
+  // Don't render if characterId is "new" - this is handled by CreateCharacter component
+  if (characterId === "new") {
+    return null;
+  }
+
   // Handle error/not found state - this must be second and exclusive  
   if (!character || characterError) {
     return (
