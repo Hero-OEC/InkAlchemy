@@ -9,7 +9,7 @@ import { CharacterMagicCard } from "@/components/character-magic-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft } from "lucide-react";
-import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell } from "@shared/schema";
+import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell, Race } from "@shared/schema";
 
 const CHARACTER_TYPE_CONFIG = {
   protagonist: { icon: Crown, label: "Protagonist", bgColor: "bg-brand-500", textColor: "text-white" },
@@ -71,6 +71,11 @@ export default function CharacterDetails() {
     enabled: !!character,
   });
 
+  const { data: races = [] } = useQuery<Race[]>({
+    queryKey: [`/api/projects/${projectId}/races`],
+    enabled: !!character,
+  });
+
   const { data: characterSpells = [] } = useQuery<(Spell & { proficiency?: string })[]>({
     queryKey: [`/api/characters/${numericCharacterId}/spells`],
     enabled: !!character,
@@ -128,6 +133,9 @@ export default function CharacterDetails() {
   const config = CHARACTER_TYPE_CONFIG[character.type as keyof typeof CHARACTER_TYPE_CONFIG];
   const Icon = config?.icon || Users;
   const fullName = [character.prefix, character.name, character.suffix].filter(Boolean).join(" ");
+  
+  // Find the character's race
+  const characterRace = character.raceId ? races.find(race => race.id === character.raceId) : null;
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
@@ -157,10 +165,7 @@ export default function CharacterDetails() {
 
   const tabs = [
     { id: "details", label: "Details" },
-    { id: "appearance", label: "Appearance" },
-    { id: "backstory", label: "Backstory" },
     { id: "magic", label: "Magic & Abilities" },
-    { id: "weapons", label: "Weapons" },
     { id: "timeline", label: "Timeline" }
   ];
 
@@ -223,49 +228,7 @@ export default function CharacterDetails() {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Character Image & Basic Info */}
-          <div className="lg:col-span-1">
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6 mb-6">
-              {/* Character Image */}
-              <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-4">
-                {character.imageUrl ? (
-                  <img 
-                    src={character.imageUrl} 
-                    alt={fullName}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-brand-400">
-                    <Users size={64} />
-                  </div>
-                )}
-              </div>
-              
-              {/* Basic Info */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
-                    <Calendar className="w-4 h-4 text-brand-600" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Age</div>
-                    <div className="text-sm font-semibold text-brand-900">{character.age || "Unknown"}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
-                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
-                    <User className="w-4 h-4 text-brand-600" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Race</div>
-                    <div className="text-sm font-semibold text-brand-900">{character.race || "Unknown"}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column - Tab System */}
+          {/* Left Column - Tab System */}
           <div className="lg:col-span-2">
             {/* Tab Navigation */}
             <div className="border-b border-brand-200 mb-6">
@@ -312,28 +275,6 @@ export default function CharacterDetails() {
                 </div>
               )}
 
-              {activeTab === "appearance" && (
-                <div>
-                  <h3 className="text-lg font-semibold text-brand-900 mb-3">Appearance</h3>
-                  <div className="prose prose-brand max-w-none">
-                    <p className="text-brand-700 leading-relaxed">
-                      {character.appearance || "No appearance description available."}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "backstory" && (
-                <div>
-                  <h3 className="text-lg font-semibold text-brand-900 mb-3">Background</h3>
-                  <div className="prose prose-brand max-w-none">
-                    <p className="text-brand-700 leading-relaxed">
-                      {character.background || "No background information available."}
-                    </p>
-                  </div>
-                </div>
-              )}
-
               {activeTab === "magic" && (
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-6">Magic Systems & Abilities</h3>
@@ -366,38 +307,14 @@ export default function CharacterDetails() {
                         {magicSystemsWithSpells.map(system => (
                           <CharacterMagicCard
                             key={system.id}
-                            magicSystem={system}
-                            characterSpells={system.spells}
+                            magicSystem={system as any}
+                            characterSpells={system.spells as any}
                             projectId={projectId!}
                           />
                         ))}
                       </div>
                     );
                   })()}
-                </div>
-              )}
-
-              {activeTab === "weapons" && (
-                <div className="space-y-6">
-                  {/* Weapons Section */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-brand-900 mb-3">Weapons</h3>
-                    <div className="prose prose-brand max-w-none">
-                      <p className="text-brand-700 leading-relaxed">
-                        {character.weapons || "No weapons information available."}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Equipment Section */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-brand-900 mb-3">Equipment & Gear</h3>
-                    <div className="prose prose-brand max-w-none">
-                      <p className="text-brand-700 leading-relaxed">
-                        {character.equipment || "No equipment information available."}
-                      </p>
-                    </div>
-                  </div>
                 </div>
               )}
 
@@ -467,6 +384,48 @@ export default function CharacterDetails() {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Right Column - Character Image & Basic Info */}
+          <div className="lg:col-span-1">
+            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6 mb-6">
+              {/* Character Image */}
+              <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-4">
+                {character.imageUrl ? (
+                  <img 
+                    src={character.imageUrl} 
+                    alt={fullName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-brand-400">
+                    <Users size={64} />
+                  </div>
+                )}
+              </div>
+              
+              {/* Basic Info */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
+                    <Calendar className="w-4 h-4 text-brand-600" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Age</div>
+                    <div className="text-sm font-semibold text-brand-900">{character.age || "Unknown"}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 bg-brand-200 rounded-lg">
+                    <User className="w-4 h-4 text-brand-600" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-brand-500 uppercase tracking-wide">Race</div>
+                    <div className="text-sm font-semibold text-brand-900">{characterRace?.name || "Unknown"}</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
