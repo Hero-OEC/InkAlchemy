@@ -37,7 +37,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
 
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("POST", "/api/locations", data),
+      apiRequest("/api/locations", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: [`/api/projects/${projectId}/locations`] 
@@ -62,7 +62,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
 
   const updateMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("PATCH", `/api/locations/${location?.id}`, data),
+      apiRequest(`/api/locations/${location?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: [`/api/projects/${projectId}/locations`] 
@@ -98,16 +98,18 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-6">
+        {/* Basic Information Container */}
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-brand-950 mb-4">Basic Information</h3>
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name *</FormLabel>
+                  <FormLabel>Location Name *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Location name" {...field} />
+                    <Input placeholder="Enter location name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -119,7 +121,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Type</FormLabel>
+                  <FormLabel>Location Type</FormLabel>
                   <Select 
                     onValueChange={(value) => {
                       field.onChange(value);
@@ -154,13 +156,16 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
               )}
             />
           </div>
+        </div>
 
+        {/* Content Container */}
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-brand-950 mb-4">Content</h3>
           <FormField
             control={form.control}
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Content</FormLabel>
                 <FormControl>
                   <WordProcessor
                     value={field.value || ""}

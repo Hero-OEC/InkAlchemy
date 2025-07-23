@@ -97,13 +97,11 @@ export default function CreateLocation() {
         </div>
 
         {/* Form */}
-        <div className="bg-brand-50 rounded-lg border border-brand-200 p-8">
-          <LocationForm 
-            projectId={Number(projectId)} 
-            onSuccess={handleSuccess}
-            onTypeChange={handleTypeChange}
-          />
-        </div>
+        <LocationForm 
+          projectId={Number(projectId)} 
+          onSuccess={handleSuccess}
+          onTypeChange={handleTypeChange}
+        />
       </main>
     </div>
   );

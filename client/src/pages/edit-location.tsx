@@ -141,14 +141,12 @@ export default function EditLocation() {
         </div>
 
         {/* Form */}
-        <div className="bg-brand-50 rounded-lg border border-brand-200 p-8">
-          <LocationForm 
-            location={location}
-            projectId={Number(projectId)} 
-            onSuccess={handleSuccess}
-            onTypeChange={handleTypeChange}
-          />
-        </div>
+        <LocationForm 
+          location={location}
+          projectId={Number(projectId)} 
+          onSuccess={handleSuccess}
+          onTypeChange={handleTypeChange}
+        />
       </main>
     </div>
   );
