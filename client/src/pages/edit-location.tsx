@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { LocationForm } from "@/components/location-form";
-import { ArrowLeft, Building2, Trees, Castle, Mountain, Home, Landmark, Globe } from "lucide-react";
+import { ArrowLeft, Building2, Trees, Castle, Mountain, Home, Landmark, Globe, Crown, Zap } from "lucide-react";
 import type { Project, Location } from "@shared/schema";
 
 // Location type icons
@@ -19,6 +19,7 @@ const LOCATION_TYPE_ICONS = {
   river: Globe,
   lake: Globe,
   ocean: Globe,
+  desert: Mountain, // Using Mountain as desert icon
   building: Landmark,
   fortress: Castle,
   castle: Castle,
@@ -26,6 +27,8 @@ const LOCATION_TYPE_ICONS = {
   academy: Landmark,
   tower: Castle,
   dungeon: Castle,
+  realm: Crown, // Using Crown for realm/kingdom
+  dimension: Zap, // Using Zap for dimension/portal
   other: Globe,
 };
 

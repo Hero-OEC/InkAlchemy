@@ -8,7 +8,7 @@ import { MiniCard } from "@/components/mini-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
-import { ArrowLeft, Edit, Trash2, Calendar, MapPin, Users, Landmark, Crown } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Calendar, MapPin, Users, Landmark, Crown, Zap } from "lucide-react";
 import type { Project, Location, Character, Event, Relationship } from "@shared/schema";
 import { Building2, Trees, Castle, Mountain, Home, Globe } from "lucide-react";
 
@@ -24,6 +24,7 @@ const LOCATION_TYPE_ICONS = {
   river: Globe,
   lake: Globe,
   ocean: Globe,
+  desert: Mountain, // Using Mountain as desert icon
   building: Landmark,
   fortress: Castle,
   castle: Castle,
@@ -31,6 +32,8 @@ const LOCATION_TYPE_ICONS = {
   academy: Landmark,
   tower: Castle,
   dungeon: Castle,
+  realm: Crown, // Using Crown for realm/kingdom
+  dimension: Zap, // Using Zap for dimension/portal
   other: Globe,
 };
 
