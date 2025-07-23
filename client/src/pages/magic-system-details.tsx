@@ -8,7 +8,7 @@ import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
 import { MiniCard } from "@/components/mini-card";
-import { ArrowLeft, Edit, Trash2, Sparkles, Zap, DollarSign, Users, BookOpen, Wand2, Plus, Scroll, Shield } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Sparkles, Zap, Users, BookOpen, Wand2, Plus } from "lucide-react";
 import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -157,15 +157,13 @@ export default function MagicSystemDetails() {
   const tabs = system.type === "power" 
     ? [
         { id: "details", label: "Details", icon: BookOpen },
-        { id: "rules", label: "Rules", icon: Scroll },
-        { id: "limitations", label: "Limitations", icon: Shield },
-        { id: "abilities", label: "Abilities", icon: Zap }
+        { id: "abilities", label: "Abilities", icon: Zap },
+        { id: "characters", label: "Characters", icon: Users }
       ]
     : [
         { id: "details", label: "Details", icon: BookOpen },
-        { id: "rules", label: "Rules", icon: Scroll },
-        { id: "limitations", label: "Limitations", icon: Shield },
-        { id: "spells", label: "Spells", icon: Wand2 }
+        { id: "spells", label: "Spells", icon: Wand2 },
+        { id: "characters", label: "Characters", icon: Users }
       ];
 
   // Filter characters that might use this system (placeholder logic)
@@ -202,29 +200,7 @@ export default function MagicSystemDetails() {
           </div>
         );
 
-      case "rules":
-        return (
-          <div>
-            <h3 className="text-lg font-semibold text-brand-900 mb-3">System Rules</h3>
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                {system.rules || "No rules defined yet"}
-              </p>
-            </div>
-          </div>
-        );
 
-      case "limitations":
-        return (
-          <div>
-            <h3 className="text-lg font-semibold text-brand-900 mb-3">Limitations & Drawbacks</h3>
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                {system.limitations || "No limitations defined yet"}
-              </p>
-            </div>
-          </div>
-        );
 
 
 
@@ -300,7 +276,42 @@ export default function MagicSystemDetails() {
           </div>
         );
 
-
+      case "characters":
+        return (
+          <div>
+            <h3 className="text-lg font-semibold text-brand-900 mb-6">Characters Using This System</h3>
+            
+            {systemUsers.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="bg-brand-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users size={24} className="text-brand-500" />
+                </div>
+                <h4 className="text-xl font-semibold text-brand-900 mb-2">No Characters Assigned</h4>
+                <p className="text-brand-600">
+                  No characters are currently using this {system.type} system.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {systemUsers.map((character) => (
+                  <CharacterCard
+                    key={character.id}
+                    id={character.id}
+                    name={character.name}
+                    prefix={character.prefix || undefined}
+                    suffix={character.suffix || undefined}
+                    type={character.role as "protagonist" | "antagonist" | "supporting" | "ally" | "neutral" | "love-interest" | "villain" || "supporting"}
+                    description={character.description || ""}
+                    imageUrl={character.imageUrl || undefined}
+                    createdAt={character.createdAt}
+                    lastEditedAt={character.updatedAt}
+                    onClick={() => handleCharacterClick(character.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        );
 
       default:
         return null;
@@ -416,34 +427,7 @@ export default function MagicSystemDetails() {
               </span>
             </div>
 
-            {/* Characters Using This System */}
-            <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-              <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters Using This System</h3>
-              {systemUsers.length > 0 ? (
-                <div className="space-y-3">
-                  {systemUsers.slice(0, 3).map((character) => (
-                    <MiniCard
-                      key={character.id}
-                      icon={Users}
-                      title={character.name}
-                      badge={character.role || "character"}
-                      badgeVariant="type"
-                      onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
-                    />
-                  ))}
-                  {systemUsers.length > 3 && (
-                    <p className="text-sm text-brand-600 text-center pt-2">
-                      +{systemUsers.length - 3} more characters
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-4">
-                  <Users size={20} className="mx-auto text-brand-300 mb-2" />
-                  <p className="text-sm text-brand-600">No characters using this system</p>
-                </div>
-              )}
-            </div>
+
           </div>
         </div>
 
