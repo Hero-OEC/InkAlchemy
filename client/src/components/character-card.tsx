@@ -76,7 +76,7 @@ export function CharacterCard({
   onEdit,
   onDelete
 }: CharacterCardProps) {
-  const config = CHARACTER_TYPE_CONFIG[type];
+  const config = CHARACTER_TYPE_CONFIG[type] || CHARACTER_TYPE_CONFIG.supporting;
   const Icon = config.icon;
   
   // Truncate description to about 80 characters
