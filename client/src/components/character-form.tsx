@@ -1,18 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
-import { insertCharacterSchema, type Character, type MagicSystem, type Spell } from "@shared/schema";
+import { insertCharacterSchema, type Character, type MagicSystem, type Spell, type Race } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/button-variations";
 import { useToast } from "@/hooks/use-toast";
-import { Users, BookOpen, Scroll, Swords, Sparkles } from "lucide-react";
+import { Users } from "lucide-react";
 
 const formSchema = insertCharacterSchema.extend({
   projectId: z.number(),
@@ -23,6 +22,27 @@ interface CharacterFormProps {
   projectId: number;
   onSuccess: () => void;
 }
+
+// Helper function to convert null values to empty strings
+const normalizeCharacterData = (character: Character | null) => ({
+  name: character?.name || "",
+  description: character?.description || "",
+  prefix: character?.prefix || "",
+  suffix: character?.suffix || "",
+  type: character?.type || "",
+  role: character?.role || "",
+  appearance: character?.appearance || "",
+  personality: character?.personality || "",
+  background: character?.background || "",
+  goals: character?.goals || "",
+  powerType: character?.powerType || "",
+  age: character?.age || "",
+  raceId: character?.raceId || undefined,
+  weapons: character?.weapons || "",
+  equipment: character?.equipment || "",
+  imageUrl: character?.imageUrl || "",
+  status: character?.status || "active",
+});
 
 export function CharacterForm({ character, projectId, onSuccess }: CharacterFormProps) {
   const { toast } = useToast();
@@ -43,32 +63,20 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
     enabled: !!character?.id,
   });
 
+  const { data: races = [] } = useQuery<Race[]>({
+    queryKey: [`/api/projects/${projectId}/races`],
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       projectId,
-      name: character?.name || "",
-      description: character?.description || "",
-      prefix: character?.prefix || "",
-      suffix: character?.suffix || "",
-      type: character?.type || "",
-      role: character?.role || "",
-      appearance: character?.appearance || "",
-      personality: character?.personality || "",
-      background: character?.background || "",
-      goals: character?.goals || "",
-      powerType: character?.powerType || "",
-      age: character?.age || "",
-      race: character?.race || "",
-      weapons: character?.weapons || "",
-      equipment: character?.equipment || "",
-      imageUrl: character?.imageUrl || "",
-      status: character?.status || "active",
+      ...normalizeCharacterData(character),
     },
   });
 
   // Initialize selected spells when character spells load
-  useState(() => {
+  useEffect(() => {
     if (characterSpells.length > 0) {
       setSelectedSpells(characterSpells.map(spell => spell.id));
     }
@@ -78,7 +86,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
     // Remove all current character spells
     if (character) {
       for (const spell of characterSpells) {
-        await apiRequest("DELETE", `/api/spells/${spell.id}`);
+        await apiRequest(`/api/spells/${spell.id}`, { method: "DELETE" });
       }
     }
 
@@ -86,11 +94,14 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
     for (const spellId of selectedSpells) {
       const originalSpell = projectSpells.find(s => s.id === spellId);
       if (originalSpell) {
-        await apiRequest("POST", "/api/spells", {
-          ...originalSpell,
-          id: undefined,
-          characterId,
-          projectId,
+        await apiRequest("/api/spells", {
+          method: "POST",
+          body: JSON.stringify({
+            ...originalSpell,
+            id: undefined,
+            characterId,
+            projectId,
+          }),
         });
       }
     }
@@ -98,9 +109,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
 
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("POST", "/api/characters", data),
+      apiRequest("/api/characters", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: async (newCharacter) => {
-      // Add character spells
       await updateCharacterSpells(newCharacter.id);
       
       queryClient.invalidateQueries({ 
@@ -126,9 +136,8 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
 
   const updateMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("PATCH", `/api/characters/${character?.id}`, data),
+      apiRequest(`/api/characters/${character?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: async (updatedCharacter) => {
-      // Update character spells
       await updateCharacterSpells(updatedCharacter.id);
       
       queryClient.invalidateQueries({ 
@@ -571,13 +580,24 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
 
                   <FormField
                     control={form.control}
-                    name="race"
+                    name="raceId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Race</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Human" {...field} />
-                        </FormControl>
+                        <Select onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)} value={field.value?.toString() || ""}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select race" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {races.map((race) => (
+                              <SelectItem key={race.id} value={race.id.toString()}>
+                                {race.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -590,7 +610,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Character Type *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select character type" />
@@ -617,7 +637,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Status</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select status" />
