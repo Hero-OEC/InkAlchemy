@@ -212,7 +212,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                 <div className="space-y-6">
                   {/* Basic Information */}
                   <div className="bg-white border border-brand-200 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Basic Information</h3>
+                    <h3 className="text-lg font-semibold text-brand-950 mb-4">Basic Information</h3>
                     <div className="space-y-4">
                       <FormField
                         control={form.control}
@@ -280,7 +280,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
 
                   {/* Character Background */}
                   <div className="bg-white border border-brand-200 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Character Background</h3>
+                    <h3 className="text-lg font-semibold text-brand-950 mb-4">Character Background</h3>
                     <div className="space-y-4">
                       <FormField
                         control={form.control}
@@ -340,7 +340,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
 
                   {/* Physical & Role Details */}
                   <div className="bg-white border border-brand-200 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Physical & Role Details</h3>
+                    <h3 className="text-lg font-semibold text-brand-950 mb-4">Physical & Role Details</h3>
                     <div className="space-y-4">
                       <FormField
                         control={form.control}
@@ -394,7 +394,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
 
                   {/* Equipment & Combat */}
                   <div className="bg-white border border-brand-200 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Equipment & Combat</h3>
+                    <h3 className="text-lg font-semibold text-brand-950 mb-4">Equipment & Combat</h3>
                     <div className="space-y-4">
                       <FormField
                         control={form.control}
@@ -439,7 +439,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
               {activeTab === "magic" && (
                 <div className="space-y-6">
                   <div className="bg-white border border-brand-200 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-brand-900 mb-4">Magical Abilities</h3>
+                    <h3 className="text-lg font-semibold text-brand-950 mb-4">Magical Abilities</h3>
                     <div className="space-y-4">
                       <div>
                         <h4 className="text-md font-semibold text-brand-900 mb-3">Character Spells & Abilities</h4>
@@ -482,7 +482,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
           {/* Right Column - Character Profile (1/3) */}
           <div className="lg:col-span-1">
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-brand-900 mb-4">Character Profile</h3>
+              <h3 className="text-lg font-semibold text-brand-950 mb-4">Character Profile</h3>
               
               {/* Character Image */}
               <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-6">
