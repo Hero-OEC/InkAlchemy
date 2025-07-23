@@ -400,7 +400,7 @@ export default function EditRace() {
                         title={[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
                         badge={character.type || "supporting"}
                         badgeVariant="type"
-                        variant="dropdown"
+                        variant="editable"
                         onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
                         onDelete={async () => {
                           try {
