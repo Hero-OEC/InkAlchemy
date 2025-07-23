@@ -408,3 +408,10 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Added proper conditional rendering with organized sections and visual hierarchy using brand color system
 - Applied responsive grid layouts for role/powerType and weapons/equipment sections with brand-100 background cards
 - Character details page now fully utilizes all available database fields providing comprehensive character information display
+
+### January 2025 - Character Form Layout Redesign and Container Width Standardization
+- Switched character edit and create form layout: tabs section moved to left (2/3 width), character profile to right sidebar (1/3 width)
+- Recreated CharacterForm component with clean tabbed interface maintaining all existing functionality
+- Updated container width on edit/create pages from max-w-4xl to max-w-7xl matching character details page for consistent wide layout
+- Applied responsive padding (px-4 sm:px-6 lg:px-8) to match details page relaxed margins and spacing
+- Fixed all TypeScript errors and maintained form validation across all tabs (overview, background, details, weapons, magic)
