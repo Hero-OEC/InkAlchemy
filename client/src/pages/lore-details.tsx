@@ -7,6 +7,7 @@ import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { ArrowLeft, Edit, Trash2, BookOpen, Crown, Scroll, Landmark, Sword, Users, Globe, Calendar } from "lucide-react";
 import type { Project, LoreEntry } from "@shared/schema";
+import { format } from "date-fns";
 
 // Lore category config
 const LORE_CATEGORY_CONFIG = {
@@ -154,7 +155,7 @@ export default function LoreDetails() {
                 </span>
                 {lore.updatedAt && (
                   <span className="text-sm text-brand-500">
-                    Updated {formatDate(lore.updatedAt)}
+                    Updated {format(new Date(lore.updatedAt), "MMM d, yyyy")}
                   </span>
                 )}
               </div>
@@ -197,7 +198,7 @@ export default function LoreDetails() {
         {/* Metadata */}
         {lore.createdAt && (
           <div className="mt-6 text-center text-sm text-brand-500">
-            Created {formatDate(lore.createdAt)}
+            Created {format(new Date(lore.createdAt), "MMM d, yyyy")}
           </div>
         )}
       </main>
