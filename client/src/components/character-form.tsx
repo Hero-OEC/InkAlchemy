@@ -30,7 +30,6 @@ const normalizeCharacterData = (character: Character | null) => ({
   description: character?.description || "",
   prefix: character?.prefix || "",
   suffix: character?.suffix || "",
-  type: character?.type || "",
   role: character?.role || "",
   appearance: character?.appearance || "",
   personality: character?.personality || "",
@@ -565,32 +564,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                   />
                 </div>
 
-                <FormField
-                  control={form.control}
-                  name="type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Character Type *</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || ""}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select character type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="protagonist">Protagonist</SelectItem>
-                          <SelectItem value="antagonist">Antagonist</SelectItem>
-                          <SelectItem value="villain">Villain</SelectItem>
-                          <SelectItem value="supporting">Supporting</SelectItem>
-                          <SelectItem value="ally">Ally</SelectItem>
-                          <SelectItem value="neutral">Neutral</SelectItem>
-                          <SelectItem value="love-interest">Love Interest</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
 
 
               </div>

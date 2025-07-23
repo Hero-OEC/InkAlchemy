@@ -18,7 +18,7 @@ export const characters = pgTable("characters", {
   name: text("name").notNull(),
   prefix: text("prefix"),
   suffix: text("suffix"),
-  type: text("type").default("supporting"), // protagonist, antagonist, villain, supporting, ally, neutral, love-interest
+
   role: text("role"),
   description: text("description"),
   appearance: text("appearance"),
