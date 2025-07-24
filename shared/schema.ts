@@ -90,7 +90,7 @@ export const loreEntries = pgTable("lore_entries", {
   title: text("title").notNull(),
   content: text("content"),
   category: text("category"), // history, mythology, culture, etc.
-  importance: text("importance").default("medium"),
+
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -117,8 +117,7 @@ export const races = pgTable("races", {
   // Physical Characteristics
   lifespan: text("lifespan"), // short, human, long, immortal, eternal
   sizeCategory: text("size_category"), // tiny, small, medium, large, huge
-  // Abilities & Powers
-  magicalAffinity: text("magical_affinity"), // none, low, medium, high, innate
+  // Abilities & Powers (removed magicalAffinity as not used)
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
