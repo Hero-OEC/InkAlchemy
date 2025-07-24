@@ -524,3 +524,76 @@ export function NotesGridSkeleton() {
     </div>
   );
 }
+
+// Event Details Header Skeleton
+export function EventDetailsHeaderSkeleton() {
+  return (
+    <div className="flex items-center gap-4 mb-8">
+      <Skeleton className="w-16 h-16 rounded-lg" />
+      <div className="flex-1">
+        <Skeleton className="h-8 w-64 mb-2" />
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-7 w-20 rounded-full" />
+          <Skeleton className="h-7 w-16 rounded-full" />
+          <Skeleton className="h-7 w-32 rounded-full" />
+        </div>
+      </div>
+      <div className="flex-shrink-0 flex items-center gap-3">
+        <Skeleton className="h-10 w-28" />
+        <Skeleton className="h-10 w-20" />
+      </div>
+    </div>
+  );
+}
+
+// Event Details Content Skeleton
+export function EventDetailsContentSkeleton() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      {/* Main Content Skeleton */}
+      <div className="lg:col-span-2">
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-8">
+          <Skeleton className="h-6 w-40 mb-4" />
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+            <Skeleton className="h-4 w-4/5" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+        </div>
+      </div>
+
+      {/* Sidebar Skeleton */}
+      <div className="space-y-6">
+        {/* Location Section Skeleton */}
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-8">
+          <Skeleton className="h-5 w-20 mb-4" />
+          <div className="flex items-center gap-3 p-3 bg-brand-50 rounded-lg border border-brand-200">
+            <Skeleton className="w-8 h-8 rounded-lg flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <Skeleton className="h-4 w-3/4 mb-1" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+          </div>
+        </div>
+
+        {/* Characters Section Skeleton */}
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-8">
+          <Skeleton className="h-5 w-36 mb-4" />
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="flex items-center gap-3 p-3 bg-brand-50 rounded-lg border border-brand-200">
+                <Skeleton className="w-8 h-8 rounded-lg flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <Skeleton className="h-4 w-2/3 mb-1" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

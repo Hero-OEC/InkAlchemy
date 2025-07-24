@@ -7,6 +7,7 @@ import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { useNavigation } from "@/contexts/navigation-context";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
+import { EventDetailsHeaderSkeleton, EventDetailsContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, Trash2, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
@@ -66,11 +67,11 @@ export default function EventDetails() {
 
   // Don't track detail pages in history - only main pages should be tracked
   
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: event } = useQuery<Event>({
+  const { data: event, isLoading: eventLoading } = useQuery<Event>({
     queryKey: [`/api/events/${eventId}`],
   });
 
@@ -85,17 +86,20 @@ export default function EventDetails() {
     }
   }, [event?.title, project?.name]);
 
-  const { data: characters = [] } = useQuery<Character[]>({
+  const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
-  const { data: locations = [] } = useQuery<Location[]>({
+  const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
   });
 
-  const { data: relationships = [] } = useQuery<Relationship[]>({
+  const { data: relationships = [], isLoading: relationshipsLoading } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || eventLoading || charactersLoading || locationsLoading || relationshipsLoading;
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
@@ -130,6 +134,39 @@ export default function EventDetails() {
       console.error('Error deleting event:', error);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-50">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="timeline"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        <main className="max-w-7xl mx-auto px-8 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+
+          {/* Event Header Skeleton */}
+          <EventDetailsHeaderSkeleton />
+
+          {/* Main Content Skeleton */}
+          <EventDetailsContentSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   if (!event) {
     return (
