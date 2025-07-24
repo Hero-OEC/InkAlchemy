@@ -128,22 +128,6 @@ export default function EditLocation() {
           </Button>
         </div>
 
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="bg-brand-500 p-3 rounded-xl">
-            {(() => {
-              const Icon = getCurrentIcon();
-              return <Icon size={24} className="text-white" />;
-            })()}
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-brand-950">Edit {location.name}</h1>
-            <p className="text-brand-600 mt-1">
-              Modify the details of this location
-            </p>
-          </div>
-        </div>
-
         {/* Form */}
         <LocationForm 
           location={location}

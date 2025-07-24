@@ -84,22 +84,6 @@ export default function CreateLocation() {
           </Button>
         </div>
 
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="bg-brand-500 p-3 rounded-xl">
-            {(() => {
-              const Icon = getCurrentIcon();
-              return <Icon size={24} className="text-white" />;
-            })()}
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-brand-950">Create New Location</h1>
-            <p className="text-brand-600 mt-1">
-              Add a new location to your {project?.name} project
-            </p>
-          </div>
-        </div>
-
         {/* Form */}
         <LocationForm 
           projectId={Number(projectId)} 
