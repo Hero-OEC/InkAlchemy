@@ -212,8 +212,13 @@ export default function Locations() {
               <h3 className="text-xl font-semibold text-brand-900 mb-2">No locations yet</h3>
               <p className="text-brand-600 mb-6">Start building your world by creating your first location</p>
             </div>
-            <Button onClick={handleCreateLocation} className="flex items-center gap-2 mx-auto">
-              <Plus size={20} />
+            <Button 
+              variant="primary"
+              size="md"
+              onClick={handleCreateLocation} 
+              className="flex items-center gap-2 mx-auto"
+            >
+              <Plus className="w-4 h-4" />
               Create First Location
             </Button>
           </div>
