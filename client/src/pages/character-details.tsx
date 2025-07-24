@@ -6,7 +6,6 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
 import { CharacterMagicCard } from "@/components/character-magic-card";
-import { SearchComponent } from "@/components/search-component";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft, FileText, Clock, GraduationCap, UserPlus, UserMinus } from "lucide-react";
@@ -32,8 +31,6 @@ export default function CharacterDetails() {
   const [currentPath, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [timelineSearchQuery, setTimelineSearchQuery] = useState("");
-  const [timelineActiveFilters, setTimelineActiveFilters] = useState<Record<string, string>>({});
   const { goBack, navigateWithReferrer } = useNavigation();
 
   // Don't track detail pages in history - only main pages should be tracked
@@ -337,68 +334,7 @@ export default function CharacterDetails() {
 
               {activeTab === "timeline" && (
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-brand-900">Character Timeline</h3>
-                    <SearchComponent
-                      placeholder="Search character events..."
-                      onSearch={setTimelineSearchQuery}
-                      onFilterChange={setTimelineActiveFilters}
-                      filters={[
-                        {
-                          key: "stage",
-                          label: "Writing Stage",
-                          options: [
-                            { value: "", label: "All Stages" },
-                            { value: "planning", label: "Planning" },
-                            { value: "writing", label: "Writing" },
-                            { value: "first-draft", label: "First Draft" },
-                            { value: "editing", label: "Editing" },
-                            { value: "complete", label: "Complete" }
-                          ]
-                        },
-                        {
-                          key: "type", 
-                          label: "Event Type",
-                          options: [
-                            { value: "", label: "All Types" },
-                            { value: "battle", label: "Battle" },
-                            { value: "meeting", label: "Meeting" },
-                            { value: "discovery", label: "Discovery" },
-                            { value: "journey", label: "Journey" },
-                            { value: "celebration", label: "Celebration" },
-                            { value: "tragedy", label: "Tragedy" },
-                            { value: "ritual", label: "Ritual" },
-                            { value: "political", label: "Political" },
-                            { value: "personal", label: "Personal" },
-                            { value: "magical", label: "Magical" },
-                            { value: "other", label: "Other" }
-                          ]
-                        },
-                        {
-                          key: "characterId",
-                          label: "Other Characters",
-                          options: [
-                            { value: "", label: "All Characters" },
-                            ...characters.filter(char => char.id !== character.id).map(char => ({
-                              value: char.id.toString(),
-                              label: char.name
-                            }))
-                          ]
-                        },
-                        {
-                          key: "locationId",
-                          label: "Location",
-                          options: [
-                            { value: "", label: "All Locations" },
-                            ...locations.map(location => ({
-                              value: location.id.toString(),
-                              label: location.name
-                            }))
-                          ]
-                        }
-                      ]}
-                    />
-                  </div>
+                  <h3 className="text-lg font-semibold text-brand-900 mb-3">Character Timeline</h3>
                   <div className="bg-brand-50 rounded-lg p-4">
                     {(() => {
                       // Filter events where this character is involved
@@ -432,51 +368,6 @@ export default function CharacterDetails() {
                           characters: eventCharacters,
                           location: eventLocation
                         };
-                      });
-
-                      // Apply search and filters
-                      const filteredEvents = processedEvents.filter((event) => {
-                        // Text search
-                        if (timelineSearchQuery) {
-                          const searchLower = timelineSearchQuery.toLowerCase();
-                          const matchesTitle = event.title.toLowerCase().includes(searchLower);
-                          const matchesDescription = event.description?.toLowerCase().includes(searchLower);
-                          const matchesLocation = event.location?.name.toLowerCase().includes(searchLower);
-                          const matchesCharacters = event.characters.some(char => 
-                            char.name.toLowerCase().includes(searchLower)
-                          );
-                          
-                          if (!matchesTitle && !matchesDescription && !matchesLocation && !matchesCharacters) {
-                            return false;
-                          }
-                        }
-
-                        // Filter by writing stage
-                        if (timelineActiveFilters.stage && event.stage !== timelineActiveFilters.stage) {
-                          return false;
-                        }
-
-                        // Filter by event type
-                        if (timelineActiveFilters.type && event.type !== timelineActiveFilters.type) {
-                          return false;
-                        }
-
-                        // Filter by other characters involved
-                        if (timelineActiveFilters.characterId) {
-                          const hasCharacter = event.characters.some(char => 
-                            char.id.toString() === timelineActiveFilters.characterId
-                          );
-                          if (!hasCharacter) {
-                            return false;
-                          }
-                        }
-
-                        // Filter by location
-                        if (timelineActiveFilters.locationId && event.locationId?.toString() !== timelineActiveFilters.locationId) {
-                          return false;
-                        }
-
-                        return true;
                       });
 
                       if (processedEvents.length === 0) {
