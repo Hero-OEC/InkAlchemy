@@ -102,16 +102,33 @@ export default function EditNote() {
         </div>
 
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 rounded-xl bg-brand-500">
-            {(() => {
-              const Icon = getCurrentIcon();
-              return <Icon size={24} className="text-white" />;
-            })()}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-brand-500">
+              {(() => {
+                const Icon = getCurrentIcon();
+                return <Icon size={24} className="text-white" />;
+              })()}
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-brand-950">Edit Note</h1>
+              <p className="text-brand-600 mt-1">Update your note details</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-brand-950">Edit Note</h1>
-            <p className="text-brand-600 mt-1">Update your note details</p>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              onClick={handleSuccess}
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              form="note-form"
+              variant="primary"
+            >
+              Update Note
+            </Button>
           </div>
         </div>
 
@@ -120,6 +137,7 @@ export default function EditNote() {
           note={note}
           projectId={parseInt(projectId!)}
           onSuccess={handleSuccess}
+          onCancel={handleSuccess}
           onCategoryChange={handleCategoryChange}
         />
       </main>

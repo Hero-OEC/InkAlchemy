@@ -19,10 +19,11 @@ interface NoteFormProps {
   note?: Note | null;
   projectId: number;
   onSuccess: () => void;
+  onCancel: () => void;
   onCategoryChange?: (category: string) => void;
 }
 
-export function NoteForm({ note, projectId, onSuccess, onCategoryChange }: NoteFormProps) {
+export function NoteForm({ note, projectId, onSuccess, onCancel, onCategoryChange }: NoteFormProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -103,7 +104,7 @@ export function NoteForm({ note, projectId, onSuccess, onCategoryChange }: NoteF
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form id="note-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {/* Basic Information */}
         <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
           <h3 className="text-lg font-semibold text-brand-950 mb-6">Basic Information</h3>
@@ -181,14 +182,7 @@ export function NoteForm({ note, projectId, onSuccess, onCategoryChange }: NoteF
           />
         </div>
 
-        <div className="flex justify-end space-x-4">
-          <Button type="button" variant="outline" onClick={onSuccess}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : note ? "Update Note" : "Create Note"}
-          </Button>
-        </div>
+
       </form>
     </Form>
   );

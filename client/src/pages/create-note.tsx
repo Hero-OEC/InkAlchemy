@@ -71,16 +71,33 @@ export default function CreateNote() {
         </div>
 
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 rounded-xl bg-brand-500">
-            {(() => {
-              const Icon = getCurrentIcon();
-              return <Icon size={24} className="text-white" />;
-            })()}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-brand-500">
+              {(() => {
+                const Icon = getCurrentIcon();
+                return <Icon size={24} className="text-white" />;
+              })()}
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-brand-950">Create New Note</h1>
+              <p className="text-brand-600 mt-1">Add a new note to your project</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-brand-950">Create New Note</h1>
-            <p className="text-brand-600 mt-1">Add a new note to your project</p>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              onClick={handleSuccess}
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              form="note-form"
+              variant="primary"
+            >
+              Create Note
+            </Button>
           </div>
         </div>
 
@@ -88,6 +105,7 @@ export default function CreateNote() {
         <NoteForm
           projectId={parseInt(projectId!)}
           onSuccess={handleSuccess}
+          onCancel={handleSuccess}
           onCategoryChange={handleCategoryChange}
         />
       </main>
