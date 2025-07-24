@@ -19,10 +19,11 @@ interface LoreFormProps {
   lore?: LoreEntry | null;
   projectId: number;
   onSuccess: () => void;
+  onCancel: () => void;
   onCategoryChange?: (category: string) => void;
 }
 
-export function LoreForm({ lore, projectId, onSuccess, onCategoryChange }: LoreFormProps) {
+export function LoreForm({ lore, projectId, onSuccess, onCancel, onCategoryChange }: LoreFormProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -97,7 +98,7 @@ export function LoreForm({ lore, projectId, onSuccess, onCategoryChange }: LoreF
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form id="lore-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {/* Basic Information Container */}
         <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
           <h3 className="text-lg font-semibold text-brand-950 mb-4">Basic Information</h3>
@@ -175,15 +176,7 @@ export function LoreForm({ lore, projectId, onSuccess, onCategoryChange }: LoreF
           />
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-end space-x-2 pt-6 border-t border-brand-200">
-          <Button type="button" variant="outline" onClick={onSuccess}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : lore ? "Update Lore" : "Create Lore"}
-          </Button>
-        </div>
+
       </form>
     </Form>
   );

@@ -117,18 +117,35 @@ export default function EditLore() {
         </div>
 
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="bg-brand-500 p-3 rounded-xl">
-            {(() => {
-              const Icon = getCurrentIcon();
-              return <Icon size={24} className="text-white" />;
-            })()}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="bg-brand-500 p-3 rounded-xl">
+              {(() => {
+                const Icon = getCurrentIcon();
+                return <Icon size={24} className="text-white" />;
+              })()}
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-brand-950">Edit {lore.title}</h1>
+              <p className="text-brand-600 mt-1">
+                Modify the details of this lore entry
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-brand-950">Edit {lore.title}</h1>
-            <p className="text-brand-600 mt-1">
-              Modify the details of this lore entry
-            </p>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              onClick={handleSuccess}
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              form="lore-form"
+              variant="primary"
+            >
+              Update Lore
+            </Button>
           </div>
         </div>
 
@@ -137,6 +154,7 @@ export default function EditLore() {
           lore={lore}
           projectId={Number(projectId)} 
           onSuccess={handleSuccess}
+          onCancel={handleSuccess}
           onCategoryChange={handleCategoryChange}
         />
       </main>

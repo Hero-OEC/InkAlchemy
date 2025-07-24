@@ -73,18 +73,35 @@ export default function CreateLore() {
         </div>
 
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="bg-brand-500 p-3 rounded-xl">
-            {(() => {
-              const Icon = getCurrentIcon();
-              return <Icon size={24} className="text-white" />;
-            })()}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="bg-brand-500 p-3 rounded-xl">
+              {(() => {
+                const Icon = getCurrentIcon();
+                return <Icon size={24} className="text-white" />;
+              })()}
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-brand-950">Create New Lore Entry</h1>
+              <p className="text-brand-600 mt-1">
+                Add knowledge and history to your {project?.name} project
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-brand-950">Create New Lore Entry</h1>
-            <p className="text-brand-600 mt-1">
-              Add knowledge and history to your {project?.name} project
-            </p>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              onClick={handleSuccess}
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              form="lore-form"
+              variant="primary"
+            >
+              Create Lore
+            </Button>
           </div>
         </div>
 
@@ -92,6 +109,7 @@ export default function CreateLore() {
         <LoreForm 
           projectId={Number(projectId)} 
           onSuccess={handleSuccess}
+          onCancel={handleSuccess}
           onCategoryChange={handleCategoryChange}
         />
       </main>
