@@ -61,7 +61,7 @@ export function SearchComponent({
   const activeFilterCount = Object.keys(activeFilters).length;
 
   return (
-    <div className={`flex items-center gap-3 w-full max-w-2xl ${className}`}>
+    <div className={`flex items-center gap-3 w-full max-w-lg ${className}`}>
       {/* Search Input */}
       <div className="relative flex-1 min-w-0">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-500 w-4 h-4" />
