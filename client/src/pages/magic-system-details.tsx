@@ -8,6 +8,7 @@ import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
 import { MiniCard } from "@/components/mini-card";
+import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { ArrowLeft, Edit, Trash2, Sparkles, Zap, Users, BookOpen, Wand2, Plus } from "lucide-react";
 import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -191,9 +192,10 @@ export default function MagicSystemDetails() {
             <div>
               <h3 className="text-lg font-semibold text-brand-900 mb-3">Description</h3>
               <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-                <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                  {system.description || "No description available"}
-                </p>
+                <EditorContentRenderer 
+                  data={system.description ? JSON.parse(system.description) : null}
+                  className="prose prose-brand max-w-none"
+                />
               </div>
             </div>
             
