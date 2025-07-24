@@ -1,8 +1,8 @@
-# StoryForge - Complete Application Documentation
+# InkAlchemy - Complete Application Documentation
 
 ## Overview
 
-**StoryForge** is a comprehensive worldbuilding and story management platform designed for writers, authors, and creative professionals. It provides a complete suite of tools to organize, develop, and manage all aspects of fictional worlds and narratives in a single, integrated environment.
+**InkAlchemy** is a comprehensive worldbuilding and story management platform designed for writers, authors, and creative professionals. It provides a complete suite of tools to organize, develop, and manage all aspects of fictional worlds and narratives in a single, integrated environment.
 
 **Current Version**: Production-ready MVP  
 **Technology Stack**: React TypeScript frontend, Express.js backend, PostgreSQL database  
@@ -174,7 +174,7 @@
 
 **Page Title Management**
 - Dynamic browser tab titles reflecting current content
-- Consistent title formatting: "Content Name - Project Name | StoryForge"
+- Consistent title formatting: "Content Name - Project Name | InkAlchemy"
 - Context-aware title updates
 - Professional branding throughout
 
@@ -317,4 +317,4 @@
 
 ---
 
-This documentation represents the current state of StoryForge as of January 2025. The application is production-ready with all core features implemented and tested. The architecture supports future enhancements including collaboration features, export functionality, and advanced analytics.
+This documentation represents the current state of InkAlchemy as of January 2025. The application is production-ready with all core features implemented and tested. The architecture supports future enhancements including collaboration features, export functionality, and advanced analytics.

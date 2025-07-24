@@ -94,11 +94,11 @@ export default function CharacterDetails() {
   // Set page title
   useEffect(() => {
     if (character?.name && project?.name) {
-      document.title = `${character.name} - ${project.name} | StoryForge`;
+      document.title = `${character.name} - ${project.name} | InkAlchemy`;
     } else if (character?.name) {
-      document.title = `${character.name} | StoryForge`;
+      document.title = `${character.name} | InkAlchemy`;
     } else {
-      document.title = "Character Details | StoryForge";
+      document.title = "Character Details | InkAlchemy";
     }
   }, [character?.name, project?.name]);
 
@@ -149,7 +149,7 @@ export default function CharacterDetails() {
           hasActiveProject={true}
           currentPage="characters"
           onNavigate={() => setLocation(`/projects/${projectId}/characters`)}
-          projectName="StoryForge"
+          projectName="InkAlchemy"
         />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-12">

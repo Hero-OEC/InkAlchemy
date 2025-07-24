@@ -101,9 +101,9 @@ export default function MagicSystems() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `Magic Systems - ${project.name} | StoryForge`;
+      document.title = `Magic Systems - ${project.name} | InkAlchemy`;
     } else {
-      document.title = "Magic Systems | StoryForge";
+      document.title = "Magic Systems | InkAlchemy";
     }
   }, [project?.name]);
 

@@ -43,7 +43,7 @@ export default function EditMagicSystem() {
   // Set page title
   useEffect(() => {
     if (system?.name && project?.name) {
-      document.title = `Edit ${system.name} - ${project.name} | StoryForge`;
+      document.title = `Edit ${system.name} - ${project.name} | InkAlchemy`;
     }
   }, [system?.name, project?.name]);
 

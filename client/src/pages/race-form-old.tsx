@@ -40,7 +40,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
 
   // Set page title
   useEffect(() => {
-    document.title = mode === "create" ? "Create Race - StoryForge" : "Edit Race - StoryForge";
+    document.title = mode === "create" ? "Create Race - InkAlchemy" : "Edit Race - InkAlchemy";
   }, [mode]);
 
   // Fetch project data
@@ -57,9 +57,9 @@ export default function RaceForm({ mode }: RaceFormProps) {
   // Update page title when race data loads
   useEffect(() => {
     if (race && project && mode === "edit") {
-      document.title = `Edit ${race.name} - ${project.name} | StoryForge`;
+      document.title = `Edit ${race.name} - ${project.name} | InkAlchemy`;
     } else if (project && mode === "create") {
-      document.title = `Create Race - ${project.name} | StoryForge`;
+      document.title = `Create Race - ${project.name} | InkAlchemy`;
     }
   }, [race, project, mode]);
 

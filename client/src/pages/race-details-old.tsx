@@ -15,7 +15,7 @@ export default function RaceDetails() {
 
   // Set page title
   useEffect(() => {
-    document.title = `Race Details - StoryForge`;
+    document.title = `Race Details - InkAlchemy`;
   }, []);
 
   // Fetch project data
@@ -31,7 +31,7 @@ export default function RaceDetails() {
   // Update page title when race data loads
   useEffect(() => {
     if (race && project) {
-      document.title = `${race.name} - ${project.name} | StoryForge`;
+      document.title = `${race.name} - ${project.name} | InkAlchemy`;
     }
   }, [race, project]);
 

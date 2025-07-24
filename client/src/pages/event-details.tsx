@@ -78,11 +78,11 @@ export default function EventDetails() {
   // Set page title
   useEffect(() => {
     if (event?.title && project?.name) {
-      document.title = `${event.title} - ${project.name} | StoryForge`;
+      document.title = `${event.title} - ${project.name} | InkAlchemy`;
     } else if (event?.title) {
-      document.title = `${event.title} | StoryForge`;
+      document.title = `${event.title} | InkAlchemy`;
     } else {
-      document.title = "Event Details | StoryForge";
+      document.title = "Event Details | InkAlchemy";
     }
   }, [event?.title, project?.name]);
 

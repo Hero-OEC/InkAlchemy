@@ -48,9 +48,9 @@ export default function Lore() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `Lore - ${project.name} | StoryForge`;
+      document.title = `Lore - ${project.name} | InkAlchemy`;
     } else {
-      document.title = "Lore | StoryForge";
+      document.title = "Lore | InkAlchemy";
     }
   }, [project?.name]);
 

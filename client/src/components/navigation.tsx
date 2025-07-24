@@ -41,7 +41,7 @@ export function Navigation({ onSearch }: NavigationProps) {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <Feather className="text-white w-4 h-4" />
             </div>
-            <span className="text-xl font-semibold text-gray-900 dark:text-white">StoryForge</span>
+            <span className="text-xl font-semibold text-gray-900 dark:text-white">InkAlchemy</span>
           </div>
           
           <div className="flex items-center space-x-1">

@@ -65,11 +65,11 @@ export default function RaceDetails() {
   // Set page title
   useEffect(() => {
     if (race?.name && project?.name) {
-      document.title = `${race.name} - ${project.name} | StoryForge`;
+      document.title = `${race.name} - ${project.name} | InkAlchemy`;
     } else if (race?.name) {
-      document.title = `${race.name} | StoryForge`;
+      document.title = `${race.name} | InkAlchemy`;
     } else {
-      document.title = "Race Details | StoryForge";
+      document.title = "Race Details | InkAlchemy";
     }
   }, [race?.name, project?.name]);
 

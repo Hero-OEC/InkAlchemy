@@ -57,9 +57,9 @@ export default function Locations() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `Locations - ${project.name} | StoryForge`;
+      document.title = `Locations - ${project.name} | InkAlchemy`;
     } else {
-      document.title = "Locations | StoryForge";
+      document.title = "Locations | InkAlchemy";
     }
   }, [project?.name]);
 

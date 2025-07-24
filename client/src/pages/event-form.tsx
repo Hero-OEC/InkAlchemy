@@ -124,10 +124,10 @@ export default function EventForm() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      const pageTitle = isEditing ? `Edit Event - ${project.name} | StoryForge` : `Create Event - ${project.name} | StoryForge`;
+      const pageTitle = isEditing ? `Edit Event - ${project.name} | InkAlchemy` : `Create Event - ${project.name} | InkAlchemy`;
       document.title = pageTitle;
     } else {
-      document.title = isEditing ? "Edit Event | StoryForge" : "Create Event | StoryForge";
+      document.title = isEditing ? "Edit Event | InkAlchemy" : "Create Event | InkAlchemy";
     }
   }, [project?.name, isEditing]);
 

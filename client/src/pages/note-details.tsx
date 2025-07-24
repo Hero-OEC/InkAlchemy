@@ -41,11 +41,11 @@ export default function NoteDetails() {
   // Set page title
   useEffect(() => {
     if (note?.title && project?.name) {
-      document.title = `${note.title} - ${project.name} | StoryForge`;
+      document.title = `${note.title} - ${project.name} | InkAlchemy`;
     } else if (note?.title) {
-      document.title = `${note.title} | StoryForge`;
+      document.title = `${note.title} | InkAlchemy`;
     } else {
-      document.title = "Note Details | StoryForge";
+      document.title = "Note Details | InkAlchemy";
     }
   }, [note?.title, project?.name]);
 

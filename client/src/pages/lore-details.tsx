@@ -43,11 +43,11 @@ export default function LoreDetails() {
   // Set page title
   useEffect(() => {
     if (lore?.title && project?.name) {
-      document.title = `${lore.title} - ${project.name} | StoryForge`;
+      document.title = `${lore.title} - ${project.name} | InkAlchemy`;
     } else if (lore?.title) {
-      document.title = `${lore.title} | StoryForge`;
+      document.title = `${lore.title} | InkAlchemy`;
     } else {
-      document.title = "Lore Details | StoryForge";
+      document.title = "Lore Details | InkAlchemy";
     }
   }, [lore?.title, project?.name]);
 

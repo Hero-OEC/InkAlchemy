@@ -62,11 +62,11 @@ export default function MagicSystemDetails() {
   // Set page title
   useEffect(() => {
     if (system?.name && project?.name) {
-      document.title = `${system.name} - ${project.name} | StoryForge`;
+      document.title = `${system.name} - ${project.name} | InkAlchemy`;
     } else if (system?.name) {
-      document.title = `${system.name} | StoryForge`;
+      document.title = `${system.name} | InkAlchemy`;
     } else {
-      document.title = "Magic System Details | StoryForge";
+      document.title = "Magic System Details | InkAlchemy";
     }
   }, [system?.name, project?.name]);
 

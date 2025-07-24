@@ -66,11 +66,11 @@ export default function LocationDetails() {
   // Set page title
   useEffect(() => {
     if (location?.name && project?.name) {
-      document.title = `${location.name} - ${project.name} | StoryForge`;
+      document.title = `${location.name} - ${project.name} | InkAlchemy`;
     } else if (location?.name) {
-      document.title = `${location.name} | StoryForge`;
+      document.title = `${location.name} | InkAlchemy`;
     } else {
-      document.title = "Location Details | StoryForge";
+      document.title = "Location Details | InkAlchemy";
     }
   }, [location?.name, project?.name]);
 

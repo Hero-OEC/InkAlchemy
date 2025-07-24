@@ -48,7 +48,7 @@ export function Navbar({
               className="w-10 h-10 object-contain flex-shrink-0"
             />
             <div className="flex flex-col">
-              <h1 className="text-lg font-semibold text-brand-800">StoryForge</h1>
+              <h1 className="text-lg font-semibold text-brand-800">InkAlchemy</h1>
               <span className="text-xs text-brand-600 -mt-1 font-normal">
                 {hasActiveProject && projectName ? projectName : "Worldbuilding Management Platform"}
               </span>

@@ -34,7 +34,7 @@ export default function CreateMagicSystem() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `Create Magic System - ${project.name} | StoryForge`;
+      document.title = `Create Magic System - ${project.name} | InkAlchemy`;
     }
   }, [project?.name]);
 

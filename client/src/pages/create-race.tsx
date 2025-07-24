@@ -63,9 +63,9 @@ export default function CreateRace() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `Create Race - ${project.name} | StoryForge`;
+      document.title = `Create Race - ${project.name} | InkAlchemy`;
     } else {
-      document.title = "Create Race | StoryForge";
+      document.title = "Create Race | InkAlchemy";
     }
   }, [project?.name]);
 

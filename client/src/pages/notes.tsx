@@ -48,9 +48,9 @@ export default function Notes() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `Notes - ${project.name} | StoryForge`;
+      document.title = `Notes - ${project.name} | InkAlchemy`;
     } else {
-      document.title = "Notes | StoryForge";
+      document.title = "Notes | InkAlchemy";
     }
   }, [project?.name]);
 

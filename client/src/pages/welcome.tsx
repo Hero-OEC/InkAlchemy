@@ -230,7 +230,7 @@ export default function Welcome() {
 
   // Set page title
   useEffect(() => {
-    document.title = "StoryForge - Worldbuilding Management Platform";
+    document.title = "InkAlchemy - Worldbuilding Management Platform";
   }, []);
 
   if (isLoading) {
@@ -261,7 +261,7 @@ export default function Welcome() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Welcome Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-brand-950 mb-6">Welcome to StoryForge</h1>
+          <h1 className="text-5xl font-bold text-brand-950 mb-6">Welcome to InkAlchemy</h1>
           <p className="text-xl text-brand-700 max-w-2xl mx-auto leading-relaxed">
             Your comprehensive creative writing companion. Organize characters, build worlds, 
             manage timelines, and bring your stories to life.

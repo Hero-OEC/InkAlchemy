@@ -101,11 +101,11 @@ export default function SpellDetails() {
     if (spell?.name && project?.name) {
       const systemType = magicSystem?.type || "magic";
       const itemType = systemType === "power" ? "ability" : "spell";
-      document.title = `${spell.name} - ${project.name} | StoryForge`;
+      document.title = `${spell.name} - ${project.name} | InkAlchemy`;
     } else if (spell?.name) {
-      document.title = `${spell.name} | StoryForge`;
+      document.title = `${spell.name} | InkAlchemy`;
     } else {
-      document.title = "Spell Details | StoryForge";
+      document.title = "Spell Details | InkAlchemy";
     }
   }, [spell?.name, project?.name, magicSystem?.type]);
 

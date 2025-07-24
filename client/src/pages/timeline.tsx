@@ -44,9 +44,9 @@ export default function Timeline() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `Timeline - ${project.name} | StoryForge`;
+      document.title = `Timeline - ${project.name} | InkAlchemy`;
     } else {
-      document.title = "Timeline | StoryForge";
+      document.title = "Timeline | InkAlchemy";
     }
   }, [project?.name]);
 

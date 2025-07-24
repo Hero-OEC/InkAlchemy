@@ -1,8 +1,8 @@
-# StoryForge - Worldbuilding Management Platform
+# InkAlchemy - Worldbuilding Management Platform
 
 ## Overview
 
-StoryForge is a comprehensive worldbuilding and story management platform designed for writers and creators. It provides tools to organize characters, locations, timelines, magic systems, lore, and notes within structured projects. The application uses a modern full-stack architecture with a React frontend and Express backend, leveraging PostgreSQL for data persistence.
+InkAlchemy is a comprehensive worldbuilding and story management platform designed for writers and creators. It provides tools to organize characters, locations, timelines, magic systems, lore, and notes within structured projects. The application uses a modern full-stack architecture with a React frontend and Express backend, leveraging PostgreSQL for data persistence.
 
 ## User Preferences
 
@@ -257,7 +257,7 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Updated ContentCard component to properly display the two system types with correct labeling
 
 ### January 2025 - Migration to Replit Environment
-- Successfully migrated StoryForge from Replit Agent to standard Replit environment
+- Successfully migrated InkAlchemy from Replit Agent to standard Replit environment
 - Verified all dependencies and packages are properly installed and configured
 - Set up PostgreSQL database with proper environment variables and connection
 - Applied database schema using Drizzle migrations successfully
@@ -269,9 +269,9 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Fixed CharacterMagicCard component to use centralized referrer navigation system instead of callback functions
 - Resolved all navigation back button issues throughout the application
 - Implemented comprehensive page title management across all pages using document.title
-- Added consistent title format: "Page Name - Project Name | StoryForge" for project pages
-- Added specific title format for detail pages: "Item Name - Project Name | StoryForge"
-- Welcome page uses: "StoryForge - Worldbuilding Management Platform"
+- Added consistent title format: "Page Name - Project Name | InkAlchemy" for project pages
+- Added specific title format for detail pages: "Item Name - Project Name | InkAlchemy"
+- Welcome page uses: "InkAlchemy - Worldbuilding Management Platform"
 - All browser tab titles now accurately match page content and provide proper context
 - Navigation system now fully implemented app-wide with referrer tracking working correctly
 
@@ -327,7 +327,7 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Fixed left spacing issues and made component fully responsive for multiple container sizes
 - Added comprehensive rich text features: headers, lists, quotes, code blocks, tables, images, links
 - Component available in components showcase at /components route
-- Uses standard Editor.js appearance without custom StoryForge styling per user preference
+- Uses standard Editor.js appearance without custom InkAlchemy styling per user preference
 - Image upload currently uses local file system storage, planned migration to Supabase Storage for production
 - Created EditorContentRenderer component for displaying saved Editor.js content on details pages
 - Applied consistent brand styling (brand-950, brand-900) to rendered content with proper typography hierarchy
@@ -392,7 +392,7 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Successfully completed migration from Replit Agent to standard Replit environment
 - Verified all dependencies and packages properly installed and functional
 - Confirmed PostgreSQL database connectivity and API endpoints working correctly
-- Fixed branding consistency by updating navbar title from "InkAlchemy" to "StoryForge"
+- Fixed branding consistency by updating navbar title from "InkAlchemy" to "InkAlchemy"
 - Updated navbar subtitle to "Worldbuilding Management Platform" matching project purpose
 - Fixed race details page icon from inappropriate UserCheck to proper Users icon with brand-500 background
 - Applied consistent color scheme for race header icon matching character details pattern
@@ -426,7 +426,7 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Character details pages now properly display timelines using correct relationship fields (fromElementType/fromElementId/toElementType/toElementId)
 - Character timeline filtering now works correctly showing all events where characters participate
 - Updated project cards to use standard Book icon and simplified layout without genre field (not in database schema)
-- Fixed branding consistency by updating welcome page title from "InkAlchemy" to "StoryForge"
+- Fixed branding consistency by updating welcome page title from "InkAlchemy" to "InkAlchemy"
 
 ### January 2025 - Location Form Redesign and Icon Fix
 - Restructured location create and edit forms to match character form layout with separate containers
@@ -493,3 +493,11 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Applied database migration to create event_characters table with foreign key constraints
 - Event management now supports both location connections (locationId) and character connections (eventCharacters table)
 - System maintains existing relationships table for complex connections while providing simpler event-character links
+
+### January 2025 - Complete Application Rebranding from StoryForge to InkAlchemy
+- Successfully rebranded entire application from StoryForge to InkAlchemy across all components
+- Updated navbar title, welcome page heading, and all navigation components
+- Changed all document.title references throughout all page components
+- Updated main documentation files (replit.md, INKALCHEMY_DOCUMENTATION.md)
+- Applied consistent "InkAlchemy" branding in all user-facing text and page titles
+- Maintained existing brand color scheme and design system with new name

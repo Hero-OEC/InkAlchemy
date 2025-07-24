@@ -58,9 +58,9 @@ export default function Dashboard() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `${project.name} | StoryForge`;
+      document.title = `${project.name} | InkAlchemy`;
     } else {
-      document.title = "Dashboard | StoryForge";
+      document.title = "Dashboard | InkAlchemy";
     }
   }, [project?.name]);
 

@@ -120,9 +120,9 @@ export default function Characters() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `Characters - ${project.name} | StoryForge`;
+      document.title = `Characters - ${project.name} | InkAlchemy`;
     } else {
-      document.title = "Characters | StoryForge";
+      document.title = "Characters | InkAlchemy";
     }
   }, [project?.name]);
 

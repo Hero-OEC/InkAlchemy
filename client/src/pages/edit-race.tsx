@@ -104,11 +104,11 @@ export default function EditRace() {
   // Set page title
   useEffect(() => {
     if (race?.name && project?.name) {
-      document.title = `Edit ${race.name} - ${project.name} | StoryForge`;
+      document.title = `Edit ${race.name} - ${project.name} | InkAlchemy`;
     } else if (race?.name) {
-      document.title = `Edit ${race.name} | StoryForge`;
+      document.title = `Edit ${race.name} | InkAlchemy`;
     } else {
-      document.title = "Edit Race | StoryForge";
+      document.title = "Edit Race | InkAlchemy";
     }
   }, [race?.name, project?.name]);
 
