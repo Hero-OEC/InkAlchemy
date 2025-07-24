@@ -417,6 +417,17 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Applied consistent brand-50 backgrounds, max-w-lg width, and brand color schemes
 - Search system provides real-time filtering with intelligent multi-field matching
 
+### January 2025 - Welcome Page Search Implementation and Character Timeline Fix
+- Added search functionality to welcome page allowing users to search across projects by name and description
+- Positioned search component in page title section next to create button following established placement rules
+- Applied consistent SearchComponent styling with brand-50 backgrounds and max-w-lg width
+- Added proper empty states for both no projects and no search results scenarios
+- Fixed critical character timeline visibility issue by updating field names to match database schema
+- Character details pages now properly display timelines using correct relationship fields (fromElementType/fromElementId/toElementType/toElementId)
+- Character timeline filtering now works correctly showing all events where characters participate
+- Updated project cards to use standard Book icon and simplified layout without genre field (not in database schema)
+- Fixed branding consistency by updating welcome page title from "InkAlchemy" to "StoryForge"
+
 ### January 2025 - Location Form Redesign and Icon Fix
 - Restructured location create and edit forms to match character form layout with separate containers
 - Created "Basic Information" container for name and location type fields with brand-50 background

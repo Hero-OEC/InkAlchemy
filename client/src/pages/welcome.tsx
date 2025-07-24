@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { SearchComponent } from "@/components/search-component";
 import { Input, Select } from "@/components/form-inputs";
 import { apiRequest } from "@/lib/queryClient";
 import { 
@@ -95,12 +96,33 @@ export default function Welcome() {
   const [editGenre, setEditGenre] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [deleteProject, setDeleteProject] = useState<Project | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
 
   const selectedGenreDescription = genreOptions.find(g => g.value === newProjectGenre)?.description;
 
   const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
+  });
+
+  // Define search filters for projects (none for now since schema lacks genre field)
+  const searchFilters: Array<{key: string; label: string; options: Array<{value: string; label: string}>}> = [];
+
+  // Filter projects based on search and filters
+  const filteredProjects = projects.filter(project => {
+    // Text search across name and description only (no genre field in schema)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      const matchesName = project.name.toLowerCase().includes(query);
+      const matchesDescription = project.description?.toLowerCase().includes(query);
+      
+      if (!matchesName && !matchesDescription) {
+        return false;
+      }
+    }
+
+    return true;
   });
 
   const createProjectMutation = useMutation({
@@ -124,7 +146,6 @@ export default function Welcome() {
     if (newProjectName.trim()) {
       createProjectMutation.mutate({
         name: newProjectName,
-        genre: newProjectGenre || undefined,
         description: newProjectDescription || undefined,
       });
       setNewProjectName("");
@@ -178,7 +199,6 @@ export default function Welcome() {
       updateProjectMutation.mutate({
         id: editingProject.id,
         name: editName,
-        genre: editGenre || undefined,
         description: editDescription || undefined,
       });
     }
@@ -213,7 +233,7 @@ export default function Welcome() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Welcome Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-brand-950 mb-6">Welcome to InkAlchemy</h1>
+          <h1 className="text-5xl font-bold text-brand-950 mb-6">Welcome to StoryForge</h1>
           <p className="text-xl text-brand-700 max-w-2xl mx-auto leading-relaxed">
             Your comprehensive creative writing companion. Organize characters, build worlds, 
             manage timelines, and bring your stories to life.
@@ -227,14 +247,25 @@ export default function Welcome() {
               <h2 className="text-3xl font-bold text-brand-900">Your Projects</h2>
               <p className="text-brand-700 mt-2">Manage and organize your creative writing projects</p>
             </div>
-            <Button 
-              variant="primary" 
-              onClick={() => setShowCreateForm(true)}
-              className="flex items-center gap-2"
-            >
-              <Plus size={18} />
-              Create New Project
-            </Button>
+            <div className="flex items-center gap-4 flex-shrink-0">
+              {projects.length > 0 && (
+                <SearchComponent
+                  placeholder="Search projects..."
+                  onSearch={setSearchQuery}
+                  onFilterChange={setActiveFilters}
+                  filters={searchFilters}
+                  showFilters={false}
+                />
+              )}
+              <Button 
+                variant="primary" 
+                onClick={() => setShowCreateForm(true)}
+                className="flex items-center gap-2 whitespace-nowrap"
+              >
+                <Plus size={18} />
+                Create New Project
+              </Button>
+            </div>
           </div>
 
           {/* Edit Project Form */}
@@ -373,19 +404,28 @@ export default function Welcome() {
                 Create Your First Project
               </Button>
             </div>
+          ) : filteredProjects.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-brand-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="w-12 h-12 text-brand-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-brand-900 mb-2">No projects found</h3>
+              <p className="text-brand-700 mb-6">
+                {searchQuery ? `No projects match "${searchQuery}"` : "No projects match the selected filters"}
+              </p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((project) => (
+              {filteredProjects.map((project) => (
                 <ContentCard
                   key={project.id}
                   id={project.id}
                   title={project.name}
                   type="project"
-                  subtype={project.genre || "story"}
+                  subtype="story"
                   description={project.description || "No description provided"}
-                  icon={getGenreIcon(project.genre || "")}
+                  icon={Book}
                   createdAt={new Date(project.createdAt)}
-                  lastEditedAt={project.lastEditedAt ? new Date(project.lastEditedAt) : undefined}
                   onClick={() => handleOpenProject(project.id)}
                   onEdit={() => handleEditProject(project)}
                   onDelete={() => handleDeleteProject(project)}
@@ -409,7 +449,7 @@ export default function Welcome() {
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Sword className="w-8 h-8 text-brand-600" />
+                  <Swords className="w-8 h-8 text-brand-600" />
                 </div>
                 <h4 className="font-semibold text-brand-900 mb-2">Build Your World</h4>
                 <p className="text-brand-700 text-sm">Add characters, locations, magic systems, and lore to your story</p>
