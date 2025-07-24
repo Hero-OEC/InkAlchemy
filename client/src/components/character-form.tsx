@@ -472,30 +472,7 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                   />
                 </div>
 
-                <FormField
-                  control={form.control}
-                  name="magicSystemId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Magic System</FormLabel>
-                      <Select onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)} value={field.value?.toString() || ""}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select magic system" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {magicSystems.map((system) => (
-                            <SelectItem key={system.id} value={system.id.toString()}>
-                              {system.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
 
               </div>
 
