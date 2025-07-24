@@ -288,7 +288,7 @@ export default function RaceDetails() {
                       key={character.id}
                       icon={Users}
                       title={[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
-                      badge={character.type || "supporting"}
+                      badge={character.role || "supporting"}
                       badgeVariant="type"
                       onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
                     />
