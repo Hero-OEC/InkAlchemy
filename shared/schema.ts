@@ -19,21 +19,12 @@ export const characters = pgTable("characters", {
   name: text("name").notNull(),
   prefix: text("prefix"),
   suffix: text("suffix"),
-
   role: text("role"),
-  description: text("description"),
-  appearance: text("appearance"),
-  personality: text("personality"),
-  background: text("background"),
-  goals: text("goals"),
-  powerType: text("power_type"),
+  description: text("description"), // rich text content using WordProcessor
   age: text("age"),
   raceId: integer("race_id").references(() => races.id),
   magicSystemId: integer("magic_system_id").references(() => magicSystems.id),
-  weapons: text("weapons"),
-  equipment: text("equipment"),
   imageUrl: text("image_url"),
-  status: text("status").default("active"), // active, developing, inactive
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

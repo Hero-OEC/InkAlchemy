@@ -206,9 +206,9 @@ export default function CharacterDetails() {
     { id: "timeline", label: "Timeline", icon: Clock }
   ];
 
-  // Find the power type magic system
-  const powerTypeMagicSystem = character.powerType 
-    ? magicSystems.find(ms => ms.name.toLowerCase() === character.powerType?.toLowerCase())
+  // Character's assigned magic system
+  const assignedMagicSystem = character.magicSystemId 
+    ? magicSystems.find(ms => ms.id === character.magicSystemId)
     : null;
 
   return (
