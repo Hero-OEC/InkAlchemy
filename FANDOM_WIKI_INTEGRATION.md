@@ -125,12 +125,33 @@ CREATE TABLE user_wiki_credentials (
 ### Technical Requirements
 
 #### 1. Authentication System
+
+**Option A: OAuth 2.0 (Recommended - Secure & User-Friendly)**
 ```javascript
-// MediaWiki OAuth 2.0 or Bot Password integration
-- User provides: Fandom wiki URL + credentials
-- Generate access tokens via MediaWiki API
-- Handle session management with CSRF tokens
-- Store credentials securely (encrypted)
+// OAuth Flow (Like GitHub/Google integration)
+- User clicks "Connect to Fandom Wiki"
+- Redirected to Fandom's official login page
+- User authorizes InkAlchemy with specific permissions
+- Fandom redirects back with authorization code
+- InkAlchemy exchanges code for access token
+- No passwords stored - completely secure
+```
+
+**User Experience:**
+1. User: "Export to Fandom Wiki"  
+2. InkAlchemy: "Connect your wiki first" → [Connect Wiki Button]
+3. → Redirect to `mywiki.fandom.com/wiki/Special:OAuth/authorize`
+4. User sees: "InkAlchemy wants permission to: ✓ Edit pages ✓ Upload files"
+5. User clicks "Allow" → Redirect back to InkAlchemy
+6. InkAlchemy: "Wiki connected! Choose content to export"
+
+**Option B: Username/Password (Fallback)**
+```javascript
+// Traditional API authentication
+- User provides: wiki URL + login credentials  
+- Store encrypted credentials in database
+- Handle session tokens and CSRF
+- Less secure, requires password storage
 ```
 
 #### 2. Content Conversion Engine
@@ -175,11 +196,18 @@ CREATE TABLE user_wiki_credentials (
 https://yourwiki.fandom.com/api.php
 ```
 
-#### Required API Actions
-- `action=login` - Authentication
+#### OAuth 2.0 Endpoints
+```
+Authorization: /w/rest.php/oauth2/authorize
+Token Exchange: /w/rest.php/oauth2/access_token
+API Usage: Standard MediaWiki API with Bearer token
+```
+
+#### Required API Actions (After OAuth)
 - `action=query&meta=tokens` - Get CSRF tokens
-- `action=edit` - Create/update pages
+- `action=edit` - Create/update pages  
 - `action=upload` - Upload images
+- `action=query&meta=userinfo` - Verify user permissions
 
 ### Wiki Structure Example
 
@@ -296,9 +324,9 @@ Your Project Wiki Structure:
 - Update API endpoints
 
 ### Phase 2: User Authentication (1-2 days with Supabase)
-- Enable Supabase Auth
-- Add login/register pages
-- Implement project ownership
+- Enable Supabase Auth with OAuth providers
+- Add GitHub/Google social login
+- Implement project ownership  
 - Secure API endpoints
 
 ### Phase 3: Content Converter (2-3 days)
@@ -307,11 +335,14 @@ Your Project Wiki Structure:
 - Generate infobox templates
 - Create cross-references
 
-### Phase 4: Wiki API Integration (2-3 days)
-- MediaWiki authentication
-- Page creation functions
+### Phase 4: Fandom OAuth Integration (3-4 days)
+- Register InkAlchemy as OAuth consumer on MediaWiki
+- Implement OAuth 2.0 authorization flow
+- Handle token exchange and refresh
+- Secure token storage per user
+- Page creation functions with OAuth bearer tokens
 - Rate limiting system
-- Error handling
+- Error handling and permission validation
 
 ### Phase 5: UI Implementation (1-2 days)
 - Export settings page
@@ -325,7 +356,7 @@ Your Project Wiki Structure:
 - Performance optimization
 - User documentation
 
-### Total Timeline: 10-15 days
+### Total Timeline: 11-16 days (with OAuth implementation)
 
 ---
 
@@ -392,9 +423,14 @@ If your time is worth more than $25/day, Supabase pays for itself in saved devel
 
 ## Key Decisions Needed
 
-1. **Authentication Method**
+1. **Fandom Integration Method**
+   - OAuth 2.0 integration (recommended - most secure)
+   - Username/password fallback (simpler but less secure)
+   - Mixed approach (OAuth primary, fallback for edge cases)
+
+2. **User Authentication**
    - Supabase Auth (recommended - fastest)
-   - Custom OAuth implementation
+   - Custom OAuth implementation  
    - Full custom auth system
 
 2. **Export Features for MVP**
@@ -431,6 +467,8 @@ If your time is worth more than $25/day, Supabase pays for itself in saved devel
 # For Wiki Export
 npm install wikiapi              # MediaWiki API client
 npm install rate-limiter-flexible # Rate limiting
+npm install oauth                # OAuth 1.0a/2.0 implementation
+npm install passport-oauth2      # OAuth 2.0 strategy
 
 # For Supabase
 npm install @supabase/supabase-js # Supabase client
