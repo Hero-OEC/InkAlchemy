@@ -1,11 +1,12 @@
 
 import { useParams, useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
+import { SpellDetailsHeaderSkeleton, SpellDetailsContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Wand2, Sparkles, Zap, Scroll, Crown, Shield, Edit, Trash2, Brain } from "lucide-react";
 import type { Project, Spell, MagicSystem } from "@shared/schema";
 
@@ -78,19 +79,35 @@ export default function SpellDetails() {
   const [, setLocation] = useLocation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: spell, isLoading } = useQuery<Spell>({
+  const { data: spell, isLoading: spellLoading } = useQuery<Spell>({
     queryKey: [`/api/spells/${spellId}`],
     enabled: !!spellId && spellId !== "new" && !isNaN(Number(spellId))
   });
 
-  const { data: magicSystem } = useQuery<MagicSystem>({
+  const { data: magicSystem, isLoading: magicSystemLoading } = useQuery<MagicSystem>({
     queryKey: [`/api/magic-systems/${spell?.magicSystemId}`],
     enabled: !!spell?.magicSystemId
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || spellLoading || magicSystemLoading;
+
+  // Set page title
+  useEffect(() => {
+    if (spell?.name && project?.name) {
+      const systemType = magicSystem?.type || "magic";
+      const itemType = systemType === "power" ? "ability" : "spell";
+      document.title = `${spell.name} - ${project.name} | StoryForge`;
+    } else if (spell?.name) {
+      document.title = `${spell.name} | StoryForge`;
+    } else {
+      document.title = "Spell Details | StoryForge";
+    }
+  }, [spell?.name, project?.name, magicSystem?.type]);
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
@@ -128,12 +145,30 @@ export default function SpellDetails() {
         <Navbar 
           hasActiveProject={true} 
           currentPage="magic-systems"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading {magicSystem?.type === "power" ? "ability" : "spell"}...</p>
-        </div>
+        <main className="max-w-4xl mx-auto px-6 py-8 flex flex-col items-center">
+          <div className="w-full max-w-3xl">
+            {/* Header with Back Button Skeleton */}
+            <div className="flex items-center gap-4 mb-8">
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2"
+                disabled
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+            </div>
+
+            {/* Spell/Ability Header Skeleton */}
+            <SpellDetailsHeaderSkeleton />
+
+            {/* Main Content Skeleton */}
+            <SpellDetailsContentSkeleton />
+          </div>
+        </main>
       </div>
     );
   }

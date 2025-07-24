@@ -927,3 +927,43 @@ export function MagicSystemDetailsContentSkeleton() {
     </div>
   );
 }
+
+// Spell Details Header Skeleton
+export function SpellDetailsHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center gap-4">
+        <Skeleton className="w-14 h-14 rounded-xl" />
+        <div>
+          <Skeleton className="h-8 w-48 mb-2" />
+          <div className="flex items-center gap-3">
+            <Skeleton className="h-6 w-28 rounded-full" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-16" />
+        <Skeleton className="h-10 w-20" />
+      </div>
+    </div>
+  );
+}
+
+// Spell Details Content Skeleton
+export function SpellDetailsContentSkeleton() {
+  return (
+    <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+      <Skeleton className="h-6 w-24 mb-4" />
+      <div className="space-y-3">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-5/6" />
+        <Skeleton className="h-4 w-4/5" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-5/6" />
+        <Skeleton className="h-4 w-2/3" />
+      </div>
+    </div>
+  );
+}
