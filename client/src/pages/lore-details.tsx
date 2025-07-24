@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
+import { LoreDetailsHeaderSkeleton, LoreDetailsContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Edit, Trash2, BookOpen, Crown, Scroll, Landmark, Sword, Users, Globe, Calendar } from "lucide-react";
 import type { Project, LoreEntry } from "@shared/schema";
 import { format } from "date-fns";
@@ -27,14 +28,28 @@ export default function LoreDetails() {
   const [, setLocation] = useLocation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: lore, isLoading } = useQuery<LoreEntry>({
+  const { data: lore, isLoading: loreLoading } = useQuery<LoreEntry>({
     queryKey: [`/api/lore/${loreId}`],
     enabled: !!loreId && loreId !== "new" && !isNaN(Number(loreId))
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || loreLoading;
+
+  // Set page title
+  useEffect(() => {
+    if (lore?.title && project?.name) {
+      document.title = `${lore.title} - ${project.name} | StoryForge`;
+    } else if (lore?.title) {
+      document.title = `${lore.title} | StoryForge`;
+    } else {
+      document.title = "Lore Details | StoryForge";
+    }
+  }, [lore?.title, project?.name]);
 
   // Redirect if this is the create route
   useEffect(() => {
@@ -81,12 +96,29 @@ export default function LoreDetails() {
         <Navbar 
           hasActiveProject={true} 
           currentPage="lore"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading lore entry...</p>
-        </div>
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Lore
+            </Button>
+          </div>
+
+          {/* Lore Header Skeleton */}
+          <LoreDetailsHeaderSkeleton />
+
+          {/* Main Content Skeleton */}
+          <LoreDetailsContentSkeleton />
+        </main>
       </div>
     );
   }

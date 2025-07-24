@@ -967,3 +967,52 @@ export function SpellDetailsContentSkeleton() {
     </div>
   );
 }
+
+// Lore Details Header Skeleton
+export function LoreDetailsHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center gap-4">
+        <Skeleton className="w-14 h-14 rounded-xl" />
+        <div>
+          <Skeleton className="h-8 w-48 mb-2" />
+          <div className="flex items-center gap-3">
+            <Skeleton className="h-6 w-20 rounded-full" />
+            <Skeleton className="h-4 w-28" />
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-16" />
+        <Skeleton className="h-10 w-20" />
+      </div>
+    </div>
+  );
+}
+
+// Lore Details Content Skeleton
+export function LoreDetailsContentSkeleton() {
+  return (
+    <div>
+      <div className="bg-brand-100 border border-brand-200 rounded-xl p-8">
+        <div className="space-y-4">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-4 w-4/5" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-4 w-2/3" />
+          <Skeleton className="h-4 w-4/5" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-3/5" />
+        </div>
+      </div>
+      
+      {/* Metadata Skeleton */}
+      <div className="mt-6 text-center">
+        <Skeleton className="h-4 w-32 mx-auto" />
+      </div>
+    </div>
+  );
+}
