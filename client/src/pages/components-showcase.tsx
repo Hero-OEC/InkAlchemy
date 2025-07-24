@@ -8,6 +8,7 @@ import { FormInputsDemo } from "@/components/form-inputs";
 import { MiniCardDemo } from "@/components/mini-card";
 import { CharacterMagicCardShowcase } from "@/components/character-magic-card-showcase";
 import { CharacterMagicSelectorShowcase } from "@/components/character-magic-selector-showcase";
+import { SearchComponentShowcase } from "@/components/search-component-showcase";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { WordProcessor } from "@/components/word-processor";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
@@ -252,6 +253,12 @@ function ComponentsShowcase() {
       {/* Character Magic Selector Demo */}
       <section className="mb-12">
         <CharacterMagicSelectorShowcase />
+      </section>
+
+      {/* Search Component Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-brand-900 mb-6">Search Component</h2>
+        <SearchComponentShowcase />
       </section>
 
       {/* Font Demo */}
