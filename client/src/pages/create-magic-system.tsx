@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { WordProcessor } from "@/components/word-processor";
+import { MagicSystemFormHeaderSkeleton, MagicSystemFormContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Sparkles, Zap } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -26,7 +27,7 @@ export default function CreateMagicSystem() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
@@ -51,7 +52,7 @@ export default function CreateMagicSystem() {
 
   const mutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("/api/magic-systems", { method: "POST", body: data }),
+      apiRequest("/api/magic-systems", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: (newSystem) => {
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/magic-systems`] });
       toast({
@@ -95,6 +96,38 @@ export default function CreateMagicSystem() {
   useEffect(() => {
     setSystemType(watchedType || "magic");
   }, [watchedType]);
+
+  if (projectLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="magic-systems"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        
+        <main className="max-w-6xl mx-auto px-6 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Magic Systems
+            </Button>
+          </div>
+
+          {/* Magic System Form Skeleton */}
+          <MagicSystemFormHeaderSkeleton />
+          <MagicSystemFormContentSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">

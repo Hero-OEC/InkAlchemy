@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { WordProcessor } from "@/components/word-processor";
+import { MagicSystemFormHeaderSkeleton, MagicSystemFormContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Sparkles, Zap } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -26,14 +27,16 @@ export default function EditMagicSystem() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: system, isLoading } = useQuery<MagicSystem>({
+  const { data: system, isLoading: systemLoading } = useQuery<MagicSystem>({
     queryKey: [`/api/magic-systems/${systemId}`],
     enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
   });
+
+  const isLoading = projectLoading || systemLoading;
 
 
 
@@ -117,37 +120,39 @@ export default function EditMagicSystem() {
     setSystemType(watchedType || "magic");
   }, [watchedType]);
 
-  if (isLoading) {
+  if (isLoading || !system) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navbar 
           hasActiveProject={true} 
           currentPage="magic-systems"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading magic system...</p>
-        </div>
+        
+        <main className="max-w-6xl mx-auto px-6 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Magic System
+            </Button>
+          </div>
+
+          {/* Magic System Form Skeleton */}
+          <MagicSystemFormHeaderSkeleton />
+          <MagicSystemFormContentSkeleton />
+        </main>
       </div>
     );
   }
 
-  if (!system) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar 
-          hasActiveProject={true} 
-          currentPage="magic-systems"
-          projectName={project?.name}
-          onNavigate={handleNavigation}
-        />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Magic system not found</p>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
