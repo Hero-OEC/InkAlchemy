@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { SearchComponent } from "@/components/search-component";
 import { Button } from "@/components/button-variations";
 import { Plus, StickyNote, FileText, Lightbulb, AlertCircle, Tag } from "lucide-react";
 import type { Project, Note } from "@shared/schema";
@@ -27,6 +28,8 @@ export default function Notes() {
   const { projectId } = useParams();
   const [currentPath, setLocation] = useLocation();
   const [deleteItem, setDeleteItem] = useState<Note | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
   const { navigateWithReferrer } = useNavigation();
   
@@ -81,8 +84,31 @@ export default function Notes() {
     }
   };
 
-  // Convert notes to ContentCard format
-  const noteCards = notes.map(note => {
+  // Filter notes based on search and filters
+  const filteredNotes = notes.filter(note => {
+    // Search filter
+    if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
+      const matchesSearch = 
+        note.title.toLowerCase().includes(searchLower) ||
+        note.content.toLowerCase().includes(searchLower) ||
+        (note.category && note.category.toLowerCase().includes(searchLower));
+      
+      if (!matchesSearch) return false;
+    }
+
+    // Category filter
+    if (activeFilters.category && note.category !== activeFilters.category) {
+      return false;
+    }
+
+
+
+    return true;
+  });
+
+  // Convert filtered notes to ContentCard format
+  const noteCards = filteredNotes.map(note => {
     const category = note.category || "general";
     const icon = NOTE_CATEGORY_ICONS[category as keyof typeof NOTE_CATEGORY_ICONS] || StickyNote;
     
@@ -98,6 +124,23 @@ export default function Notes() {
     };
   });
 
+  // Search filters for notes
+  const searchFilters = [
+    {
+      key: "category",
+      label: "Category",
+      options: [
+        { value: "general", label: "General" },
+        { value: "idea", label: "Idea" },
+        { value: "reminder", label: "Reminder" },
+        { value: "plot", label: "Plot" },
+        { value: "character", label: "Character" },
+        { value: "location", label: "Location" },
+        { value: "research", label: "Research" }
+      ]
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-brand-50">
       <Navbar 
@@ -109,24 +152,33 @@ export default function Notes() {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-brand-900 mb-2">Notes</h1>
+            <h1 className="text-4xl font-bold mb-2 text-[#624122]">Notes</h1>
             <p className="text-brand-600">Quick thoughts, ideas, and reminders for your story</p>
           </div>
-          <Button
-            variant="primary"
-            size="md"
-            onClick={handleCreateNote}
-            className="flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Note
-          </Button>
+          <div className="flex items-center gap-4 flex-shrink-0">
+            <SearchComponent
+              placeholder="Search notes..."
+              onSearch={setSearchQuery}
+              onFilterChange={setActiveFilters}
+              filters={searchFilters}
+              showFilters={true}
+            />
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleCreateNote}
+              className="flex items-center gap-2 whitespace-nowrap"
+            >
+              <Plus className="w-4 h-4" />
+              Add Note
+            </Button>
+          </div>
         </div>
 
         {/* Notes Grid */}
-        {notes.length > 0 ? (
+        {noteCards.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {noteCards.map((noteCard) => (
               <ContentCard
@@ -139,9 +191,9 @@ export default function Notes() {
                 icon={noteCard.icon}
                 createdAt={noteCard.createdAt}
                 lastEditedAt={noteCard.lastEditedAt}
-                onClick={() => handleNoteClick(notes.find(n => n.id === noteCard.id)!)}
-                onEdit={() => handleNoteEdit(notes.find(n => n.id === noteCard.id)!)}
-                onDelete={() => handleNoteDelete(notes.find(n => n.id === noteCard.id)!)}
+                onClick={() => handleNoteClick(filteredNotes.find(n => n.id === noteCard.id)!)}
+                onEdit={() => handleNoteEdit(filteredNotes.find(n => n.id === noteCard.id)!)}
+                onDelete={() => handleNoteDelete(filteredNotes.find(n => n.id === noteCard.id)!)}
               />
             ))}
           </div>
