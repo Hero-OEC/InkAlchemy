@@ -7,12 +7,11 @@ import { z } from "zod";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { WordProcessor } from "@/components/word-processor";
-import { ArrowLeft, Sparkles, Zap, Users } from "lucide-react";
+import { ArrowLeft, Sparkles, Zap } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MiniCard } from "@/components/mini-card";
-import { insertMagicSystemSchema, type Project, type MagicSystem, type Character } from "@shared/schema";
+import { insertMagicSystemSchema, type Project, type MagicSystem } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -36,9 +35,7 @@ export default function EditMagicSystem() {
     enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
   });
 
-  const { data: characters = [] } = useQuery<Character[]>({
-    queryKey: [`/api/projects/${projectId}/characters`],
-  });
+
 
   // Set page title
   useEffect(() => {
@@ -113,8 +110,7 @@ export default function EditMagicSystem() {
 
   const Icon = getIcon();
 
-  // Get characters assigned to this magic system
-  const systemUsers = characters.filter(character => character.magicSystemId === Number(systemId));
+
 
   const watchedType = form.watch("type");
   useEffect(() => {
@@ -289,7 +285,7 @@ export default function EditMagicSystem() {
                           <Input 
                             placeholder="e.g., elemental forces, divine blessing, life energy" 
                             {...field} 
-                            value={field.value || ""}
+                            value={field.value ?? ""}
                           />
                         </FormControl>
                         <FormMessage />
@@ -306,7 +302,7 @@ export default function EditMagicSystem() {
                     name="complexity"
                     render={({ field }) => (
                       <FormItem>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value ?? "medium"}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select complexity" />
@@ -324,29 +320,7 @@ export default function EditMagicSystem() {
                   />
                 </div>
 
-                {/* Characters */}
-                <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                  <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters Using This System</h3>
-                  {systemUsers.length > 0 ? (
-                    <div className="space-y-3">
-                      {systemUsers.map((character) => (
-                        <MiniCard
-                          key={character.id}
-                          icon={Users}
-                          title={character.name}
-                          badge={character.role || "supporting"}
-                          badgeVariant="type"
-                          onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
-                          className="w-full"
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-brand-500 italic text-sm">
-                      No characters are currently using this {systemType} system.
-                    </p>
-                  )}
-                </div>
+
               </div>
             </div>
           </form>

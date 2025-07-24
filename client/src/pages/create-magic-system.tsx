@@ -7,12 +7,11 @@ import { z } from "zod";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { WordProcessor } from "@/components/word-processor";
-import { ArrowLeft, Sparkles, Zap, Users } from "lucide-react";
+import { ArrowLeft, Sparkles, Zap } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MiniCard } from "@/components/mini-card";
-import { insertMagicSystemSchema, type Project, type Character } from "@shared/schema";
+import { insertMagicSystemSchema, type Project } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,16 +23,11 @@ export default function CreateMagicSystem() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
   const [systemType, setSystemType] = useState<string>("magic");
-  const [selectedCharacters, setSelectedCharacters] = useState<Character[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
-  });
-
-  const { data: characters = [] } = useQuery<Character[]>({
-    queryKey: [`/api/projects/${projectId}/characters`],
   });
 
   // Set page title
@@ -183,7 +177,7 @@ export default function CreateMagicSystem() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>System Type</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={field.onChange} defaultValue={field.value ?? "magic"}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select type" />
@@ -255,7 +249,7 @@ export default function CreateMagicSystem() {
                     name="complexity"
                     render={({ field }) => (
                       <FormItem>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} defaultValue={field.value ?? "medium"}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select complexity" />
