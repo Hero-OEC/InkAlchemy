@@ -59,7 +59,12 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
   const magicSystemsWithSpells = magicSystems.map(system => ({
     ...system,
     type: system.type as "magic" | "power" || "magic",
-    spells: projectSpells.filter(spell => spell.magicSystemId === system.id)
+    spells: projectSpells
+      .filter(spell => spell.magicSystemId === system.id)
+      .map(spell => ({
+        ...spell,
+        type: system.type === "magic" ? "spell" as const : "ability" as const
+      }))
   }));
 
   const { data: characterSpells = [], isLoading: characterSpellsLoading } = useQuery<Spell[]>({
