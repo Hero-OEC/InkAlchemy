@@ -1,6 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { SearchComponent } from "@/components/search-component";
@@ -24,11 +24,11 @@ export default function Timeline() {
     queryKey: [`/api/projects/${projectId}/events`],
   });
 
-  const { data: characters = [] } = useQuery<Character[]>({
+  const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
-  const { data: locations = [] } = useQuery<Location[]>({
+  const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
   });
 
@@ -61,53 +61,59 @@ export default function Timeline() {
     setLocation(`/projects/${projectId}/timeline/new-event`);
   };
 
-  // Define search filters
-  const searchFilters = [
-    {
-      key: "stage",
-      label: "Writing Stage",
-      options: [
-        { value: "planning", label: "Planning" },
-        { value: "writing", label: "Writing" },
-        { value: "first-draft", label: "First Draft" },
-        { value: "editing", label: "Editing" },
-        { value: "complete", label: "Complete" }
-      ]
-    },
-    {
-      key: "type",
-      label: "Event Type",
-      options: [
-        { value: "battle", label: "Battle" },
-        { value: "meeting", label: "Meeting" },
-        { value: "discovery", label: "Discovery" },
-        { value: "journey", label: "Journey" },
-        { value: "celebration", label: "Celebration" },
-        { value: "tragedy", label: "Tragedy" },
-        { value: "ritual", label: "Ritual" },
-        { value: "political", label: "Political" },
-        { value: "personal", label: "Personal" },
-        { value: "magical", label: "Magical" },
-        { value: "other", label: "Other" }
-      ]
-    },
-    {
-      key: "locationId",
-      label: "Location",
-      options: locations.map(location => ({
-        value: location.id.toString(),
-        label: location.name
-      }))
-    },
-    {
-      key: "characterId",
-      label: "Character",
-      options: characters.map(character => ({
-        value: character.id.toString(),
-        label: character.name
-      }))
+  // Define search filters - only populate when data is loaded
+  const searchFilters = useMemo(() => {
+    if (locationsLoading || charactersLoading) {
+      return [];
     }
-  ];
+    
+    return [
+      {
+        key: "stage",
+        label: "Writing Stage",
+        options: [
+          { value: "planning", label: "Planning" },
+          { value: "writing", label: "Writing" },
+          { value: "first-draft", label: "First Draft" },
+          { value: "editing", label: "Editing" },
+          { value: "complete", label: "Complete" }
+        ]
+      },
+      {
+        key: "type",
+        label: "Event Type",
+        options: [
+          { value: "battle", label: "Battle" },
+          { value: "meeting", label: "Meeting" },
+          { value: "discovery", label: "Discovery" },
+          { value: "journey", label: "Journey" },
+          { value: "celebration", label: "Celebration" },
+          { value: "tragedy", label: "Tragedy" },
+          { value: "ritual", label: "Ritual" },
+          { value: "political", label: "Political" },
+          { value: "personal", label: "Personal" },
+          { value: "magical", label: "Magical" },
+          { value: "other", label: "Other" }
+        ]
+      },
+      {
+        key: "locationId",
+        label: "Location",
+        options: locations.map(location => ({
+          value: location.id.toString(),
+          label: location.name
+        }))
+      },
+      {
+        key: "characterId",
+        label: "Character",
+        options: characters.map(character => ({
+          value: character.id.toString(),
+          label: character.name
+        }))
+      }
+    ];
+  }, [locations, characters, locationsLoading, charactersLoading]);
 
   // Process events with relationships to add character and location data
   const processedEvents = events.map(event => {
@@ -200,6 +206,7 @@ export default function Timeline() {
               onSearch={setSearchQuery}
               onFilterChange={setActiveFilters}
               filters={searchFilters}
+              showFilters={true}
             />
             <Button 
               variant="primary" 
