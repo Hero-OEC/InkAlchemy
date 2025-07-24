@@ -7,6 +7,7 @@ import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { MiniCard } from "@/components/mini-card";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
+import { RaceDetailsHeaderSkeleton, RaceDetailsContentSkeleton } from "@/components/skeleton";
 import { Users, Edit, ArrowLeft, Trash2, MapPin, Mountain, Crown } from "lucide-react";
 import type { Race, Project, Character, Location } from "@shared/schema";
 
@@ -30,23 +31,26 @@ export default function RaceDetails() {
   }, [raceId, projectId, setLocation]);
 
   // Fetch project data
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
   // Fetch race data (only if raceId is not "new")
-  const { data: race, isLoading } = useQuery<Race>({
+  const { data: race, isLoading: raceLoading } = useQuery<Race>({
     queryKey: [`/api/races/${raceId}`],
     enabled: raceId !== "new",
   });
 
-  const { data: characters = [] } = useQuery<Character[]>({
+  const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
-  const { data: locations = [] } = useQuery<Location[]>({
+  const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || raceLoading || charactersLoading || locationsLoading;
 
   // Filter characters of this race
   const raceCharacters = characters.filter(character => 
@@ -101,12 +105,29 @@ export default function RaceDetails() {
         <Navbar 
           hasActiveProject={true} 
           currentPage="characters"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading race...</p>
-        </div>
+        <main className="max-w-6xl mx-auto px-8 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+
+          {/* Race Header Skeleton */}
+          <RaceDetailsHeaderSkeleton />
+
+          {/* Main Content Skeleton */}
+          <RaceDetailsContentSkeleton />
+        </main>
       </div>
     );
   }

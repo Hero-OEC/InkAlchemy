@@ -597,3 +597,99 @@ export function EventDetailsContentSkeleton() {
     </div>
   );
 }
+
+// Race Details Header Skeleton
+export function RaceDetailsHeaderSkeleton() {
+  return (
+    <div className="mb-8">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Skeleton className="w-14 h-14 rounded-xl" />
+          <div>
+            <Skeleton className="h-8 w-48" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-28" />
+          <Skeleton className="h-10 w-20" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Race Details Content Skeleton
+export function RaceDetailsContentSkeleton() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      {/* Main Content - Description Skeleton */}
+      <div className="lg:col-span-2">
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-8">
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+            <Skeleton className="h-4 w-4/5" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-5/6" />
+          </div>
+        </div>
+      </div>
+
+      {/* Sidebar Skeleton */}
+      <div className="space-y-8">
+        {/* Homeland Section Skeleton */}
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-6">
+          <Skeleton className="h-5 w-20 mb-4" />
+          <div className="flex items-center gap-3 p-3 bg-brand-50 rounded-lg border border-brand-200">
+            <Skeleton className="w-8 h-8 rounded-lg flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <Skeleton className="h-4 w-3/4 mb-1" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+          </div>
+        </div>
+
+        {/* Physical Characteristics Section Skeleton */}
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-6">
+          <Skeleton className="h-5 w-40 mb-4" />
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-12" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+          </div>
+        </div>
+
+        {/* Abilities & Powers Section Skeleton */}
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-6">
+          <Skeleton className="h-5 w-32 mb-4" />
+          <div className="flex justify-between">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+        </div>
+
+        {/* Characters Section Skeleton */}
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-6">
+          <Skeleton className="h-5 w-44 mb-4" />
+          <div className="space-y-3">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div key={index} className="flex items-center gap-3 p-3 bg-brand-50 rounded-lg border border-brand-200">
+                <Skeleton className="w-8 h-8 rounded-lg flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <Skeleton className="h-4 w-2/3 mb-1" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
