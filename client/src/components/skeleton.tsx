@@ -470,3 +470,30 @@ export function MagicSystemsGridSkeleton() {
     </div>
   );
 }
+
+// Lore Page Header Skeleton
+export function LorePageHeaderSkeleton() {
+  return (
+    <div className="flex justify-between items-start mb-8">
+      <div>
+        <Skeleton className="h-12 w-20 mb-2" />
+        <Skeleton className="h-5 w-72" />
+      </div>
+      <div className="flex items-center gap-4 flex-shrink-0">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-10 w-28" />
+      </div>
+    </div>
+  );
+}
+
+// Lore Grid Skeleton
+export function LoreGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 9 }).map((_, index) => (
+        <ContentCardSkeleton key={index} />
+      ))}
+    </div>
+  );
+}

@@ -7,6 +7,7 @@ import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { SearchComponent } from "@/components/search-component";
 import { Button } from "@/components/button-variations";
+import { LorePageHeaderSkeleton, LoreGridSkeleton } from "@/components/skeleton";
 import { Plus, BookOpen, Crown, Scroll, Landmark, Sword, Users, Globe, Calendar } from "lucide-react";
 import type { Project, LoreEntry } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -33,13 +34,16 @@ export default function Lore() {
   const queryClient = useQueryClient();
   const { navigateWithReferrer } = useNavigation();
   
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: loreEntries = [] } = useQuery<LoreEntry[]>({
+  const { data: loreEntries = [], isLoading: loreLoading } = useQuery<LoreEntry[]>({
     queryKey: [`/api/projects/${projectId}/lore`],
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || loreLoading;
 
   // Set page title
   useEffect(() => {
@@ -140,6 +144,26 @@ export default function Lore() {
       ]
     }
   ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-50">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="lore"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Page Header Skeleton */}
+          <LorePageHeaderSkeleton />
+
+          {/* Lore Grid Skeleton */}
+          <LoreGridSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-brand-50">
