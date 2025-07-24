@@ -1065,3 +1065,102 @@ export function NoteDetailsContentSkeleton() {
     </div>
   );
 }
+
+// Event Form Header Skeleton
+export function EventFormHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between gap-4 mb-8">
+      <div className="flex items-center gap-4">
+        <Skeleton className="w-16 h-16 rounded-lg" />
+        <div className="flex-1">
+          <Skeleton className="h-8 w-48 mb-2" />
+          <Skeleton className="h-4 w-64" />
+        </div>
+      </div>
+      
+      {/* Action Buttons */}
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-20" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+    </div>
+  );
+}
+
+// Event Form Content Skeleton
+export function EventFormContentSkeleton() {
+  return (
+    <div className="space-y-8">
+      {/* Title Input Skeleton */}
+      <div className="space-y-6">
+        <Skeleton className="h-12 w-full" />
+        
+        {/* Status and Type Badges Row */}
+        <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-3 w-20" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-3 w-20" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-3 w-16" />
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-16" />
+              <Skeleton className="h-10 w-16" />
+              <Skeleton className="h-10 w-16" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        {/* Main Content Area - Description */}
+        <div className="lg:col-span-2">
+          <div className="bg-brand-100 border border-brand-200 rounded-xl p-8">
+            <Skeleton className="h-6 w-32 mb-4" />
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/5" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-32 w-full" />
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-8">
+          {/* Locations Section */}
+          <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <Skeleton className="h-5 w-20" />
+              <Skeleton className="h-8 w-8 rounded" />
+            </div>
+            <Skeleton className="h-10 w-full mb-4" />
+            <div className="space-y-2">
+              <Skeleton className="h-16 w-full rounded-lg" />
+            </div>
+          </div>
+
+          {/* Characters Section */}
+          <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <Skeleton className="h-5 w-24" />
+              <Skeleton className="h-8 w-8 rounded" />
+            </div>
+            <Skeleton className="h-10 w-full mb-4" />
+            <div className="space-y-2">
+              <Skeleton className="h-16 w-full rounded-lg" />
+              <Skeleton className="h-16 w-full rounded-lg" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

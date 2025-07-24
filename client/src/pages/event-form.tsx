@@ -10,6 +10,7 @@ import { Input, Textarea, Select } from "@/components/form-inputs";
 import { MiniCard } from "@/components/mini-card";
 import { useNavigation } from "@/contexts/navigation-context";
 import { WordProcessor } from "@/components/word-processor";
+import { EventFormHeaderSkeleton, EventFormContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, CheckCircle, X, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { insertEventSchema, type Project, type Event, type Location, type Character, type Relationship } from "@shared/schema";
@@ -79,27 +80,31 @@ export default function EventForm() {
   const [selectedCharacters, setSelectedCharacters] = useState<Character[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: event } = useQuery<Event>({
+  const { data: event, isLoading: eventLoading } = useQuery<Event>({
     queryKey: [`/api/events/${eventId}`],
     enabled: isEditing,
   });
 
-  const { data: locations = [] } = useQuery<Location[]>({
+  const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
   });
 
-  const { data: characters = [] } = useQuery<Character[]>({
+  const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
-  const { data: relationships = [] } = useQuery<Relationship[]>({
+  const { data: relationships = [], isLoading: relationshipsLoading } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
     enabled: isEditing,
   });
+
+  // Check if any required data is still loading
+  const isLoading = projectLoading || locationsLoading || charactersLoading || 
+    (isEditing && (eventLoading || relationshipsLoading));
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventFormSchema),
@@ -326,6 +331,40 @@ export default function EventForm() {
       form.setValue("locationId", newLocations.length > 0 ? newLocations[0].id : undefined);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-50">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="timeline"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        
+        <main className="max-w-6xl mx-auto px-8 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              {isEditing ? "Back to Event" : "Back to Timeline"}
+            </Button>
+          </div>
+
+          {/* Form Header Skeleton */}
+          <EventFormHeaderSkeleton />
+
+          {/* Main Content Skeleton */}
+          <EventFormContentSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-brand-50">
