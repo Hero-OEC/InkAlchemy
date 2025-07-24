@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navbar";
 import { SearchComponent } from "@/components/search-component";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { Button } from "@/components/button-variations";
+import { TimelineHeaderSkeleton, TimelineGridSkeleton, EmptyTimelineSkeleton } from "@/components/skeleton";
 import { Plus, Calendar } from "lucide-react";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
 
@@ -16,11 +17,11 @@ export default function Timeline() {
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const { navigateWithReferrer } = useNavigation();
   
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: events = [] } = useQuery<Event[]>({
+  const { data: events = [], isLoading: eventsLoading } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
   });
 
@@ -32,9 +33,13 @@ export default function Timeline() {
     queryKey: [`/api/projects/${projectId}/locations`],
   });
 
-  const { data: relationships = [] } = useQuery<Relationship[]>({
+  const { data: relationships = [], isLoading: relationshipsLoading } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || eventsLoading || charactersLoading || 
+                   locationsLoading || relationshipsLoading;
 
   // Set page title
   useEffect(() => {
@@ -181,6 +186,29 @@ export default function Timeline() {
 
     return true;
   });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-50">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="timeline"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        
+        <main className="max-w-7xl mx-auto px-8 py-8">
+          {/* Header Skeleton */}
+          <TimelineHeaderSkeleton />
+
+          {/* Timeline Content Skeleton */}
+          <div className="p-6">
+            <TimelineGridSkeleton />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-brand-50">

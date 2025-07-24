@@ -172,3 +172,97 @@ export function EditHistorySkeleton() {
     </div>
   );
 }
+
+// Timeline Page Header Skeleton
+export function TimelineHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <Skeleton className="h-8 w-32 mb-2" />
+        <Skeleton className="h-5 w-64" />
+      </div>
+      <div className="flex items-center gap-4 flex-shrink-0">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-10 w-36" />
+      </div>
+    </div>
+  );
+}
+
+// Timeline Event Skeleton - matches SerpentineTimeline event structure
+export function TimelineEventSkeleton() {
+  return (
+    <div className="bg-white rounded-xl border border-brand-200 p-4 shadow-sm hover:shadow-md transition-shadow">
+      {/* Event Header */}
+      <div className="flex items-start gap-3 mb-3">
+        <Skeleton className="w-8 h-8 rounded-lg flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <Skeleton className="h-5 w-3/4 mb-1" />
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-4 w-16 rounded-full" />
+            <Skeleton className="h-4 w-20 rounded-full" />
+          </div>
+        </div>
+      </div>
+
+      {/* Event Description */}
+      <div className="mb-3">
+        <Skeleton className="h-4 w-full mb-1" />
+        <Skeleton className="h-4 w-4/5" />
+      </div>
+
+      {/* Event Footer */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Skeleton className="w-4 h-4" />
+          <Skeleton className="h-3 w-20" />
+        </div>
+        <Skeleton className="h-3 w-16" />
+      </div>
+    </div>
+  );
+}
+
+// Timeline Grid Skeleton - matches SerpentineTimeline responsive layout
+export function TimelineGridSkeleton() {
+  return (
+    <div className="relative">
+      {/* Timeline Path Skeleton */}
+      <div className="absolute inset-0 pointer-events-none">
+        <svg className="w-full h-full">
+          <defs>
+            <pattern id="skeleton-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <rect width="20" height="20" className="fill-brand-200 animate-pulse" />
+            </pattern>
+          </defs>
+          <path
+            d="M 100 50 Q 200 100 300 50 T 500 50 T 700 50 T 900 50"
+            stroke="url(#skeleton-pattern)"
+            strokeWidth="3"
+            fill="none"
+            className="opacity-50"
+          />
+        </svg>
+      </div>
+
+      {/* Event Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <TimelineEventSkeleton key={index} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Empty Timeline Skeleton
+export function EmptyTimelineSkeleton() {
+  return (
+    <div className="text-center py-16">
+      <Skeleton className="w-24 h-24 rounded-full mx-auto mb-6" />
+      <Skeleton className="h-6 w-48 mx-auto mb-2" />
+      <Skeleton className="h-4 w-64 mx-auto mb-6" />
+      <Skeleton className="h-10 w-40 mx-auto" />
+    </div>
+  );
+}
