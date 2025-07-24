@@ -70,15 +70,6 @@ export default function Characters() {
         { value: "supporting", label: "Supporting" },
         { value: "minor", label: "Minor" }
       ]
-    },
-    {
-      key: "status",
-      label: "Status",
-      options: [
-        { value: "active", label: "Active" },
-        { value: "developing", label: "Developing" },
-        { value: "inactive", label: "Inactive" }
-      ]
     }
   ];
 
@@ -116,11 +107,6 @@ export default function Characters() {
 
     // Role filter
     if (characterActiveFilters.role && character.role !== characterActiveFilters.role) {
-      return false;
-    }
-
-    // Status filter
-    if (characterActiveFilters.status && character.status !== characterActiveFilters.status) {
       return false;
     }
 
