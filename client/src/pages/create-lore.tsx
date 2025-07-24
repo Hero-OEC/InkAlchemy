@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { LoreForm } from "@/components/lore-form";
+import { LoreFormHeaderSkeleton, LoreFormContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, BookOpen, Calendar, Users, Landmark, Crown, Globe, Sword, Scroll } from "lucide-react";
 import type { Project } from "@shared/schema";
 
@@ -25,7 +26,7 @@ export default function CreateLore() {
   const [, setLocation] = useLocation();
   const [currentCategory, setCurrentCategory] = useState<string>("other");
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
@@ -48,6 +49,38 @@ export default function CreateLore() {
   const getCurrentIcon = () => {
     return LORE_CATEGORY_ICONS[currentCategory as keyof typeof LORE_CATEGORY_ICONS] || BookOpen;
   };
+
+  if (projectLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="lore"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        
+        <main className="max-w-4xl mx-auto px-6 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Lore
+            </Button>
+          </div>
+
+          {/* Lore Form Skeleton */}
+          <LoreFormHeaderSkeleton />
+          <LoreFormContentSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
