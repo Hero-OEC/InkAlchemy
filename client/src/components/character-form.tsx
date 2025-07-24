@@ -23,6 +23,7 @@ interface CharacterFormProps {
   character: Character | null;
   projectId: number;
   onSuccess: () => void;
+  onCancel: () => void;
 }
 
 // Helper function to convert null values to empty strings for form fields
@@ -37,7 +38,7 @@ const normalizeCharacterData = (character: Character | null) => ({
   imageUrl: character?.imageUrl || "",
 });
 
-export function CharacterForm({ character, projectId, onSuccess }: CharacterFormProps) {
+export function CharacterForm({ character, projectId, onSuccess, onCancel }: CharacterFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("details");
@@ -176,6 +177,37 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Header with Title and Buttons */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="bg-brand-500 p-3 rounded-xl">
+              <Users size={24} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-brand-950">
+                {character ? "Edit Character" : "Create Character"}
+              </h1>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onCancel}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : character ? "Update Character" : "Create Character"}
+            </Button>
+          </div>
+        </div>
+
         {/* Main Content Grid - SWITCHED: tabs on left (2/3), profile on right (1/3) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Tabbed Content (2/3) */}
@@ -467,18 +499,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
 
               </div>
 
-              {/* Form Actions */}
-              <div className="flex gap-3 pt-6 mt-6 border-t border-brand-200">
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  disabled={isLoading}
-                  className="flex-1"
-                >
-                  {isLoading ? "Saving..." : character ? "Update Character" : "Create Character"}
-                </Button>
-              </div>
+
             </div>
           </div>
         </div>
