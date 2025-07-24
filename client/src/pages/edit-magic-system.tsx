@@ -188,10 +188,17 @@ export default function EditMagicSystem() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleBack}
+              disabled={mutation.isPending}
+            >
+              Cancel
+            </Button>
             <Button 
               type="submit" 
               form="magic-system-form"
-              variant="primary" 
               disabled={mutation.isPending}
               className="flex items-center gap-2"
             >
