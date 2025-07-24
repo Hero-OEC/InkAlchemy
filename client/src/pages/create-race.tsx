@@ -283,7 +283,7 @@ export default function CreateRace() {
                 <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters of This Race</h3>
                 
                 <div className="text-center py-6">
-                  <UserCheck size={24} className="mx-auto text-brand-300 mb-2" />
+                  <Users size={24} className="mx-auto text-brand-300 mb-2" />
                   <p className="text-sm text-brand-600 mb-3">Create this race first, then assign characters</p>
                   <Button
                     variant="outline"

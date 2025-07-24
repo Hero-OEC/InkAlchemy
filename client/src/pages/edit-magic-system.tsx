@@ -73,7 +73,7 @@ export default function EditMagicSystem() {
 
   const mutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest(`/api/magic-systems/${systemId}`, { method: "PATCH", body: data }),
+      apiRequest(`/api/magic-systems/${systemId}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/magic-systems/${systemId}`] });
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/magic-systems`] });
@@ -237,7 +237,7 @@ export default function EditMagicSystem() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>System Type</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select type" />
