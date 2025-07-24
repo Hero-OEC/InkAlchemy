@@ -204,7 +204,7 @@ export default function Notes() {
             <p className="text-brand-600 mb-6">Start capturing your ideas and thoughts about your story</p>
             <Button
               variant="primary"
-              size="md"
+              size="sm"
               onClick={handleCreateNote}
               className="flex items-center gap-2 mx-auto"
             >

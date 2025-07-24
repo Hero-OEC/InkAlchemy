@@ -203,7 +203,7 @@ export default function Lore() {
             <p className="text-brand-600 mb-6">Start building the history and culture of your world</p>
             <Button
               variant="primary"
-              size="md"
+              size="sm"
               onClick={handleCreateLore}
               className="flex items-center gap-2 mx-auto"
             >

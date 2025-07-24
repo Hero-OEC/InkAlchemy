@@ -214,7 +214,7 @@ export default function Locations() {
             </div>
             <Button 
               variant="primary"
-              size="md"
+              size="sm"
               onClick={handleCreateLocation} 
               className="flex items-center gap-2 mx-auto"
             >
