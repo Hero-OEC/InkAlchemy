@@ -1639,3 +1639,67 @@ export function LoreFormContentSkeleton() {
   );
 }
 
+// Note Form Header Skeleton
+export function NoteFormHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center gap-4">
+        <Skeleton className="w-16 h-16 rounded-xl" />
+        <div>
+          <Skeleton className="h-8 w-40 mb-2" />
+          <Skeleton className="h-5 w-48" />
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-20" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+    </div>
+  );
+}
+
+// Note Form Content Skeleton
+export function NoteFormContentSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Basic Information Container */}
+      <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
+        <Skeleton className="h-6 w-36 mb-6" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Note Title */}
+          <div>
+            <Skeleton className="h-4 w-24 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          {/* Category */}
+          <div>
+            <Skeleton className="h-4 w-20 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        </div>
+        
+        {/* Color Selection */}
+        <div className="mt-6">
+          <Skeleton className="h-4 w-20 mb-4" />
+          <div className="flex gap-3">
+            {Array.from({ length: 7 }, (_, i) => (
+              <Skeleton key={i} className="w-8 h-8 rounded-full" />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Content Container */}
+      <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
+        <Skeleton className="h-6 w-20 mb-4" />
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-4 w-4/5" />
+          <Skeleton className="h-32 w-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
+

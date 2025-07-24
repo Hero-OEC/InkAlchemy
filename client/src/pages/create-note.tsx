@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { NoteForm } from "@/components/note-form";
+import { NoteFormHeaderSkeleton, NoteFormContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, StickyNote, Lightbulb, Bell, FileText, User, MapPin, Search } from "lucide-react";
 import type { Project } from "@shared/schema";
 
@@ -23,7 +24,7 @@ export default function CreateNote() {
   const [, setLocation] = useLocation();
   const [currentCategory, setCurrentCategory] = useState<string>("general");
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
@@ -46,6 +47,38 @@ export default function CreateNote() {
   const getCurrentIcon = () => {
     return NOTE_CATEGORY_ICONS[currentCategory as keyof typeof NOTE_CATEGORY_ICONS] || StickyNote;
   };
+
+  if (projectLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="notes"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        
+        <main className="max-w-4xl mx-auto px-6 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Notes
+            </Button>
+          </div>
+
+          {/* Note Form Skeleton */}
+          <NoteFormHeaderSkeleton />
+          <NoteFormContentSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
