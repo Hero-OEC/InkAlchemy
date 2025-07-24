@@ -497,3 +497,30 @@ export function LoreGridSkeleton() {
     </div>
   );
 }
+
+// Notes Page Header Skeleton
+export function NotesPageHeaderSkeleton() {
+  return (
+    <div className="flex justify-between items-start mb-8">
+      <div>
+        <Skeleton className="h-12 w-24 mb-2" />
+        <Skeleton className="h-5 w-80" />
+      </div>
+      <div className="flex items-center gap-4 flex-shrink-0">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-10 w-28" />
+      </div>
+    </div>
+  );
+}
+
+// Notes Grid Skeleton
+export function NotesGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 12 }).map((_, index) => (
+        <ContentCardSkeleton key={index} />
+      ))}
+    </div>
+  );
+}

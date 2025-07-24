@@ -7,6 +7,7 @@ import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { SearchComponent } from "@/components/search-component";
 import { Button } from "@/components/button-variations";
+import { NotesPageHeaderSkeleton, NotesGridSkeleton } from "@/components/skeleton";
 import { Plus, StickyNote, FileText, Lightbulb, AlertCircle, Tag } from "lucide-react";
 import type { Project, Note } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -33,13 +34,16 @@ export default function Notes() {
   const queryClient = useQueryClient();
   const { navigateWithReferrer } = useNavigation();
   
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: notes = [] } = useQuery<Note[]>({
+  const { data: notes = [], isLoading: notesLoading } = useQuery<Note[]>({
     queryKey: [`/api/projects/${projectId}/notes`],
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || notesLoading;
 
   // Set page title
   useEffect(() => {
@@ -140,6 +144,26 @@ export default function Notes() {
       ]
     }
   ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-50">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="notes"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Page Header Skeleton */}
+          <NotesPageHeaderSkeleton />
+
+          {/* Notes Grid Skeleton */}
+          <NotesGridSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-brand-50">
