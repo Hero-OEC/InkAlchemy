@@ -1,5 +1,5 @@
 import { 
-  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, races,
+  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, eventCharacters, races,
   type Project, type InsertProject,
   type Character, type InsertCharacter,
   type Location, type InsertLocation,
@@ -10,6 +10,7 @@ import {
   type Note, type InsertNote,
   type Relationship, type InsertRelationship,
   type CharacterSpell, type InsertCharacterSpell,
+  type EventCharacter, type InsertEventCharacter,
   type Race, type InsertRace
 } from "@shared/schema";
 
@@ -61,6 +62,11 @@ export interface IStorage {
   getCharacterSpells(characterId: number): Promise<(Spell & { proficiency?: string })[]>;
   addCharacterSpell(characterSpell: InsertCharacterSpell): Promise<CharacterSpell>;
   removeCharacterSpell(characterId: number, spellId: number): Promise<boolean>;
+
+  // Event Characters
+  getEventCharacters(eventId: number): Promise<(Character & { role?: string })[]>;
+  addEventCharacter(eventCharacter: InsertEventCharacter): Promise<EventCharacter>;
+  removeEventCharacter(eventId: number, characterId: number): Promise<boolean>;
 
   // Lore Entries
   getLoreEntries(projectId: number): Promise<LoreEntry[]>;
@@ -116,6 +122,7 @@ export class MemStorage implements IStorage {
   private races: Map<number, Race>;
   private relationships: Map<number, Relationship>;
   private characterSpells: Map<number, CharacterSpell>;
+  private eventCharacters: Map<number, EventCharacter>;
   private currentId: number;
 
   constructor() {
@@ -130,6 +137,7 @@ export class MemStorage implements IStorage {
     this.races = new Map();
     this.relationships = new Map();
     this.characterSpells = new Map();
+    this.eventCharacters = new Map();
     this.currentId = 10;
 
     // Create a default project

@@ -132,6 +132,15 @@ export const characterSpells = pgTable("character_spells", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Event Characters junction table - linking events to characters
+export const eventCharacters = pgTable("event_characters", {
+  id: serial("id").primaryKey(),
+  eventId: integer("event_id").references(() => events.id).notNull(),
+  characterId: integer("character_id").references(() => characters.id).notNull(),
+  role: text("role").default("participant"), // protagonist, antagonist, witness, victim, etc.
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Relationships table for connecting different elements
 export const relationships = pgTable("relationships", {
   id: serial("id").primaryKey(),
@@ -206,6 +215,11 @@ export const insertCharacterSpellSchema = createInsertSchema(characterSpells).om
   createdAt: true,
 });
 
+export const insertEventCharacterSchema = createInsertSchema(eventCharacters).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertRelationshipSchema = createInsertSchema(relationships).omit({
   id: true,
   createdAt: true,
@@ -235,6 +249,9 @@ export type InsertRace = z.infer<typeof insertRaceSchema>;
 
 export type CharacterSpell = typeof characterSpells.$inferSelect;
 export type InsertCharacterSpell = z.infer<typeof insertCharacterSpellSchema>;
+
+export type EventCharacter = typeof eventCharacters.$inferSelect;
+export type InsertEventCharacter = z.infer<typeof insertEventCharacterSchema>;
 
 export type LoreEntry = typeof loreEntries.$inferSelect;
 export type InsertLoreEntry = z.infer<typeof insertLoreEntrySchema>;

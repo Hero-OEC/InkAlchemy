@@ -484,3 +484,12 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Fixed TypeScript errors in character details page by removing references to deleted powerType field
 - Character management system now has clean, simplified schema focused on essential information only
 - Database schema now perfectly aligned with current character form and details page implementation
+
+### January 2025 - Event-Character Relationship Enhancement
+- Added dedicated eventCharacters junction table for direct event-character relationships
+- Created EventCharacter and InsertEventCharacter types with role field (participant, protagonist, antagonist, witness, etc.)
+- Enhanced event system with proper character connections alongside existing location relationships
+- Updated storage interface to include getEventCharacters, addEventCharacter, removeEventCharacter methods
+- Applied database migration to create event_characters table with foreign key constraints
+- Event management now supports both location connections (locationId) and character connections (eventCharacters table)
+- System maintains existing relationships table for complex connections while providing simpler event-character links
