@@ -800,3 +800,67 @@ export function CharacterDetailsContentSkeleton() {
     </div>
   );
 }
+
+// Location Details Header Skeleton
+export function LocationDetailsHeaderSkeleton() {
+  return (
+    <div className="mb-8">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Skeleton className="w-14 h-14 rounded-xl" />
+          <div>
+            <Skeleton className="h-8 w-48 mb-2" />
+            <Skeleton className="h-6 w-28 rounded-full" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-32" />
+          <Skeleton className="h-10 w-20" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Location Details Tab Navigation Skeleton
+export function LocationDetailsTabsSkeleton() {
+  return (
+    <div className="border-b border-brand-200 mb-6">
+      <nav className="flex space-x-8">
+        {Array.from({ length: 2 }).map((_, index) => (
+          <div key={index} className="flex items-center gap-2 py-4 px-1">
+            <Skeleton className="w-4 h-4" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+// Location Details Content Skeleton
+export function LocationDetailsContentSkeleton() {
+  return (
+    <div>
+      {/* Tab Navigation Skeleton */}
+      <LocationDetailsTabsSkeleton />
+
+      {/* Tab Content Skeleton */}
+      <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+        <div className="space-y-6">
+          <div>
+            <Skeleton className="h-5 w-20 mb-3" />
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/5" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-5/6" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

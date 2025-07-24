@@ -8,6 +8,7 @@ import { MiniCard } from "@/components/mini-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
+import { LocationDetailsHeaderSkeleton, LocationDetailsContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Edit, Trash2, Calendar, MapPin, Users, Landmark, Crown, Zap } from "lucide-react";
 import type { Project, Location, Character, Event, Relationship } from "@shared/schema";
 import { Building2, Trees, Castle, Mountain, Home, Globe } from "lucide-react";
@@ -53,7 +54,7 @@ export default function LocationDetails() {
     }
   }, [locationId, projectId, setLocation]);
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
@@ -73,21 +74,25 @@ export default function LocationDetails() {
     }
   }, [location?.name, project?.name]);
 
-  const { data: characters = [] } = useQuery<Character[]>({
+  const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
-  const { data: events = [] } = useQuery<Event[]>({
+  const { data: events = [], isLoading: eventsLoading } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
   });
 
-  const { data: relationships = [] } = useQuery<Relationship[]>({
+  const { data: relationships = [], isLoading: relationshipsLoading } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
   });
 
-  const { data: locations = [] } = useQuery<Location[]>({
+  const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || locationLoading || charactersLoading || eventsLoading || 
+    relationshipsLoading || locationsLoading;
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
@@ -123,18 +128,35 @@ export default function LocationDetails() {
     navigateWithReferrer(`/projects/${projectId}/events/${event.id}`, currentPath);
   };
 
-  if (locationLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navbar 
           hasActiveProject={true} 
           currentPage="locations"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading location...</p>
-        </div>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+
+          {/* Location Header Skeleton */}
+          <LocationDetailsHeaderSkeleton />
+
+          {/* Main Content Skeleton */}
+          <LocationDetailsContentSkeleton />
+        </main>
       </div>
     );
   }
