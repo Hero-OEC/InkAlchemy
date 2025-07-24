@@ -8,6 +8,7 @@ import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
 import { MiniCard } from "@/components/mini-card";
+import { SearchComponent } from "@/components/search-component";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { ArrowLeft, Edit, Trash2, Sparkles, Zap, Users, BookOpen, Wand2, Plus } from "lucide-react";
 import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
@@ -38,6 +39,7 @@ export default function MagicSystemDetails() {
   const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteSpell, setDeleteSpell] = useState<Spell | null>(null);
+  const [spellSearchQuery, setSpellSearchQuery] = useState("");
   const queryClient = useQueryClient();
   const { goBack, navigateWithReferrer } = useNavigation();
 
@@ -217,6 +219,17 @@ export default function MagicSystemDetails() {
       case "spells":
         const contentType = system.type === "power" ? "abilities" : "spells";
         const actualSpells = spells || [];
+        
+        // Filter spells based on search
+        const filteredSpells = actualSpells.filter((spell) => {
+          if (spellSearchQuery) {
+            const searchLower = spellSearchQuery.toLowerCase();
+            return spell.name.toLowerCase().includes(searchLower) || 
+                   spell.description?.toLowerCase().includes(searchLower) ||
+                   spell.level?.toLowerCase().includes(searchLower);
+          }
+          return true;
+        });
 
         return (
           <div>
@@ -224,34 +237,27 @@ export default function MagicSystemDetails() {
               <h3 className="text-lg font-semibold text-brand-900">
                 {system.type === "power" ? "Abilities" : "Spells"}
               </h3>
-              <Button 
-                onClick={() => {
-                  setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
-                }}
-              >
-                <Plus size={16} className="mr-2" />
-                Add {system.type === "power" ? "Ability" : "Spell"}
-              </Button>
+              <div className="flex items-center gap-4 flex-shrink-0">
+                <SearchComponent
+                  placeholder={`Search ${system.type === "power" ? "abilities" : "spells"}...`}
+                  onSearch={setSpellSearchQuery}
+                  onFilterChange={() => {}} // No filters needed
+                  filters={[]} // No filters
+                  showFilters={false}
+                />
+                <Button 
+                  onClick={() => {
+                    setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
+                  }}
+                  className="whitespace-nowrap"
+                >
+                  <Plus size={16} className="mr-2" />
+                  Add {system.type === "power" ? "Ability" : "Spell"}
+                </Button>
+              </div>
             </div>
             
-            {actualSpells.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {actualSpells.map((spell) => (
-                  <ContentCard
-                    key={spell.id}
-                    id={spell.id}
-                    title={spell.name}
-                    type="magic"
-                    subtype={spell.level || ""}
-                    description={spell.description || "No description available"}
-                    icon={system.type === "power" ? Zap : Wand2}
-                    onClick={() => setLocation(`/projects/${projectId}/spells/${spell.id}`)}
-                    onEdit={() => setLocation(`/projects/${projectId}/spells/${spell.id}/edit`)}
-                    onDelete={() => handleDeleteSpell(spell)}
-                  />
-                ))}
-              </div>
-            ) : (
+            {actualSpells.length === 0 ? (
               <div className="text-center py-12">
                 <div className="bg-brand-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   {system.type === "power" ? (
@@ -276,6 +282,37 @@ export default function MagicSystemDetails() {
                   <Plus size={16} className="mr-2" />
                   Create First {system.type === "power" ? "Ability" : "Spell"}
                 </Button>
+              </div>
+            ) : filteredSpells.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="bg-brand-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  {system.type === "power" ? (
+                    <Zap size={24} className="text-brand-500" />
+                  ) : (
+                    <Wand2 size={24} className="text-brand-500" />
+                  )}
+                </div>
+                <h4 className="text-xl font-semibold text-brand-900 mb-2">No Results Found</h4>
+                <p className="text-brand-600 mb-4">
+                  No {system.type === "power" ? "abilities" : "spells"} match your search criteria.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredSpells.map((spell) => (
+                  <ContentCard
+                    key={spell.id}
+                    id={spell.id}
+                    title={spell.name}
+                    type="magic"
+                    subtype={spell.level || ""}
+                    description={spell.description || "No description available"}
+                    icon={system.type === "power" ? Zap : Wand2}
+                    onClick={() => setLocation(`/projects/${projectId}/spells/${spell.id}`)}
+                    onEdit={() => setLocation(`/projects/${projectId}/spells/${spell.id}/edit`)}
+                    onDelete={() => handleDeleteSpell(spell)}
+                  />
+                ))}
               </div>
             )}
           </div>
