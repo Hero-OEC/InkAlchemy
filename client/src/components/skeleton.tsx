@@ -1262,3 +1262,122 @@ export function RaceFormContentSkeleton() {
     </div>
   );
 }
+
+// Character Form Header Skeleton
+export function CharacterFormHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center gap-4">
+        <Skeleton className="w-16 h-16 rounded-xl" />
+        <div>
+          <Skeleton className="h-8 w-44 mb-2" />
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-20" />
+        <Skeleton className="h-10 w-36" />
+      </div>
+    </div>
+  );
+}
+
+// Character Form Content Skeleton
+export function CharacterFormContentSkeleton() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Left Column - Tabbed Content (2/3) */}
+      <div className="lg:col-span-2">
+        {/* Tab Navigation Skeleton */}
+        <div className="border-b border-brand-200">
+          <nav className="-mb-px flex space-x-8">
+            <Skeleton className="h-10 w-16" />
+            <Skeleton className="h-10 w-32" />
+          </nav>
+        </div>
+
+        {/* Tab Content Skeleton */}
+        <div className="space-y-6 mt-6">
+          {/* Basic Information Section */}
+          <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+            <Skeleton className="h-6 w-32 mb-4" />
+            <div className="space-y-4">
+              <div>
+                <Skeleton className="h-4 w-24 mb-2" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Skeleton className="h-4 w-16 mb-2" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+                <div>
+                  <Skeleton className="h-4 w-16 mb-2" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Description Section */}
+          <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+            <Skeleton className="h-6 w-24 mb-4" />
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/5" />
+              <Skeleton className="h-32 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column - Character Profile (1/3) */}
+      <div className="space-y-6">
+        {/* Character Image */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <Skeleton className="h-5 w-28 mb-4" />
+          <Skeleton className="w-full h-48 rounded-lg mb-4" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+
+        {/* Race Section */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <Skeleton className="h-5 w-12 mb-4" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+
+        {/* Physical & Role Details */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <Skeleton className="h-5 w-32 mb-4" />
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Skeleton className="h-4 w-12 mb-2" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <div>
+                <Skeleton className="h-4 w-8 mb-2" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Equipment & Combat */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <Skeleton className="h-5 w-36 mb-4" />
+          <div className="space-y-4">
+            <div>
+              <Skeleton className="h-4 w-16 mb-2" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+            <div>
+              <Skeleton className="h-4 w-20 mb-2" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
