@@ -380,9 +380,9 @@ export default function MagicSystemDetails() {
             <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
               <h3 className="text-lg font-semibold text-brand-900 mb-4">Complexity</h3>
               <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize ${
-                system.complexity === "low" ? "bg-green-100 text-green-800" :
-                system.complexity === "medium" ? "bg-yellow-100 text-yellow-800" :
-                "bg-red-100 text-red-800"
+                system.complexity === "low" ? "bg-brand-100 text-brand-800" :
+                system.complexity === "medium" ? "bg-brand-200 text-brand-900" :
+                "bg-brand-300 text-brand-950"
               }`}>
                 {system.complexity || "Medium"}
               </span>
