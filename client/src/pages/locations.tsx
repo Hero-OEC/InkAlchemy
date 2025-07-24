@@ -174,7 +174,7 @@ export default function Locations() {
             <h1 className="text-4xl font-bold mb-2 text-[#624122]">Locations</h1>
             <p className="text-brand-600">Manage your world's places and settings</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-shrink-0">
             <SearchComponent
               placeholder="Search locations..."
               onSearch={setSearchQuery}
@@ -182,7 +182,7 @@ export default function Locations() {
               filters={searchFilters}
               showFilters={true}
             />
-            <Button onClick={handleCreateLocation} className="flex items-center gap-2">
+            <Button onClick={handleCreateLocation} className="flex items-center gap-2 whitespace-nowrap">
               <Plus size={20} />
               New Location
             </Button>
