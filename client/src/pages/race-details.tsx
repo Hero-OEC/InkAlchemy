@@ -275,14 +275,7 @@ export default function RaceDetails() {
             {/* Abilities & Powers */}
             <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
               <h3 className="text-lg font-semibold text-brand-900 mb-4">Abilities & Powers</h3>
-              {race?.magicalAffinity ? (
-                <div className="flex justify-between">
-                  <span className="text-brand-600">Magical Affinity:</span>
-                  <span className="text-brand-900 capitalize">{race.magicalAffinity.replace('_', ' ')}</span>
-                </div>
-              ) : (
-                <p className="text-sm text-brand-600 text-center py-2">No magical abilities set</p>
-              )}
+              <p className="text-sm text-brand-600 text-center py-2">No special abilities defined</p>
             </div>
 
             {/* Characters */}

@@ -501,3 +501,11 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Updated main documentation files (replit.md, INKALCHEMY_DOCUMENTATION.md)
 - Applied consistent "InkAlchemy" branding in all user-facing text and page titles
 - Maintained existing brand color scheme and design system with new name
+
+### January 2025 - Database Schema Optimization and Event-Character Integration
+- Simplified event-character relationships by adding characterIds array field directly to events table
+- Removed unnecessary eventCharacters junction table in favor of simpler direct array approach
+- Cleaned up database schema by removing unused fields: importance from loreEntries, magicalAffinity from races
+- Enhanced events table with characterIds text array field for direct character connections to events
+- Size category field already properly displayed in race details Physical Characteristics section
+- Optimized schema focuses on essential data with direct relationships rather than complex junction tables
