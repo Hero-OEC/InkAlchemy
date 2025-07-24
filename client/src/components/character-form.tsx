@@ -33,6 +33,7 @@ const normalizeCharacterData = (character: Character | null) => ({
   suffix: character?.suffix || "",
   age: character?.age || "",
   raceId: character?.raceId || undefined,
+  magicSystemId: character?.magicSystemId || undefined,
   imageUrl: character?.imageUrl || "",
 });
 
@@ -54,6 +55,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
   // Prepare magic systems with spells for CharacterMagicSelector
   const magicSystemsWithSpells = magicSystems.map(system => ({
     ...system,
+    type: system.type as "magic" | "power" || "magic",
     spells: projectSpells.filter(spell => spell.magicSystemId === system.id)
   }));
 
@@ -71,6 +73,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
     defaultValues: {
       projectId,
       ...normalizeCharacterData(character),
+      magicSystemId: character?.magicSystemId || undefined,
     },
   });
 
@@ -303,7 +306,7 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
               <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-6">
                 {(form.watch("imageUrl") || "") ? (
                   <img 
-                    src={form.watch("imageUrl")} 
+                    src={form.watch("imageUrl") || ""} 
                     alt="Character preview"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -437,8 +440,30 @@ export function CharacterForm({ character, projectId, onSuccess }: CharacterForm
                   />
                 </div>
 
-
-
+                <FormField
+                  control={form.control}
+                  name="magicSystemId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Magic System</FormLabel>
+                      <Select onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)} value={field.value?.toString() || ""}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select magic system" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {magicSystems.map((system) => (
+                            <SelectItem key={system.id} value={system.id.toString()}>
+                              {system.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
               </div>
 

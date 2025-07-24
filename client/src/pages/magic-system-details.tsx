@@ -170,10 +170,9 @@ export default function MagicSystemDetails() {
         { id: "spells", label: "Spells", icon: Wand2 }
       ];
 
-  // Filter characters that might use this system (placeholder logic)
+  // Filter characters that use this magic system via foreign key
   const systemUsers = characters?.filter(char => 
-    char.powerType?.toLowerCase().includes(system.source?.toLowerCase() || '') ||
-    char.powerType?.toLowerCase().includes(system.name.toLowerCase())
+    char.magicSystemId === system.id
   ) || [];
 
   const formatDate = (date: Date) => {
