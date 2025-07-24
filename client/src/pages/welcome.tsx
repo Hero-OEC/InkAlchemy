@@ -7,6 +7,7 @@ import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { SearchComponent } from "@/components/search-component";
 import { Input, Select } from "@/components/form-inputs";
+import { WelcomeHeaderSkeleton, ProjectsSectionHeaderSkeleton, ProjectsGridSkeleton } from "@/components/skeleton";
 import { apiRequest } from "@/lib/queryClient";
 import { 
   Plus, FolderOpen, Book,
@@ -184,7 +185,7 @@ export default function Welcome() {
   const handleEditProject = (project: Project) => {
     setEditingProject(project);
     setEditName(project.name);
-    setEditGenre(project.genre || "");
+    setEditGenre("");
     setEditDescription(project.description || "");
     setShowEditForm(true);
   };
@@ -219,8 +220,18 @@ export default function Welcome() {
     return (
       <div className="min-h-screen bg-brand-50">
         <Navbar hasActiveProject={false} />
-        <div className="flex items-center justify-center h-[calc(100vh-64px)]">
-          <div className="animate-pulse text-brand-600">Loading your projects...</div>
+        
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          {/* Welcome Header Skeleton */}
+          <WelcomeHeaderSkeleton />
+
+          {/* Projects Section Skeleton */}
+          <div className="mb-12">
+            <ProjectsSectionHeaderSkeleton />
+            
+            {/* Projects Grid Skeleton */}
+            <ProjectsGridSkeleton />
+          </div>
         </div>
       </div>
     );
