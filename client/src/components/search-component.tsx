@@ -70,7 +70,7 @@ export function SearchComponent({
           placeholder={placeholder}
           value={searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-10 pr-10 h-10 bg-white border-brand-300 text-brand-900 placeholder:text-brand-500 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 shadow-sm"
+          className="pl-10 pr-10 h-10 bg-brand-50 border-brand-300 text-brand-900 placeholder:text-brand-500 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 shadow-sm"
         />
         {searchQuery && (
           <button
@@ -101,7 +101,7 @@ export function SearchComponent({
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 p-6 bg-white border-brand-200 shadow-lg" align="end">
+          <PopoverContent className="w-80 p-6 bg-brand-50 border-brand-200 shadow-lg" align="end">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-semibold text-brand-950">Filters</h4>
@@ -126,7 +126,7 @@ export function SearchComponent({
                     value={activeFilters[filter.key] || "all"}
                     onValueChange={(value) => handleFilterChange(filter.key, value)}
                   >
-                    <SelectTrigger className="w-full h-9 border-brand-300 text-brand-900 focus:border-brand-600 focus:ring-1 focus:ring-brand-600">
+                    <SelectTrigger className="w-full h-9 bg-brand-50 border-brand-300 text-brand-900 focus:border-brand-600 focus:ring-1 focus:ring-brand-600">
                       <SelectValue placeholder={`All ${filter.label.toLowerCase()}`} />
                     </SelectTrigger>
                     <SelectContent>
