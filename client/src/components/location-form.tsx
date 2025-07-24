@@ -134,7 +134,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
             </h1>
             <div className="flex items-center gap-3 mt-2">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-500 text-white">
-                Location
+                {selectedType ? selectedType.charAt(0).toUpperCase() + selectedType.slice(1) : 'Location'}
               </span>
             </div>
           </div>
