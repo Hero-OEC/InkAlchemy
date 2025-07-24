@@ -65,20 +65,19 @@ export default function Timeline() {
   const searchFilters = [
     {
       key: "stage",
-      label: "Stage",
+      label: "Writing Stage",
       options: [
-        { value: "", label: "All Stages" },
         { value: "planning", label: "Planning" },
-        { value: "in-progress", label: "In Progress" },
-        { value: "complete", label: "Complete" },
-        { value: "cancelled", label: "Cancelled" }
+        { value: "writing", label: "Writing" },
+        { value: "first-draft", label: "First Draft" },
+        { value: "editing", label: "Editing" },
+        { value: "complete", label: "Complete" }
       ]
     },
     {
       key: "type",
-      label: "Type",
+      label: "Event Type",
       options: [
-        { value: "", label: "All Types" },
         { value: "battle", label: "Battle" },
         { value: "meeting", label: "Meeting" },
         { value: "discovery", label: "Discovery" },
@@ -95,13 +94,18 @@ export default function Timeline() {
     {
       key: "locationId",
       label: "Location",
-      options: [
-        { value: "", label: "All Locations" },
-        ...locations.map(location => ({
-          value: location.id.toString(),
-          label: location.name
-        }))
-      ]
+      options: locations.map(location => ({
+        value: location.id.toString(),
+        label: location.name
+      }))
+    },
+    {
+      key: "characterId",
+      label: "Character",
+      options: characters.map(character => ({
+        value: character.id.toString(),
+        label: character.name
+      }))
     }
   ];
 
@@ -144,12 +148,12 @@ export default function Timeline() {
       }
     }
 
-    // Filter by stage
+    // Filter by writing stage
     if (activeFilters.stage && event.stage !== activeFilters.stage) {
       return false;
     }
 
-    // Filter by type
+    // Filter by event type
     if (activeFilters.type && event.type !== activeFilters.type) {
       return false;
     }
@@ -157,6 +161,16 @@ export default function Timeline() {
     // Filter by location
     if (activeFilters.locationId && event.locationId?.toString() !== activeFilters.locationId) {
       return false;
+    }
+
+    // Filter by character
+    if (activeFilters.characterId) {
+      const hasCharacter = event.characters.some(char => 
+        char.id.toString() === activeFilters.characterId
+      );
+      if (!hasCharacter) {
+        return false;
+      }
     }
 
     return true;
