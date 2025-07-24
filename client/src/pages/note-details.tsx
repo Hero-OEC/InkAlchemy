@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
+import { NoteDetailsHeaderSkeleton, NoteDetailsContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Edit, Trash2, StickyNote, Lightbulb, Bell, FileText, User, MapPin, Search } from "lucide-react";
 import type { Project, Note } from "@shared/schema";
 import { format } from "date-fns";
@@ -25,14 +26,28 @@ export default function NoteDetails() {
   const [, setLocation] = useLocation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: note, isLoading } = useQuery<Note>({
+  const { data: note, isLoading: noteLoading } = useQuery<Note>({
     queryKey: [`/api/notes/${noteId}`],
     enabled: !!noteId && noteId !== "new" && !isNaN(Number(noteId))
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || noteLoading;
+
+  // Set page title
+  useEffect(() => {
+    if (note?.title && project?.name) {
+      document.title = `${note.title} - ${project.name} | StoryForge`;
+    } else if (note?.title) {
+      document.title = `${note.title} | StoryForge`;
+    } else {
+      document.title = "Note Details | StoryForge";
+    }
+  }, [note?.title, project?.name]);
 
   // Redirect if this is the create route
   useEffect(() => {
@@ -79,17 +94,28 @@ export default function NoteDetails() {
         <Navbar 
           hasActiveProject={true}
           currentPage="notes"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
         <main className="max-w-4xl mx-auto px-6 py-8">
-          <div className="text-center py-20">
-            <div className="animate-pulse">
-              <div className="w-16 h-16 bg-brand-200 rounded mx-auto mb-4"></div>
-              <div className="h-6 bg-brand-200 rounded w-48 mx-auto mb-2"></div>
-              <div className="h-4 bg-brand-200 rounded w-32 mx-auto"></div>
-            </div>
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Notes
+            </Button>
           </div>
+
+          {/* Note Header Skeleton */}
+          <NoteDetailsHeaderSkeleton />
+
+          {/* Main Content Skeleton */}
+          <NoteDetailsContentSkeleton />
         </main>
       </div>
     );
