@@ -6,7 +6,7 @@ import { Navbar } from "@/components/navbar";
 import { SearchComponent } from "@/components/search-component";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { Button } from "@/components/button-variations";
-import { TimelineHeaderSkeleton, TimelineGridSkeleton, EmptyTimelineSkeleton } from "@/components/skeleton";
+import { TimelineHeaderSkeleton, SerpentineTimelineSkeleton, TimelineLegendSkeleton, EmptyTimelineSkeleton } from "@/components/skeleton";
 import { Plus, Calendar } from "lucide-react";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
 
@@ -202,8 +202,9 @@ export default function Timeline() {
           <TimelineHeaderSkeleton />
 
           {/* Timeline Content Skeleton */}
-          <div className="p-6">
-            <TimelineGridSkeleton />
+          <div className="space-y-6">
+            <SerpentineTimelineSkeleton />
+            <TimelineLegendSkeleton />
           </div>
         </main>
       </div>
