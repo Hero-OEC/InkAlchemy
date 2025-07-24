@@ -208,34 +208,11 @@ export default function EditMagicSystem() {
           <form id="magic-system-form" onSubmit={form.handleSubmit(onSubmit)}>
             {/* Content Grid - 2/3 main content + 1/3 sidebar */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-              {/* Main Content - Description */}
-              <div className="lg:col-span-2">
-                <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
-                  <h2 className="text-xl font-semibold text-brand-900 mb-4">System Description</h2>
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <WordProcessor
-                            value={field.value || ""}
-                            onChange={field.onChange}
-                            placeholder="Describe how this magic/power system works, its principles, and its role in your world..."
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-
-              {/* Sidebar */}
-              <div className="space-y-6">
+              {/* Main Content */}
+              <div className="lg:col-span-2 space-y-6">
                 {/* Basic Information */}
-                <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                  <h3 className="text-lg font-semibold text-brand-900 mb-4">Basic Information</h3>
+                <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
+                  <h2 className="text-xl font-semibold text-brand-900 mb-6">Basic Information</h2>
                   <div className="space-y-4">
                     <FormField
                       control={form.control}
@@ -274,6 +251,31 @@ export default function EditMagicSystem() {
                     />
                   </div>
                 </div>
+
+                {/* System Description */}
+                <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
+                  <h2 className="text-xl font-semibold text-brand-900 mb-4">System Description</h2>
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <WordProcessor
+                            value={field.value || ""}
+                            onChange={field.onChange}
+                            placeholder="Describe how this magic/power system works, its principles, and its role in your world..."
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Sidebar */}
+              <div className="space-y-6">
 
                 {/* Source */}
                 <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
