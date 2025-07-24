@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { LocationForm } from "@/components/location-form";
+import { LocationFormHeaderSkeleton, LocationFormContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Building2, Trees, Castle, Mountain, Home, Landmark, Globe, Crown, Zap } from "lucide-react";
 import type { Project, Location } from "@shared/schema";
 
@@ -37,14 +38,16 @@ export default function EditLocation() {
   const [, setLocation] = useLocation();
   const [currentType, setCurrentType] = useState<string>("other");
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: location, isLoading } = useQuery<Location>({
+  const { data: location, isLoading: locationLoading } = useQuery<Location>({
     queryKey: [`/api/locations/${locationId}`],
     enabled: !!locationId && locationId !== "new" && !isNaN(Number(locationId))
   });
+
+  const isLoading = projectLoading || locationLoading;
 
   // Set initial type when location data loads
   useEffect(() => {
@@ -73,37 +76,39 @@ export default function EditLocation() {
     return LOCATION_TYPE_ICONS[currentType as keyof typeof LOCATION_TYPE_ICONS] || Globe;
   };
 
-  if (isLoading) {
+  if (isLoading || !location) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navbar 
           hasActiveProject={true} 
           currentPage="locations"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading location...</p>
-        </div>
+        
+        <main className="max-w-4xl mx-auto px-6 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Location
+            </Button>
+          </div>
+
+          {/* Location Form Skeleton */}
+          <LocationFormHeaderSkeleton />
+          <LocationFormContentSkeleton />
+        </main>
       </div>
     );
   }
 
-  if (!location) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar 
-          hasActiveProject={true} 
-          currentPage="locations"
-          projectName={project?.name}
-          onNavigate={handleNavigation}
-        />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Location not found</p>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">

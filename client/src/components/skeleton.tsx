@@ -1381,3 +1381,64 @@ export function CharacterFormContentSkeleton() {
     </div>
   );
 }
+
+// Location Form Header Skeleton
+export function LocationFormHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center gap-4">
+        <Skeleton className="w-16 h-16 rounded-xl" />
+        <div>
+          <Skeleton className="h-8 w-40 mb-2" />
+          <div className="flex items-center gap-3 mt-2">
+            <Skeleton className="h-6 w-20 rounded-full" />
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-20" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+    </div>
+  );
+}
+
+// Location Form Content Skeleton
+export function LocationFormContentSkeleton() {
+  return (
+    <div className="space-y-8">
+      {/* Basic Information Container */}
+      <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+        <Skeleton className="h-6 w-36 mb-6" />
+        
+        <div className="space-y-6">
+          {/* Location Name */}
+          <div>
+            <Skeleton className="h-4 w-28 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          
+          {/* Location Type */}
+          <div>
+            <Skeleton className="h-4 w-24 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        </div>
+      </div>
+
+      {/* Content Container */}
+      <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+        <Skeleton className="h-6 w-20 mb-6" />
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-4 w-4/5" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-48 w-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
