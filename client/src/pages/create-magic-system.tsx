@@ -134,9 +134,7 @@ export default function CreateMagicSystem() {
             <div>
               <h1 className="text-3xl font-bold text-brand-950 mb-2">Create New {systemType === "power" ? "Power" : "Magic"} System</h1>
               <div className="flex items-center gap-3">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                  systemType === "magic" ? "bg-brand-100 text-brand-800" : "bg-brand-200 text-brand-900"
-                }`}>
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-500 text-white">
                   {systemType === "power" ? "Power System" : "Magic System"}
                 </span>
               </div>

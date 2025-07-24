@@ -318,9 +318,7 @@ export default function MagicSystemDetails() {
             <div>
               <h1 className="text-3xl font-bold text-brand-950 mb-2">{system.name}</h1>
               <div className="flex items-center gap-3">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                  system.type === "magic" ? "bg-brand-100 text-brand-800" : "bg-brand-200 text-brand-900"
-                }`}>
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-500 text-white">
                   {system.type === "power" ? "Power System" : "Magic System"}
                 </span>
                 {system.updatedAt && (
