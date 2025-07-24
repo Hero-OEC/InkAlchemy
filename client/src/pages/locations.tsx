@@ -7,6 +7,7 @@ import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { SearchComponent } from "@/components/search-component";
 import { Button } from "@/components/button-variations";
+import { LocationPageHeaderSkeleton, LocationsGridSkeleton } from "@/components/skeleton";
 import { Plus, Building2, Trees, Castle, Mountain, Home, Landmark, Globe } from "lucide-react";
 import type { Project, Location } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -42,13 +43,16 @@ export default function Locations() {
   const queryClient = useQueryClient();
   const { navigateWithReferrer } = useNavigation();
   
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: locations = [] } = useQuery<Location[]>({
+  const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || locationsLoading;
 
   // Set page title
   useEffect(() => {
@@ -158,6 +162,26 @@ export default function Locations() {
       ]
     }
   ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-50">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="locations"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        <main className="max-w-7xl mx-auto px-8 py-8">
+          {/* Page Header Skeleton */}
+          <LocationPageHeaderSkeleton />
+
+          {/* Locations Grid Skeleton */}
+          <LocationsGridSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-brand-50">

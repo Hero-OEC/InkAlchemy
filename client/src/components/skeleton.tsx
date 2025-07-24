@@ -384,3 +384,62 @@ export function CharactersGridSkeleton() {
     </div>
   );
 }
+
+// Location Page Header Skeleton
+export function LocationPageHeaderSkeleton() {
+  return (
+    <div className="flex justify-between items-start mb-8">
+      <div>
+        <Skeleton className="h-12 w-32 mb-2" />
+        <Skeleton className="h-5 w-64" />
+      </div>
+      <div className="flex items-center gap-4 flex-shrink-0">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-10 w-36" />
+      </div>
+    </div>
+  );
+}
+
+// Content Card Skeleton - matches ContentCard structure used for locations
+export function ContentCardSkeleton() {
+  return (
+    <div className="bg-brand-100 rounded-xl border border-brand-200 shadow-sm hover:shadow-md transition-shadow p-6">
+      {/* Header with icon and title */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <Skeleton className="w-10 h-10 rounded-lg flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <Skeleton className="h-6 w-3/4 mb-1" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+        </div>
+        <Skeleton className="w-6 h-6 ml-2" />
+      </div>
+
+      {/* Description */}
+      <div className="mb-4">
+        <Skeleton className="h-4 w-full mb-1" />
+        <Skeleton className="h-4 w-4/5 mb-1" />
+        <Skeleton className="h-4 w-2/3" />
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between text-xs">
+        <Skeleton className="h-3 w-20" />
+        <Skeleton className="h-3 w-16" />
+      </div>
+    </div>
+  );
+}
+
+// Locations Grid Skeleton
+export function LocationsGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 9 }).map((_, index) => (
+        <ContentCardSkeleton key={index} />
+      ))}
+    </div>
+  );
+}
