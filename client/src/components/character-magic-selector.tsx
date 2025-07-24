@@ -79,6 +79,8 @@ export function CharacterMagicSelector({
   );
 
   const addMagicSystem = (system: MagicSystem) => {
+    let updatedMap: Map<number, SelectedSystem>;
+    
     setSelectedSystems(prev => {
       const newMap = new Map(prev);
       if (!newMap.has(system.id)) {
@@ -87,23 +89,40 @@ export function CharacterMagicSelector({
           selectedSpells: new Set()
         });
       }
-      notifyParentOfChanges(newMap);
+      updatedMap = newMap;
       return newMap;
     });
+    
     setSearchTerm(""); // Clear search after adding
+    
+    // Notify parent after state update completes
+    setTimeout(() => {
+      if (updatedMap) {
+        notifyParentOfChanges(updatedMap);
+      }
+    }, 0);
   };
 
   const removeMagicSystem = (systemId: number) => {
+    let updatedMap: Map<number, SelectedSystem>;
+    
     setSelectedSystems(prev => {
       const newMap = new Map(prev);
       newMap.delete(systemId);
-      notifyParentOfChanges(newMap);
+      updatedMap = newMap;
       return newMap;
     });
+    
+    // Notify parent after state update completes
+    setTimeout(() => {
+      if (updatedMap) {
+        notifyParentOfChanges(updatedMap);
+      }
+    }, 0);
   };
 
   const toggleSpell = (systemId: number, spellId: number) => {
-    console.log('toggleSpell called:', { systemId, spellId });
+    let updatedMap: Map<number, SelectedSystem>;
     
     setSelectedSystems(prev => {
       const newMap = new Map(prev);
@@ -111,27 +130,29 @@ export function CharacterMagicSelector({
       
       if (systemData) {
         const newSelectedSpells = new Set(systemData.selectedSpells);
-        const wasSelected = newSelectedSpells.has(spellId);
         
-        if (wasSelected) {
+        if (newSelectedSpells.has(spellId)) {
           newSelectedSpells.delete(spellId);
-          console.log('Removed spell:', spellId);
         } else {
           newSelectedSpells.add(spellId);
-          console.log('Added spell:', spellId);
         }
         
         newMap.set(systemId, {
           ...systemData,
           selectedSpells: newSelectedSpells
         });
-        
-        console.log('New selected spells for system:', Array.from(newSelectedSpells));
       }
       
-      notifyParentOfChanges(newMap);
+      updatedMap = newMap;
       return newMap;
     });
+    
+    // Notify parent after state update completes
+    setTimeout(() => {
+      if (updatedMap) {
+        notifyParentOfChanges(updatedMap);
+      }
+    }, 0);
   };
 
   const availableSystemsToAdd = filteredSystems.filter(system => 
