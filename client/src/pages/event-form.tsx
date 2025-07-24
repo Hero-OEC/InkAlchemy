@@ -369,7 +369,7 @@ export default function EventForm() {
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
             <Button
-              variant="outline"
+              variant="ghost"
               size="md"
               type="button"
               onClick={handleBack}
