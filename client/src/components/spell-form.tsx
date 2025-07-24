@@ -3,9 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { insertSpellSchema } from "@shared/schema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/button-variations";
+import { Button } from "@/components/ui/button";
+import { WordProcessor } from "@/components/word-processor";
 import { Wand2, Sparkles, Scroll, Crown, Shield, Zap } from "lucide-react";
 import type { Spell, MagicSystem } from "@shared/schema";
 
@@ -129,11 +129,25 @@ export function SpellForm({ spell, magicSystem, onSubmit, onCancel, isSubmitting
               <FormItem>
                 <FormLabel className="text-brand-900">Description</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder={`Describe how this ${contentType} works, its effects, and any special properties...`}
-                    className="border-brand-200 focus:border-brand-500 min-h-[120px]"
-                    {...field}
-                  />
+                  <div className="bg-brand-50 rounded-xl border border-brand-200 p-4">
+                    <WordProcessor
+                      data={field.value ? (() => {
+                        try {
+                          return JSON.parse(field.value);
+                        } catch {
+                          return {
+                            time: Date.now(),
+                            blocks: [{
+                              type: "paragraph",
+                              data: { text: field.value || "" }
+                            }]
+                          };
+                        }
+                      })() : undefined}
+                      onChange={(data) => field.onChange(JSON.stringify(data))}
+                      placeholder={`Describe how this ${contentType} works, its effects, and any special properties...`}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -152,7 +166,6 @@ export function SpellForm({ spell, magicSystem, onSubmit, onCancel, isSubmitting
             </Button>
             <Button
               type="submit"
-              variant="primary"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Saving..." : (spell ? `Update ${contentType}` : `Create ${contentType}`)}

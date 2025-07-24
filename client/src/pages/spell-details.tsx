@@ -3,8 +3,9 @@ import { useParams, useLocation } from "wouter";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/button-variations";
+import { Button } from "@/components/ui/button";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { ArrowLeft, Wand2, Sparkles, Zap, Scroll, Crown, Shield, Edit, Trash2, Brain } from "lucide-react";
 import type { Project, Spell, MagicSystem } from "@shared/schema";
 
@@ -177,7 +178,6 @@ export default function SpellDetails() {
           <div className="flex items-center gap-4 mb-8">
             <Button
               variant="ghost"
-              size="md"
               onClick={handleBack}
               className="flex items-center gap-2"
             >
@@ -209,8 +209,7 @@ export default function SpellDetails() {
             </div>
             <div className="flex items-center gap-3">
               <Button
-                variant="primary"
-                size="md"
+                variant="default"
                 onClick={() => setLocation(`/projects/${projectId}/${itemType}s/${spell.id}/edit`)}
                 className="flex items-center gap-2"
               >
@@ -218,8 +217,7 @@ export default function SpellDetails() {
                 Edit
               </Button>
               <Button
-                variant="danger"
-                size="md"
+                variant="destructive"
                 onClick={() => setShowDeleteDialog(true)}
                 className="flex items-center gap-2"
               >
@@ -233,9 +231,27 @@ export default function SpellDetails() {
           <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
             <h2 className="text-xl font-semibold text-brand-900 mb-4">Description</h2>
             <div className="prose max-w-none">
-              <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                {spell.description || `No description available for this ${itemType}.`}
-              </p>
+              {spell.description ? (
+                (() => {
+                  try {
+                    const parsedData = JSON.parse(spell.description);
+                    return (
+                      <EditorContentRenderer 
+                        data={parsedData}
+                        className="prose prose-brand max-w-none"
+                      />
+                    );
+                  } catch {
+                    return (
+                      <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
+                        {spell.description}
+                      </p>
+                    );
+                  }
+                })()
+              ) : (
+                <p className="text-brand-500">No description available for this {itemType}.</p>
+              )}
             </div>
           </div>
         </div>
