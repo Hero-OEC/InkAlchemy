@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { SearchComponent } from "@/components/search-component";
 import { Button } from "@/components/button-variations";
 import { Plus, Building2, Trees, Castle, Mountain, Home, Landmark, Globe } from "lucide-react";
 import type { Project, Location } from "@shared/schema";
@@ -36,6 +37,8 @@ export default function Locations() {
   const { projectId } = useParams();
   const [currentPath, setLocation] = useLocation();
   const [deleteItem, setDeleteItem] = useState<Location | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
   const { navigateWithReferrer } = useNavigation();
   
@@ -90,8 +93,29 @@ export default function Locations() {
     }
   };
 
-  // Convert locations to ContentCard format
-  const locationCards = locations.map(location => {
+  // Filter locations based on search and filters
+  const filteredLocations = locations.filter(location => {
+    // Search filter
+    if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
+      const matchesSearch = 
+        location.name.toLowerCase().includes(searchLower) ||
+        (location.content && location.content.toLowerCase().includes(searchLower)) ||
+        (location.type && location.type.toLowerCase().includes(searchLower));
+      
+      if (!matchesSearch) return false;
+    }
+
+    // Type filter
+    if (activeFilters.type && location.type !== activeFilters.type) {
+      return false;
+    }
+
+    return true;
+  });
+
+  // Convert filtered locations to ContentCard format
+  const locationCards = filteredLocations.map(location => {
     const locationType = location.type || "other";
     const icon = LOCATION_TYPE_ICONS[locationType as keyof typeof LOCATION_TYPE_ICONS] || Globe;
     
@@ -100,12 +124,40 @@ export default function Locations() {
       title: location.name,
       type: "location" as const,
       subtype: locationType,
-      description: location.description || "No description available",
+      description: location.content || "No description available",
       icon: icon,
       createdAt: location.createdAt,
       lastEditedAt: location.updatedAt,
     };
   });
+
+  // Search filters for locations
+  const searchFilters = [
+    {
+      key: "type",
+      label: "Location Type",
+      options: [
+        { value: "settlement", label: "Settlement" },
+        { value: "city", label: "City" },
+        { value: "village", label: "Village" },
+        { value: "town", label: "Town" },
+        { value: "natural", label: "Natural" },
+        { value: "forest", label: "Forest" },
+        { value: "mountain", label: "Mountain" },
+        { value: "river", label: "River" },
+        { value: "lake", label: "Lake" },
+        { value: "ocean", label: "Ocean" },
+        { value: "building", label: "Building" },
+        { value: "fortress", label: "Fortress" },
+        { value: "castle", label: "Castle" },
+        { value: "temple", label: "Temple" },
+        { value: "academy", label: "Academy" },
+        { value: "tower", label: "Tower" },
+        { value: "dungeon", label: "Dungeon" },
+        { value: "other", label: "Other" }
+      ]
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-brand-50">
@@ -117,15 +169,24 @@ export default function Locations() {
       />
       <main className="max-w-7xl mx-auto px-8 py-8">
         {/* Page Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-start mb-8">
           <div>
             <h1 className="text-4xl font-bold mb-2 text-[#624122]">Locations</h1>
             <p className="text-brand-600">Manage your world's places and settings</p>
           </div>
-          <Button onClick={handleCreateLocation} className="flex items-center gap-2">
-            <Plus size={20} />
-            New Location
-          </Button>
+          <div className="flex items-center gap-4">
+            <SearchComponent
+              placeholder="Search locations..."
+              onSearch={setSearchQuery}
+              onFilterChange={setActiveFilters}
+              filters={searchFilters}
+              showFilters={true}
+            />
+            <Button onClick={handleCreateLocation} className="flex items-center gap-2">
+              <Plus size={20} />
+              New Location
+            </Button>
+          </div>
         </div>
 
         {/* Locations Grid */}
