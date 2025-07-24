@@ -5,6 +5,7 @@ import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
 import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { SearchComponent } from "@/components/search-component";
 import { Button } from "@/components/button-variations";
 import { Plus, Sparkles, Zap } from "lucide-react";
 import type { Project, MagicSystem } from "@shared/schema";
@@ -34,6 +35,8 @@ export default function MagicSystems() {
   const { projectId } = useParams();
   const [currentPath, setLocation] = useLocation();
   const [deleteItem, setDeleteItem] = useState<MagicSystem | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
   const queryClient = useQueryClient();
   const { navigateWithReferrer } = useNavigation();
   
@@ -43,6 +46,52 @@ export default function MagicSystems() {
 
   const { data: magicSystems, isLoading } = useQuery<MagicSystem[]>({
     queryKey: [`/api/projects/${projectId}/magic-systems`],
+  });
+
+  // Search filters for magic systems
+  const searchFilters = [
+    {
+      key: "type",
+      label: "Type",
+      options: [
+        { value: "magic", label: "Magic System" },
+        { value: "power", label: "Power System" }
+      ]
+    },
+    {
+      key: "complexity",
+      label: "Complexity",
+      options: [
+        { value: "low", label: "Low" },
+        { value: "medium", label: "Medium" },
+        { value: "high", label: "High" }
+      ]
+    }
+  ];
+
+  // Filter magic systems based on search
+  const filteredMagicSystems = (magicSystems || []).filter((system) => {
+    // Text search
+    if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
+      if (!system.name.toLowerCase().includes(searchLower) && 
+          !system.description?.toLowerCase().includes(searchLower) &&
+          !system.source?.toLowerCase().includes(searchLower)) {
+        return false;
+      }
+    }
+
+    // Type filter
+    if (activeFilters.type && system.type !== activeFilters.type) {
+      return false;
+    }
+
+    // Complexity filter
+    if (activeFilters.complexity && system.complexity !== activeFilters.complexity) {
+      return false;
+    }
+
+    return true;
   });
 
   // Set page title
@@ -120,14 +169,23 @@ export default function MagicSystems() {
             <h1 className="text-4xl font-bold text-brand-900 mb-2">Magic & Power Systems</h1>
             <p className="text-brand-600">Manage the supernatural and extraordinary abilities in your world</p>
           </div>
-          <Button 
-            variant="primary" 
-            onClick={handleCreateSystem}
-            className="flex items-center gap-2"
-          >
-            <Plus size={18} />
-            Add New System
-          </Button>
+          <div className="flex items-center gap-4 flex-shrink-0">
+            <SearchComponent
+              placeholder="Search magic systems..."
+              onSearch={setSearchQuery}
+              onFilterChange={setActiveFilters}
+              filters={searchFilters}
+              showFilters={true}
+            />
+            <Button 
+              variant="primary" 
+              onClick={handleCreateSystem}
+              className="flex items-center gap-2 whitespace-nowrap"
+            >
+              <Plus size={18} />
+              Add New System
+            </Button>
+          </div>
         </div>
 
         {/* Content */}
@@ -143,17 +201,18 @@ export default function MagicSystems() {
             </p>
             <Button 
               variant="primary" 
+              size="sm"
               onClick={handleCreateSystem}
               className="mx-auto flex items-center gap-2"
             >
-              <Plus size={18} />
+              <Plus className="w-4 h-4" />
               Create Your First System
             </Button>
           </div>
         ) : (
           // Systems Grid
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {magicSystems.map((system) => (
+            {filteredMagicSystems.map((system) => (
               <ContentCard
                 key={system.id}
                 id={system.id}
