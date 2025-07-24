@@ -32,6 +32,7 @@ const normalizeCharacterData = (character: Character | null) => ({
   description: character?.description || "",
   prefix: character?.prefix || "",
   suffix: character?.suffix || "",
+  role: character?.role || "",
   age: character?.age || "",
   raceId: character?.raceId || undefined,
   magicSystemId: character?.magicSystemId || undefined,
@@ -426,6 +427,36 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                           )}
                         </div>
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Character Type</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select character type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="protagonist">Protagonist</SelectItem>
+                          <SelectItem value="antagonist">Antagonist</SelectItem>
+                          <SelectItem value="ally">Ally</SelectItem>
+                          <SelectItem value="mentor">Mentor</SelectItem>
+                          <SelectItem value="sidekick">Sidekick</SelectItem>
+                          <SelectItem value="love-interest">Love Interest</SelectItem>
+                          <SelectItem value="neutral">Neutral</SelectItem>
+                          <SelectItem value="villain">Villain</SelectItem>
+                          <SelectItem value="supporting">Supporting</SelectItem>
+                          <SelectItem value="background">Background</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
