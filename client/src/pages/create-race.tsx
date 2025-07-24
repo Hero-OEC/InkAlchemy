@@ -139,11 +139,9 @@ export default function CreateRace() {
             </div>
             <div className="flex items-center gap-3">
               <Button 
-                variant="outline" 
+                variant="ghost" 
                 onClick={handleCancel}
-                className="flex items-center gap-2"
               >
-                <X size={16} />
                 Cancel
               </Button>
               <Button 
