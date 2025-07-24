@@ -103,22 +103,30 @@ export function CharacterMagicSelector({
   };
 
   const toggleSpell = (systemId: number, spellId: number) => {
+    console.log('toggleSpell called:', { systemId, spellId });
+    
     setSelectedSystems(prev => {
       const newMap = new Map(prev);
       const systemData = newMap.get(systemId);
       
       if (systemData) {
         const newSelectedSpells = new Set(systemData.selectedSpells);
-        if (newSelectedSpells.has(spellId)) {
+        const wasSelected = newSelectedSpells.has(spellId);
+        
+        if (wasSelected) {
           newSelectedSpells.delete(spellId);
+          console.log('Removed spell:', spellId);
         } else {
           newSelectedSpells.add(spellId);
+          console.log('Added spell:', spellId);
         }
         
         newMap.set(systemId, {
           ...systemData,
           selectedSpells: newSelectedSpells
         });
+        
+        console.log('New selected spells for system:', Array.from(newSelectedSpells));
       }
       
       notifyParentOfChanges(newMap);
@@ -229,7 +237,7 @@ export function CharacterMagicSelector({
                       >
                         <Checkbox
                           checked={isSelected}
-                          onChange={() => {}} // Handled by parent click
+                          onCheckedChange={() => {}} // Handled by parent click
                           className="pointer-events-none"
                         />
                         <div className="flex-1">
