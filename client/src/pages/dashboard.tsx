@@ -2,6 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Navbar } from "@/components/navbar";
+import { DashboardHeaderSkeleton, StatsGridSkeleton, EditHistorySkeleton } from "@/components/skeleton";
 import { 
   Users, MapPin, Calendar, Sparkles, BookOpen, StickyNote,
   Edit3, Plus, Trash2, Clock
@@ -12,37 +13,47 @@ export default function Dashboard() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
   
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: stats } = useQuery({
+  const { data: stats, isLoading: statsLoading } = useQuery<{
+    events: number;
+    characters: number;
+    locations: number;
+    magicSystems: number;
+  }>({
     queryKey: [`/api/projects/${projectId}/stats`],
   });
 
-  const { data: characters } = useQuery<Character[]>({
+  const { data: characters, isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
-  const { data: locations } = useQuery<Location[]>({
+  const { data: locations, isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
   });
 
-  const { data: events } = useQuery<Event[]>({
+  const { data: events, isLoading: eventsLoading } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
   });
 
-  const { data: magicSystems } = useQuery<MagicSystem[]>({
+  const { data: magicSystems, isLoading: magicSystemsLoading } = useQuery<MagicSystem[]>({
     queryKey: [`/api/projects/${projectId}/magic-systems`],
   });
 
-  const { data: loreEntries } = useQuery<LoreEntry[]>({
+  const { data: loreEntries, isLoading: loreLoading } = useQuery<LoreEntry[]>({
     queryKey: [`/api/projects/${projectId}/lore`],
   });
 
-  const { data: notes } = useQuery<Note[]>({
+  const { data: notes, isLoading: notesLoading } = useQuery<Note[]>({
     queryKey: [`/api/projects/${projectId}/notes`],
   });
+
+  // Check if any data is still loading
+  const isLoading = projectLoading || statsLoading || charactersLoading || 
+                   locationsLoading || eventsLoading || magicSystemsLoading || 
+                   loreLoading || notesLoading;
 
   // Set page title
   useEffect(() => {
@@ -76,12 +87,12 @@ export default function Dashboard() {
         type: 'create',
         category: 'Characters',
         title: char.name,
-        summary: `Created ${char.type || 'character'} - ${char.description?.substring(0, 50) || 'No description'}...`,
+        summary: `Created ${char.role || 'character'} - ${char.description?.substring(0, 50) || 'No description'}...`,
         icon: Users,
         timestamp: char.createdAt || new Date()
       });
       
-      if (char.lastEditedAt && char.lastEditedAt > char.createdAt) {
+      if (char.updatedAt && char.updatedAt > char.createdAt) {
         history.push({
           id: `character-edit-${char.id}`,
           type: 'edit',
@@ -89,7 +100,7 @@ export default function Dashboard() {
           title: char.name,
           summary: `Updated character details and properties`,
           icon: Users,
-          timestamp: char.lastEditedAt
+          timestamp: char.updatedAt
         });
       }
     });
@@ -101,7 +112,7 @@ export default function Dashboard() {
         type: 'create',
         category: 'Locations',
         title: loc.name,
-        summary: `Created ${loc.type || 'location'} - ${loc.description?.substring(0, 50) || 'No description'}...`,
+        summary: `Created ${loc.type || 'location'} - ${loc.content?.substring(0, 50) || 'No content'}...`,
         icon: MapPin,
         timestamp: loc.createdAt || new Date()
       });
@@ -191,6 +202,30 @@ export default function Dashboard() {
       default: return 'text-white bg-brand-600';
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-50">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="dashboard"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header Skeleton */}
+          <DashboardHeaderSkeleton />
+
+          {/* Stats Grid Skeleton */}
+          <StatsGridSkeleton />
+
+          {/* Edit History Skeleton */}
+          <EditHistorySkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-brand-50">

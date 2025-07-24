@@ -86,3 +86,89 @@ export function ProjectsSectionHeaderSkeleton() {
     </div>
   );
 }
+
+// Dashboard Header Skeleton
+export function DashboardHeaderSkeleton() {
+  return (
+    <div className="mb-8">
+      <Skeleton className="h-12 w-96 mb-2" />
+      <Skeleton className="h-6 w-80" />
+    </div>
+  );
+}
+
+// Stats Card Skeleton
+export function StatsCardSkeleton() {
+  return (
+    <div className="bg-brand-100 rounded-lg p-6 border border-brand-200">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <Skeleton className="h-4 w-24 mb-2" />
+          <Skeleton className="h-8 w-16" />
+        </div>
+        <div className="flex-shrink-0 ml-4">
+          <Skeleton className="w-12 h-12 rounded-lg" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Stats Grid Skeleton
+export function StatsGridSkeleton() {
+  return (
+    <div className="grid grid-cols-4 gap-4 mb-8">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <StatsCardSkeleton key={index} />
+      ))}
+    </div>
+  );
+}
+
+// Edit History Item Skeleton
+export function EditHistoryItemSkeleton() {
+  return (
+    <div className="flex items-start gap-4 p-4 rounded-lg">
+      <Skeleton className="flex-shrink-0 w-8 h-8 rounded-lg" />
+      
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <Skeleton className="w-4 h-4" />
+          <Skeleton className="h-4 w-16" />
+          <Skeleton className="w-1 h-1 rounded-full" />
+          <Skeleton className="h-4 w-12 rounded-full" />
+        </div>
+        
+        <Skeleton className="h-5 w-48 mb-1" />
+        <Skeleton className="h-4 w-full" />
+      </div>
+      
+      <div className="flex-shrink-0 text-right">
+        <Skeleton className="h-4 w-20" />
+      </div>
+    </div>
+  );
+}
+
+// Edit History Section Skeleton
+export function EditHistorySkeleton() {
+  return (
+    <div className="bg-brand-100 rounded-lg border border-brand-200 shadow-sm">
+      <div className="px-6 py-4 border-b border-brand-200">
+        <div className="flex items-center gap-2">
+          <Skeleton className="w-5 h-5" />
+          <Skeleton className="h-6 w-32" />
+        </div>
+        <Skeleton className="h-4 w-64 mt-1" />
+      </div>
+      
+      <div className="p-6">
+        <div className="space-y-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <EditHistoryItemSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
