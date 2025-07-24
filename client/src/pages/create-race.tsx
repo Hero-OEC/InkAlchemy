@@ -9,7 +9,7 @@ import { Input, Select } from "@/components/form-inputs";
 import { WordProcessor } from "@/components/word-processor";
 import { CharacterCard } from "@/components/character-card";
 import { useNavigation } from "@/contexts/navigation-context";
-import { ArrowLeft, Users, Save, X } from "lucide-react";
+import { ArrowLeft, Users, Plus, X } from "lucide-react";
 import { insertRaceSchema, type Project, type Character, type Location } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { z } from "zod";
@@ -151,7 +151,7 @@ export default function CreateRace() {
                 disabled={createMutation.isPending}
                 className="flex items-center gap-2"
               >
-                <Save size={16} />
+                <Plus size={16} />
                 {createMutation.isPending ? "Creating..." : "Create Race"}
               </Button>
             </div>
