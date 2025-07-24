@@ -192,10 +192,29 @@ export default function MagicSystemDetails() {
             <div>
               <h3 className="text-lg font-semibold text-brand-900 mb-3">Description</h3>
               <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-                <EditorContentRenderer 
-                  data={system.description ? JSON.parse(system.description) : null}
-                  className="prose prose-brand max-w-none"
-                />
+                {system.description ? (
+                  (() => {
+                    try {
+                      // Try to parse as JSON (Editor.js format)
+                      const parsedData = JSON.parse(system.description);
+                      return (
+                        <EditorContentRenderer 
+                          data={parsedData}
+                          className="prose prose-brand max-w-none"
+                        />
+                      );
+                    } catch {
+                      // If parsing fails, it's plain text - display as is
+                      return (
+                        <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
+                          {system.description}
+                        </p>
+                      );
+                    }
+                  })()
+                ) : (
+                  <p className="text-brand-500">No description available</p>
+                )}
               </div>
             </div>
             
