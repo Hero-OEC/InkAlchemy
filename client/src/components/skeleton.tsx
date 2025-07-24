@@ -1164,3 +1164,101 @@ export function EventFormContentSkeleton() {
     </div>
   );
 }
+
+// Race Form Header Skeleton
+export function RaceFormHeaderSkeleton() {
+  return (
+    <div className="mb-8">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Skeleton className="w-16 h-16 rounded-xl" />
+          <div>
+            <Skeleton className="h-8 w-40 mb-2" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-20" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Race Form Content Skeleton
+export function RaceFormContentSkeleton() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      {/* Main Content Area - Left side (2/3) */}
+      <div className="lg:col-span-2">
+        {/* Basic Information Container */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-8 mb-8">
+          <Skeleton className="h-6 w-40 mb-6" />
+          
+          <div className="space-y-6">
+            {/* Race Name */}
+            <div>
+              <Skeleton className="h-4 w-20 mb-2" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          </div>
+        </div>
+
+        {/* Content Container - Description */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-8">
+          <Skeleton className="h-6 w-32 mb-4" />
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+            <Skeleton className="h-4 w-4/5" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+      </div>
+
+      {/* Sidebar - Right side (1/3) */}
+      <div className="space-y-8">
+        {/* Homeland Section */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <Skeleton className="h-5 w-20 mb-4" />
+          <Skeleton className="h-10 w-full mb-4" />
+          <Skeleton className="h-16 w-full rounded-lg" />
+        </div>
+
+        {/* Physical Characteristics */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <Skeleton className="h-5 w-32 mb-4" />
+          <div className="space-y-4">
+            <div>
+              <Skeleton className="h-4 w-16 mb-2" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div>
+              <Skeleton className="h-4 w-20 mb-2" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
+        </div>
+
+        {/* Abilities & Powers */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <Skeleton className="h-5 w-28 mb-4" />
+          <div>
+            <Skeleton className="h-4 w-24 mb-2" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </div>
+
+        {/* Characters Section */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <Skeleton className="h-5 w-32 mb-4" />
+          <div className="text-center py-6">
+            <Skeleton className="w-6 h-6 mx-auto mb-2" />
+            <Skeleton className="h-4 w-48 mx-auto mb-3" />
+            <Skeleton className="h-8 w-32 mx-auto" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

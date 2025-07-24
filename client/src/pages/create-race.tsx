@@ -8,6 +8,7 @@ import { Button } from "@/components/button-variations";
 import { Input, Select } from "@/components/form-inputs";
 import { WordProcessor } from "@/components/word-processor";
 import { CharacterCard } from "@/components/character-card";
+import { RaceFormHeaderSkeleton, RaceFormContentSkeleton } from "@/components/skeleton";
 import { useNavigation } from "@/contexts/navigation-context";
 import { ArrowLeft, Users, Plus, X } from "lucide-react";
 import { insertRaceSchema, type Project, type Character, type Location } from "@shared/schema";
@@ -30,19 +31,22 @@ export default function CreateRace() {
   const [magicalAffinity, setMagicalAffinity] = useState<string>("");
 
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: characters = [] } = useQuery<Character[]>({
+  const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
   // Query for locations to populate homeland dropdown
-  const { data: locations = [] } = useQuery<Location[]>({
+  const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
     enabled: !!projectId,
   });
+
+  // Check if any required data is still loading
+  const isLoading = projectLoading || charactersLoading || locationsLoading;
 
   // For create mode, no race characters exist yet
   const raceCharacters: Character[] = [];
@@ -102,6 +106,40 @@ export default function CreateRace() {
     };
     createMutation.mutate(submissionData);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="characters"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        
+        <main className="max-w-6xl mx-auto px-8 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+
+          {/* Race Header Skeleton */}
+          <RaceFormHeaderSkeleton />
+
+          {/* Main Content Skeleton */}
+          <RaceFormContentSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
