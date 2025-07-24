@@ -206,7 +206,7 @@ export function TimelineEventBubbleSkeleton({ position, side }: { position: { x:
       
       {/* Event Info Card */}
       <div
-        className="absolute bg-card rounded-lg px-3 py-2 text-xs border border-border shadow-sm z-10 transform -translate-x-1/2"
+        className="absolute bg-brand-100 rounded-lg px-3 py-2 text-xs border border-brand-200 shadow-sm z-10 transform -translate-x-1/2"
         style={{
           left: position.x,
           top: position.y + 35,
@@ -233,7 +233,7 @@ export function SerpentineTimelineSkeleton() {
   }));
 
   return (
-    <div className="relative bg-background rounded-lg border border-border" style={{ minHeight: "400px" }}>
+    <div className="relative bg-brand-100 rounded-lg border border-brand-200" style={{ minHeight: "400px" }}>
       {/* Serpentine Path Skeleton */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none">
         <defs>
@@ -267,7 +267,7 @@ export function SerpentineTimelineSkeleton() {
 // Timeline Legend Skeleton
 export function TimelineLegendSkeleton() {
   return (
-    <div className="bg-secondary rounded-lg border border-border">
+    <div className="bg-brand-100 rounded-lg border border-brand-200">
       <div className="px-6 py-3 flex items-center justify-center gap-6 flex-wrap">
         {Array.from({ length: 6 }).map((_, index) => (
           <div key={index} className="flex items-center gap-2">
@@ -311,7 +311,7 @@ export function CharactersSectionHeaderSkeleton() {
 // Race Card Skeleton - matches MiniCard structure
 export function RaceCardSkeleton() {
   return (
-    <div className="bg-white rounded-lg border border-brand-200 p-4 hover:shadow-md transition-shadow">
+    <div className="bg-brand-100 rounded-lg border border-brand-200 p-4 hover:shadow-md transition-shadow">
       <div className="flex items-center gap-3">
         <Skeleton className="w-10 h-10 rounded-lg flex-shrink-0" />
         <div className="flex-1 min-w-0">
@@ -326,9 +326,9 @@ export function RaceCardSkeleton() {
 // Character Card Skeleton - matches CharacterCard structure
 export function CharacterCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl border border-brand-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+    <div className="bg-brand-100 rounded-xl border border-brand-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
       {/* Image Area */}
-      <div className="h-48 bg-brand-100">
+      <div className="h-48 bg-brand-200">
         <Skeleton className="w-full h-full" />
       </div>
       
