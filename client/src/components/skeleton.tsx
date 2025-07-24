@@ -443,3 +443,30 @@ export function LocationsGridSkeleton() {
     </div>
   );
 }
+
+// Magic Systems Page Header Skeleton
+export function MagicSystemsPageHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <Skeleton className="h-12 w-64 mb-2" />
+        <Skeleton className="h-5 w-96" />
+      </div>
+      <div className="flex items-center gap-4 flex-shrink-0">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-10 w-44" />
+      </div>
+    </div>
+  );
+}
+
+// Magic Systems Grid Skeleton
+export function MagicSystemsGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <ContentCardSkeleton key={index} />
+      ))}
+    </div>
+  );
+}

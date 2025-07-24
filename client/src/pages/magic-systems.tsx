@@ -7,6 +7,7 @@ import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { SearchComponent } from "@/components/search-component";
 import { Button } from "@/components/button-variations";
+import { MagicSystemsPageHeaderSkeleton, MagicSystemsGridSkeleton } from "@/components/skeleton";
 import { Plus, Sparkles, Zap } from "lucide-react";
 import type { Project, MagicSystem } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -40,13 +41,16 @@ export default function MagicSystems() {
   const queryClient = useQueryClient();
   const { navigateWithReferrer } = useNavigation();
   
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: magicSystems, isLoading } = useQuery<MagicSystem[]>({
+  const { data: magicSystems, isLoading: magicSystemsLoading } = useQuery<MagicSystem[]>({
     queryKey: [`/api/projects/${projectId}/magic-systems`],
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || magicSystemsLoading;
 
   // Search filters for magic systems
   const searchFilters = [
@@ -143,12 +147,16 @@ export default function MagicSystems() {
         <Navbar 
           hasActiveProject={true} 
           currentPage="magic-systems"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading magic systems...</p>
-        </div>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header Skeleton */}
+          <MagicSystemsPageHeaderSkeleton />
+
+          {/* Magic Systems Grid Skeleton */}
+          <MagicSystemsGridSkeleton />
+        </main>
       </div>
     );
   }
