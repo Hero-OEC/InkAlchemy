@@ -136,6 +136,12 @@ export default function CreateMagicSystem() {
           </div>
           <div className="flex items-center gap-3">
             <Button 
+              variant="ghost" 
+              onClick={() => setLocation(`/projects/${projectId}/magic-systems`)}
+            >
+              Cancel
+            </Button>
+            <Button 
               type="submit" 
               form="magic-system-form"
               variant="primary" 
