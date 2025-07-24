@@ -325,7 +325,7 @@ export default function MagicSystemDetails() {
           </div>
           
           <div className="flex gap-3">
-            <Button variant="outline" onClick={handleEdit}>
+            <Button variant="default" onClick={handleEdit}>
               <Edit size={16} className="mr-2" />
               Edit
             </Button>
