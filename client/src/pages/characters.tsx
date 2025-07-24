@@ -7,6 +7,7 @@ import { CharacterCard } from "@/components/character-card";
 import { MiniCard } from "@/components/mini-card";
 import { Button } from "@/components/button-variations";
 import { SearchComponent } from "@/components/search-component";
+import { CharactersSectionHeaderSkeleton, RacesGridSkeleton, CharactersGridSkeleton } from "@/components/skeleton";
 import { Plus, Users, UserCheck } from "lucide-react";
 import type { Project, Character, Race } from "@shared/schema";
 
@@ -21,17 +22,20 @@ export default function Characters() {
   const [characterSearchQuery, setCharacterSearchQuery] = useState("");
   const [characterActiveFilters, setCharacterActiveFilters] = useState<Record<string, any>>({});
   
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: characters = [] } = useQuery<Character[]>({
+  const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
   const { data: races = [], isLoading: racesLoading } = useQuery<Race[]>({
     queryKey: [`/api/projects/${projectId}/races`],
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || charactersLoading || racesLoading;
 
   // Search filters for races
   const raceSearchFilters = [
@@ -156,6 +160,32 @@ export default function Characters() {
     // TODO: Implement race deletion with confirmation dialog
     console.log("Delete race:", race.name);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-50">
+        <Navbar 
+          hasActiveProject={true} 
+          currentPage="characters"
+          projectName="Loading..."
+          onNavigate={handleNavigation}
+        />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Races Section Skeleton */}
+          <div className="mb-16">
+            <CharactersSectionHeaderSkeleton />
+            <RacesGridSkeleton />
+          </div>
+
+          {/* Characters Section Skeleton */}
+          <div>
+            <CharactersSectionHeaderSkeleton />
+            <CharactersGridSkeleton />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-brand-50">

@@ -291,3 +291,96 @@ export function EmptyTimelineSkeleton() {
     </div>
   );
 }
+
+// Characters Page Section Header Skeleton
+export function CharactersSectionHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <Skeleton className="h-11 w-24 mb-2" />
+        <Skeleton className="h-5 w-64" />
+      </div>
+      <div className="flex items-center gap-4 flex-shrink-0">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+    </div>
+  );
+}
+
+// Race Card Skeleton - matches MiniCard structure
+export function RaceCardSkeleton() {
+  return (
+    <div className="bg-white rounded-lg border border-brand-200 p-4 hover:shadow-md transition-shadow">
+      <div className="flex items-center gap-3">
+        <Skeleton className="w-10 h-10 rounded-lg flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <Skeleton className="h-5 w-3/4" />
+        </div>
+        <Skeleton className="w-6 h-6 flex-shrink-0" />
+      </div>
+    </div>
+  );
+}
+
+// Character Card Skeleton - matches CharacterCard structure
+export function CharacterCardSkeleton() {
+  return (
+    <div className="bg-white rounded-xl border border-brand-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+      {/* Image Area */}
+      <div className="h-48 bg-brand-100">
+        <Skeleton className="w-full h-full" />
+      </div>
+      
+      {/* Content Area */}
+      <div className="p-6">
+        {/* Character Name and Type */}
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1 min-w-0">
+            <Skeleton className="h-6 w-3/4 mb-1" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="w-4 h-4" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+          </div>
+          <Skeleton className="w-6 h-6 ml-2" />
+        </div>
+
+        {/* Description */}
+        <div className="mb-4">
+          <Skeleton className="h-4 w-full mb-1" />
+          <Skeleton className="h-4 w-4/5 mb-1" />
+          <Skeleton className="h-4 w-2/3" />
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between text-xs">
+          <Skeleton className="h-3 w-20" />
+          <Skeleton className="h-3 w-16" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Races Grid Skeleton
+export function RacesGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {Array.from({ length: 8 }).map((_, index) => (
+        <RaceCardSkeleton key={index} />
+      ))}
+    </div>
+  );
+}
+
+// Characters Grid Skeleton
+export function CharactersGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <CharacterCardSkeleton key={index} />
+      ))}
+    </div>
+  );
+}
