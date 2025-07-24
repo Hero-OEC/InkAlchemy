@@ -63,21 +63,15 @@ export function CharacterMagicSelector({
     setSelectedSystems(systemsMap);
   }, [selectedSpells, availableMagicSystems]);
 
-  // Notify parent when selected systems change
-  useEffect(() => {
+  // Notify parent when user interacts with the component (not on prop changes)
+  const notifyParentOfChanges = (newSelectedSystems: Map<number, SelectedSystem>) => {
     const allSelectedSpells: number[] = [];
-    selectedSystems.forEach(({ selectedSpells }) => {
+    newSelectedSystems.forEach(({ selectedSpells }) => {
       selectedSpells.forEach(spellId => allSelectedSpells.push(spellId));
     });
     
-    // Only call onSelectionChange if the selected spells actually changed
-    const currentSpellIds = allSelectedSpells.sort().join(',');
-    const propSpellIds = selectedSpells.sort().join(',');
-    
-    if (currentSpellIds !== propSpellIds) {
-      onSelectionChange(allSelectedSpells);
-    }
-  }, [selectedSystems, onSelectionChange, selectedSpells]);
+    onSelectionChange(allSelectedSpells);
+  };
 
   // Filter magic systems based on search
   const filteredSystems = availableMagicSystems.filter(system =>
@@ -93,6 +87,7 @@ export function CharacterMagicSelector({
           selectedSpells: new Set()
         });
       }
+      notifyParentOfChanges(newMap);
       return newMap;
     });
     setSearchTerm(""); // Clear search after adding
@@ -102,6 +97,7 @@ export function CharacterMagicSelector({
     setSelectedSystems(prev => {
       const newMap = new Map(prev);
       newMap.delete(systemId);
+      notifyParentOfChanges(newMap);
       return newMap;
     });
   };
@@ -125,6 +121,7 @@ export function CharacterMagicSelector({
         });
       }
       
+      notifyParentOfChanges(newMap);
       return newMap;
     });
   };
