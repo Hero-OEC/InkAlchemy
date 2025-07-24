@@ -238,7 +238,7 @@ export default function CreateMagicSystem() {
                           <Input 
                             placeholder="e.g., elemental forces, divine blessing, life energy" 
                             {...field} 
-                            value={field.value || ""}
+                            value={field.value ?? ""}
                           />
                         </FormControl>
                         <FormMessage />
@@ -273,13 +273,7 @@ export default function CreateMagicSystem() {
                   />
                 </div>
 
-                {/* Characters */}
-                <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                  <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters</h3>
-                  <p className="text-brand-500 italic text-sm">
-                    You can assign characters to this system after creating it.
-                  </p>
-                </div>
+
               </div>
             </div>
           </form>
