@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navbar";
 import { CharacterCard } from "@/components/character-card";
 import { MiniCard } from "@/components/mini-card";
 import { Button } from "@/components/button-variations";
+import { SearchComponent } from "@/components/search-component";
 import { Plus, Users, UserCheck } from "lucide-react";
 import type { Project, Character, Race } from "@shared/schema";
 
@@ -13,6 +14,12 @@ export default function Characters() {
   const { projectId } = useParams();
   const [currentPath, setLocation] = useLocation();
   const { navigateWithReferrer } = useNavigation();
+  
+  // Search states
+  const [raceSearchQuery, setRaceSearchQuery] = useState("");
+  const [raceActiveFilters, setRaceActiveFilters] = useState<Record<string, any>>({});
+  const [characterSearchQuery, setCharacterSearchQuery] = useState("");
+  const [characterActiveFilters, setCharacterActiveFilters] = useState<Record<string, any>>({});
   
   const { data: project } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -24,6 +31,100 @@ export default function Characters() {
 
   const { data: races = [], isLoading: racesLoading } = useQuery<Race[]>({
     queryKey: [`/api/projects/${projectId}/races`],
+  });
+
+  // Search filters for races
+  const raceSearchFilters = [
+    {
+      key: "lifespan",
+      label: "Lifespan",
+      options: [
+        { value: "short", label: "Short" },
+        { value: "normal", label: "Normal" },
+        { value: "long", label: "Long" },
+        { value: "extended", label: "Extended" },
+        { value: "immortal", label: "Immortal" }
+      ]
+    },
+    {
+      key: "sizeCategory",
+      label: "Size",
+      options: [
+        { value: "tiny", label: "Tiny" },
+        { value: "small", label: "Small" },
+        { value: "medium", label: "Medium" },
+        { value: "large", label: "Large" },
+        { value: "huge", label: "Huge" }
+      ]
+    }
+  ];
+
+  // Search filters for characters
+  const characterSearchFilters = [
+    {
+      key: "role",
+      label: "Role",
+      options: [
+        { value: "protagonist", label: "Protagonist" },
+        { value: "antagonist", label: "Antagonist" },
+        { value: "supporting", label: "Supporting" },
+        { value: "minor", label: "Minor" }
+      ]
+    },
+    {
+      key: "status",
+      label: "Status",
+      options: [
+        { value: "alive", label: "Alive" },
+        { value: "dead", label: "Dead" },
+        { value: "unknown", label: "Unknown" }
+      ]
+    }
+  ];
+
+  // Filter races based on search
+  const filteredRaces = races.filter((race) => {
+    // Text search
+    if (raceSearchQuery && !race.name.toLowerCase().includes(raceSearchQuery.toLowerCase())) {
+      return false;
+    }
+
+    // Lifespan filter
+    if (raceActiveFilters.lifespan && race.lifespan !== raceActiveFilters.lifespan) {
+      return false;
+    }
+
+    // Size category filter
+    if (raceActiveFilters.sizeCategory && race.sizeCategory !== raceActiveFilters.sizeCategory) {
+      return false;
+    }
+
+    return true;
+  });
+
+  // Filter characters based on search
+  const filteredCharacters = characters.filter((character) => {
+    // Text search
+    if (characterSearchQuery) {
+      const searchLower = characterSearchQuery.toLowerCase();
+      const fullName = [character.prefix, character.name, character.suffix].filter(Boolean).join(" ");
+      if (!fullName.toLowerCase().includes(searchLower) && 
+          !character.description?.toLowerCase().includes(searchLower)) {
+        return false;
+      }
+    }
+
+    // Role filter
+    if (characterActiveFilters.role && character.role !== characterActiveFilters.role) {
+      return false;
+    }
+
+    // Status filter
+    if (characterActiveFilters.status && character.status !== characterActiveFilters.status) {
+      return false;
+    }
+
+    return true;
   });
 
   // Set page title
@@ -86,19 +187,28 @@ export default function Characters() {
               <h1 className="font-bold text-brand-900 mb-2 text-[36px]">Races</h1>
               <p className="text-brand-600">Define the races that inhabit your world</p>
             </div>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleCreateRace}
-              className="flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Add Race
-            </Button>
+            <div className="flex items-center gap-4 flex-shrink-0">
+              <SearchComponent
+                placeholder="Search races..."
+                onSearch={setRaceSearchQuery}
+                onFilterChange={setRaceActiveFilters}
+                filters={raceSearchFilters}
+                showFilters={true}
+              />
+              <Button
+                variant="primary"
+                size="md"
+                onClick={handleCreateRace}
+                className="flex items-center gap-2 whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4" />
+                Add Race
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {races.map((race) => (
+            {filteredRaces.map((race) => (
               <MiniCard
                 key={race.id}
                 icon={UserCheck}
@@ -119,28 +229,37 @@ export default function Characters() {
               <h1 className="font-bold text-brand-900 mb-2 text-[36px]">Characters</h1>
               <p className="text-brand-600">Manage your story's cast of characters</p>
             </div>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleCreateCharacter}
-              className="flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Add Character
-            </Button>
+            <div className="flex items-center gap-4 flex-shrink-0">
+              <SearchComponent
+                placeholder="Search characters..."
+                onSearch={setCharacterSearchQuery}
+                onFilterChange={setCharacterActiveFilters}
+                filters={characterSearchFilters}
+                showFilters={true}
+              />
+              <Button
+                variant="primary"
+                size="md"
+                onClick={handleCreateCharacter}
+                className="flex items-center gap-2 whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4" />
+                Add Character
+              </Button>
+            </div>
           </div>
 
           {/* Characters Grid */}
-          {characters.length > 0 ? (
+          {filteredCharacters.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {characters.map((character) => (
+              {filteredCharacters.map((character) => (
                 <CharacterCard
                   key={character.id}
                   id={character.id}
                   name={character.name}
                   prefix={character.prefix || undefined}
                   suffix={character.suffix || undefined}
-                  type={character.type as any}
+                  type={character.role as any}
                   description={character.description || "No description available"}
                   imageUrl={character.imageUrl || undefined}
                   createdAt={character.createdAt}
@@ -157,11 +276,11 @@ export default function Characters() {
               <p className="text-brand-600 mb-6">Create your first character to bring your story to life</p>
               <Button
                 variant="primary"
-                size="lg"
+                size="sm"
                 onClick={handleCreateCharacter}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 mx-auto"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="w-4 h-4" />
                 Create Your First Character
               </Button>
             </div>
