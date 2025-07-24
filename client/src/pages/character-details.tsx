@@ -8,6 +8,7 @@ import { MiniCard } from "@/components/mini-card";
 import { CharacterMagicCard } from "@/components/character-magic-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { CharacterDetailsHeaderSkeleton, CharacterDetailsContentSkeleton } from "@/components/skeleton";
 import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft, FileText, Clock, GraduationCap, UserPlus, UserMinus } from "lucide-react";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell, Race } from "@shared/schema";
@@ -46,45 +47,49 @@ export default function CharacterDetails() {
   });
 
   // Only load other data if character exists
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
     enabled: !!character,
   });
 
-  const { data: magicSystems = [] } = useQuery<MagicSystem[]>({
+  const { data: magicSystems = [], isLoading: magicSystemsLoading } = useQuery<MagicSystem[]>({
     queryKey: [`/api/projects/${projectId}/magic-systems`],
     enabled: !!character,
   });
 
-  const { data: events = [] } = useQuery<Event[]>({
+  const { data: events = [], isLoading: eventsLoading } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
     enabled: !!character,
   });
 
-  const { data: characters = [] } = useQuery<Character[]>({
+  const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
     enabled: !!character,
   });
 
-  const { data: locations = [] } = useQuery<Location[]>({
+  const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
     enabled: !!character,
   });
 
-  const { data: relationships = [] } = useQuery<Relationship[]>({
+  const { data: relationships = [], isLoading: relationshipsLoading } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
     enabled: !!character,
   });
 
-  const { data: races = [] } = useQuery<Race[]>({
+  const { data: races = [], isLoading: racesLoading } = useQuery<Race[]>({
     queryKey: [`/api/projects/${projectId}/races`],
     enabled: !!character,
   });
 
-  const { data: characterSpells = [] } = useQuery<(Spell & { proficiency?: string })[]>({
+  const { data: characterSpells = [], isLoading: spellsLoading } = useQuery<(Spell & { proficiency?: string })[]>({
     queryKey: [`/api/characters/${numericCharacterId}/spells`],
     enabled: !!character,
   });
+
+  // Check if any core data is still loading
+  const isLoading = characterLoading || projectLoading || magicSystemsLoading || eventsLoading || 
+    charactersLoading || locationsLoading || relationshipsLoading || racesLoading || spellsLoading;
 
   // Set page title
   useEffect(() => {
@@ -98,13 +103,35 @@ export default function CharacterDetails() {
   }, [character?.name, project?.name]);
 
   // Handle loading state - this must be first and exclusive
-  if (characterLoading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto mb-4"></div>
-          <p className="text-brand-600">Loading character...</p>
-        </div>
+      <div className="min-h-screen bg-background text-foreground">
+        <Navbar 
+          hasActiveProject={true}
+          currentPage="characters"
+          onNavigate={() => {}}
+          projectName="Loading..."
+        />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+
+          {/* Character Header Skeleton */}
+          <CharacterDetailsHeaderSkeleton />
+
+          {/* Main Content Skeleton */}
+          <CharacterDetailsContentSkeleton />
+        </main>
       </div>
     );
   }

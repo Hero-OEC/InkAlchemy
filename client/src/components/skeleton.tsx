@@ -693,3 +693,110 @@ export function RaceDetailsContentSkeleton() {
     </div>
   );
 }
+
+// Character Details Header Skeleton
+export function CharacterDetailsHeaderSkeleton() {
+  return (
+    <div className="mb-8">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Skeleton className="w-14 h-14 rounded-xl" />
+          <div>
+            <Skeleton className="h-8 w-48 mb-2" />
+            <Skeleton className="h-6 w-28 rounded-full" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-36" />
+          <Skeleton className="h-10 w-20" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Character Details Tab Navigation Skeleton
+export function CharacterDetailsTabsSkeleton() {
+  return (
+    <div className="border-b border-brand-200 mb-6">
+      <nav className="flex space-x-8">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="flex items-center gap-2 py-2 px-1">
+            <Skeleton className="w-4 h-4" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+// Character Details Content Skeleton
+export function CharacterDetailsContentSkeleton() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Left Column - Tab System Skeleton */}
+      <div className="lg:col-span-2">
+        {/* Tab Navigation Skeleton */}
+        <CharacterDetailsTabsSkeleton />
+
+        {/* Tab Content Skeleton */}
+        <div className="bg-brand-100 border border-brand-200 rounded-xl p-6">
+          <div className="space-y-6">
+            <div>
+              <Skeleton className="h-5 w-24 mb-3" />
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-4/5" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column - Character Info Skeleton */}
+      <div className="space-y-6">
+        {/* Character Profile Card Skeleton */}
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-6">
+          <Skeleton className="h-5 w-32 mb-4" />
+          <div className="space-y-4">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-12" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-18" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-14" />
+              <Skeleton className="h-4 w-18" />
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Info Card Skeleton */}
+        <div className="bg-brand-100 rounded-xl border border-brand-200 p-6">
+          <Skeleton className="h-5 w-28 mb-4" />
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
