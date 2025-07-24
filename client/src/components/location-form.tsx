@@ -9,6 +9,7 @@ import { WordProcessor } from "@/components/word-processor";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertLocationSchema, type Location } from "@shared/schema";
+import { MapPin, Mountain, Building2, Castle, TreePine, Waves, Crown, Home, Landmark } from "lucide-react";
 import { z } from "zod";
 
 const formSchema = insertLocationSchema.extend({
@@ -95,21 +96,86 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
 
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
+  // Get icon based on location type
+  const getLocationIcon = (type: string) => {
+    switch (type) {
+      case "city": return Building2;
+      case "town": return Home;
+      case "village": return Home;
+      case "forest": return TreePine;
+      case "mountain": return Mountain;
+      case "ocean": return Waves;
+      case "river": return Waves;
+      case "desert": return Mountain;
+      case "building": return Building2;
+      case "castle": return Castle;
+      case "dungeon": return Landmark;
+      case "realm": return Crown;
+      case "dimension": return Landmark;
+      case "other": return MapPin;
+      default: return MapPin;
+    }
+  };
+
+  const selectedType = form.watch("type");
+  const LocationIcon = getLocationIcon(selectedType || "");
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Basic Information Container */}
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-brand-950 mb-4">Basic Information</h3>
-          <div className="grid grid-cols-2 gap-4">
+    <div className="max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="bg-brand-500 p-3 rounded-xl">
+            <LocationIcon size={24} className="text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-brand-950">
+              {location ? "Edit Location" : "Create Location"}
+            </h1>
+            <div className="flex items-center gap-3 mt-2">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-500 text-white">
+                Location
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onSuccess}
+            disabled={isLoading}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="location-form"
+            disabled={isLoading}
+          >
+            {isLoading ? "Saving..." : location ? "Update Location" : "Create Location"}
+          </Button>
+        </div>
+      </div>
+
+      <Form {...form}>
+        <form id="location-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* Basic Information Container */}
+          <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+            <h2 className="text-xl font-semibold text-brand-950 mb-6">Basic Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Location Name *</FormLabel>
+                  <FormLabel className="text-brand-900">Location Name *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter location name" {...field} />
+                    <Input 
+                      placeholder="Enter location name" 
+                      {...field} 
+                      className="border-brand-200 focus:border-brand-500"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,7 +187,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Location Type</FormLabel>
+                  <FormLabel className="text-brand-900">Location Type</FormLabel>
                   <Select 
                     onValueChange={(value) => {
                       field.onChange(value);
@@ -130,7 +196,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-brand-200 focus:border-brand-500">
                         <SelectValue placeholder="Select location type" />
                       </SelectTrigger>
                     </FormControl>
@@ -155,13 +221,13 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
                 </FormItem>
               )}
             />
+            </div>
           </div>
-        </div>
 
-        {/* Content Container */}
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-brand-950 mb-4">Content</h3>
-          <FormField
+          {/* Content Container */}
+          <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
+            <h2 className="text-xl font-semibold text-brand-950 mb-6">Content</h2>
+            <FormField
             control={form.control}
             name="content"
             render={({ field }) => (
@@ -177,19 +243,10 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
                 <FormMessage />
               </FormItem>
             )}
-          />
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-end space-x-2 pt-6 border-t border-brand-200">
-          <Button type="button" variant="outline" onClick={onSuccess}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : location ? "Update Location" : "Create Location"}
-          </Button>
-        </div>
-      </form>
-    </Form>
+            />
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 }
