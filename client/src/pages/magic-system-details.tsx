@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/button-variations";
+import { Button } from "@/components/ui/button";
 import { ContentCard } from "@/components/content-card";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharacterCard } from "@/components/character-card";
@@ -225,8 +225,6 @@ export default function MagicSystemDetails() {
                 {system.type === "power" ? "Abilities" : "Spells"}
               </h3>
               <Button 
-                variant="primary" 
-                size="sm"
                 onClick={() => {
                   setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
                 }}
@@ -267,8 +265,6 @@ export default function MagicSystemDetails() {
                   Start building your {system.type === "power" ? "ability" : "spell"} collection for this system.
                 </p>
                 <Button 
-                  variant="primary" 
-                  size="sm"
                   onClick={() => {
                     if (system.type === "power") {
                       setLocation(`/projects/${projectId}/magic-systems/${systemId}/abilities/new`);
@@ -304,7 +300,6 @@ export default function MagicSystemDetails() {
         <div className="flex items-center gap-4 mb-8">
           <Button
             variant="ghost"
-            size="md"
             onClick={handleBack}
             className="flex items-center gap-2"
           >
@@ -330,11 +325,11 @@ export default function MagicSystemDetails() {
           </div>
           
           <div className="flex gap-3">
-            <Button variant="secondary" size="md" onClick={handleEdit}>
+            <Button variant="outline" onClick={handleEdit}>
               <Edit size={16} className="mr-2" />
               Edit
             </Button>
-            <Button variant="danger" size="md" onClick={() => setShowDeleteDialog(true)}>
+            <Button variant="destructive" onClick={() => setShowDeleteDialog(true)}>
               <Trash2 size={16} className="mr-2" />
               Delete
             </Button>
