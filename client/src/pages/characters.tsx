@@ -75,9 +75,9 @@ export default function Characters() {
       key: "status",
       label: "Status",
       options: [
-        { value: "alive", label: "Alive" },
-        { value: "dead", label: "Dead" },
-        { value: "unknown", label: "Unknown" }
+        { value: "active", label: "Active" },
+        { value: "developing", label: "Developing" },
+        { value: "inactive", label: "Inactive" }
       ]
     }
   ];
