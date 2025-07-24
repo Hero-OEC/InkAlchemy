@@ -8,7 +8,7 @@ import { MiniCard } from "@/components/mini-card";
 import { CharacterMagicCard } from "@/components/character-magic-card";
 import SerpentineTimeline from "@/components/serpentine-timeline";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
-import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft, FileText, Clock } from "lucide-react";
+import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft, FileText, Clock, GraduationCap, UserPlus, UserMinus } from "lucide-react";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell, Race } from "@shared/schema";
 
@@ -19,7 +19,10 @@ const CHARACTER_TYPE_CONFIG = {
   supporting: { icon: Users, label: "Supporting", bgColor: "bg-brand-300", textColor: "text-brand-900" },
   ally: { icon: Shield, label: "Ally", bgColor: "bg-brand-600", textColor: "text-white" },
   neutral: { icon: Zap, label: "Neutral", bgColor: "bg-brand-800", textColor: "text-white" },
-  "love-interest": { icon: Heart, label: "Love Interest", bgColor: "bg-brand-900", textColor: "text-white" }
+  "love-interest": { icon: Heart, label: "Love Interest", bgColor: "bg-brand-900", textColor: "text-white" },
+  mentor: { icon: GraduationCap, label: "Mentor", bgColor: "bg-brand-600", textColor: "text-white" },
+  sidekick: { icon: UserPlus, label: "Sidekick", bgColor: "bg-brand-400", textColor: "text-white" },
+  background: { icon: UserMinus, label: "Background", bgColor: "bg-brand-200", textColor: "text-brand-900" }
 };
 
 
