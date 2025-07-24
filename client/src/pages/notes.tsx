@@ -206,7 +206,7 @@ export default function Notes() {
               variant="primary"
               size="lg"
               onClick={handleCreateNote}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 mx-auto"
             >
               <Plus className="w-5 h-5" />
               Create Your First Note
