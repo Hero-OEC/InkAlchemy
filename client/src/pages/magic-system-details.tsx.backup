@@ -190,28 +190,40 @@ export default function MagicSystemDetails() {
         return (
           <div>
             {system.description ? (
-              (() => {
-                try {
-                  const parsedData = JSON.parse(system.description);
-                  return (
-                    <EditorContentRenderer 
-                      data={parsedData}
-                      className="prose prose-brand max-w-none"
-                    />
-                  );
-                } catch {
-                  return (
-                    <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                      {system.description}
-                    </p>
-                  );
-                }
-              })()
-            ) : (
-              <p className="text-brand-500">No description available</p>
-            )}
+                  (() => {
+                    try {
+                      // Try to parse as JSON (Editor.js format)
+                      const parsedData = JSON.parse(system.description);
+                      return (
+                        <EditorContentRenderer 
+                          data={parsedData}
+                          className="prose prose-brand max-w-none"
+                        />
+                      );
+                    } catch {
+                      // If parsing fails, it's plain text - display as is
+                      return (
+                        <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
+                          {system.description}
+                        </p>
+                      );
+                    }
+                  })()
+                ) : (
+                  <p className="text-brand-500">No description available</p>
+                )}
+              </div>
+            </div>
+            
+
+
+
           </div>
         );
+
+
+
+
 
       case "abilities":
       case "spells":
@@ -285,6 +297,8 @@ export default function MagicSystemDetails() {
           </div>
         );
 
+
+
       default:
         return null;
     }
@@ -309,58 +323,62 @@ export default function MagicSystemDetails() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            Back to Magic Systems
           </Button>
         </div>
 
-        {/* Magic System Header */}
+        {/* System Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <div className="bg-brand-500 text-white p-3 rounded-xl">
-              <Icon size={32} />
+            <div className="bg-brand-500 p-3 rounded-xl">
+              <Icon size={24} className="text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-brand-950">{system.name}</h1>
-              <div className="flex items-center gap-2 mt-2">
-                <span className="bg-brand-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+              <h1 className="text-3xl font-bold text-brand-950 mb-2">{system.name}</h1>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-500 text-white">
                   {system.type === "power" ? "Power System" : "Magic System"}
                 </span>
+                {system.updatedAt && (
+                  <span className="text-sm text-brand-500">
+                    Updated {formatDate(system.updatedAt)}
+                  </span>
+                )}
               </div>
             </div>
           </div>
-          
-          <div className="flex gap-3">
-            <Button variant="secondary" size="md" onClick={handleEdit}>
-              <Edit size={16} className="mr-2" />
+          <div className="flex items-center gap-3">
+            <Button variant="primary" onClick={handleEdit} className="flex items-center gap-2">
+              <Edit size={16} />
               Edit
             </Button>
-            <Button variant="danger" size="md" onClick={() => setShowDeleteDialog(true)}>
-              <Trash2 size={16} className="mr-2" />
+            <Button variant="danger" onClick={() => setShowDeleteDialog(true)} className="flex items-center gap-2">
+              <Trash2 size={16} />
               Delete
             </Button>
           </div>
         </div>
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
+        {/* Content Grid - 2/3 main content + 1/3 sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Main Content - Tabs */}
           <div className="lg:col-span-2">
             {/* Tabs */}
-            <div className="mb-8">
-              <nav className="flex space-x-8 border-b border-brand-200">
+            <div className="border-b border-brand-200 mb-8">
+              <nav className="flex space-x-8">
                 {tabs.map((tab) => {
-                  const IconComponent = tab.icon;
+                  const TabIcon = tab.icon;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+                      className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                         activeTab === tab.id
-                          ? 'border-brand-500 text-brand-600'
-                          : 'border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300'
+                          ? "border-brand-500 text-brand-600"
+                          : "border-transparent text-brand-500 hover:text-brand-700 hover:border-brand-300"
                       }`}
                     >
-                      <IconComponent size={16} />
+                      <TabIcon size={16} />
                       {tab.label}
                     </button>
                   );
