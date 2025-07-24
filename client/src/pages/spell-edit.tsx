@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { SpellForm } from "@/components/spell-form";
+import { SpellFormHeaderSkeleton, SpellFormContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -15,19 +16,21 @@ export default function SpellEdit() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: spell, isLoading } = useQuery<Spell>({
+  const { data: spell, isLoading: spellLoading } = useQuery<Spell>({
     queryKey: [`/api/spells/${spellId}`],
     enabled: !!spellId && spellId !== "new" && !isNaN(Number(spellId))
   });
 
-  const { data: magicSystem } = useQuery<MagicSystem>({
+  const { data: magicSystem, isLoading: systemLoading } = useQuery<MagicSystem>({
     queryKey: [`/api/magic-systems/${spell?.magicSystemId}`],
     enabled: !!spell?.magicSystemId
   });
+
+  const isLoading = projectLoading || spellLoading || systemLoading;
 
   const updateSpellMutation = useMutation({
     mutationFn: (data: any) => apiRequest(`/api/spells/${spellId}`, {
@@ -70,34 +73,35 @@ export default function SpellEdit() {
     updateSpellMutation.mutate(data);
   };
 
-  if (isLoading) {
+  if (isLoading || !spell || !magicSystem) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navbar 
           hasActiveProject={true} 
           currentPage="magic-systems"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading {magicSystem?.type === "power" ? "ability" : "spell"}...</p>
-        </div>
-      </div>
-    );
-  }
+        
+        <main className="max-w-4xl mx-auto px-6 py-8 flex flex-col items-center">
+          <div className="w-full max-w-3xl">
+            {/* Header with Back Button Skeleton */}
+            <div className="flex items-center gap-4 mb-8">
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2"
+                disabled
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Magic System
+              </Button>
+            </div>
 
-  if (!spell) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar 
-          hasActiveProject={true} 
-          currentPage="magic-systems"
-          projectName={project?.name}
-          onNavigate={handleNavigation}
-        />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">{magicSystem?.type === "power" ? "Ability" : "Spell"} not found</p>
-        </div>
+            {/* Spell Form Skeleton */}
+            <SpellFormHeaderSkeleton />
+            <SpellFormContentSkeleton />
+          </div>
+        </main>
       </div>
     );
   }

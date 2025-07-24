@@ -1526,3 +1526,62 @@ export function MagicSystemFormContentSkeleton() {
   );
 }
 
+// Spell Form Header Skeleton
+export function SpellFormHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center gap-4">
+        <Skeleton className="w-16 h-16 rounded-xl" />
+        <div>
+          <Skeleton className="h-8 w-36 mb-2" />
+          <div className="flex items-center gap-3 mt-2">
+            <Skeleton className="h-6 w-24 rounded-full" />
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-20" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+    </div>
+  );
+}
+
+// Spell Form Content Skeleton
+export function SpellFormContentSkeleton() {
+  return (
+    <div className="space-y-8">
+      {/* Form Container */}
+      <div className="bg-brand-50 border border-brand-200 rounded-xl p-8">
+        <div className="space-y-6">
+          {/* Basic Information Section */}
+          <div>
+            <Skeleton className="h-6 w-36 mb-4" />
+            <div className="space-y-4">
+              <div>
+                <Skeleton className="h-4 w-20 mb-2" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+              <div>
+                <Skeleton className="h-4 w-12 mb-2" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            </div>
+          </div>
+
+          {/* Description Section */}
+          <div>
+            <Skeleton className="h-6 w-24 mb-4" />
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/5" />
+              <Skeleton className="h-48 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
