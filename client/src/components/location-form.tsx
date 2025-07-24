@@ -193,7 +193,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
                       field.onChange(value);
                       onTypeChange?.(value);
                     }} 
-                    defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger className="border-brand-200 focus:border-brand-500">
