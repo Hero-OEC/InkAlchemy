@@ -10,6 +10,7 @@ import { CharacterCard } from "@/components/character-card";
 import { MiniCard } from "@/components/mini-card";
 import { SearchComponent } from "@/components/search-component";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
+import { MagicSystemDetailsHeaderSkeleton, MagicSystemDetailsContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Edit, Trash2, Sparkles, Zap, Users, BookOpen, Wand2, Plus } from "lucide-react";
 import type { Project, MagicSystem, Character, Spell } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -49,11 +50,11 @@ export default function MagicSystemDetails() {
     return null;
   }
 
-  const { data: project } = useQuery<Project>({
+  const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: system, isLoading } = useQuery<MagicSystem>({
+  const { data: system, isLoading: systemLoading } = useQuery<MagicSystem>({
     queryKey: [`/api/magic-systems/${systemId}`],
     enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
   });
@@ -69,14 +70,17 @@ export default function MagicSystemDetails() {
     }
   }, [system?.name, project?.name]);
 
-  const { data: characters } = useQuery<Character[]>({
+  const { data: characters, isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
   });
 
-  const { data: spells } = useQuery<Spell[]>({
+  const { data: spells, isLoading: spellsLoading } = useQuery<Spell[]>({
     queryKey: [`/api/magic-systems/${systemId}/spells`],
     enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
   });
+
+  // Check if any core data is still loading
+  const isLoading = projectLoading || systemLoading || charactersLoading || spellsLoading;
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
@@ -134,12 +138,28 @@ export default function MagicSystemDetails() {
         <Navbar 
           hasActiveProject={true} 
           currentPage="magic-systems"
-          projectName={project?.name}
+          projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Loading magic system...</p>
-        </div>
+        <main className="max-w-6xl mx-auto px-6 py-8">
+          {/* Header with Back Button Skeleton */}
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+
+          {/* Magic System Header Skeleton */}
+          <MagicSystemDetailsHeaderSkeleton />
+
+          {/* Main Content Skeleton */}
+          <MagicSystemDetailsContentSkeleton />
+        </main>
       </div>
     );
   }
