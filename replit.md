@@ -465,3 +465,13 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Reorganized form content into logical sections within Details tab: Basic Information, Character Background, Physical & Role Details, Equipment & Combat
 - Fixed all TypeScript errors with proper null handling using normalizeCharacterData helper function
 - Updated race field to use proper raceId dropdown instead of text-based race field with database foreign key relationship
+
+### January 2025 - Database Schema Enhancement with Genre Field
+- Added genre field to projects table for better project categorization and organization
+- Updated database schema to include genre field with options like fantasy, sci-fi, horror, mystery, romance, etc.
+- Enhanced project creation and editing forms to include genre selection with descriptive tooltips
+- Implemented genre-based filtering and search functionality on welcome page
+- Updated search component to include genre filter dropdown with all available genre options
+- Modified project display logic to show genre information and enable genre-based project filtering
+- Applied database migration using drizzle-kit push to add genre column to existing projects table
+- Enhanced project search to include genre matching alongside name and description search

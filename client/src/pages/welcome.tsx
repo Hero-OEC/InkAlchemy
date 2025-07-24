@@ -107,20 +107,35 @@ export default function Welcome() {
     queryKey: ["/api/projects"],
   });
 
-  // Define search filters for projects (none for now since schema lacks genre field)
-  const searchFilters: Array<{key: string; label: string; options: Array<{value: string; label: string}>}> = [];
+  // Define search filters for projects
+  const searchFilters = [
+    {
+      key: "genre",
+      label: "Genre",
+      options: genreOptions.map(genre => ({
+        value: genre.value,
+        label: genre.label
+      }))
+    }
+  ];
 
   // Filter projects based on search and filters
   const filteredProjects = projects.filter(project => {
-    // Text search across name and description only (no genre field in schema)
+    // Text search across name, description, and genre
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       const matchesName = project.name.toLowerCase().includes(query);
       const matchesDescription = project.description?.toLowerCase().includes(query);
+      const matchesGenre = project.genre?.toLowerCase().includes(query);
       
-      if (!matchesName && !matchesDescription) {
+      if (!matchesName && !matchesDescription && !matchesGenre) {
         return false;
       }
+    }
+
+    // Filter by genre
+    if (activeFilters.genre && project.genre !== activeFilters.genre) {
+      return false;
     }
 
     return true;
@@ -148,6 +163,7 @@ export default function Welcome() {
       createProjectMutation.mutate({
         name: newProjectName,
         description: newProjectDescription || undefined,
+        genre: newProjectGenre || undefined,
       });
       setNewProjectName("");
       setNewProjectGenre("");
@@ -185,7 +201,7 @@ export default function Welcome() {
   const handleEditProject = (project: Project) => {
     setEditingProject(project);
     setEditName(project.name);
-    setEditGenre("");
+    setEditGenre(project.genre || "");
     setEditDescription(project.description || "");
     setShowEditForm(true);
   };
@@ -201,6 +217,7 @@ export default function Welcome() {
         id: editingProject.id,
         name: editName,
         description: editDescription || undefined,
+        genre: editGenre || undefined,
       });
     }
   };
@@ -265,7 +282,7 @@ export default function Welcome() {
                   onSearch={setSearchQuery}
                   onFilterChange={setActiveFilters}
                   filters={searchFilters}
-                  showFilters={false}
+                  showFilters={true}
                 />
               )}
               <Button 

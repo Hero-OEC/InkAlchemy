@@ -7,6 +7,7 @@ export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
+  genre: text("genre"), // fantasy, sci-fi, horror, mystery, romance, historical, contemporary, etc.
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
