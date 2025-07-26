@@ -28,11 +28,22 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
     setError('');
+    
+    console.log('Attempting to sign in with:', data.email);
 
-    const { error: authError } = await signIn(data.email, data.password);
+    try {
+      const { error: authError } = await signIn(data.email, data.password);
 
-    if (authError) {
-      setError(authError.message);
+      if (authError) {
+        console.error('Sign-in error:', authError);
+        setError(authError.message);
+      } else {
+        console.log('Sign-in successful, redirecting...');
+        // The auth context will handle the redirect automatically
+      }
+    } catch (err) {
+      console.error('Unexpected error during sign-in:', err);
+      setError('An unexpected error occurred. Please try again.');
     }
 
     setLoading(false);
