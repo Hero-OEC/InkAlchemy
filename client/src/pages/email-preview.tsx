@@ -27,10 +27,10 @@ export default function EmailPreview() {
             }}>
               {/* Header */}
               <div style={{
-                background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+                background: 'linear-gradient(135deg, hsl(45, 70%, 96%) 0%, hsl(45, 67%, 88%) 100%)',
                 padding: '40px 30px',
                 textAlign: 'center' as const,
-                borderBottom: '2px solid #0ea5e9'
+                borderBottom: '2px solid hsl(44, 59%, 53%)'
               }}>
                 <div style={{
                   width: '64px',
@@ -49,7 +49,7 @@ export default function EmailPreview() {
                 </div>
                 <h1 style={{ 
                   margin: '0', 
-                  color: '#0c4a6e', 
+                  color: 'hsl(26, 55%, 14%)', 
                   fontSize: '28px', 
                   fontWeight: '800' 
                 }}>
@@ -57,7 +57,7 @@ export default function EmailPreview() {
                 </h1>
                 <p style={{ 
                   margin: '8px 0 0', 
-                  color: '#0369a1', 
+                  color: 'hsl(35, 62%, 33%)', 
                   fontSize: '14px' 
                 }}>
                   Worldbuilding Management Platform
@@ -72,14 +72,14 @@ export default function EmailPreview() {
                 <h2 style={{
                   fontSize: '24px',
                   fontWeight: '700',
-                  color: '#0c4a6e',
+                  color: 'hsl(26, 55%, 14%)',
                   marginBottom: '16px'
                 }}>
                   Welcome to Your Creative Journey!
                 </h2>
                 <p style={{
                   fontSize: '16px',
-                  color: '#374151',
+                  color: 'hsl(29, 48%, 26%)',
                   lineHeight: '1.6',
                   marginBottom: '32px'
                 }}>
@@ -92,7 +92,7 @@ export default function EmailPreview() {
                   href={sampleConfirmationURL}
                   style={{
                     display: 'inline-block',
-                    backgroundColor: '#0ea5e9',
+                    backgroundColor: 'hsl(44, 59%, 53%)',
                     color: '#ffffff',
                     textDecoration: 'none',
                     padding: '14px 32px',
@@ -101,8 +101,8 @@ export default function EmailPreview() {
                     fontSize: '16px',
                     transition: 'background-color 0.2s'
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0284c7'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#0ea5e9'}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'hsl(41, 62%, 46%)'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'hsl(44, 59%, 53%)'}
                 >
                   Confirm Your Account
                 </a>
@@ -110,14 +110,14 @@ export default function EmailPreview() {
               
               {/* Footer */}
               <div style={{
-                backgroundColor: '#f8fafc',
+                backgroundColor: 'hsl(45, 70%, 96%)',
                 padding: '30px',
                 textAlign: 'center' as const,
-                borderTop: '1px solid #e2e8f0'
+                borderTop: '1px solid hsl(45, 67%, 88%)'
               }}>
                 <p style={{
                   fontSize: '14px',
-                  color: '#64748b',
+                  color: 'hsl(35, 62%, 33%)',
                   marginBottom: '8px'
                 }}>
                   <strong>Having trouble clicking the button?</strong><br />
@@ -125,7 +125,7 @@ export default function EmailPreview() {
                 </p>
                 <p style={{
                   fontSize: '12px',
-                  color: '#94a3b8',
+                  color: 'hsl(38, 61%, 40%)',
                   wordBreak: 'break-all' as const,
                   margin: '8px 0'
                 }}>
@@ -133,7 +133,7 @@ export default function EmailPreview() {
                 </p>
                 <p style={{
                   fontSize: '14px',
-                  color: '#64748b',
+                  color: 'hsl(35, 62%, 33%)',
                   marginTop: '20px'
                 }}>
                   If you didn't create an InkAlchemy account, you can safely ignore this email.
