@@ -34,6 +34,7 @@ import ComponentsShowcase from "./pages/components-showcase";
 import RaceDetails from "./pages/race-details";
 import CreateRace from "./pages/create-race";
 import EditRace from "./pages/edit-race";
+import EmailPreview from "./pages/email-preview";
 import NotFound from "./pages/not-found";
 
 // Protected Route wrapper
@@ -97,6 +98,7 @@ function AppRoutes() {
       <Route path="/projects/:projectId/races/:raceId/edit" component={() => <ProtectedRoute component={EditRace} />} />
       <Route path="/projects/:projectId/races/:raceId" component={() => <ProtectedRoute component={RaceDetails} />} />
       <Route path="/components" component={() => <ProtectedRoute component={ComponentsShowcase} />} />
+      <Route path="/email-preview" component={() => <ProtectedRoute component={EmailPreview} />} />
     </Router>
   );
 }
