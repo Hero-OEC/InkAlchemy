@@ -35,12 +35,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, username?: string) => {
+    const displayName = username || email.split('@')[0];
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          username: username || email.split('@')[0], // fallback to email prefix if no username
+          username: displayName,
+          display_name: displayName,
+          full_name: displayName,
         }
       }
     });
