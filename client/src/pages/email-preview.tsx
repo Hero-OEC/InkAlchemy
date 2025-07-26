@@ -108,37 +108,7 @@ export default function EmailPreview() {
                 </a>
               </div>
               
-              {/* Footer */}
-              <div style={{
-                backgroundColor: 'hsl(45, 70%, 96%)',
-                padding: '30px',
-                textAlign: 'center' as const,
-                borderTop: '1px solid hsl(45, 67%, 88%)'
-              }}>
-                <p style={{
-                  fontSize: '14px',
-                  color: 'hsl(35, 62%, 33%)',
-                  marginBottom: '8px'
-                }}>
-                  <strong>Having trouble clicking the button?</strong><br />
-                  Copy and paste this link into your browser:
-                </p>
-                <p style={{
-                  fontSize: '12px',
-                  color: 'hsl(38, 61%, 40%)',
-                  wordBreak: 'break-all' as const,
-                  margin: '8px 0'
-                }}>
-                  {sampleConfirmationURL}
-                </p>
-                <p style={{
-                  fontSize: '14px',
-                  color: 'hsl(35, 62%, 33%)',
-                  marginTop: '20px'
-                }}>
-                  If you didn't create an InkAlchemy account, you can safely ignore this email.
-                </p>
-              </div>
+              
             </div>
           </div>
         </div>
