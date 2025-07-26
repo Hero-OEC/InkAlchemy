@@ -1,4 +1,7 @@
 import { Route, Router } from "wouter";
+import { AuthProvider, useAuth } from "./contexts/auth-context";
+import LoginPage from "./pages/login";
+import RegisterPage from "./pages/register";
 import Welcome from "./pages/welcome";
 import Dashboard from "./pages/dashboard";
 import Characters from "./pages/characters";
@@ -33,11 +36,32 @@ import CreateRace from "./pages/create-race";
 import EditRace from "./pages/edit-race";
 import NotFound from "./pages/not-found";
 
-function App() {
+// Protected Route wrapper
+function ProtectedRoute({ component: Component }: { component: React.ComponentType<any> }) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-600"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LoginPage />;
+  }
+
+  return <Component />;
+}
+
+function AppRoutes() {
   return (
     <Router>
-      <Route path="/" component={Welcome} />
-      <Route path="/projects/:projectId/dashboard" component={Dashboard} />
+      <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
+      <Route path="/" component={() => <ProtectedRoute component={Welcome} />} />
+      <Route path="/projects/:projectId/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/projects/:projectId/characters" component={Characters} />
       <Route path="/projects/:projectId/characters/new" component={CreateCharacter} />
       <Route path="/projects/:projectId/characters/:characterId/edit" component={EditCharacter} />
@@ -73,7 +97,16 @@ function App() {
       <Route path="/projects/:projectId/races/:raceId/edit" component={EditRace} />
       <Route path="/projects/:projectId/races/:raceId" component={RaceDetails} />
       <Route path="/components" component={ComponentsShowcase} />
+      <Route component={NotFound} />
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
 
