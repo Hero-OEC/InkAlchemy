@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'wouter';
 import { Loader2, BookOpen } from 'lucide-react';
+import logoImg from '@assets/inkalchemy_1752301543852.png';
 
 export default function LoginPage() {
   const [error, setError] = useState<string>('');
@@ -42,11 +43,13 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
+            <img 
+              src={logoImg}
+              alt="InkAlchemy Logo"
+              className="w-16 h-16 object-contain"
+            />
           </div>
-          <CardTitle className="text-2xl font-bold text-brand-900">Welcome back to InkAlchemy</CardTitle>
+          <CardTitle className="text-2xl font-bold text-brand-900">Welcome to InkAlchemy</CardTitle>
           <CardDescription className="text-brand-600">
             Sign in to continue building your worlds
           </CardDescription>
