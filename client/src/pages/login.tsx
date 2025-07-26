@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'wouter';
 import { Loader2, BookOpen } from 'lucide-react';
-import logoImg from '@assets/inkalchemy_1752301543852.png';
+import logoPath from "@assets/inkalchemy_1752303410066.png";
 
 export default function LoginPage() {
   const [error, setError] = useState<string>('');
@@ -44,7 +44,7 @@ export default function LoginPage() {
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <img 
-              src={logoImg}
+              src={logoPath}
               alt="InkAlchemy Logo"
               className="w-16 h-16 object-contain"
             />
