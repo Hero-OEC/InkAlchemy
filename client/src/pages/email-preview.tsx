@@ -32,20 +32,8 @@ export default function EmailPreview() {
                 textAlign: 'center' as const,
                 borderBottom: '2px solid hsl(44, 59%, 53%)'
               }}>
-                <div style={{
-                  width: '64px',
-                  height: '64px',
-                  margin: '0 auto 20px'
-                }}>
-                  <img 
-                    src={logoPath}
-                    alt="InkAlchemy Logo"
-                    style={{
-                      width: '64px',
-                      height: '64px',
-                      objectFit: 'contain' as const
-                    }}
-                  />
+                <div className="logo">
+                  <img src="/inkalchemy_1752303410066.png" alt="InkAlchemy Logo" width="64" height="64" style={{objectFit: 'contain'}} />
                 </div>
                 <h1 style={{ 
                   margin: '0', 
@@ -63,7 +51,7 @@ export default function EmailPreview() {
                   Worldbuilding Management Platform
                 </p>
               </div>
-              
+
               {/* Content */}
               <div style={{
                 padding: '40px 30px',
@@ -87,7 +75,7 @@ export default function EmailPreview() {
                   <br /><br />
                   To get started with your worldbuilding adventure, please confirm your email address by clicking the button below.
                 </p>
-                
+
                 <a 
                   href={sampleConfirmationURL}
                   style={{
@@ -107,13 +95,13 @@ export default function EmailPreview() {
                   Confirm Your Account
                 </a>
               </div>
-              
-              
+
+
             </div>
           </div>
         </div>
 
-        
+
       </div>
     </div>
   );
