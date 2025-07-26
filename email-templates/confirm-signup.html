@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your InkAlchemy Account</title>
+    <style>
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            background-color: #fefefe;
+            margin: 0;
+            padding: 0;
+            color: #1a202c;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 2px solid #0ea5e9;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+        }
+        .content {
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0c4a6e;
+            margin-bottom: 16px;
+        }
+        .message {
+            font-size: 16px;
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        .confirm-button {
+            display: inline-block;
+            background-color: #0ea5e9;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        .confirm-button:hover {
+            background-color: #0284c7;
+        }
+        .footer {
+            background-color: #f8fafc;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-text {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .link-text {
+            font-size: 12px;
+            color: #94a3b8;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- You can replace this with your actual logo URL -->
+            <div class="logo">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="64" height="64" rx="12" fill="#0ea5e9"/>
+                    <path d="M32 16L44 28H36V48H28V28H20L32 16Z" fill="white"/>
+                </svg>
+            </div>
+            <h1 style="margin: 0; color: #0c4a6e; font-size: 28px; font-weight: 800;">InkAlchemy</h1>
+            <p style="margin: 8px 0 0; color: #0369a1; font-size: 14px;">Worldbuilding Management Platform</p>
+        </div>
+        
+        <div class="content">
+            <h2 class="title">Welcome to Your Creative Journey!</h2>
+            <p class="message">
+                Thank you for joining InkAlchemy! We're excited to help you build incredible worlds and tell amazing stories.
+                <br><br>
+                To get started with your worldbuilding adventure, please confirm your email address by clicking the button below.
+            </p>
+            
+            <a href="{{ .ConfirmationURL }}" class="confirm-button">
+                Confirm Your Account
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p class="footer-text">
+                <strong>Having trouble clicking the button?</strong><br>
+                Copy and paste this link into your browser:
+            </p>
+            <p class="link-text">{{ .ConfirmationURL }}</p>
+            <p class="footer-text" style="margin-top: 20px;">
+                If you didn't create an InkAlchemy account, you can safely ignore this email.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

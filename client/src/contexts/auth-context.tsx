@@ -44,7 +44,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           username: displayName,
           display_name: displayName,
           full_name: displayName,
-        }
+        },
+        emailRedirectTo: `${window.location.origin}/login?verified=true`
       }
     });
     return { error };

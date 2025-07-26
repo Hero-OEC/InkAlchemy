@@ -509,6 +509,13 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Dropdown menu includes user email display and proper visual separation with borders
 - Mobile responsive design hides username text on small screens while keeping avatar visible
 
+### January 2025 - Email Verification Enhancement
+- Added custom redirect URL for email verification linking back to login page with success parameter
+- Enhanced sign-up process to redirect users to login page after email confirmation
+- Email verification flow now provides better user experience with proper redirects
+- Debug logging added to authentication process to troubleshoot sign-in issues
+- Improved error handling in login process with comprehensive try-catch blocks
+
 ### January 2025 - Character Schema Cleanup and Alignment with Current Implementation
 - Cleaned up character database schema by removing 8 unused fields that weren't in current forms or display pages
 - Removed fields: appearance, personality, background, goals, powerType, weapons, equipment, status
