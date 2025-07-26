@@ -143,21 +143,7 @@ export default function EmailPreview() {
           </div>
         </div>
 
-        {/* Instructions */}
-        <div className="mt-8 bg-brand-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-brand-900 mb-4">How to Apply This Template</h3>
-          <ol className="list-decimal list-inside space-y-2 text-brand-700">
-            <li>Go to your Supabase project dashboard</li>
-            <li>Navigate to <strong>Authentication → Email Templates</strong></li>
-            <li>Select <strong>"Confirm signup"</strong> template</li>
-            <li>Copy the HTML content from <code>email-templates/confirm-signup.html</code></li>
-            <li>Replace the default template content</li>
-            <li>Save your changes</li>
-          </ol>
-          <p className="mt-4 text-sm text-brand-600">
-            The template uses Supabase variables like <code>{"{{ .ConfirmationURL }}"}</code> which will be automatically replaced with real confirmation links.
-          </p>
-        </div>
+        
       </div>
     </div>
   );
