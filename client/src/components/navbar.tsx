@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Book, Users, MapPin, Calendar, Sparkles, StickyNote, Home, Menu, X } from "lucide-react";
+import { Book, Users, MapPin, Calendar, Sparkles, StickyNote, Home, Menu, X, User, Settings, LogOut } from "lucide-react";
 import { Button } from "./button-variations";
+import { useAuth } from "../contexts/auth-context";
 import logoPath from "@assets/inkalchemy_1752303410066.png";
 
 export interface NavbarProps {
@@ -27,10 +28,26 @@ export function Navbar({
   projectName 
 }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const handleNavigation = (pageId: string) => {
     onNavigate?.(pageId);
     setIsMobileMenuOpen(false);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    setIsUserMenuOpen(false);
+  };
+
+  const getUserDisplayName = () => {
+    if (!user) return "User";
+    return user.user_metadata?.username || 
+           user.user_metadata?.display_name || 
+           user.user_metadata?.full_name || 
+           user.email?.split('@')[0] || 
+           "User";
   };
 
   return (
@@ -96,8 +113,57 @@ export function Navbar({
             </div>
           )}
 
-          {/* Welcome State - No Navigation */}
-          {!hasActiveProject && (
+          {/* User Profile Section */}
+          {user && (
+            <div className="relative">
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                onMouseEnter={() => setIsUserMenuOpen(true)}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-brand-200 transition-colors"
+              >
+                <div className="w-8 h-8 bg-brand-400 rounded-full flex items-center justify-center">
+                  <User size={16} className="text-white" />
+                </div>
+                <span className="text-sm font-medium text-brand-800 hidden sm:block">
+                  {getUserDisplayName()}
+                </span>
+              </button>
+
+              {/* User Dropdown Menu */}
+              {isUserMenuOpen && (
+                <div 
+                  className="absolute right-0 top-full mt-1 w-48 bg-white border border-brand-200 rounded-lg shadow-lg z-50"
+                  onMouseLeave={() => setIsUserMenuOpen(false)}
+                >
+                  <div className="py-1">
+                    <div className="px-4 py-2 border-b border-brand-100">
+                      <p className="text-sm font-medium text-brand-900">{getUserDisplayName()}</p>
+                      <p className="text-xs text-brand-600">{user.email}</p>
+                    </div>
+                    
+                    <button
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-brand-700 hover:bg-brand-50 transition-colors"
+                    >
+                      <Settings size={16} />
+                      Settings
+                    </button>
+                    
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut size={16} />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Welcome State - No Navigation (when not authenticated) */}
+          {!hasActiveProject && !user && (
             <div className="text-brand-600 text-sm font-medium">
               Welcome to your world-building journey
             </div>
@@ -160,6 +226,9 @@ export function NavbarDemo() {
             Project Active
           </Button>
         </div>
+        <p className="text-sm text-brand-600 mb-4">
+          Note: User profile section with avatar and dropdown will appear when authenticated.
+        </p>
       </div>
 
       {/* Navbar Preview */}

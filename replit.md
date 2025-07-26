@@ -499,6 +499,16 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Updated existing user profiles to include proper display name registration in Supabase
 - Authentication system now fully supports username-based user identification alongside email
 
+### January 2025 - User Profile Navbar Enhancement
+- Enhanced navbar component with user profile section displaying avatar and username
+- Added circular user avatar icon with brand-400 background color for consistent styling
+- Implemented hover-activated dropdown menu with user information display
+- Added settings option (placeholder) and functional sign out button in user dropdown
+- Username display prioritizes user_metadata fields: username, display_name, full_name, then email prefix
+- User profile section appears on both welcome page and project pages when authenticated
+- Dropdown menu includes user email display and proper visual separation with borders
+- Mobile responsive design hides username text on small screens while keeping avatar visible
+
 ### January 2025 - Character Schema Cleanup and Alignment with Current Implementation
 - Cleaned up character database schema by removing 8 unused fields that weren't in current forms or display pages
 - Removed fields: appearance, personality, background, goals, powerType, weapons, equipment, status
