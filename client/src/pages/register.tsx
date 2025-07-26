@@ -31,7 +31,7 @@ export default function RegisterPage() {
     setError('');
     setSuccess('');
 
-    const { error: authError } = await signUp(data.email, data.password);
+    const { error: authError } = await signUp(data.email, data.password, data.username);
 
     if (authError) {
       setError(authError.message);
@@ -71,6 +71,20 @@ export default function RegisterPage() {
                 <AlertDescription>{success}</AlertDescription>
               </Alert>
             )}
+
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Choose a username"
+                {...register('username')}
+                className={errors.username ? 'border-red-500' : ''}
+              />
+              {errors.username && (
+                <p className="text-sm text-red-500">{errors.username.message}</p>
+              )}
+            </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>

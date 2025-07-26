@@ -62,42 +62,41 @@ function AppRoutes() {
       <Route path="/register" component={RegisterPage} />
       <Route path="/" component={() => <ProtectedRoute component={Welcome} />} />
       <Route path="/projects/:projectId/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
-      <Route path="/projects/:projectId/characters" component={Characters} />
-      <Route path="/projects/:projectId/characters/new" component={CreateCharacter} />
-      <Route path="/projects/:projectId/characters/:characterId/edit" component={EditCharacter} />
-      <Route path="/projects/:projectId/characters/:characterId" component={CharacterDetails} />
-      <Route path="/projects/:projectId/locations" component={Locations} />
-      <Route path="/projects/:projectId/locations/new" component={CreateLocation} />
-      <Route path="/projects/:projectId/locations/:locationId/edit" component={EditLocation} />
-      <Route path="/projects/:projectId/locations/:locationId" component={LocationDetails} />
-      <Route path="/projects/:projectId/timeline" component={Timeline} />
-      <Route path="/projects/:projectId/events/:eventId" component={EventDetails} />
-      <Route path="/projects/:projectId/events/:eventId/edit" component={EventForm} />
-      <Route path="/projects/:projectId/timeline/new-event" component={EventForm} />
-      <Route path="/projects/:projectId/magic-systems" component={MagicSystems} />
-      <Route path="/projects/:projectId/magic-systems/new" component={CreateMagicSystem} />
-      <Route path="/projects/:projectId/magic-systems/:systemId" component={MagicSystemDetails} />
-      <Route path="/projects/:projectId/magic-systems/:systemId/edit" component={EditMagicSystem} />
-      <Route path="/projects/:projectId/spells/:spellId" component={SpellDetails} />
-      <Route path="/projects/:projectId/spells/:spellId/edit" component={SpellEdit} />
-      <Route path="/projects/:projectId/magic-systems/:systemId/spells/new" component={SpellCreate} />
-      <Route path="/projects/:projectId/abilities/:spellId" component={SpellDetails} />
-      <Route path="/projects/:projectId/abilities/:spellId/edit" component={SpellEdit} />
-      <Route path="/projects/:projectId/magic-systems/:systemId/abilities/new" component={SpellCreate} />
-      <Route path="/projects/:projectId/lore/new" component={CreateLore} />
-      <Route path="/projects/:projectId/lore/:loreId/edit" component={EditLore} />
-      <Route path="/projects/:projectId/lore/:loreId" component={LoreDetails} />
-      <Route path="/projects/:projectId/lore" component={Lore} />
-      <Route path="/projects/:projectId/notes" component={Notes} />
-      <Route path="/projects/:projectId/notes/new" component={CreateNote} />
-      <Route path="/projects/:projectId/notes/:noteId/edit" component={EditNote} />
-      <Route path="/projects/:projectId/notes/:noteId" component={NoteDetails} />
-      <Route path="/projects/:projectId/races" component={Characters} />
-      <Route path="/projects/:projectId/races/new" component={CreateRace} />
-      <Route path="/projects/:projectId/races/:raceId/edit" component={EditRace} />
-      <Route path="/projects/:projectId/races/:raceId" component={RaceDetails} />
-      <Route path="/components" component={ComponentsShowcase} />
-      <Route component={NotFound} />
+      <Route path="/projects/:projectId/characters" component={() => <ProtectedRoute component={Characters} />} />
+      <Route path="/projects/:projectId/characters/new" component={() => <ProtectedRoute component={CreateCharacter} />} />
+      <Route path="/projects/:projectId/characters/:characterId/edit" component={() => <ProtectedRoute component={EditCharacter} />} />
+      <Route path="/projects/:projectId/characters/:characterId" component={() => <ProtectedRoute component={CharacterDetails} />} />
+      <Route path="/projects/:projectId/locations" component={() => <ProtectedRoute component={Locations} />} />
+      <Route path="/projects/:projectId/locations/new" component={() => <ProtectedRoute component={CreateLocation} />} />
+      <Route path="/projects/:projectId/locations/:locationId/edit" component={() => <ProtectedRoute component={EditLocation} />} />
+      <Route path="/projects/:projectId/locations/:locationId" component={() => <ProtectedRoute component={LocationDetails} />} />
+      <Route path="/projects/:projectId/timeline" component={() => <ProtectedRoute component={Timeline} />} />
+      <Route path="/projects/:projectId/events/:eventId" component={() => <ProtectedRoute component={EventDetails} />} />
+      <Route path="/projects/:projectId/events/:eventId/edit" component={() => <ProtectedRoute component={EventForm} />} />
+      <Route path="/projects/:projectId/timeline/new-event" component={() => <ProtectedRoute component={EventForm} />} />
+      <Route path="/projects/:projectId/magic-systems" component={() => <ProtectedRoute component={MagicSystems} />} />
+      <Route path="/projects/:projectId/magic-systems/new" component={() => <ProtectedRoute component={CreateMagicSystem} />} />
+      <Route path="/projects/:projectId/magic-systems/:systemId" component={() => <ProtectedRoute component={MagicSystemDetails} />} />
+      <Route path="/projects/:projectId/magic-systems/:systemId/edit" component={() => <ProtectedRoute component={EditMagicSystem} />} />
+      <Route path="/projects/:projectId/spells/:spellId" component={() => <ProtectedRoute component={SpellDetails} />} />
+      <Route path="/projects/:projectId/spells/:spellId/edit" component={() => <ProtectedRoute component={SpellEdit} />} />
+      <Route path="/projects/:projectId/magic-systems/:systemId/spells/new" component={() => <ProtectedRoute component={SpellCreate} />} />
+      <Route path="/projects/:projectId/abilities/:spellId" component={() => <ProtectedRoute component={SpellDetails} />} />
+      <Route path="/projects/:projectId/abilities/:spellId/edit" component={() => <ProtectedRoute component={SpellEdit} />} />
+      <Route path="/projects/:projectId/magic-systems/:systemId/abilities/new" component={() => <ProtectedRoute component={SpellCreate} />} />
+      <Route path="/projects/:projectId/lore/new" component={() => <ProtectedRoute component={CreateLore} />} />
+      <Route path="/projects/:projectId/lore/:loreId/edit" component={() => <ProtectedRoute component={EditLore} />} />
+      <Route path="/projects/:projectId/lore/:loreId" component={() => <ProtectedRoute component={LoreDetails} />} />
+      <Route path="/projects/:projectId/lore" component={() => <ProtectedRoute component={Lore} />} />
+      <Route path="/projects/:projectId/notes" component={() => <ProtectedRoute component={Notes} />} />
+      <Route path="/projects/:projectId/notes/new" component={() => <ProtectedRoute component={CreateNote} />} />
+      <Route path="/projects/:projectId/notes/:noteId/edit" component={() => <ProtectedRoute component={EditNote} />} />
+      <Route path="/projects/:projectId/notes/:noteId" component={() => <ProtectedRoute component={NoteDetails} />} />
+      <Route path="/projects/:projectId/races" component={() => <ProtectedRoute component={Characters} />} />
+      <Route path="/projects/:projectId/races/new" component={() => <ProtectedRoute component={CreateRace} />} />
+      <Route path="/projects/:projectId/races/:raceId/edit" component={() => <ProtectedRoute component={EditRace} />} />
+      <Route path="/projects/:projectId/races/:raceId" component={() => <ProtectedRoute component={RaceDetails} />} />
+      <Route path="/components" component={() => <ProtectedRoute component={ComponentsShowcase} />} />
     </Router>
   );
 }

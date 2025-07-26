@@ -5,6 +5,7 @@ import { z } from "zod";
 // Users table for authentication
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
+  username: text("username").unique().notNull(),
   email: text("email").unique().notNull(),
   passwordHash: text("password_hash").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -293,6 +294,7 @@ export const loginSchema = z.object({
 });
 
 export const registerSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters").max(30, "Username must be less than 30 characters"),
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
