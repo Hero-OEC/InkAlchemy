@@ -72,7 +72,7 @@ export default function EditProfile() {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('image', file);
-      
+
       const response = await fetch('/api/user/update-profile-image', {
         method: 'POST',
         body: formData,
@@ -118,7 +118,7 @@ export default function EditProfile() {
         onNavigate={() => {}}
         projectName=""
       />
-      
+
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
@@ -141,7 +141,7 @@ export default function EditProfile() {
               <div className="w-20 h-20 bg-brand-500 rounded-full flex items-center justify-center">
                 <User className="w-10 h-10 text-white" />
               </div>
-              
+
               {/* User Info */}
               <div>
                 <h1 className="text-3xl font-bold text-brand-950">Edit Profile</h1>
@@ -174,11 +174,11 @@ export default function EditProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Form Content (2/3) */}
           <div className="lg:col-span-2">
-            
+
             {/* Account Information Form */}
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
               <h2 className="text-xl font-semibold text-brand-950 mb-6">Account Information</h2>
-              
+
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 {/* Username Field */}
                 <div>
@@ -224,11 +224,11 @@ export default function EditProfile() {
 
           {/* Right Column - Profile Image (1/3) */}
           <div className="space-y-6">
-            
+
             {/* Profile Image Upload */}
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
               <h3 className="text-lg font-semibold text-brand-950 mb-4">Profile Image</h3>
-              
+
               {/* Current/Preview Image Display */}
               <div className="mb-4">
                 {previewUrl ? (
@@ -264,9 +264,10 @@ export default function EditProfile() {
                     file:bg-brand-100 file:text-brand-700
                     hover:file:bg-brand-200"
                 />
-                
+
                 {selectedImage && (
                   <Button 
+                    variant="outline"
                     onClick={handleImageUpload}
                     disabled={uploadImageMutation.isPending}
                     className="w-full flex items-center gap-2"
