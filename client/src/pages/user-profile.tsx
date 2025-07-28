@@ -66,7 +66,6 @@ export default function UserProfile() {
         currentPage="profile"
         onNavigate={() => {}}
       />
-      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
@@ -147,7 +146,7 @@ export default function UserProfile() {
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium text-brand-900">Connect to FandomWiki</h4>
-                        <p className="text-sm text-brand-600">Link your InkAlchemy account with FandomWiki to sync your world data</p>
+                        <p className="text-sm text-brand-600">Link your InkAlchemy account with FandomWiki</p>
                       </div>
                       <Button variant="outline" disabled>
                         Connect Account
@@ -211,7 +210,6 @@ export default function UserProfile() {
           </div>
         </div>
       </main>
-
       {/* Delete Account Confirmation Dialog */}
       <DeleteConfirmation
         isOpen={showDeleteDialog}
