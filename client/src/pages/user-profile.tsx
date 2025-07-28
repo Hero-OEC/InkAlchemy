@@ -81,7 +81,7 @@ export default function UserProfile() {
           </Button>
         </div>
 
-        {/* Character Header */}
+        {/* Page Header */}
         <div className="bg-brand-50 border border-brand-200 rounded-xl p-8 mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -90,15 +90,9 @@ export default function UserProfile() {
                 <User className="w-10 h-10 text-white" />
               </div>
               
-              {/* User Info */}
+              {/* Page Title */}
               <div>
-                <h1 className="text-3xl font-bold text-brand-950">{getUserDisplayName()}</h1>
-                <div className="flex items-center gap-3 mt-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-100 text-brand-700">
-                    <Mail className="w-3 h-3 mr-1" />
-                    {user.email}
-                  </span>
-                </div>
+                <h1 className="text-3xl font-bold text-brand-950">User Profile</h1>
               </div>
             </div>
             <div className="flex items-center gap-3">
