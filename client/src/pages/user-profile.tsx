@@ -6,8 +6,7 @@ import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { useAuth } from "@/contexts/auth-context";
 import { apiRequest } from "@/lib/queryClient";
-import { User, Mail, Link2, Trash2, ArrowLeft, ExternalLink, Edit } from "lucide-react";
-import { FandomLogo } from "@/components/fandom-logo";
+import { User, Mail, Trash2, ArrowLeft, Edit } from "lucide-react";
 
 export default function UserProfile() {
   const [, setLocation] = useLocation();
@@ -141,32 +140,7 @@ export default function UserProfile() {
                   <p className="text-brand-700 leading-relaxed">{user.email}</p>
                 </div>
 
-                {/* FandomWiki Integration Section */}
-                <div>
-                  <h3 className="text-lg font-semibold text-brand-900 mb-3 flex items-center gap-2">
-                    <Link2 className="w-5 h-5" />
-                    FandomWiki Integration
-                  </h3>
-                  
-                  <div className="bg-brand-100 border border-brand-200 rounded-lg p-4 mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-brand-200 p-1">
-                        <FandomLogo size={24} className="text-red-500" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-brand-900">Connect to FandomWiki</h4>
-                        <p className="text-sm text-brand-600">Link your InkAlchemy account with FandomWiki to sync your world data</p>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="text-center py-4">
-                    <p className="text-brand-600 mb-4">FandomWiki integration is coming soon!</p>
-                    <Button variant="outline" disabled>
-                      Connect Account
-                    </Button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
