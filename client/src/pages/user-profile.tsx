@@ -145,7 +145,7 @@ export default function UserProfile() {
                 {/* FandomWiki Integration Section */}
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-3 flex items-center gap-2">
-                    <img src={fandomHeartLogo} alt="Fandom" className="w-5 h-5" />
+                    <img src={fandomHeartLogo} alt="Fandom" className="w-5 h-auto object-contain" />
                     FandomWiki Integration
                   </h3>
                   
