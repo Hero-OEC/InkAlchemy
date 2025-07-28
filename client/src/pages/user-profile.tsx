@@ -6,8 +6,9 @@ import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { useAuth } from "@/contexts/auth-context";
 import { apiRequest } from "@/lib/queryClient";
-import { User, Mail, Link2, Trash2, ArrowLeft, ExternalLink, Edit } from "lucide-react";
+import { User, Mail, Trash2, ArrowLeft, ExternalLink, Edit } from "lucide-react";
 import { FandomLogo } from "@/components/fandom-logo";
+import fandomHeartLogo from "@assets/Fandom_heart-logo 1_1753705331492.png";
 
 export default function UserProfile() {
   const [, setLocation] = useLocation();
@@ -144,7 +145,7 @@ export default function UserProfile() {
                 {/* FandomWiki Integration Section */}
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-3 flex items-center gap-2">
-                    <Link2 className="w-5 h-5" />
+                    <img src={fandomHeartLogo} alt="Fandom" className="w-5 h-5" />
                     FandomWiki Integration
                   </h3>
                   
