@@ -24,8 +24,9 @@ export default function EditProfile() {
   const [, setLocation] = useLocation();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [emailChangeMessage, setEmailChangeMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { user, signOut } = useAuth();
+  const { user, signOut, updateEmail } = useAuth();
   const queryClient = useQueryClient();
 
   // Set page title
@@ -53,9 +54,22 @@ export default function EditProfile() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: EditProfileData) => {
+      // Handle email change separately if it's different
+      const currentEmail = user?.email;
+      if (data.email !== currentEmail) {
+        const { error } = await updateEmail(data.email);
+        if (error) {
+          throw new Error(error.message || 'Failed to update email');
+        }
+        setEmailChangeMessage(
+          'Email change confirmation emails have been sent to both your old and new email addresses. Please check both inboxes and click the confirmation links to complete the email change.'
+        );
+      }
+
+      // Update other profile data
       const response = await fetch('/api/user/update-profile', {
         method: 'PATCH',
-        body: JSON.stringify(data),
+        body: JSON.stringify({ username: data.username }),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -64,7 +78,9 @@ export default function EditProfile() {
       return response.json();
     },
     onSuccess: () => {
-      setLocation('/profile');
+      if (!emailChangeMessage) {
+        setLocation('/profile');
+      }
     },
   });
 
@@ -178,6 +194,18 @@ export default function EditProfile() {
             {/* Account Information Form */}
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
               <h2 className="text-xl font-semibold text-brand-950 mb-6">Account Information</h2>
+
+              {emailChangeMessage && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <h3 className="font-medium text-blue-900 mb-1">Email Change Confirmation Required</h3>
+                      <p className="text-blue-700 text-sm">{emailChangeMessage}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 {/* Username Field */}
