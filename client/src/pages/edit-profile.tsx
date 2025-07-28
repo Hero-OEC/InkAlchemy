@@ -257,13 +257,17 @@ export default function EditProfile() {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="block w-full text-sm text-brand-600
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-lg file:border-0
-                    file:text-sm file:font-medium
-                    file:bg-brand-100 file:text-brand-700
-                    hover:file:bg-brand-200"
+                  className="hidden"
                 />
+                
+                <Button 
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full flex items-center gap-2"
+                >
+                  <Upload className="w-4 h-4" />
+                  Choose File
+                </Button>
 
                 {selectedImage && (
                   <Button 
