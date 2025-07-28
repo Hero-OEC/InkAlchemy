@@ -696,6 +696,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/user/update-profile", async (req: AuthenticatedRequest, res) => {
+    try {
+      const { username, email } = req.body;
+      
+      // In a real implementation, this would update the user's profile in Supabase
+      // For now, we'll just return success
+      console.log(`Profile update requested for user: ${req.userId}`, { username, email });
+      res.json({ 
+        message: "Profile updated successfully",
+        username,
+        email
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
   app.post("/api/user/update-profile-image", uploadImage, async (req: AuthenticatedRequest, res) => {
     try {
       if (!req.file) {

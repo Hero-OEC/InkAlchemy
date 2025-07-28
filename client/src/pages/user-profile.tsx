@@ -6,13 +6,11 @@ import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { useAuth } from "@/contexts/auth-context";
 import { apiRequest } from "@/lib/queryClient";
-import { User, Mail, Link2, Upload, Trash2, ArrowLeft, ExternalLink } from "lucide-react";
+import { User, Mail, Link2, Trash2, ArrowLeft, ExternalLink, Edit } from "lucide-react";
 
 export default function UserProfile() {
   const [, setLocation] = useLocation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const { user, signOut } = useAuth();
   const queryClient = useQueryClient();
 
@@ -35,48 +33,7 @@ export default function UserProfile() {
     },
   });
 
-  const updateProfileImageMutation = useMutation({
-    mutationFn: async (imageFile: File) => {
-      const formData = new FormData();
-      formData.append("image", imageFile);
-      
-      const response = await fetch("/api/user/update-profile-image", {
-        method: "POST",
-        body: formData,
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to update profile image");
-      }
-      
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/user/profile"] });
-      setSelectedImage(null);
-    },
-    onError: (error) => {
-      console.error("Failed to update profile image:", error);
-    },
-  });
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-    }
-  };
-
-  const handleImageUpload = async () => {
-    if (selectedImage) {
-      setIsUploadingImage(true);
-      try {
-        await updateProfileImageMutation.mutateAsync(selectedImage);
-      } finally {
-        setIsUploadingImage(false);
-      }
-    }
-  };
 
   const handleDeleteAccount = () => {
     deleteAccountMutation.mutate();
@@ -141,6 +98,16 @@ export default function UserProfile() {
                   </span>
                 </div>
               </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="primary" 
+                onClick={() => setLocation("/profile/edit")}
+                className="flex items-center gap-2"
+              >
+                <Edit className="w-4 h-4" />
+                Edit Profile
+              </Button>
             </div>
           </div>
         </div>
@@ -216,40 +183,18 @@ export default function UserProfile() {
                   <img 
                     src={getUserAvatarUrl()!} 
                     alt="Profile" 
-                    className="w-full h-48 object-cover rounded-lg border border-brand-200"
+                    className="w-full aspect-square object-cover rounded-lg border border-brand-200"
                   />
                 ) : (
-                  <div className="w-full h-48 bg-brand-100 border border-brand-200 rounded-lg flex items-center justify-center">
+                  <div className="w-full aspect-square bg-brand-100 border border-brand-200 rounded-lg flex items-center justify-center">
                     <User className="w-16 h-16 text-brand-400" />
                   </div>
                 )}
               </div>
 
-              {/* Image Upload */}
-              <div className="space-y-3">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="block w-full text-sm text-brand-600
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-lg file:border-0
-                    file:text-sm file:font-medium
-                    file:bg-brand-100 file:text-brand-700
-                    hover:file:bg-brand-200"
-                />
-                
-                {selectedImage && (
-                  <Button 
-                    onClick={handleImageUpload}
-                    disabled={isUploadingImage}
-                    className="w-full flex items-center gap-2"
-                  >
-                    <Upload className="w-4 h-4" />
-                    {isUploadingImage ? "Uploading..." : "Update Image"}
-                  </Button>
-                )}
-              </div>
+              <p className="text-sm text-brand-600 text-center">
+                Use the Edit Profile button to update your profile image
+              </p>
             </div>
 
             {/* Delete Account */}

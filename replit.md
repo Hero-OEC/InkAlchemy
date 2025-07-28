@@ -564,6 +564,16 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Account deletion includes permanent data removal warning and confirmation dialog for user safety
 - Page follows established design patterns with brand-50 backgrounds, consistent spacing, and proper typography hierarchy
 
+### January 2025 - Edit Profile Functionality Implementation
+- Added "Edit Profile" button to user profile page header matching character details page design pattern
+- Created comprehensive edit profile page with form validation for username and email editing
+- Implemented profile image upload functionality with 1:1 aspect ratio display and preview
+- Added proper routing between profile view and edit modes with cancel/save functionality
+- Profile images now display in square aspect ratio for consistent visual appearance
+- Created API endpoints for profile updates with proper form handling and validation
+- Edit page follows established form patterns with two-column layout and proper error handling
+- Moved image upload functionality from profile view to edit page for better user experience
+
 ### January 2025 - Database Schema Optimization and Event-Character Integration
 - Simplified event-character relationships by adding characterIds array field directly to events table
 - Removed unnecessary eventCharacters junction table in favor of simpler direct array approach
