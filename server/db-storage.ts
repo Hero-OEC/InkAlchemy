@@ -1,0 +1,456 @@
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
+import { 
+  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, eventCharacters, races,
+  type Project, type InsertProject,
+  type Character, type InsertCharacter,
+  type Location, type InsertLocation,
+  type Event, type InsertEvent,
+  type MagicSystem, type InsertMagicSystem,
+  type Spell, type InsertSpell,
+  type LoreEntry, type InsertLoreEntry,
+  type Note, type InsertNote,
+  type Relationship, type InsertRelationship,
+  type CharacterSpell, type InsertCharacterSpell,
+  type EventCharacter, type InsertEventCharacter,
+  type Race, type InsertRace
+} from "@shared/schema";
+import type { IStorage } from "./storage";
+
+export class DatabaseStorage implements IStorage {
+  // Projects
+  async getProjects(): Promise<Project[]> {
+    return await db.select().from(projects);
+  }
+
+  async getProject(id: number): Promise<Project | undefined> {
+    const result = await db.select().from(projects).where(eq(projects.id, id));
+    return result[0];
+  }
+
+  async createProject(project: InsertProject): Promise<Project> {
+    const result = await db.insert(projects).values(project).returning();
+    return result[0];
+  }
+
+  async updateProject(id: number, project: Partial<InsertProject>): Promise<Project | undefined> {
+    const result = await db.update(projects)
+      .set({ ...project, updatedAt: new Date() })
+      .where(eq(projects.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteProject(id: number): Promise<boolean> {
+    const result = await db.delete(projects).where(eq(projects.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Characters
+  async getCharacters(projectId: number): Promise<Character[]> {
+    return await db.select().from(characters).where(eq(characters.projectId, projectId));
+  }
+
+  async getCharacter(id: number): Promise<Character | undefined> {
+    const result = await db.select().from(characters).where(eq(characters.id, id));
+    return result[0];
+  }
+
+  async createCharacter(character: InsertCharacter): Promise<Character> {
+    const result = await db.insert(characters).values(character).returning();
+    return result[0];
+  }
+
+  async updateCharacter(id: number, character: Partial<InsertCharacter>): Promise<Character | undefined> {
+    const result = await db.update(characters)
+      .set({ ...character, updatedAt: new Date() })
+      .where(eq(characters.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteCharacter(id: number): Promise<boolean> {
+    const result = await db.delete(characters).where(eq(characters.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Locations
+  async getLocations(projectId: number): Promise<Location[]> {
+    return await db.select().from(locations).where(eq(locations.projectId, projectId));
+  }
+
+  async getLocation(id: number): Promise<Location | undefined> {
+    const result = await db.select().from(locations).where(eq(locations.id, id));
+    return result[0];
+  }
+
+  async createLocation(location: InsertLocation): Promise<Location> {
+    const result = await db.insert(locations).values(location).returning();
+    return result[0];
+  }
+
+  async updateLocation(id: number, location: Partial<InsertLocation>): Promise<Location | undefined> {
+    const result = await db.update(locations)
+      .set({ ...location, updatedAt: new Date() })
+      .where(eq(locations.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteLocation(id: number): Promise<boolean> {
+    const result = await db.delete(locations).where(eq(locations.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Events
+  async getEvents(projectId: number): Promise<Event[]> {
+    return await db.select().from(events).where(eq(events.projectId, projectId));
+  }
+
+  async getEvent(id: number): Promise<Event | undefined> {
+    const result = await db.select().from(events).where(eq(events.id, id));
+    return result[0];
+  }
+
+  async createEvent(event: InsertEvent): Promise<Event> {
+    const result = await db.insert(events).values(event).returning();
+    return result[0];
+  }
+
+  async updateEvent(id: number, event: Partial<InsertEvent>): Promise<Event | undefined> {
+    const result = await db.update(events)
+      .set({ ...event, updatedAt: new Date() })
+      .where(eq(events.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteEvent(id: number): Promise<boolean> {
+    const result = await db.delete(events).where(eq(events.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Magic Systems
+  async getMagicSystems(projectId: number): Promise<MagicSystem[]> {
+    return await db.select().from(magicSystems).where(eq(magicSystems.projectId, projectId));
+  }
+
+  async getMagicSystem(id: number): Promise<MagicSystem | undefined> {
+    const result = await db.select().from(magicSystems).where(eq(magicSystems.id, id));
+    return result[0];
+  }
+
+  async createMagicSystem(magicSystem: InsertMagicSystem): Promise<MagicSystem> {
+    const result = await db.insert(magicSystems).values(magicSystem).returning();
+    return result[0];
+  }
+
+  async updateMagicSystem(id: number, magicSystem: Partial<InsertMagicSystem>): Promise<MagicSystem | undefined> {
+    const result = await db.update(magicSystems)
+      .set({ ...magicSystem, updatedAt: new Date() })
+      .where(eq(magicSystems.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteMagicSystem(id: number): Promise<boolean> {
+    const result = await db.delete(magicSystems).where(eq(magicSystems.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Spells
+  async getSpells(magicSystemId: number): Promise<Spell[]> {
+    return await db.select().from(spells).where(eq(spells.magicSystemId, magicSystemId));
+  }
+
+  async getAllSpellsForProject(projectId: number): Promise<Spell[]> {
+    return await db.select().from(spells).where(eq(spells.projectId, projectId));
+  }
+
+  async getSpell(id: number): Promise<Spell | undefined> {
+    const result = await db.select().from(spells).where(eq(spells.id, id));
+    return result[0];
+  }
+
+  async createSpell(spell: InsertSpell): Promise<Spell> {
+    const result = await db.insert(spells).values(spell).returning();
+    return result[0];
+  }
+
+  async updateSpell(id: number, spell: Partial<InsertSpell>): Promise<Spell | undefined> {
+    const result = await db.update(spells)
+      .set({ ...spell, updatedAt: new Date() })
+      .where(eq(spells.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteSpell(id: number): Promise<boolean> {
+    const result = await db.delete(spells).where(eq(spells.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Character Spells
+  async getCharacterSpells(characterId: number): Promise<(Spell & { proficiency?: string })[]> {
+    const result = await db
+      .select({
+        id: spells.id,
+        projectId: spells.projectId,
+        magicSystemId: spells.magicSystemId,
+        name: spells.name,
+        level: spells.level,
+        description: spells.description,
+        createdAt: spells.createdAt,
+        updatedAt: spells.updatedAt,
+        proficiency: characterSpells.proficiency,
+      })
+      .from(characterSpells)
+      .innerJoin(spells, eq(characterSpells.spellId, spells.id))
+      .where(eq(characterSpells.characterId, characterId));
+    
+    return result;
+  }
+
+  async addCharacterSpell(characterSpell: InsertCharacterSpell): Promise<CharacterSpell> {
+    const result = await db.insert(characterSpells).values(characterSpell).returning();
+    return result[0];
+  }
+
+  async removeCharacterSpell(characterId: number, spellId: number): Promise<boolean> {
+    const result = await db.delete(characterSpells)
+      .where(and(
+        eq(characterSpells.characterId, characterId),
+        eq(characterSpells.spellId, spellId)
+      ))
+      .returning();
+    return result.length > 0;
+  }
+
+  // Event Characters
+  async getEventCharacters(eventId: number): Promise<(Character & { role?: string })[]> {
+    const result = await db
+      .select({
+        id: characters.id,
+        projectId: characters.projectId,
+        name: characters.name,
+        prefix: characters.prefix,
+        suffix: characters.suffix,
+        role: eventCharacters.role,
+        description: characters.description,
+        age: characters.age,
+        raceId: characters.raceId,
+        magicSystemId: characters.magicSystemId,
+        imageUrl: characters.imageUrl,
+        createdAt: characters.createdAt,
+        updatedAt: characters.updatedAt,
+      })
+      .from(eventCharacters)
+      .innerJoin(characters, eq(eventCharacters.characterId, characters.id))
+      .where(eq(eventCharacters.eventId, eventId));
+    
+    return result;
+  }
+
+  async addEventCharacter(eventCharacter: InsertEventCharacter): Promise<EventCharacter> {
+    const result = await db.insert(eventCharacters).values(eventCharacter).returning();
+    return result[0];
+  }
+
+  async removeEventCharacter(eventId: number, characterId: number): Promise<boolean> {
+    const result = await db.delete(eventCharacters)
+      .where(and(
+        eq(eventCharacters.eventId, eventId),
+        eq(eventCharacters.characterId, characterId)
+      ))
+      .returning();
+    return result.length > 0;
+  }
+
+  // Lore Entries
+  async getLoreEntries(projectId: number): Promise<LoreEntry[]> {
+    return await db.select().from(loreEntries).where(eq(loreEntries.projectId, projectId));
+  }
+
+  async getLoreEntry(id: number): Promise<LoreEntry | undefined> {
+    const result = await db.select().from(loreEntries).where(eq(loreEntries.id, id));
+    return result[0];
+  }
+
+  async createLoreEntry(loreEntry: InsertLoreEntry): Promise<LoreEntry> {
+    const result = await db.insert(loreEntries).values(loreEntry).returning();
+    return result[0];
+  }
+
+  async updateLoreEntry(id: number, loreEntry: Partial<InsertLoreEntry>): Promise<LoreEntry | undefined> {
+    const result = await db.update(loreEntries)
+      .set({ ...loreEntry, updatedAt: new Date() })
+      .where(eq(loreEntries.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteLoreEntry(id: number): Promise<boolean> {
+    const result = await db.delete(loreEntries).where(eq(loreEntries.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Notes
+  async getNotes(projectId: number): Promise<Note[]> {
+    return await db.select().from(notes).where(eq(notes.projectId, projectId));
+  }
+
+  async getNote(id: number): Promise<Note | undefined> {
+    const result = await db.select().from(notes).where(eq(notes.id, id));
+    return result[0];
+  }
+
+  async createNote(note: InsertNote): Promise<Note> {
+    const result = await db.insert(notes).values(note).returning();
+    return result[0];
+  }
+
+  async updateNote(id: number, note: Partial<InsertNote>): Promise<Note | undefined> {
+    const result = await db.update(notes)
+      .set({ ...note, updatedAt: new Date() })
+      .where(eq(notes.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteNote(id: number): Promise<boolean> {
+    const result = await db.delete(notes).where(eq(notes.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Races
+  async getRaces(projectId: number): Promise<Race[]> {
+    return await db.select().from(races).where(eq(races.projectId, projectId));
+  }
+
+  async getRace(id: number): Promise<Race | undefined> {
+    const result = await db.select().from(races).where(eq(races.id, id));
+    return result[0];
+  }
+
+  async createRace(race: InsertRace): Promise<Race> {
+    const result = await db.insert(races).values(race).returning();
+    return result[0];
+  }
+
+  async updateRace(id: number, race: Partial<InsertRace>): Promise<Race | undefined> {
+    const result = await db.update(races)
+      .set({ ...race, updatedAt: new Date() })
+      .where(eq(races.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteRace(id: number): Promise<boolean> {
+    const result = await db.delete(races).where(eq(races.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Relationships
+  async getRelationships(projectId: number): Promise<Relationship[]> {
+    return await db.select().from(relationships).where(eq(relationships.projectId, projectId));
+  }
+
+  async getRelationshipsForElement(projectId: number, elementType: string, elementId: number): Promise<Relationship[]> {
+    return await db.select().from(relationships).where(
+      and(
+        eq(relationships.projectId, projectId),
+        eq(relationships.sourceType, elementType),
+        eq(relationships.sourceId, elementId)
+      )
+    );
+  }
+
+  async createRelationship(relationship: InsertRelationship): Promise<Relationship> {
+    const result = await db.insert(relationships).values(relationship).returning();
+    return result[0];
+  }
+
+  async updateRelationship(id: number, relationship: Partial<InsertRelationship>): Promise<Relationship | undefined> {
+    const result = await db.update(relationships)
+      .set(relationship)
+      .where(eq(relationships.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteRelationship(id: number): Promise<boolean> {
+    const result = await db.delete(relationships).where(eq(relationships.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Search
+  async searchElements(projectId: number, query: string): Promise<any[]> {
+    // Simple search implementation - in a real app you might want full-text search
+    const lowerQuery = query.toLowerCase();
+    
+    const [characterResults, locationResults, eventResults] = await Promise.all([
+      db.select().from(characters).where(eq(characters.projectId, projectId)),
+      db.select().from(locations).where(eq(locations.projectId, projectId)),
+      db.select().from(events).where(eq(events.projectId, projectId))
+    ]);
+
+    const results = [];
+    
+    characterResults.forEach(char => {
+      if (char.name.toLowerCase().includes(lowerQuery)) {
+        results.push({ type: 'character', ...char });
+      }
+    });
+    
+    locationResults.forEach(loc => {
+      if (loc.name.toLowerCase().includes(lowerQuery)) {
+        results.push({ type: 'location', ...loc });
+      }
+    });
+    
+    eventResults.forEach(event => {
+      if (event.title.toLowerCase().includes(lowerQuery)) {
+        results.push({ type: 'event', ...event });
+      }
+    });
+    
+    return results;
+  }
+
+  // Stats
+  async getProjectStats(projectId: number): Promise<{
+    characters: number;
+    locations: number;
+    events: number;
+    magicSystems: number;
+    loreEntries: number;
+    notes: number;
+  }> {
+    const [
+      charactersResult,
+      locationsResult,
+      eventsResult,
+      magicSystemsResult,
+      loreEntriesResult,
+      notesResult
+    ] = await Promise.all([
+      db.select().from(characters).where(eq(characters.projectId, projectId)),
+      db.select().from(locations).where(eq(locations.projectId, projectId)),
+      db.select().from(events).where(eq(events.projectId, projectId)),
+      db.select().from(magicSystems).where(eq(magicSystems.projectId, projectId)),
+      db.select().from(loreEntries).where(eq(loreEntries.projectId, projectId)),
+      db.select().from(notes).where(eq(notes.projectId, projectId))
+    ]);
+
+    return {
+      characters: charactersResult.length,
+      locations: locationsResult.length,
+      events: eventsResult.length,
+      magicSystems: magicSystemsResult.length,
+      loreEntries: loreEntriesResult.length,
+      notes: notesResult.length
+    };
+  }
+}
+
+export const storage = new DatabaseStorage();

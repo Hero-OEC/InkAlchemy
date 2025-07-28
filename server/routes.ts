@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./db-storage";
 import { uploadImage, handleImageUpload, handleImageUploadByUrl } from "./image-upload";
 import { 
   insertProjectSchema, insertCharacterSchema, insertLocationSchema, 
@@ -39,7 +39,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const project = await storage.createProject(data);
       res.status(201).json(project);
     } catch (error) {
-      res.status(400).json({ message: "Invalid project data" });
+      console.error("Project creation error:", error);
+      res.status(400).json({ 
+        message: "Invalid project data",
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
     }
   });
 
