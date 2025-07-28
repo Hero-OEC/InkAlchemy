@@ -182,9 +182,7 @@ export default function UserProfile() {
                 )}
               </div>
 
-              <p className="text-sm text-brand-600 text-center">
-                Use the Edit Profile button to update your profile image
-              </p>
+              
             </div>
 
             {/* Delete Account */}
