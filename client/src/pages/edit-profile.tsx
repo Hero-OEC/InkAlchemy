@@ -196,12 +196,12 @@ export default function EditProfile() {
               <h2 className="text-xl font-semibold text-brand-950 mb-6">Account Information</h2>
 
               {emailChangeMessage && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div className="bg-brand-100 border border-brand-300 rounded-lg p-4 mb-6">
                   <div className="flex items-start gap-3">
-                    <Mail className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <Mail className="w-5 h-5 text-brand-600 mt-0.5" />
                     <div>
-                      <h3 className="font-medium text-blue-900 mb-1">Email Change Confirmation Required</h3>
-                      <p className="text-blue-700 text-sm">{emailChangeMessage}</p>
+                      <h3 className="font-medium text-brand-900 mb-1">Email Change Confirmation Required</h3>
+                      <p className="text-brand-700 text-sm">{emailChangeMessage}</p>
                     </div>
                   </div>
                 </div>
