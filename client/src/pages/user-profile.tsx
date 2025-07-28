@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
@@ -97,7 +98,7 @@ export default function UserProfile() {
               <div className="w-20 h-20 bg-brand-500 rounded-full flex items-center justify-center">
                 <User className="w-10 h-10 text-white" />
               </div>
-              
+
               {/* Page Title */}
               <div>
                 <h1 className="text-3xl font-bold text-brand-950">User Profile</h1>
@@ -120,11 +121,11 @@ export default function UserProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Content (2/3) */}
           <div className="lg:col-span-2">
-            
+
             {/* Account Details */}
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
               <h2 className="text-xl font-semibold text-brand-950 mb-6">Account Details</h2>
-              
+
               <div className="space-y-6">
                 {/* Username Section */}
                 <div>
@@ -150,7 +151,7 @@ export default function UserProfile() {
                     <img src={fandomHeartLogo} alt="Fandom" className="w-5 h-auto object-contain" />
                     FandomWiki Integration
                   </h3>
-                  
+
                   <div className="bg-brand-100 border border-brand-200 rounded-lg p-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -162,7 +163,7 @@ export default function UserProfile() {
                       </Button>
                     </div>
                   </div>
-                  
+
                   <p className="text-xs text-brand-500 mt-2">Integration coming soon</p>
                 </div>
               </div>
@@ -171,11 +172,11 @@ export default function UserProfile() {
 
           {/* Right Column - Sidebar (1/3) */}
           <div className="space-y-6">
-            
+
             {/* Profile Image */}
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
               <h3 className="text-lg font-semibold text-brand-950 mb-4">Profile Image</h3>
-              
+
               {/* Current Image Display */}
               <div className="mb-4">
                 {getUserAvatarUrl() ? (
@@ -191,7 +192,7 @@ export default function UserProfile() {
                 )}
               </div>
 
-              
+
             </div>
 
             {/* Delete Account */}
@@ -200,11 +201,11 @@ export default function UserProfile() {
                 <Trash2 className="w-5 h-5 text-red-600" />
                 Delete Account
               </h3>
-              
+
               <p className="text-sm text-brand-700 mb-4">
                 This action cannot be undone. This will permanently delete your account and all associated data including projects, characters, locations, and all other content.
               </p>
-              
+
               <Button 
                 variant="danger"
                 onClick={() => setShowDeleteDialog(true)}
