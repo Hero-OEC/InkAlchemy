@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Book, Users, MapPin, Calendar, Sparkles, StickyNote, Home, Menu, X, User, Settings, LogOut } from "lucide-react";
 import { Button } from "./button-variations";
 import { useAuth } from "../contexts/auth-context";
+import { useLocation } from "wouter";
 import logoPath from "@assets/inkalchemy_1752303410066.png";
 
 export interface NavbarProps {
@@ -29,6 +30,7 @@ export function Navbar({
 }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [, setLocation] = useLocation();
   const { user, signOut } = useAuth();
 
   const handleNavigation = (pageId: string) => {
@@ -56,7 +58,7 @@ export function Navbar({
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={() => setLocation('/')}
             className="flex items-center gap-3 hover:opacity-80 transition-opacity text-left"
           >
             <img 
