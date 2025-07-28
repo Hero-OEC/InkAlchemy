@@ -195,9 +195,14 @@ export default function Welcome() {
 
   const deleteProjectMutation = useMutation({
     mutationFn: (projectId: number) => apiRequest(`/api/projects/${projectId}`, { method: 'DELETE' }),
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      console.log('Project deleted successfully:', variables);
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       setDeleteProject(null);
+    },
+    onError: (error) => {
+      console.error('Delete project error:', error);
+      // Keep the dialog open so user can try again
     },
   });
 

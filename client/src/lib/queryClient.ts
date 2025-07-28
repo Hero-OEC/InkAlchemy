@@ -22,6 +22,12 @@ export async function apiRequest(
   });
 
   await throwIfResNotOk(res);
+  
+  // For DELETE requests (204 No Content), don't try to parse JSON
+  if (res.status === 204 || res.headers.get('content-length') === '0') {
+    return {};
+  }
+  
   return await res.json();
 }
 
