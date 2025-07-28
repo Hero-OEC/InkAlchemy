@@ -680,15 +680,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User profile endpoints
+  // Simple in-memory storage for profile data (in production, use a database)
+  const userProfiles = new Map();
+
   app.get("/api/user/profile", async (req: AuthenticatedRequest, res) => {
     try {
-      // For development, return mock user data since we're using Supabase auth
+      const storedProfile = userProfiles.get(req.userId!) || {};
       const profile = {
         id: req.userId,
-        username: "User",
-        email: "user@example.com",
-        avatar_url: null
+        username: storedProfile.username || "User",
+        email: storedProfile.email || "user@example.com",
+        avatar_url: storedProfile.avatar_url || null
       };
       res.json(profile);
     } catch (error) {
@@ -721,8 +723,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const imageUrl = `/uploads/${req.file.filename}`;
       
-      // In a real implementation, this would update the user's profile in Supabase
-      // For now, we'll just return success
+      // Store the avatar URL for this user
+      const existingProfile = userProfiles.get(req.userId!) || {};
+      userProfiles.set(req.userId!, {
+        ...existingProfile,
+        avatar_url: imageUrl
+      });
+      
       res.json({ 
         message: "Profile image updated successfully",
         imageUrl: imageUrl

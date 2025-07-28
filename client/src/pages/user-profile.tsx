@@ -50,8 +50,17 @@ export default function UserProfile() {
            "User";
   };
 
+  const { data: profileData } = useQuery({
+    queryKey: ['/api/user/profile'],
+    queryFn: async () => {
+      const response = await fetch('/api/user/profile');
+      if (!response.ok) throw new Error('Failed to fetch profile');
+      return response.json();
+    },
+  });
+
   const getUserAvatarUrl = () => {
-    return user?.user_metadata?.avatar_url || null;
+    return profileData?.avatar_url || user?.user_metadata?.avatar_url || null;
   };
 
   if (!user) {

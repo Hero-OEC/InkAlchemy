@@ -3,6 +3,7 @@ import { Book, Users, MapPin, Calendar, Sparkles, StickyNote, Home, Menu, X, Use
 import { Button } from "./button-variations";
 import { useAuth } from "../contexts/auth-context";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import logoPath from "@assets/inkalchemy_1752303410066.png";
 
 export interface NavbarProps {
@@ -32,6 +33,16 @@ export function Navbar({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [, setLocation] = useLocation();
   const { user, signOut } = useAuth();
+
+  const { data: profileData } = useQuery({
+    queryKey: ['/api/user/profile'],
+    queryFn: async () => {
+      const response = await fetch('/api/user/profile');
+      if (!response.ok) throw new Error('Failed to fetch profile');
+      return response.json();
+    },
+    enabled: !!user,
+  });
 
   const handleNavigation = (pageId: string) => {
     onNavigate?.(pageId);
@@ -123,8 +134,16 @@ export function Navbar({
                 onMouseEnter={() => setIsUserMenuOpen(true)}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-brand-200 transition-colors"
               >
-                <div className="w-8 h-8 bg-brand-400 rounded-full flex items-center justify-center">
-                  <User size={16} className="text-white" />
+                <div className="w-8 h-8 bg-brand-400 rounded-full flex items-center justify-center overflow-hidden">
+                  {(profileData?.avatar_url || user?.user_metadata?.avatar_url) ? (
+                    <img 
+                      src={profileData?.avatar_url || user?.user_metadata?.avatar_url} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User size={16} className="text-white" />
+                  )}
                 </div>
                 <span className="text-sm font-medium text-brand-800 hidden sm:block">
                   {getUserDisplayName()}
