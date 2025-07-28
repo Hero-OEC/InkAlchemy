@@ -18,7 +18,7 @@ export function Skeleton({ className }: SkeletonProps) {
 // Project Card Skeleton - matches ContentCard structure
 export function ProjectCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl border border-brand-200 p-6 hover:shadow-lg transition-all duration-200">
+    <div className="bg-brand-100 rounded-xl border border-brand-200 p-6 hover:shadow-lg transition-all duration-200">
       {/* Header with icon and title */}
       <div className="flex items-start gap-4 mb-4">
         <div className="flex-shrink-0">
