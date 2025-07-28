@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Book, Users, MapPin, Calendar, Sparkles, StickyNote, Home, Menu, X, User, Settings, LogOut } from "lucide-react";
+import { Book, Users, MapPin, Calendar, Sparkles, StickyNote, Home, Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "./button-variations";
 import { useAuth } from "../contexts/auth-context";
 import { useLocation } from "wouter";
@@ -147,7 +147,7 @@ export function Navbar({
                       onClick={() => setIsUserMenuOpen(false)}
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-brand-700 hover:bg-brand-50 transition-colors"
                     >
-                      <Settings size={16} />
+                      <User size={16} />
                       Profile
                     </button>
                     
