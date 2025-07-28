@@ -148,7 +148,7 @@ export function Navbar({
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-brand-700 hover:bg-brand-50 transition-colors"
                     >
                       <Settings size={16} />
-                      Settings
+                      Profile
                     </button>
                     
                     <button
