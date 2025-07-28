@@ -150,9 +150,6 @@ export default function UserProfile() {
                   
                   <div className="bg-brand-100 border border-brand-200 rounded-lg p-4 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-brand-200 p-1">
-                        <FandomLogo size={24} className="text-red-500" />
-                      </div>
                       <div>
                         <h4 className="font-medium text-brand-900">Connect to FandomWiki</h4>
                         <p className="text-sm text-brand-600">Link your InkAlchemy account with FandomWiki to sync your world data</p>
