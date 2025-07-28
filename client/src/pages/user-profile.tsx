@@ -122,18 +122,25 @@ export default function UserProfile() {
           </Button>
         </div>
 
-        {/* Profile Header */}
+        {/* Character Header */}
         <div className="bg-brand-50 border border-brand-200 rounded-xl p-8 mb-8">
-          <div className="flex items-center gap-4">
-            {/* User Icon */}
-            <div className="w-16 h-16 bg-brand-500 rounded-full flex items-center justify-center">
-              <User className="w-8 h-8 text-white" />
-            </div>
-            
-            {/* User Info */}
-            <div>
-              <h1 className="text-3xl font-bold text-brand-950">User Profile</h1>
-              <p className="text-brand-600 mt-1">Manage your account settings and preferences</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {/* Profile Icon */}
+              <div className="w-20 h-20 bg-brand-500 rounded-full flex items-center justify-center">
+                <User className="w-10 h-10 text-white" />
+              </div>
+              
+              {/* User Info */}
+              <div>
+                <h1 className="text-3xl font-bold text-brand-950">{getUserDisplayName()}</h1>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-100 text-brand-700">
+                    <Mail className="w-3 h-3 mr-1" />
+                    {user.email}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -141,61 +148,57 @@ export default function UserProfile() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Content (2/3) */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2">
             
-            {/* Account Information */}
+            {/* Account Details */}
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <h2 className="text-xl font-semibold text-brand-950 mb-6">Account Information</h2>
+              <h2 className="text-xl font-semibold text-brand-950 mb-6">Account Details</h2>
               
-              <div className="space-y-4">
-                {/* Username */}
+              <div className="space-y-6">
+                {/* Username Section */}
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-brand-900 mb-2">
-                    <User className="w-4 h-4" />
+                  <h3 className="text-lg font-semibold text-brand-900 mb-3 flex items-center gap-2">
+                    <User className="w-5 h-5" />
                     Username
-                  </label>
-                  <div className="bg-brand-100 border border-brand-200 rounded-lg p-3">
-                    <p className="text-brand-700">{getUserDisplayName()}</p>
-                  </div>
+                  </h3>
+                  <p className="text-brand-700 leading-relaxed">{getUserDisplayName()}</p>
                 </div>
 
-                {/* Email */}
+                {/* Email Section */}
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-brand-900 mb-2">
-                    <Mail className="w-4 h-4" />
+                  <h3 className="text-lg font-semibold text-brand-900 mb-3 flex items-center gap-2">
+                    <Mail className="w-5 h-5" />
                     Email Address
-                  </label>
-                  <div className="bg-brand-100 border border-brand-200 rounded-lg p-3">
-                    <p className="text-brand-700">{user.email}</p>
+                  </h3>
+                  <p className="text-brand-700 leading-relaxed">{user.email}</p>
+                </div>
+
+                {/* FandomWiki Integration Section */}
+                <div>
+                  <h3 className="text-lg font-semibold text-brand-900 mb-3 flex items-center gap-2">
+                    <Link2 className="w-5 h-5" />
+                    FandomWiki Integration
+                  </h3>
+                  
+                  <div className="bg-brand-100 border border-brand-200 rounded-lg p-4 mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-brand-300 rounded-lg flex items-center justify-center">
+                        <ExternalLink className="w-5 h-5 text-brand-700" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-brand-900">Connect to FandomWiki</h4>
+                        <p className="text-sm text-brand-600">Link your InkAlchemy account with FandomWiki to sync your world data</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-center py-4">
+                    <p className="text-brand-600 mb-4">FandomWiki integration is coming soon!</p>
+                    <Button variant="outline" disabled>
+                      Connect Account
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* FandomWiki Connection */}
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-              <h2 className="text-xl font-semibold text-brand-950 mb-6 flex items-center gap-2">
-                <Link2 className="w-5 h-5" />
-                FandomWiki Integration
-              </h2>
-              
-              <div className="bg-brand-100 border border-brand-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-brand-300 rounded-lg flex items-center justify-center">
-                    <ExternalLink className="w-5 h-5 text-brand-700" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-brand-900">Connect to FandomWiki</h3>
-                    <p className="text-sm text-brand-600">Link your InkAlchemy account with FandomWiki to sync your world data</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-center py-6">
-                <p className="text-brand-600 mb-4">FandomWiki integration is coming soon!</p>
-                <Button variant="outline" disabled>
-                  Connect Account
-                </Button>
               </div>
             </div>
           </div>
