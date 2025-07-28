@@ -7,6 +7,7 @@ import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { useAuth } from "@/contexts/auth-context";
 import { apiRequest } from "@/lib/queryClient";
 import { User, Mail, Link2, Trash2, ArrowLeft, ExternalLink, Edit } from "lucide-react";
+import { FandomLogo } from "@/components/fandom-logo";
 
 export default function UserProfile() {
   const [, setLocation] = useLocation();
@@ -149,8 +150,8 @@ export default function UserProfile() {
                   
                   <div className="bg-brand-100 border border-brand-200 rounded-lg p-4 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-brand-300 rounded-lg flex items-center justify-center">
-                        <ExternalLink className="w-5 h-5 text-brand-700" />
+                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-brand-200 p-1">
+                        <FandomLogo size={8} className="text-gray-800" />
                       </div>
                       <div>
                         <h4 className="font-medium text-brand-900">Connect to FandomWiki</h4>

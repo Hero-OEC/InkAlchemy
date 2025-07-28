@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/auth-context";
 import { apiRequest } from "@/lib/queryClient";
 import { User, Mail, Upload, ArrowLeft, Save, X } from "lucide-react";
+import { FandomLogo } from "@/components/fandom-logo";
 
 const editProfileSchema = z.object({
   username: z.string().min(3).max(30),
