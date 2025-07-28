@@ -144,7 +144,10 @@ export function Navbar({
                     </div>
                     
                     <button
-                      onClick={() => setIsUserMenuOpen(false)}
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        setLocation("/profile");
+                      }}
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-brand-700 hover:bg-brand-50 transition-colors"
                     >
                       <User size={16} />

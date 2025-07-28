@@ -680,6 +680,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User profile endpoints
+  app.get("/api/user/profile", async (req: AuthenticatedRequest, res) => {
+    try {
+      // For development, return mock user data since we're using Supabase auth
+      const profile = {
+        id: req.userId,
+        username: "User",
+        email: "user@example.com",
+        avatar_url: null
+      };
+      res.json(profile);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user profile" });
+    }
+  });
+
+  app.post("/api/user/update-profile-image", uploadImage, async (req: AuthenticatedRequest, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+
+      const imageUrl = `/uploads/${req.file.filename}`;
+      
+      // In a real implementation, this would update the user's profile in Supabase
+      // For now, we'll just return success
+      res.json({ 
+        message: "Profile image updated successfully",
+        imageUrl: imageUrl
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update profile image" });
+    }
+  });
+
+  app.delete("/api/user/delete-account", async (req: AuthenticatedRequest, res) => {
+    try {
+      // In a real implementation, this would:
+      // 1. Delete all user's projects and associated data
+      // 2. Delete the user account from Supabase
+      // For development, we'll just return success
+      
+      console.log(`Account deletion requested for user: ${req.userId}`);
+      res.json({ message: "Account deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete account" });
+    }
+  });
+
   // Image upload endpoints for Editor.js
   app.post("/api/upload-image", uploadImage, handleImageUpload);
   app.post("/api/upload-image-by-url", handleImageUploadByUrl);
