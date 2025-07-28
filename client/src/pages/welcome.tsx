@@ -306,23 +306,23 @@ export default function Welcome() {
 
           {/* Edit Project Form */}
           {showEditForm && editingProject && (
-            <Card className="mb-8">
+            <Card className="mb-8 bg-brand-100 border-brand-200">
               <CardHeader>
-                <CardTitle>Edit Project</CardTitle>
+                <CardTitle className="text-brand-900">Edit Project</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleUpdateProject} className="space-y-4">
-                  <Input
-                    label="Project Name"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    placeholder="Enter your project name"
-                    required
-                  />
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-brand-900">Genre (Optional)</label>
-                    <div className="space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      label="Project Name"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      placeholder="e.g., The Chronicles of Mystara"
+                      required
+                    />
+                    <div>
                       <Select
+                        label="Genre"
                         value={editGenre}
                         onChange={setEditGenre}
                         placeholder="Select a genre for your story"
