@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseServiceKey);
+// Only create supabase client if credentials are available
+export const supabase = supabaseUrl && supabaseServiceKey ? 
+  createClient(supabaseUrl, supabaseServiceKey) : null;
 
 export interface AuthenticatedRequest extends Request {
   userId?: string;
@@ -12,6 +14,12 @@ export interface AuthenticatedRequest extends Request {
 
 export async function authenticateUser(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
+    // If Supabase is not configured, use development mode
+    if (!supabase) {
+      req.userId = '00000000-0000-0000-0000-000000000001';
+      return next();
+    }
+
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -36,6 +44,12 @@ export async function authenticateUser(req: AuthenticatedRequest, res: Response,
 
 // For development/testing - allows requests without auth
 export function optionalAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  // If Supabase is not configured, always use development mode
+  if (!supabase) {
+    req.userId = '00000000-0000-0000-0000-000000000001';
+    return next();
+  }
+
   const authHeader = req.headers.authorization;
   
   if (authHeader && authHeader.startsWith('Bearer ')) {
