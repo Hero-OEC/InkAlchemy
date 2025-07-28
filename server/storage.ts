@@ -143,6 +143,7 @@ export class MemStorage implements IStorage {
     // Create a default project
     const defaultProject: Project = {
       id: 1,
+      userId: 1, // Add required userId field
       name: "The Chronicles of Aethermoor",
       description: "A fantasy epic spanning multiple realms",
       genre: "fantasy",
@@ -151,6 +152,8 @@ export class MemStorage implements IStorage {
     };
     this.projects.set(1, defaultProject);
 
+    // Sample data removed to avoid schema conflicts - will be replaced with user data
+    /*
     // Add sample characters for the default project
     const defaultCharacters: Character[] = [
       {
@@ -242,9 +245,11 @@ export class MemStorage implements IStorage {
         updatedAt: new Date()
       }
     ];
+    */
 
-    defaultCharacters.forEach(char => this.characters.set(char.id, char));
-    defaultLocations.forEach(loc => this.locations.set(loc.id, loc));
+    // Sample data commented out due to schema mismatches
+    // defaultCharacters.forEach(char => this.characters.set(char.id, char));
+    // defaultLocations.forEach(loc => this.locations.set(loc.id, loc));
 
     // Add sample events for the default project
     const defaultEvents: Event[] = [
@@ -379,7 +384,8 @@ export class MemStorage implements IStorage {
       }
     ];
 
-    defaultEvents.forEach(event => this.events.set(event.id, event));
+    // Sample data commented out due to schema mismatches
+    // defaultEvents.forEach(event => this.events.set(event.id, event));
 
     // Add sample relationships to connect characters to events
     const defaultRelationships: Relationship[] = [
