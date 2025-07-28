@@ -150,20 +150,18 @@ export default function UserProfile() {
                   </h3>
                   
                   <div className="bg-brand-100 border border-brand-200 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium text-brand-900">Connect to FandomWiki</h4>
                         <p className="text-sm text-brand-600">Link your InkAlchemy account with FandomWiki to sync your world data</p>
                       </div>
-                    </div>
-                    
-                    <div className="text-center">
-                      <p className="text-brand-600 mb-4">FandomWiki integration is coming soon!</p>
                       <Button variant="outline" disabled>
                         Connect Account
                       </Button>
                     </div>
                   </div>
+                  
+                  <p className="text-xs text-brand-500 mt-2">Integration coming soon</p>
                 </div>
               </div>
             </div>
