@@ -158,7 +158,7 @@ export default function EditProfile() {
                 Cancel
               </Button>
               <Button 
-                variant="primary" 
+                variant="outline" 
                 onClick={form.handleSubmit(onSubmit)}
                 disabled={updateProfileMutation.isPending}
                 className="flex items-center gap-2"
