@@ -113,8 +113,8 @@ export function Navbar({
             </div>
           )}
 
-          {/* User Profile Section */}
-          {user && (
+          {/* User Profile Section - Only show on welcome screen */}
+          {user && !hasActiveProject && (
             <div className="relative">
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
