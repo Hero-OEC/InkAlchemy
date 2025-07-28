@@ -153,6 +153,12 @@ export default function Welcome() {
     },
     onSuccess: (newProject) => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      // Clear form and close it
+      setNewProjectName("");
+      setNewProjectGenre("");
+      setNewProjectDescription("");
+      setShowCreateForm(false);
+      // Navigate to the new project
       setLocation(`/projects/${newProject.id}/dashboard`);
     },
   });
@@ -165,10 +171,7 @@ export default function Welcome() {
         description: newProjectDescription || undefined,
         genre: newProjectGenre || undefined,
       });
-      setNewProjectName("");
-      setNewProjectGenre("");
-      setNewProjectDescription("");
-      setShowCreateForm(false);
+      // Don't close form immediately - let the mutation handle it
     }
   };
 
@@ -450,7 +453,7 @@ export default function Welcome() {
                   id={project.id}
                   title={project.name}
                   type="project"
-                  subtype="story"
+                  subtype={project.genre || "story"}
                   description={project.description || "No description provided"}
                   icon={Book}
                   createdAt={new Date(project.createdAt)}
