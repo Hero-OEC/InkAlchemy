@@ -23,7 +23,7 @@ export const userSessions = pgTable("user_sessions", {
 // Projects table for managing multiple story worlds
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(), // Add user ownership
+  userId: text("user_id").notNull(), // Supabase auth user UUID
   name: text("name").notNull(),
   description: text("description"),
   genre: text("genre"), // fantasy, sci-fi, horror, mystery, romance, historical, contemporary, etc.

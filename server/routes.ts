@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./db-storage";
 import { uploadImage, handleImageUpload, handleImageUploadByUrl } from "./image-upload";
+import { optionalAuth, type AuthenticatedRequest } from "./auth-middleware";
 import { 
   insertProjectSchema, insertCharacterSchema, insertLocationSchema, 
   insertEventSchema, insertMagicSystemSchema, insertSpellSchema, 
@@ -10,10 +11,15 @@ import {
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Apply optional auth to all API routes
+  app.use("/api", optionalAuth);
+
   // Projects
-  app.get("/api/projects", async (req, res) => {
+  app.get("/api/projects", async (req: AuthenticatedRequest, res) => {
     try {
       const projects = await storage.getProjects();
+      // Filter projects by user ID in a real app
+      // For now, return all projects for development
       res.json(projects);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch projects" });
@@ -33,10 +39,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/projects", async (req, res) => {
+  app.post("/api/projects", async (req: AuthenticatedRequest, res) => {
     try {
-      const data = insertProjectSchema.parse(req.body);
-      const project = await storage.createProject(data);
+      // Create a schema without userId for validation
+      const projectBodySchema = insertProjectSchema.omit({ userId: true });
+      const bodyData = projectBodySchema.parse(req.body);
+      const projectData = { ...bodyData, userId: req.userId! };
+      const project = await storage.createProject(projectData);
       res.status(201).json(project);
     } catch (error) {
       console.error("Project creation error:", error);
