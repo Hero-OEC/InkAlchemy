@@ -8,39 +8,24 @@ interface FandomLogoProps {
 export const FandomLogo: React.FC<FandomLogoProps> = ({ className = "", size = 24 }) => {
   return (
     <svg 
-      width={size * 4} 
-      height={size} 
-      viewBox="0 0 512 128" 
+      width={size} 
+      height={size * 1.39} 
+      viewBox="0 0 512 712" 
       className={className}
       fill="currentColor"
     >
-      {/* Official Fandom logo recreation based on public domain design */}
-      <g>
-        {/* F */}
-        <rect x="16" y="24" width="6" height="80"/>
-        <rect x="22" y="24" width="28" height="6"/>
-        <rect x="22" y="58" width="20" height="6"/>
-        
-        {/* A */}
-        <path d="M64 24 L76 24 L88 104 L82 104 L80 88 L60 88 L58 104 L52 104 L64 24 Z M62 82 L78 82 L70 44 L62 82 Z"/>
-        
-        {/* N */}
-        <rect x="104" y="24" width="6" height="80"/>
-        <rect x="128" y="24" width="6" height="80"/>
-        <path d="M110 24 L116 32 L122 88 L122 24 L128 24 L128 104 L122 104 L116 96 L110 40 L110 104 L104 104 L104 24 L110 24 Z"/>
-        
-        {/* D */}
-        <rect x="150" y="24" width="6" height="80"/>
-        <path d="M156 24 L176 24 Q186 24 186 34 L186 94 Q186 104 176 104 L156 104 L156 24 Z M162 30 L162 98 L174 98 Q180 98 180 94 L180 34 Q180 30 174 30 L162 30 Z"/>
-        
-        {/* O */}
-        <path d="M202 22 Q218 22 218 38 L218 90 Q218 106 202 106 Q186 106 186 90 L186 38 Q186 22 202 22 Z M192 38 Q192 28 202 28 Q212 28 212 38 L212 90 Q212 100 202 100 Q192 100 192 90 L192 38 Z"/>
-        
-        {/* M */}
-        <rect x="234" y="24" width="6" height="80"/>
-        <rect x="270" y="24" width="6" height="80"/>
-        <path d="M240 24 L246 32 L252 64 L258 32 L264 24 L270 24 L270 104 L264 104 L264 44 L258 76 L246 76 L240 44 L240 104 L234 104 L234 24 L240 24 Z"/>
-      </g>
+      {/* Fandom heart/flame logo - recreated based on official design */}
+      <path d="M256 712L256 632C256 632 80 496 80 320C80 213.33 165.33 128 272 128C298.67 128 325.33 138.67 352 160C378.67 138.67 405.33 128 432 128C538.67 128 624 213.33 624 320C624 496 448 632 448 632L448 712C448 712 352 656 256 712Z" transform="scale(0.8, 1)" transform-origin="256 420"/>
+      
+      {/* Inner flame */}
+      <path d="M256 600L256 580C256 580 120 480 120 350C120 270 184 204 264 204C282 204 300 210 320 224C340 210 358 204 376 204C456 204 520 270 520 350C520 480 384 580 384 580L384 600C384 600 320 570 256 600Z" 
+            transform="scale(0.8, 1)" transform-origin="256 400" 
+            opacity="0.6"/>
+      
+      {/* Top flame detail */}
+      <path d="M256 500C256 500 160 420 160 340C160 290 200 250 250 250C265 250 280 255 295 265C310 255 325 250 340 250C390 250 430 290 430 340C430 420 334 500 256 500Z" 
+            transform="scale(0.8, 1)" transform-origin="256 375" 
+            opacity="0.3"/>
     </svg>
   );
 };
