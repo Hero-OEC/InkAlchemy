@@ -81,7 +81,7 @@ export default function UserProfile() {
         </div>
 
         {/* Page Header */}
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-8 mb-8">
+        <div className="bg-brand-50 rounded-xl p-8 mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/* Profile Icon */}
