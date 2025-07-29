@@ -790,14 +790,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/user/delete-account", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
-      // In a real implementation, this would:
-      // 1. Delete all user's projects and associated data
-      // 2. Delete the user account from Supabase
-      // For development, we'll just return success
-      
       console.log(`Account deletion requested for user: ${req.userId}`);
+      
+      // 1. Delete from local profile storage
+      userProfiles.delete(req.userId!);
+      
+      // 2. Delete the user account from Supabase using admin API
+      if (supabase && req.userId !== '00000000-0000-0000-0000-000000000001') {
+        try {
+          const { error } = await supabase.auth.admin.deleteUser(req.userId!);
+          if (error) {
+            console.error('Failed to delete user from Supabase:', error);
+            return res.status(500).json({ message: "Failed to delete account from authentication service" });
+          }
+          console.log(`Successfully deleted user from Supabase: ${req.userId}`);
+        } catch (supabaseError) {
+          console.error('Supabase deletion error:', supabaseError);
+          return res.status(500).json({ message: "Failed to delete account from authentication service" });
+        }
+      }
+      
       res.json({ message: "Account deleted successfully" });
     } catch (error) {
+      console.error("Account deletion error:", error);
       res.status(500).json({ message: "Failed to delete account" });
     }
   });

@@ -578,6 +578,9 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Authentication system now requires real Supabase session tokens and rejects invalid/mock tokens
 - Profile data now properly fetches from authenticated user's Supabase account (display_name: Centina1)
 - Application successfully transitioned from development mock users to production-ready authentication
+- Fixed account deletion to properly remove users from Supabase using admin API with service role key
+- Removed page reload from username updates and restored proper navigation flow
+- Enhanced error handling for account deletion with proper Supabase integration
 
 ### January 2025 - User Profile Page Implementation
 - Created comprehensive user profile page with two-column layout matching character details design
