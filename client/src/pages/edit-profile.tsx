@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -65,14 +65,14 @@ export default function EditProfile() {
   });
 
   // Update form values when profileData changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (profileData) {
       form.reset({
         username: profileData.username || getUserDisplayName(),
         email: profileData.email || user?.email || '',
       });
     }
-  }, [profileData, user, form]);
+  }, [profileData, user]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: EditProfileData) => {
