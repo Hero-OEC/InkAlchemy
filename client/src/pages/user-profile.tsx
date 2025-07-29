@@ -45,7 +45,7 @@ export default function UserProfile() {
   const getUserDisplayName = () => {
     if (!user) return "User";
     // Prioritize profile data from our API, then fallback to Supabase metadata
-    return profileData?.username || 
+    return (profileData as any)?.username || 
            user.user_metadata?.username || 
            user.user_metadata?.display_name || 
            user.user_metadata?.full_name || 
@@ -53,17 +53,13 @@ export default function UserProfile() {
            "User";
   };
 
-  const { data: profileData } = useQuery({
+  const { data: profileData, refetch: refetchProfile } = useQuery({
     queryKey: ['/api/user/profile'],
-    queryFn: async () => {
-      const response = await fetch('/api/user/profile');
-      if (!response.ok) throw new Error('Failed to fetch profile');
-      return response.json();
-    },
+    staleTime: 0, // Always fetch fresh profile data
   });
 
   const getUserAvatarUrl = () => {
-    return profileData?.avatar_url || user?.user_metadata?.avatar_url || null;
+    return (profileData as any)?.avatar_url || user?.user_metadata?.avatar_url || null;
   };
 
   if (!user) {

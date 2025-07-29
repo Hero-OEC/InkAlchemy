@@ -35,7 +35,7 @@ export default function EditProfile() {
   const getUserDisplayName = () => {
     if (!user) return "User";
     // Prioritize profile data from our API, then fallback to Supabase metadata
-    return profileData?.username || 
+    return (profileData as any)?.username || 
            user.user_metadata?.username || 
            user.user_metadata?.display_name || 
            user.user_metadata?.full_name || 
@@ -45,22 +45,18 @@ export default function EditProfile() {
 
   const { data: profileData } = useQuery({
     queryKey: ['/api/user/profile'],
-    queryFn: async () => {
-      const response = await fetch('/api/user/profile');
-      if (!response.ok) throw new Error('Failed to fetch profile');
-      return response.json();
-    },
+    staleTime: 0, // Always fetch fresh profile data
   });
 
   const getUserAvatarUrl = () => {
-    return profileData?.avatar_url || user?.user_metadata?.avatar_url || null;
+    return (profileData as any)?.avatar_url || user?.user_metadata?.avatar_url || null;
   };
 
   const form = useForm<EditProfileData>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
-      username: profileData?.username || getUserDisplayName(),
-      email: profileData?.email || user?.email || '',
+      username: (profileData as any)?.username || getUserDisplayName(),
+      email: (profileData as any)?.email || user?.email || '',
     },
   });
 
@@ -68,8 +64,8 @@ export default function EditProfile() {
   useEffect(() => {
     if (profileData) {
       form.reset({
-        username: profileData.username || getUserDisplayName(),
-        email: profileData.email || user?.email || '',
+        username: (profileData as any).username || getUserDisplayName(),
+        email: (profileData as any).email || user?.email || '',
       });
     }
   }, [profileData, user]);
@@ -97,9 +93,8 @@ export default function EditProfile() {
     onSuccess: () => {
       // Invalidate profile cache to refresh the display
       queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
-      if (!emailChangeMessage) {
-        setLocation('/profile');
-      }
+      // Force refresh the user session to get updated metadata
+      window.location.reload();
     },
   });
 
