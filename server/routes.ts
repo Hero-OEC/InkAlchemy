@@ -722,6 +722,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const storedProfile = userProfiles.get(req.userId!) || {};
       console.log(`Profile fetch for user: ${req.userId}`, storedProfile, supabaseUser ? 'with Supabase data' : 'no Supabase data');
+      console.log('Supabase user metadata:', supabaseUser?.user_metadata);
       
       // Use the stored avatar URL directly since bucket is now public
       let avatarUrl = storedProfile.avatar_url || supabaseUser?.user_metadata?.avatar_url || null;
@@ -736,6 +737,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: storedProfile.email || supabaseUser?.email || "user@example.com",
         avatar_url: avatarUrl
       };
+      console.log('Returning profile:', profile);
       res.json(profile);
     } catch (error) {
       console.error('Profile fetch error:', error);
