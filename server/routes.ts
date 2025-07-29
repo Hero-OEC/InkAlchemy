@@ -719,6 +719,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const storedProfile = userProfiles.get(req.userId!) || {};
       console.log(`Profile fetch for user: ${req.userId}`, storedProfile, supabaseUser ? 'with Supabase data' : 'no Supabase data');
       
+      // Handle avatar URL - generate signed URL if it's a Supabase storage URL
+      let avatarUrl = storedProfile.avatar_url || supabaseUser?.user_metadata?.avatar_url || null;
+      
+      if (avatarUrl && avatarUrl.includes('supabase.co/storage') && supabase) {
+        try {
+          // Extract the file path from the Supabase URL
+          const urlParts = avatarUrl.split('/storage/v1/object/public/profile-images/');
+          if (urlParts.length > 1) {
+            const filePath = urlParts[1];
+            // Generate a fresh signed URL (24 hours expiry)
+            const { data: signedUrlData, error: signedError } = await supabase.storage
+              .from('profile-images')
+              .createSignedUrl(filePath, 86400); // 24 hours
+              
+            if (!signedError && signedUrlData?.signedUrl) {
+              avatarUrl = signedUrlData.signedUrl;
+            }
+          }
+        } catch (error) {
+          console.error('Error generating signed URL for profile image:', error);
+        }
+      }
+      
       const profile = {
         id: req.userId,
         username: storedProfile.username || 
@@ -727,7 +750,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                  supabaseUser?.user_metadata?.full_name || 
                  (supabaseUser?.email ? supabaseUser.email.split('@')[0] : "User"),
         email: storedProfile.email || supabaseUser?.email || "user@example.com",
-        avatar_url: storedProfile.avatar_url || supabaseUser?.user_metadata?.avatar_url || null
+        avatar_url: avatarUrl
       };
       res.json(profile);
     } catch (error) {
