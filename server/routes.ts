@@ -804,7 +804,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (error) {
             console.error('Supabase storage upload error:', error);
           } else {
-            // Get public URL
+            // Try public URL first, if that fails, try signed URL
             const { data: publicUrlData } = supabase.storage
               .from('profile-images')
               .getPublicUrl(fileName);
@@ -812,6 +812,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
             if (publicUrlData.publicUrl) {
               imageUrl = publicUrlData.publicUrl;
               console.log(`Image uploaded to Supabase: ${imageUrl}`);
+            } else {
+              // If public URL doesn't work, try creating a signed URL (1 year expiry)
+              const { data: signedUrlData, error: signedError } = await supabase.storage
+                .from('profile-images')
+                .createSignedUrl(fileName, 31536000); // 1 year in seconds
+              
+              if (signedError) {
+                console.error('Supabase signed URL error:', signedError);
+              } else if (signedUrlData.signedUrl) {
+                imageUrl = signedUrlData.signedUrl;
+                console.log(`Image uploaded to Supabase with signed URL: ${imageUrl}`);
+              }
             }
           }
         } catch (storageError) {
