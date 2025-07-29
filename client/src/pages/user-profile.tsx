@@ -44,7 +44,9 @@ export default function UserProfile() {
 
   const getUserDisplayName = () => {
     if (!user) return "User";
-    return user.user_metadata?.username || 
+    // Prioritize profile data from our API, then fallback to Supabase metadata
+    return profileData?.username || 
+           user.user_metadata?.username || 
            user.user_metadata?.display_name || 
            user.user_metadata?.full_name || 
            user.email?.split('@')[0] || 

@@ -33,11 +33,14 @@ export default function EditProfile() {
   document.title = "Edit Profile | InkAlchemy";
 
   const getUserDisplayName = () => {
-    if (user?.user_metadata?.username) return user.user_metadata.username;
-    if (user?.user_metadata?.display_name) return user.user_metadata.display_name;
-    if (user?.user_metadata?.full_name) return user.user_metadata.full_name;
-    if (user?.email) return user.email.split('@')[0];
-    return 'User';
+    if (!user) return "User";
+    // Prioritize profile data from our API, then fallback to Supabase metadata
+    return profileData?.username || 
+           user.user_metadata?.username || 
+           user.user_metadata?.display_name || 
+           user.user_metadata?.full_name || 
+           user.email?.split('@')[0] || 
+           "User";
   };
 
   const { data: profileData } = useQuery({
@@ -56,10 +59,20 @@ export default function EditProfile() {
   const form = useForm<EditProfileData>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
-      username: getUserDisplayName(),
-      email: user?.email || '',
+      username: profileData?.username || getUserDisplayName(),
+      email: profileData?.email || user?.email || '',
     },
   });
+
+  // Update form values when profileData changes
+  React.useEffect(() => {
+    if (profileData) {
+      form.reset({
+        username: profileData.username || getUserDisplayName(),
+        email: profileData.email || user?.email || '',
+      });
+    }
+  }, [profileData, user, form]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: EditProfileData) => {
