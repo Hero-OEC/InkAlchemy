@@ -73,7 +73,19 @@ export default function EditProfile() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: EditProfileData) => {
-      // Handle email change separately if it's different
+      // 1. Handle image upload first if there's a selected image
+      if (selectedImage) {
+        const formData = new FormData();
+        formData.append('image', selectedImage);
+
+        const response = await fetch('/api/user/update-profile-image', {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) throw new Error('Failed to upload image');
+      }
+
+      // 2. Handle email change separately if it's different
       const currentEmail = user?.email;
       if (data.email !== currentEmail) {
         const { error } = await updateEmail(data.email);
@@ -85,35 +97,22 @@ export default function EditProfile() {
         );
       }
 
-      // Update other profile data using apiRequest to include auth headers
+      // 3. Update other profile data using apiRequest to include auth headers
       return await apiRequest('/api/user/update-profile', {
         method: 'PATCH',
         body: JSON.stringify({ username: data.username }),
       });
     },
     onSuccess: () => {
+      // Clear selected image and preview after successful upload
+      setSelectedImage(null);
+      setPreviewUrl(null);
+      
       // Invalidate profile cache to refresh the display
       queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
       if (!emailChangeMessage) {
         setLocation('/profile');
       }
-    },
-  });
-
-  const uploadImageMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append('image', file);
-
-      const response = await fetch('/api/user/update-profile-image', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) throw new Error('Failed to upload image');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
     },
   });
 
@@ -123,14 +122,6 @@ export default function EditProfile() {
       setSelectedImage(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
-    }
-  };
-
-  const handleImageUpload = async () => {
-    if (selectedImage) {
-      await uploadImageMutation.mutateAsync(selectedImage);
-      setSelectedImage(null);
-      setPreviewUrl(null);
     }
   };
 
@@ -196,7 +187,10 @@ export default function EditProfile() {
                 className="flex items-center gap-2"
               >
                 <Save className="w-4 h-4" />
-                {updateProfileMutation.isPending ? 'Saving...' : 'Save Changes'}
+                {updateProfileMutation.isPending 
+                  ? (selectedImage ? 'Uploading & Saving...' : 'Saving...') 
+                  : (selectedImage ? 'Upload & Save Changes' : 'Save Changes')
+                }
               </Button>
             </div>
           </div>
@@ -310,19 +304,13 @@ export default function EditProfile() {
                   className="w-full flex items-center gap-2"
                 >
                   <Upload className="w-4 h-4" />
-                  Choose File
+                  Choose Image
                 </Button>
 
                 {selectedImage && (
-                  <Button 
-                    variant="outline"
-                    onClick={handleImageUpload}
-                    disabled={uploadImageMutation.isPending}
-                    className="w-full flex items-center gap-2"
-                  >
-                    <Upload className="w-4 h-4" />
-                    {uploadImageMutation.isPending ? "Uploading..." : "Upload Image"}
-                  </Button>
+                  <p className="text-sm text-brand-600 text-center">
+                    Image selected. Click "Save Changes" to upload and save.
+                  </p>
                 )}
               </div>
             </div>
