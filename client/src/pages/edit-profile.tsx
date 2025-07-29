@@ -94,8 +94,9 @@ export default function EditProfile() {
     onSuccess: () => {
       // Invalidate profile cache to refresh the display
       queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
-      // Force refresh the user session to get updated metadata
-      window.location.reload();
+      if (!emailChangeMessage) {
+        setLocation('/profile');
+      }
     },
   });
 

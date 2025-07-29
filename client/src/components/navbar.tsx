@@ -133,9 +133,9 @@ export function Navbar({
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-brand-200 transition-colors"
               >
                 <div className="w-8 h-8 bg-brand-400 rounded-full flex items-center justify-center overflow-hidden">
-                  {(profileData?.avatar_url || user?.user_metadata?.avatar_url) ? (
+                  {((profileData as any)?.avatar_url || user?.user_metadata?.avatar_url) ? (
                     <img 
-                      src={profileData?.avatar_url || user?.user_metadata?.avatar_url} 
+                      src={(profileData as any)?.avatar_url || user?.user_metadata?.avatar_url} 
                       alt="Profile" 
                       className="w-full h-full object-cover"
                     />
