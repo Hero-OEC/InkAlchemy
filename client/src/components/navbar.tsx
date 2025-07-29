@@ -151,7 +151,7 @@ export function Navbar({
               {/* User Dropdown Menu */}
               {isUserMenuOpen && (
                 <div 
-                  className="absolute right-0 top-full mt-1 w-48 bg-white border border-brand-200 rounded-lg shadow-lg z-50"
+                  className="absolute right-0 top-full mt-1 w-48 bg-brand-50 border border-brand-200 rounded-lg shadow-lg z-50"
                   onMouseLeave={() => setIsUserMenuOpen(false)}
                 >
                   <div className="py-1">
