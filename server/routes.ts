@@ -764,13 +764,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/user/update-profile-image", uploadImage, async (req: AuthenticatedRequest, res) => {
+  app.post("/api/user/update-profile-image", authenticateUser, uploadImage, async (req: AuthenticatedRequest, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No image file provided" });
       }
 
-      const imageUrl = `/uploads/${req.file.filename}`;
+      let imageUrl = `/uploads/${req.file.filename}`;
+      
+      // Upload to Supabase Storage if available
+      if (supabase) {
+        try {
+          const fileName = `profile-images/${req.userId}/${Date.now()}-${req.file.originalname}`;
+          const { data, error } = await supabase.storage
+            .from('images')
+            .upload(fileName, req.file.buffer, {
+              contentType: req.file.mimetype,
+              upsert: true
+            });
+
+          if (error) {
+            console.error('Supabase storage upload error:', error);
+          } else {
+            // Get public URL
+            const { data: publicUrlData } = supabase.storage
+              .from('images')
+              .getPublicUrl(fileName);
+            
+            if (publicUrlData.publicUrl) {
+              imageUrl = publicUrlData.publicUrl;
+              console.log(`Image uploaded to Supabase: ${imageUrl}`);
+            }
+          }
+        } catch (storageError) {
+          console.error('Storage error:', storageError);
+          // Continue with local storage as fallback
+        }
+      }
       
       // Store the avatar URL for this user
       const existingProfile = userProfiles.get(req.userId!) || {};
@@ -784,6 +814,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         imageUrl: imageUrl
       });
     } catch (error) {
+      console.error('Profile image update error:', error);
       res.status(500).json({ message: "Failed to update profile image" });
     }
   });

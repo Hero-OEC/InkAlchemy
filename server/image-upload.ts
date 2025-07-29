@@ -9,16 +9,8 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// Configure multer for file uploads (memory storage for Supabase uploads)
+const storage = multer.memoryStorage();
 
 const upload = multer({ 
   storage,
@@ -40,22 +32,63 @@ const upload = multer({
 
 export const uploadImage = upload.single('image');
 
-export const handleImageUpload = (req: Request, res: Response) => {
-  if (!req.file) {
-    return res.status(400).json({
+export const handleImageUpload = async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: 0,
+        message: 'No file uploaded'
+      });
+    }
+
+    // Generate fallback filename for local storage
+    const fallbackFilename = `${Date.now()}-${req.file.originalname}`;
+    let fileUrl = `/uploads/${fallbackFilename}`;
+    
+    // Upload to Supabase Storage if available
+    const { supabase } = await import('./auth-middleware');
+    if (supabase) {
+      try {
+        const fileName = `editor-images/${Date.now()}-${req.file.originalname}`;
+        const { data, error } = await supabase.storage
+          .from('images')
+          .upload(fileName, req.file.buffer, {
+            contentType: req.file.mimetype,
+            upsert: true
+          });
+
+        if (error) {
+          console.error('Supabase storage upload error:', error);
+        } else {
+          // Get public URL
+          const { data: publicUrlData } = supabase.storage
+            .from('images')
+            .getPublicUrl(fileName);
+          
+          if (publicUrlData.publicUrl) {
+            fileUrl = publicUrlData.publicUrl;
+            console.log(`Editor image uploaded to Supabase: ${fileUrl}`);
+          }
+        }
+      } catch (storageError) {
+        console.error('Storage error:', storageError);
+        // Continue with local storage as fallback
+      }
+    }
+    
+    res.json({
+      success: 1,
+      file: {
+        url: fileUrl
+      }
+    });
+  } catch (error) {
+    console.error('Image upload error:', error);
+    res.status(500).json({
       success: 0,
-      message: 'No file uploaded'
+      message: 'Failed to upload image'
     });
   }
-
-  const fileUrl = `/uploads/${req.file.filename}`;
-  
-  res.json({
-    success: 1,
-    file: {
-      url: fileUrl
-    }
-  });
 };
 
 export const handleImageUploadByUrl = async (req: Request, res: Response) => {
