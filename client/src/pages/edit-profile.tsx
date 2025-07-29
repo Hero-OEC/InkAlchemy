@@ -151,7 +151,7 @@ export default function EditProfile() {
         projectName=""
       />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -166,7 +166,7 @@ export default function EditProfile() {
         </div>
 
         {/* Profile Header */}
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-8 mb-8">
+        <div className="bg-brand-50 rounded-xl p-8 mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/* Profile Icon */}
