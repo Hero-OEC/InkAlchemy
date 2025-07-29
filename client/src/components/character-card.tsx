@@ -79,10 +79,39 @@ export function CharacterCard({
   const config = CHARACTER_TYPE_CONFIG[type] || CHARACTER_TYPE_CONFIG.supporting;
   const Icon = config.icon;
   
-  // Truncate description to about 80 characters
-  const truncatedDescription = description.length > 80 
-    ? description.substring(0, 80) + "..."
-    : description;
+  // Extract text from Editor.js JSON or use as plain text
+  const getDescriptionText = (desc: string) => {
+    try {
+      // Try to parse as Editor.js JSON
+      const parsedData = JSON.parse(desc);
+      if (parsedData.blocks && Array.isArray(parsedData.blocks)) {
+        // Extract text from all blocks and join them
+        const textContent = parsedData.blocks
+          .map((block: any) => {
+            if (block.type === 'paragraph' && block.data?.text) {
+              // Remove HTML tags from paragraph text
+              return block.data.text.replace(/<[^>]*>/g, '');
+            }
+            if (block.type === 'header' && block.data?.text) {
+              return block.data.text.replace(/<[^>]*>/g, '');
+            }
+            return '';
+          })
+          .filter(Boolean)
+          .join(' ');
+        return textContent || 'No description available';
+      }
+    } catch {
+      // If parsing fails, treat as plain text
+      return desc || 'No description available';
+    }
+    return desc || 'No description available';
+  };
+
+  const fullDescription = getDescriptionText(description);
+  const truncatedDescription = fullDescription.length > 80 
+    ? fullDescription.substring(0, 80) + "..."
+    : fullDescription;
 
   // Format full name with prefix and suffix
   const fullName = [prefix, name, suffix].filter(Boolean).join(" ");
