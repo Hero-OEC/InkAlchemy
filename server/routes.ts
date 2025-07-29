@@ -15,23 +15,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api", optionalAuth);
 
   // Projects
-  app.get("/api/projects", async (req: AuthenticatedRequest, res) => {
+  app.get("/api/projects", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projects = await storage.getProjects();
-      // Filter projects by user ID in a real app
-      // For now, return all projects for development
-      res.json(projects);
+      // Filter projects by authenticated user ID
+      const userProjects = projects.filter(project => project.userId === req.userId);
+      res.json(userProjects);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch projects" });
     }
   });
 
-  app.get("/api/projects/:id", async (req, res) => {
+  app.get("/api/projects/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const project = await storage.getProject(id);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
+      }
+      // Ensure user can only access their own projects
+      if (project.userId !== req.userId) {
+        return res.status(403).json({ message: "Access denied" });
       }
       res.json(project);
     } catch (error) {
@@ -39,7 +43,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/projects", async (req: AuthenticatedRequest, res) => {
+  app.post("/api/projects", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       // Create a schema without userId for validation
       const projectBodySchema = insertProjectSchema.omit({ userId: true });
@@ -56,27 +60,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/projects/:id", async (req, res) => {
+  app.patch("/api/projects/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
-      const data = insertProjectSchema.partial().parse(req.body);
-      const project = await storage.updateProject(id, data);
+      const project = await storage.getProject(id);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
       }
-      res.json(project);
+      // Ensure user can only update their own projects
+      if (project.userId !== req.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      const data = insertProjectSchema.partial().parse(req.body);
+      const updatedProject = await storage.updateProject(id, data);
+      res.json(updatedProject);
     } catch (error) {
       res.status(400).json({ message: "Invalid project data" });
     }
   });
 
-  app.delete("/api/projects/:id", async (req, res) => {
+  app.delete("/api/projects/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await storage.deleteProject(id);
-      if (!deleted) {
+      const project = await storage.getProject(id);
+      if (!project) {
         return res.status(404).json({ message: "Project not found" });
       }
+      // Ensure user can only delete their own projects
+      if (project.userId !== req.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      const deleted = await storage.deleteProject(id);
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete project" });
@@ -84,9 +98,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Characters
-  app.get("/api/projects/:projectId/characters", async (req, res) => {
+  app.get("/api/projects/:projectId/characters", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      const project = await storage.getProject(projectId);
+      if (!project || project.userId !== req.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const characters = await storage.getCharacters(projectId);
       res.json(characters);
     } catch (error) {
@@ -823,10 +841,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log(`Account deletion requested for user: ${req.userId}`);
       
-      // 1. Delete from local profile storage
+      // 1. Delete all user's projects and associated data
+      const userProjects = await storage.getProjects();
+      const projectsToDelete = userProjects.filter(project => project.userId === req.userId);
+      
+      for (const project of projectsToDelete) {
+        console.log(`Deleting project ${project.id} for user ${req.userId}`);
+        await storage.deleteProject(project.id);
+        
+        // TODO: Delete associated images from Supabase Storage buckets
+        // This would include character images, profile images, and content images
+        // for this specific user's projects
+      }
+      
+      // 2. Delete from local profile storage
       userProfiles.delete(req.userId!);
       
-      // 2. Delete the user account from Supabase using admin API
+      // 3. Delete the user account from Supabase using admin API
       if (supabase && req.userId !== '00000000-0000-0000-0000-000000000001') {
         try {
           const { error } = await supabase.auth.admin.deleteUser(req.userId!);
