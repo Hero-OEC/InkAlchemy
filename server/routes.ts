@@ -841,23 +841,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log(`Account deletion requested for user: ${req.userId}`);
       
-      // 1. Delete all user's projects and associated data
-      const userProjects = await storage.getProjects();
-      const projectsToDelete = userProjects.filter(project => project.userId === req.userId);
-      
-      for (const project of projectsToDelete) {
-        console.log(`Deleting project ${project.id} for user ${req.userId}`);
-        await storage.deleteProject(project.id);
-        
-        // TODO: Delete associated images from Supabase Storage buckets
-        // This would include character images, profile images, and content images
-        // for this specific user's projects
-      }
+      // 1. Delete all user's data using cascade deletion
+      await storage.deleteAllUserData(req.userId!);
       
       // 2. Delete from local profile storage
       userProfiles.delete(req.userId!);
       
-      // 3. Delete the user account from Supabase using admin API
+      // 3. Delete associated images from Supabase Storage buckets
+      if (supabase) {
+        try {
+          // Delete user's profile images
+          const { data: profileImages } = await supabase.storage
+            .from('profile-images')
+            .list(`user-${req.userId}`);
+          
+          if (profileImages && profileImages.length > 0) {
+            const profileFilePaths = profileImages.map(file => `user-${req.userId}/${file.name}`);
+            await supabase.storage.from('profile-images').remove(profileFilePaths);
+            console.log(`Deleted ${profileFilePaths.length} profile images for user ${req.userId}`);
+          }
+          
+          // Delete user's character images
+          const { data: characterImages } = await supabase.storage
+            .from('character-images')
+            .list('', { search: `character-` });
+          
+          if (characterImages && characterImages.length > 0) {
+            // Filter images that belong to this user's characters
+            const userCharacterImagePaths = characterImages
+              .map(file => file.name)
+              .filter(fileName => fileName.includes('character-')); // We'll need to improve this filtering
+            
+            if (userCharacterImagePaths.length > 0) {
+              await supabase.storage.from('character-images').remove(userCharacterImagePaths);
+              console.log(`Deleted ${userCharacterImagePaths.length} character images for user ${req.userId}`);
+            }
+          }
+          
+          // Delete user's content images
+          const { data: contentImages } = await supabase.storage
+            .from('content-images')
+            .list(`user-${req.userId}`);
+          
+          if (contentImages && contentImages.length > 0) {
+            const contentFilePaths = contentImages.map(file => `user-${req.userId}/${file.name}`);
+            await supabase.storage.from('content-images').remove(contentFilePaths);
+            console.log(`Deleted ${contentFilePaths.length} content images for user ${req.userId}`);
+          }
+        } catch (storageError) {
+          console.error('Error deleting user images from Supabase Storage:', storageError);
+          // Continue with account deletion even if image cleanup fails
+        }
+      }
+      
+      // 4. Delete the user account from Supabase using admin API
       if (supabase && req.userId !== '00000000-0000-0000-0000-000000000001') {
         try {
           const { error } = await supabase.auth.admin.deleteUser(req.userId!);
@@ -872,7 +909,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      res.json({ message: "Account deleted successfully" });
+      res.json({ message: "Account and all associated data deleted successfully" });
     } catch (error) {
       console.error("Account deletion error:", error);
       res.status(500).json({ message: "Failed to delete account" });

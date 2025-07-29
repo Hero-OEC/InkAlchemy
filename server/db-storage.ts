@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { 
   projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, eventCharacters, races,
   type Project, type InsertProject,
@@ -42,8 +42,44 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteProject(id: number): Promise<boolean> {
-    const result = await db.delete(projects).where(eq(projects.id, id)).returning();
-    return result.length > 0;
+    try {
+      // Delete all project-related data in the correct order (respecting foreign key constraints)
+      
+      // 1. Get all characters for this project first
+      const projectCharacters = await db.select({ id: characters.id }).from(characters).where(eq(characters.projectId, id));
+      const characterIds = projectCharacters.map(c => c.id);
+      
+      // Get all events for this project  
+      const projectEvents = await db.select({ id: events.id }).from(events).where(eq(events.projectId, id));
+      const eventIds = projectEvents.map(e => e.id);
+      
+      // 2. Delete junction table records that reference characters/events
+      if (characterIds.length > 0) {
+        await db.delete(characterSpells).where(inArray(characterSpells.characterId, characterIds));
+      }
+      
+      if (eventIds.length > 0) {
+        await db.delete(eventCharacters).where(inArray(eventCharacters.eventId, eventIds));
+      }
+      
+      // 3. Delete all main entities that reference the project
+      await db.delete(spells).where(eq(spells.projectId, id));
+      await db.delete(relationships).where(eq(relationships.projectId, id));
+      await db.delete(characters).where(eq(characters.projectId, id));
+      await db.delete(events).where(eq(events.projectId, id));
+      await db.delete(magicSystems).where(eq(magicSystems.projectId, id));
+      await db.delete(locations).where(eq(locations.projectId, id));
+      await db.delete(loreEntries).where(eq(loreEntries.projectId, id));
+      await db.delete(notes).where(eq(notes.projectId, id));
+      await db.delete(races).where(eq(races.projectId, id));
+      
+      // 4. Finally delete the project itself
+      const result = await db.delete(projects).where(eq(projects.id, id)).returning();
+      return result.length > 0;
+    } catch (error) {
+      console.error('Error deleting project and related data:', error);
+      throw error;
+    }
   }
 
   // Characters
@@ -450,6 +486,29 @@ export class DatabaseStorage implements IStorage {
       loreEntries: loreEntriesResult.length,
       notes: notesResult.length
     };
+  }
+
+  // User data cleanup - cascade delete all user data
+  async deleteAllUserData(userId: string): Promise<boolean> {
+    try {
+      console.log(`Starting cascade deletion for user: ${userId}`);
+      
+      // Get all projects for this user
+      const userProjects = await db.select().from(projects).where(eq(projects.userId, userId));
+      console.log(`Found ${userProjects.length} projects to delete for user ${userId}`);
+      
+      // Delete each project and all its associated data
+      for (const project of userProjects) {
+        console.log(`Deleting project ${project.id}: ${project.name}`);
+        await this.deleteProject(project.id);
+      }
+      
+      console.log(`Successfully deleted all data for user: ${userId}`);
+      return true;
+    } catch (error) {
+      console.error(`Error deleting user data for ${userId}:`, error);
+      throw error;
+    }
   }
 }
 
