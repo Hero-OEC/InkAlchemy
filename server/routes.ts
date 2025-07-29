@@ -702,6 +702,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const userProfiles = new Map();
 
   app.get("/api/user/profile", authenticateUser, async (req: AuthenticatedRequest, res) => {
+    // Disable caching for profile data to ensure fresh avatar URLs
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
     try {
       // Try to get real user data from Supabase first
       let supabaseUser = null;
@@ -719,28 +723,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const storedProfile = userProfiles.get(req.userId!) || {};
       console.log(`Profile fetch for user: ${req.userId}`, storedProfile, supabaseUser ? 'with Supabase data' : 'no Supabase data');
       
-      // Handle avatar URL - generate signed URL if it's a Supabase storage URL
+      // Use the stored avatar URL directly since bucket is now public
       let avatarUrl = storedProfile.avatar_url || supabaseUser?.user_metadata?.avatar_url || null;
-      
-      if (avatarUrl && avatarUrl.includes('supabase.co/storage') && supabase) {
-        try {
-          // Extract the file path from the Supabase URL
-          const urlParts = avatarUrl.split('/storage/v1/object/public/profile-images/');
-          if (urlParts.length > 1) {
-            const filePath = urlParts[1];
-            // Generate a fresh signed URL (24 hours expiry)
-            const { data: signedUrlData, error: signedError } = await supabase.storage
-              .from('profile-images')
-              .createSignedUrl(filePath, 86400); // 24 hours
-              
-            if (!signedError && signedUrlData?.signedUrl) {
-              avatarUrl = signedUrlData.signedUrl;
-            }
-          }
-        } catch (error) {
-          console.error('Error generating signed URL for profile image:', error);
-        }
-      }
       
       const profile = {
         id: req.userId,
