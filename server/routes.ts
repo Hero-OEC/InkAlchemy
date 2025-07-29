@@ -775,9 +775,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Upload to Supabase Storage if available
       if (supabase) {
         try {
-          const fileName = `profile-images/${req.userId}/${Date.now()}-${req.file.originalname}`;
+          const fileName = `${req.userId}/${Date.now()}-${req.file.originalname}`;
           const { data, error } = await supabase.storage
-            .from('images')
+            .from('profile-images')
             .upload(fileName, req.file.buffer, {
               contentType: req.file.mimetype,
               upsert: true
@@ -788,7 +788,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           } else {
             // Get public URL
             const { data: publicUrlData } = supabase.storage
-              .from('images')
+              .from('profile-images')
               .getPublicUrl(fileName);
             
             if (publicUrlData.publicUrl) {

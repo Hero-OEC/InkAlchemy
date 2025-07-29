@@ -49,9 +49,9 @@ export const handleImageUpload = async (req: Request, res: Response) => {
     const { supabase } = await import('./auth-middleware');
     if (supabase) {
       try {
-        const fileName = `editor-images/${Date.now()}-${req.file.originalname}`;
+        const fileName = `${Date.now()}-${req.file.originalname}`;
         const { data, error } = await supabase.storage
-          .from('images')
+          .from('content-images')
           .upload(fileName, req.file.buffer, {
             contentType: req.file.mimetype,
             upsert: true
@@ -62,7 +62,7 @@ export const handleImageUpload = async (req: Request, res: Response) => {
         } else {
           // Get public URL
           const { data: publicUrlData } = supabase.storage
-            .from('images')
+            .from('content-images')
             .getPublicUrl(fileName);
           
           if (publicUrlData.publicUrl) {
