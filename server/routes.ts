@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./db-storage";
 import { uploadImage, handleImageUpload, handleImageUploadByUrl } from "./image-upload";
-import { optionalAuth, type AuthenticatedRequest, supabase } from "./auth-middleware";
+import { optionalAuth, authenticateUser, type AuthenticatedRequest, supabase } from "./auth-middleware";
 import { 
   insertProjectSchema, insertCharacterSchema, insertLocationSchema, 
   insertEventSchema, insertMagicSystemSchema, insertSpellSchema, 
@@ -683,7 +683,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Simple in-memory storage for profile data (in production, use a database)
   const userProfiles = new Map();
 
-  app.get("/api/user/profile", async (req: AuthenticatedRequest, res) => {
+  app.get("/api/user/profile", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       // Try to get real user data from Supabase first
       let supabaseUser = null;
@@ -718,7 +718,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/user/update-profile", async (req: AuthenticatedRequest, res) => {
+  app.patch("/api/user/update-profile", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const { username, email } = req.body;
       
@@ -788,7 +788,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/user/delete-account", async (req: AuthenticatedRequest, res) => {
+  app.delete("/api/user/delete-account", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       // In a real implementation, this would:
       // 1. Delete all user's projects and associated data
