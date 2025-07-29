@@ -581,11 +581,12 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Fixed account deletion to properly remove users from Supabase using admin API with service role key
 - Removed page reload from username updates and restored proper navigation flow
 - Enhanced error handling for account deletion with proper Supabase integration
-- Integrated Supabase Storage with separate buckets for different content types
-- Profile images stored in 'profile-images' bucket organized by user ID
-- Editor.js content images stored in 'content-images' bucket for rich text content
+- Integrated Supabase Storage with separate private buckets for different content types
+- Profile images stored in 'profile-images' bucket (private) organized by user ID with user-only access
+- Editor.js content images stored in 'content-images' bucket (private) for rich text content
 - Updated image upload system to use memory storage and upload directly to Supabase Storage
 - Enhanced image handling with proper public URL generation and fallback to local storage
+- Configured private buckets with Row Level Security for user-specific access control
 
 ### January 2025 - User Profile Page Implementation
 - Created comprehensive user profile page with two-column layout matching character details design
