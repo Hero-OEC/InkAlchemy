@@ -635,3 +635,11 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Account deletion now includes complete cleanup of both database records and file storage to save space and maintain privacy
 - Added detailed logging throughout deletion process for debugging and verification
 - System now properly removes all traces of user data when account is deleted, ensuring data privacy compliance
+
+### January 29, 2025 - Cache Invalidation and Profile Image Fixes
+- Fixed character creation cache invalidation issue where new characters weren't appearing immediately on characters page
+- Corrected query key format in CharacterForm component from array format to string format for proper cache invalidation
+- Resolved profile image display issues by fixing Supabase Storage bucket configuration and URL handling
+- Updated authentication handling for project creation API to use apiRequest function with proper Supabase session tokens
+- Enhanced profile endpoint with proper cache-busting headers to ensure fresh avatar URLs are returned
+- Profile images now display correctly in navbar and profile pages after upload

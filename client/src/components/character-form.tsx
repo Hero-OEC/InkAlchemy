@@ -128,10 +128,10 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
       await updateCharacterSpells(newCharacter.id);
       
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/projects", projectId, "characters"] 
+        queryKey: [`/api/projects/${projectId}/characters`] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/projects", projectId, "stats"] 
+        queryKey: [`/api/projects/${projectId}/stats`] 
       });
       toast({
         title: "Success",
@@ -155,7 +155,7 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
       await updateCharacterSpells(updatedCharacter.id);
       
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/projects", projectId, "characters"] 
+        queryKey: [`/api/projects/${projectId}/characters`] 
       });
       queryClient.invalidateQueries({ 
         queryKey: [`/api/characters/${updatedCharacter.id}/spells`] 
