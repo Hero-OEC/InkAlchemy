@@ -43,9 +43,10 @@ export default function EditProfile() {
            "User";
   };
 
-  const { data: profileData } = useQuery({
+  const { data: profileData, error: profileError } = useQuery({
     queryKey: ['/api/user/profile'],
     staleTime: 0, // Always fetch fresh profile data
+    enabled: !!user, // Only fetch when user is authenticated
   });
 
   const getUserAvatarUrl = () => {

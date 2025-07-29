@@ -53,9 +53,10 @@ export default function UserProfile() {
            "User";
   };
 
-  const { data: profileData, refetch: refetchProfile } = useQuery({
+  const { data: profileData, refetch: refetchProfile, error: profileError } = useQuery({
     queryKey: ['/api/user/profile'],
     staleTime: 0, // Always fetch fresh profile data
+    enabled: !!user, // Only fetch when user is authenticated
   });
 
   const getUserAvatarUrl = () => {

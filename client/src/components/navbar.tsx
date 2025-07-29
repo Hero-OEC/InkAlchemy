@@ -36,12 +36,8 @@ export function Navbar({
 
   const { data: profileData } = useQuery({
     queryKey: ['/api/user/profile'],
-    queryFn: async () => {
-      const response = await fetch('/api/user/profile');
-      if (!response.ok) throw new Error('Failed to fetch profile');
-      return response.json();
-    },
     enabled: !!user,
+    staleTime: 0,
   });
 
   const handleNavigation = (pageId: string) => {
@@ -57,7 +53,7 @@ export function Navbar({
   const getUserDisplayName = () => {
     if (!user) return "User";
     // Prioritize profile data from our API, then fallback to Supabase metadata
-    return profileData?.username || 
+    return (profileData as any)?.username || 
            user.user_metadata?.username || 
            user.user_metadata?.display_name || 
            user.user_metadata?.full_name || 
