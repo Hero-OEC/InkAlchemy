@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./db-storage";
 import { uploadImage, handleImageUpload, handleImageUploadByUrl } from "./image-upload";
-import { optionalAuth, type AuthenticatedRequest } from "./auth-middleware";
+import { optionalAuth, type AuthenticatedRequest, supabase } from "./auth-middleware";
 import { 
   insertProjectSchema, insertCharacterSchema, insertLocationSchema, 
   insertEventSchema, insertMagicSystemSchema, insertSpellSchema, 
@@ -686,6 +686,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/profile", async (req: AuthenticatedRequest, res) => {
     try {
       const storedProfile = userProfiles.get(req.userId!) || {};
+      console.log(`Profile fetch for user: ${req.userId}`, storedProfile);
       const profile = {
         id: req.userId,
         username: storedProfile.username || "User",
@@ -702,15 +703,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, email } = req.body;
       
-      // In a real implementation, this would update the user's profile in Supabase
-      // For now, we'll just return success
       console.log(`Profile update requested for user: ${req.userId}`, { username, email });
+      
+      // Update the in-memory storage
+      const existingProfile = userProfiles.get(req.userId!) || {};
+      userProfiles.set(req.userId!, {
+        ...existingProfile,
+        username: username || existingProfile.username,
+        email: email || existingProfile.email
+      });
+      
+      // In production, this would also update Supabase user metadata
+      if (supabase && username) {
+        try {
+          // Update user metadata in Supabase
+          const { error } = await supabase.auth.admin.updateUserById(req.userId!, {
+            user_metadata: {
+              username: username,
+              display_name: username
+            }
+          });
+          
+          if (error) {
+            console.error('Supabase user metadata update error:', error);
+          }
+        } catch (supabaseError) {
+          console.error('Supabase update failed:', supabaseError);
+          // Continue with local storage update even if Supabase fails
+        }
+      }
+      
       res.json({ 
         message: "Profile updated successfully",
         username,
         email
       });
     } catch (error) {
+      console.error('Profile update error:', error);
       res.status(500).json({ message: "Failed to update profile" });
     }
   });

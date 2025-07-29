@@ -87,6 +87,8 @@ export default function EditProfile() {
       return response.json();
     },
     onSuccess: () => {
+      // Invalidate profile cache to refresh the display
+      queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
       if (!emailChangeMessage) {
         setLocation('/profile');
       }

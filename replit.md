@@ -311,6 +311,10 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Updated race details component to properly handle "new" race ID parameter
 - Applied consistent navigation patterns and ghost button styling throughout race management
 - Race creation now properly navigates to race details page after successful creation
+- Fixed username update functionality in user profile system with proper in-memory storage persistence
+- Updated navbar component to prioritize API profile data over Supabase metadata for immediate username changes
+- Enhanced profile update endpoint to properly store changes in userProfiles Map and attempt Supabase sync
+- Added query cache invalidation to ensure frontend immediately reflects username changes
 
 ### January 2025 - Race Details Tabbed Interface and Schema Cleanup
 - Converted race details page to tabbed interface matching location details page design exactly
