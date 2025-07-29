@@ -471,35 +471,7 @@ export default function Welcome() {
           )}
         </div>
 
-        {/* Getting Started Section */}
-        {projects.length === 0 && (
-          <div className="bg-white rounded-xl border border-brand-200 p-8">
-            <h3 className="text-2xl font-bold text-brand-900 mb-6">Getting Started with InkAlchemy</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Plus className="w-8 h-8 text-brand-600" />
-                </div>
-                <h4 className="font-semibold text-brand-900 mb-2">Create a Project</h4>
-                <p className="text-brand-700 text-sm">Start by creating your first story project with a name and genre</p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Swords className="w-8 h-8 text-brand-600" />
-                </div>
-                <h4 className="font-semibold text-brand-900 mb-2">Build Your World</h4>
-                <p className="text-brand-700 text-sm">Add characters, locations, magic systems, and lore to your story</p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Zap className="w-8 h-8 text-brand-600" />
-                </div>
-                <h4 className="font-semibold text-brand-900 mb-2">Organize Everything</h4>
-                <p className="text-brand-700 text-sm">Use timelines, relationships, and notes to keep track of your story</p>
-              </div>
-            </div>
-          </div>
-        )}
+
       </div>
       
       <DeleteConfirmation
