@@ -165,7 +165,7 @@ export function Navbar({
                         setIsUserMenuOpen(false);
                         setLocation("/profile");
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-brand-700 hover:bg-brand-50 transition-colors"
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-brand-700 hover:bg-brand-100 hover:text-brand-900 transition-colors"
                     >
                       <User size={16} />
                       Profile
@@ -173,7 +173,7 @@ export function Navbar({
                     
                     <button
                       onClick={handleSignOut}
-                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-brand-100 hover:text-red-700 transition-colors"
                     >
                       <LogOut size={16} />
                       Sign Out
