@@ -848,6 +848,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Character image upload endpoint
+  app.post("/api/characters/:id/upload-image", authenticateUser, uploadImage, async (req: AuthenticatedRequest, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+
+      const characterId = parseInt(req.params.id);
+      let imageUrl = `/uploads/${Date.now()}-${req.file.originalname}`;
+      
+      // Upload to Supabase Storage if available
+      if (supabase) {
+        try {
+          const fileName = `character-${characterId}/${Date.now()}-${req.file.originalname}`;
+          const { data, error } = await supabase.storage
+            .from('character-images')
+            .upload(fileName, req.file.buffer, {
+              contentType: req.file.mimetype,
+              upsert: true
+            });
+
+          if (error) {
+            console.error('Supabase character image upload error:', error);
+          } else {
+            // Get public URL
+            const { data: publicUrlData } = supabase.storage
+              .from('character-images')
+              .getPublicUrl(fileName);
+            
+            if (publicUrlData.publicUrl) {
+              imageUrl = publicUrlData.publicUrl;
+              console.log(`Character image uploaded to Supabase: ${imageUrl}`);
+            }
+          }
+        } catch (storageError) {
+          console.error('Character image storage error:', storageError);
+          // Continue with local storage as fallback
+        }
+      }
+      
+      // Update character with new image URL
+      const character = await storage.updateCharacter(characterId, { imageUrl });
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      
+      res.json({ 
+        message: "Character image updated successfully",
+        imageUrl: imageUrl,
+        character: character
+      });
+    } catch (error) {
+      console.error('Character image upload error:', error);
+      res.status(500).json({ message: "Failed to upload character image" });
+    }
+  });
+
   // Image upload endpoints for Editor.js
   app.post("/api/upload-image", uploadImage, handleImageUpload);
   app.post("/api/upload-image-by-url", handleImageUploadByUrl);

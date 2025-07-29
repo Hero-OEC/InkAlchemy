@@ -583,6 +583,7 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Enhanced error handling for account deletion with proper Supabase integration
 - Integrated Supabase Storage with separate private buckets for different content types
 - Profile images stored in 'profile-images' bucket (private) organized by user ID with user-only access
+- Character images stored in 'character-images' bucket (private) organized by character ID
 - Editor.js content images stored in 'content-images' bucket (private) for rich text content
 - Updated image upload system to use memory storage and upload directly to Supabase Storage
 - Enhanced image handling with proper public URL generation and fallback to local storage
