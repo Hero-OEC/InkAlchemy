@@ -88,16 +88,11 @@ export default function EditProfile() {
         );
       }
 
-      // Update other profile data
-      const response = await fetch('/api/user/update-profile', {
+      // Update other profile data using apiRequest to include auth headers
+      return await apiRequest('/api/user/update-profile', {
         method: 'PATCH',
         body: JSON.stringify({ username: data.username }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
       });
-      if (!response.ok) throw new Error('Failed to update profile');
-      return response.json();
     },
     onSuccess: () => {
       // Invalidate profile cache to refresh the display

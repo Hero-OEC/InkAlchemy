@@ -14,10 +14,8 @@ export interface AuthenticatedRequest extends Request {
 
 export async function authenticateUser(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
-    // If Supabase is not configured, use development mode
     if (!supabase) {
-      req.userId = '00000000-0000-0000-0000-000000000001';
-      return next();
+      return res.status(500).json({ message: 'Authentication service not configured' });
     }
 
     const authHeader = req.headers.authorization;
@@ -31,9 +29,11 @@ export async function authenticateUser(req: AuthenticatedRequest, res: Response,
     const { data: { user }, error } = await supabase.auth.getUser(token);
     
     if (error || !user) {
+      console.error('Authentication error:', error);
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
 
+    console.log('Authenticated user:', user.id, user.email);
     req.userId = user.id;
     next();
   } catch (error) {
@@ -42,21 +42,16 @@ export async function authenticateUser(req: AuthenticatedRequest, res: Response,
   }
 }
 
-// For development/testing - allows requests without auth
+// For development/testing - allows requests without auth but validates if auth is present
 export function optionalAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  // If Supabase is not configured, always use development mode
-  if (!supabase) {
-    req.userId = '00000000-0000-0000-0000-000000000001';
-    return next();
-  }
-
   const authHeader = req.headers.authorization;
   
   if (authHeader && authHeader.startsWith('Bearer ')) {
-    // If auth is provided, validate it
+    // If auth is provided, validate it with real Supabase
     return authenticateUser(req, res, next);
   } else {
-    // For development - use a default user ID
+    // No auth provided - for development only, use mock user
+    // In production, this should require authentication
     req.userId = '00000000-0000-0000-0000-000000000001';
     next();
   }

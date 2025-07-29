@@ -685,16 +685,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/user/profile", async (req: AuthenticatedRequest, res) => {
     try {
+      // Try to get real user data from Supabase first
+      let supabaseUser = null;
+      if (supabase && req.userId !== '00000000-0000-0000-0000-000000000001') {
+        try {
+          const { data: { user }, error } = await supabase.auth.admin.getUserById(req.userId!);
+          if (!error && user) {
+            supabaseUser = user;
+          }
+        } catch (error) {
+          console.error('Failed to fetch Supabase user:', error);
+        }
+      }
+
       const storedProfile = userProfiles.get(req.userId!) || {};
-      console.log(`Profile fetch for user: ${req.userId}`, storedProfile);
+      console.log(`Profile fetch for user: ${req.userId}`, storedProfile, supabaseUser ? 'with Supabase data' : 'no Supabase data');
+      
       const profile = {
         id: req.userId,
-        username: storedProfile.username || "User",
-        email: storedProfile.email || "user@example.com",
-        avatar_url: storedProfile.avatar_url || null
+        username: storedProfile.username || 
+                 supabaseUser?.user_metadata?.username || 
+                 supabaseUser?.user_metadata?.display_name || 
+                 supabaseUser?.user_metadata?.full_name || 
+                 (supabaseUser?.email ? supabaseUser.email.split('@')[0] : "User"),
+        email: storedProfile.email || supabaseUser?.email || "user@example.com",
+        avatar_url: storedProfile.avatar_url || supabaseUser?.user_metadata?.avatar_url || null
       };
       res.json(profile);
     } catch (error) {
+      console.error('Profile fetch error:', error);
       res.status(500).json({ message: "Failed to fetch user profile" });
     }
   });
@@ -713,23 +732,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: email || existingProfile.email
       });
       
-      // In production, this would also update Supabase user metadata
-      if (supabase && username) {
+      // Update Supabase user metadata if we have a real user
+      if (supabase && username && req.userId !== '00000000-0000-0000-0000-000000000001') {
         try {
-          // Update user metadata in Supabase
           const { error } = await supabase.auth.admin.updateUserById(req.userId!, {
             user_metadata: {
               username: username,
-              display_name: username
+              display_name: username,
+              full_name: username
             }
           });
           
           if (error) {
             console.error('Supabase user metadata update error:', error);
+          } else {
+            console.log('Successfully updated Supabase user metadata for:', req.userId);
           }
         } catch (supabaseError) {
           console.error('Supabase update failed:', supabaseError);
-          // Continue with local storage update even if Supabase fails
         }
       }
       
