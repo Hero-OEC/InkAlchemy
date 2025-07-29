@@ -143,13 +143,10 @@ export default function Welcome() {
 
   const createProjectMutation = useMutation({
     mutationFn: async (projectData: InsertProject) => {
-      const response = await fetch("/api/projects", {
+      return apiRequest("/api/projects", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(projectData),
       });
-      if (!response.ok) throw new Error("Failed to create project");
-      return response.json();
     },
     onSuccess: (newProject) => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
