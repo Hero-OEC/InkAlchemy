@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/auth-context";
 import { apiRequest } from "@/lib/queryClient";
+import { supabase } from "@/lib/supabase";
 import { User, Mail, Upload, ArrowLeft, Save, X } from "lucide-react";
 import { FandomLogo } from "@/components/fandom-logo";
 
@@ -78,9 +79,19 @@ export default function EditProfile() {
         const formData = new FormData();
         formData.append('image', selectedImage);
 
+        // Get auth token from Supabase session
+        const { data: { session } } = await supabase.auth.getSession();
+        const headers: Record<string, string> = {};
+        
+        if (session?.access_token) {
+          headers['Authorization'] = `Bearer ${session.access_token}`;
+        }
+
         const response = await fetch('/api/user/update-profile-image', {
           method: 'POST',
+          headers,
           body: formData,
+          credentials: 'include',
         });
         if (!response.ok) throw new Error('Failed to upload image');
       }
