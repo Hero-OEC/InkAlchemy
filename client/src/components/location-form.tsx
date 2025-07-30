@@ -41,10 +41,10 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
       apiRequest("/api/locations", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}/locations`] 
+        queryKey: ['/api/projects', projectId, 'locations'] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}/stats`] 
+        queryKey: ['/api/projects', projectId, 'stats'] 
       });
       toast({
         title: "Success",
@@ -66,10 +66,10 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
       apiRequest(`/api/locations/${location?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}/locations`] 
+        queryKey: ['/api/projects', projectId, 'locations'] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: [`/api/locations/${location?.id}`] 
+        queryKey: ['/api/locations', location?.id] 
       });
       toast({
         title: "Success",

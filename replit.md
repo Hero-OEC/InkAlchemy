@@ -656,3 +656,6 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Updated authentication handling for project creation API to use apiRequest function with proper Supabase session tokens
 - Enhanced profile endpoint with proper cache-busting headers to ensure fresh avatar URLs are returned
 - Profile images now display correctly in navbar and profile pages after upload
+- Fixed location cache invalidation by standardizing query keys to array format for TanStack Query v5 compatibility
+- Location create, edit, and delete operations now properly refresh the locations page automatically
+- Enhanced delete mutation to also invalidate project stats for accurate counts
