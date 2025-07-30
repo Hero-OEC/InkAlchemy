@@ -723,9 +723,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const storedProfile = userProfiles.get(req.userId!) || {};
       console.log(`Profile fetch for user: ${req.userId}`, storedProfile, supabaseUser ? 'with Supabase data' : 'no Supabase data');
       console.log('Supabase user metadata:', supabaseUser?.user_metadata);
+      console.log('Supabase user full object:', JSON.stringify(supabaseUser, null, 2));
       
-      // Use the stored avatar URL directly since bucket is now public
-      let avatarUrl = storedProfile.avatar_url || supabaseUser?.user_metadata?.avatar_url || null;
+      // Check multiple possible locations for avatar URL
+      let avatarUrl = storedProfile.avatar_url || 
+                     supabaseUser?.user_metadata?.avatar_url || 
+                     supabaseUser?.user_metadata?.picture ||
+                     supabaseUser?.identities?.[0]?.identity_data?.avatar_url ||
+                     supabaseUser?.identities?.[0]?.identity_data?.picture ||
+                     null;
       
       const profile = {
         id: req.userId,
