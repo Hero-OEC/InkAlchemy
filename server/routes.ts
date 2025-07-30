@@ -722,16 +722,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const storedProfile = userProfiles.get(req.userId!) || {};
       console.log(`Profile fetch for user: ${req.userId}`, storedProfile, supabaseUser ? 'with Supabase data' : 'no Supabase data');
-      console.log('Supabase user metadata:', supabaseUser?.user_metadata);
-      console.log('Supabase user full object:', JSON.stringify(supabaseUser, null, 2));
       
-      // Check multiple possible locations for avatar URL
-      let avatarUrl = storedProfile.avatar_url || 
-                     supabaseUser?.user_metadata?.avatar_url || 
-                     supabaseUser?.user_metadata?.picture ||
-                     supabaseUser?.identities?.[0]?.identity_data?.avatar_url ||
-                     supabaseUser?.identities?.[0]?.identity_data?.picture ||
-                     null;
+      // Try to get avatar URL from Supabase Storage profile-images bucket
+      let avatarUrl = storedProfile.avatar_url || null;
+      
+      if (supabase && !avatarUrl) {
+        try {
+          // List files in the user's profile-images folder
+          const { data: files, error } = await supabase.storage
+            .from('profile-images')
+            .list(req.userId!, {
+              limit: 1,
+              sortBy: { column: 'created_at', order: 'desc' }
+            });
+          
+          if (!error && files && files.length > 0) {
+            // Get the most recent profile image
+            const fileName = `${req.userId}/${files[0].name}`;
+            
+            // Try to get public URL first
+            const { data: publicUrlData } = supabase.storage
+              .from('profile-images')
+              .getPublicUrl(fileName);
+            
+            if (publicUrlData.publicUrl) {
+              avatarUrl = publicUrlData.publicUrl;
+              console.log('Retrieved profile image from Supabase Storage:', avatarUrl);
+              
+              // Cache the avatar URL for future requests
+              userProfiles.set(req.userId!, {
+                ...storedProfile,
+                avatar_url: avatarUrl
+              });
+            }
+          } else {
+            console.log('No profile images found in storage for user:', req.userId);
+          }
+        } catch (storageError) {
+          console.error('Error retrieving profile image from storage:', storageError);
+        }
+      }
       
       const profile = {
         id: req.userId,
