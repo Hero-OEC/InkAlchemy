@@ -41,10 +41,10 @@ export function LoreForm({ lore, projectId, onSuccess, onCancel, onCategoryChang
       apiRequest("/api/lore", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}/lore`] 
+        queryKey: ['/api/projects', projectId, 'lore'] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}/stats`] 
+        queryKey: ['/api/projects', projectId, 'stats'] 
       });
       toast({
         title: "Success",
@@ -66,10 +66,10 @@ export function LoreForm({ lore, projectId, onSuccess, onCancel, onCategoryChang
       apiRequest(`/api/lore/${lore?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}/lore`] 
+        queryKey: ['/api/projects', projectId, 'lore'] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: [`/api/lore/${lore?.id}`] 
+        queryKey: ['/api/lore', lore?.id] 
       });
       toast({
         title: "Success",

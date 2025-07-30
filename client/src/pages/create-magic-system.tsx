@@ -54,7 +54,8 @@ export default function CreateMagicSystem() {
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest("/api/magic-systems", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: (newSystem) => {
-      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/magic-systems`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'magic-systems'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'stats'] });
       toast({
         title: "Magic system created",
         description: "Your magic system has been created successfully.",

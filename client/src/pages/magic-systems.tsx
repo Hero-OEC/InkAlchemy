@@ -46,7 +46,7 @@ export default function MagicSystems() {
   });
 
   const { data: magicSystems, isLoading: magicSystemsLoading } = useQuery<MagicSystem[]>({
-    queryKey: [`/api/projects/${projectId}/magic-systems`],
+    queryKey: ['/api/projects', projectId, 'magic-systems'],
   });
 
   // Check if any core data is still loading
@@ -126,7 +126,8 @@ export default function MagicSystems() {
   const deleteMutation = useMutation({
     mutationFn: (systemId: number) => apiRequest(`/api/magic-systems/${systemId}`, { method: 'DELETE' }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/magic-systems`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'magic-systems'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'stats'] });
       setDeleteItem(null);
     },
   });

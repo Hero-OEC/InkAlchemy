@@ -39,7 +39,7 @@ export default function Lore() {
   });
 
   const { data: loreEntries = [], isLoading: loreLoading } = useQuery<LoreEntry[]>({
-    queryKey: [`/api/projects/${projectId}/lore`],
+    queryKey: ['/api/projects', projectId, 'lore'],
   });
 
   // Check if any core data is still loading
@@ -73,7 +73,8 @@ export default function Lore() {
   const deleteMutation = useMutation({
     mutationFn: (loreId: number) => apiRequest(`/api/lore/${loreId}`, { method: 'DELETE' }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/lore`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'lore'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'stats'] });
       setDeleteItem(null);
     },
   });
