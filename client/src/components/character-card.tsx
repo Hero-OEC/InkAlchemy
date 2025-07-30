@@ -166,11 +166,6 @@ export function CharacterCard({
         </span>
       </div>
 
-      {/* Character Description */}
-      <p className="text-brand-700 text-sm leading-relaxed mb-3">
-        {truncatedDescription}
-      </p>
-
       {/* Separator Line */}
       <div className="border-t border-brand-200 pt-3">
         {/* Dates Section */}
