@@ -1,12 +1,20 @@
+import { config } from 'dotenv';
+config(); // Load environment variables
+
 import { Request, Response, NextFunction } from 'express';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+console.log('Auth middleware - Supabase URL:', supabaseUrl ? 'SET' : 'NOT SET');
+console.log('Auth middleware - Service Key:', supabaseServiceKey ? 'SET' : 'NOT SET');
 
 // Only create supabase client if credentials are available
 export const supabase = supabaseUrl && supabaseServiceKey ? 
   createClient(supabaseUrl, supabaseServiceKey) : null;
+
+console.log('Auth middleware - Supabase client:', supabase ? 'CREATED' : 'NOT CREATED');
 
 export interface AuthenticatedRequest extends Request {
   userId?: string;
