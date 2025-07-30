@@ -44,9 +44,16 @@ export default function MagicSystemDetails() {
   const queryClient = useQueryClient();
   const { goBack, navigateWithReferrer } = useNavigation();
 
-  // If systemId is "new", this component shouldn't render - redirect to create page
+  // Handle redirect to create page if systemId is "new"
+  useEffect(() => {
+    if (systemId === "new") {
+      setLocation(`/projects/${projectId}/magic-systems/new`);
+      return;
+    }
+  }, [systemId, projectId, setLocation]);
+
+  // Don't render anything if this is the "new" route
   if (systemId === "new") {
-    setLocation(`/projects/${projectId}/magic-systems/new`);
     return null;
   }
 

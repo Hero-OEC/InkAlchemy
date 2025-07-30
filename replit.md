@@ -659,3 +659,14 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Fixed location cache invalidation by standardizing query keys to array format for TanStack Query v5 compatibility
 - Location create, edit, and delete operations now properly refresh the locations page automatically
 - Enhanced delete mutation to also invalidate project stats for accurate counts
+
+### January 30, 2025 - React Hooks Error Fix and Complete Cache Invalidation
+- Fixed critical React hooks error in magic-system-details.tsx that was preventing magic system creation
+- Moved navigation redirect logic from conditional return to useEffect to prevent "more hooks than previous render" error
+- Completed comprehensive cache invalidation fixes across all content management pages:
+  - Magic systems: Fixed create, edit, and delete cache invalidation with proper array-format query keys
+  - Lore entries: Updated all mutations to use TanStack Query v5 compatible query key format
+  - Notes: Fixed all cache invalidation for create, edit, and delete operations
+  - All pages now automatically refresh content lists after CRUD operations
+- Standardized all query keys to array format for consistent cache management throughout application
+- Enhanced all delete mutations to invalidate both content lists and project stats for accurate counts
