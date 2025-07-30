@@ -44,19 +44,6 @@ export default function MagicSystemDetails() {
   const queryClient = useQueryClient();
   const { goBack, navigateWithReferrer } = useNavigation();
 
-  // Handle redirect to create page if systemId is "new"
-  useEffect(() => {
-    if (systemId === "new") {
-      setLocation(`/projects/${projectId}/magic-systems/new`);
-      return;
-    }
-  }, [systemId, projectId, setLocation]);
-
-  // Don't render anything if this is the "new" route
-  if (systemId === "new") {
-    return null;
-  }
-
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
@@ -65,6 +52,14 @@ export default function MagicSystemDetails() {
     queryKey: [`/api/magic-systems/${systemId}`],
     enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
   });
+
+  // Handle redirect to create page if systemId is "new"
+  useEffect(() => {
+    if (systemId === "new") {
+      setLocation(`/projects/${projectId}/magic-systems/new`);
+      return;
+    }
+  }, [systemId, projectId, setLocation]);
 
   // Set page title
   useEffect(() => {
@@ -137,7 +132,10 @@ export default function MagicSystemDetails() {
     }
   };
 
-  
+  // Don't render anything if this is the "new" route
+  if (systemId === "new") {
+    return null;
+  }
 
   if (isLoading) {
     return (
