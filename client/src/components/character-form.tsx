@@ -103,11 +103,8 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
   }, [characterSpells]);
 
   const updateCharacterSpells = async (characterId: number) => {
-    console.log('updateCharacterSpells called with:', { characterId, selectedSpells });
-    
     // Remove existing character spells
     if (character && characterSpells.length > 0) {
-      console.log('Removing existing character spells:', characterSpells.length);
       for (const spell of characterSpells) {
         await apiRequest(`/api/characters/${characterId}/spells/${spell.id}`, {
           method: "DELETE",
@@ -116,16 +113,14 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
     }
 
     // Add selected spells to character using the character spells endpoint
-    console.log('Adding selected spells:', selectedSpells);
     for (const spellId of selectedSpells) {
-      const result = await apiRequest(`/api/characters/${characterId}/spells`, {
+      await apiRequest(`/api/characters/${characterId}/spells`, {
         method: "POST",
         body: JSON.stringify({
           spellId,
           proficiency: "novice"
         }),
       });
-      console.log('Added spell result:', result);
     }
   };
 
