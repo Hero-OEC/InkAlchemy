@@ -103,27 +103,24 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
   }, [characterSpells]);
 
   const updateCharacterSpells = async (characterId: number) => {
-    // Remove all current character spells
-    if (character) {
+    // Remove existing character spells
+    if (character && characterSpells.length > 0) {
       for (const spell of characterSpells) {
-        await apiRequest(`/api/spells/${spell.id}`, { method: "DELETE" });
+        await apiRequest(`/api/characters/${characterId}/spells/${spell.id}`, {
+          method: "DELETE",
+        });
       }
     }
 
-    // Add selected spells as character spells
+    // Add selected spells to character using the character spells endpoint
     for (const spellId of selectedSpells) {
-      const originalSpell = projectSpells.find(s => s.id === spellId);
-      if (originalSpell) {
-        await apiRequest("/api/spells", {
-          method: "POST",
-          body: JSON.stringify({
-            ...originalSpell,
-            id: undefined,
-            characterId,
-            projectId,
-          }),
-        });
-      }
+      await apiRequest(`/api/characters/${characterId}/spells`, {
+        method: "POST",
+        body: JSON.stringify({
+          spellId,
+          proficiency: "novice"
+        }),
+      });
     }
   };
 
@@ -182,38 +179,10 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    // Automatically assign magic system based on selected spells
-    let magicSystemId = data.magicSystemId;
-    
-    if (selectedSpells.length > 0) {
-      // Count spells per magic system to find the primary system
-      const systemCounts = new Map<number, number>();
-      
-      selectedSpells.forEach(spellId => {
-        const spell = projectSpells.find(s => s.id === spellId);
-        if (spell?.magicSystemId) {
-          const currentCount = systemCounts.get(spell.magicSystemId) || 0;
-          systemCounts.set(spell.magicSystemId, currentCount + 1);
-        }
-      });
-      
-      // Find the magic system with the most spells
-      if (systemCounts.size > 0) {
-        const [primarySystemId] = Array.from(systemCounts.entries())
-          .sort((a, b) => b[1] - a[1])[0];
-        magicSystemId = primarySystemId;
-      }
-    }
-    
-    const submissionData = {
-      ...data,
-      magicSystemId
-    };
-    
     if (character) {
-      updateMutation.mutate(submissionData);
+      updateMutation.mutate(data);
     } else {
-      createMutation.mutate(submissionData);
+      createMutation.mutate(data);
     }
   };
 
