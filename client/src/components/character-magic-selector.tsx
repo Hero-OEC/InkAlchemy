@@ -36,6 +36,10 @@ export function CharacterMagicSelector({
   const [addedSystems, setAddedSystems] = useState<Set<number>>(new Set());
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
+  // Debug logging
+  console.log('CharacterMagicSelector - availableMagicSystems:', availableMagicSystems);
+  console.log('CharacterMagicSelector - searchTerm:', searchTerm);
+
   // Find systems that are either added manually or have selected spells
   const activeSystems = availableMagicSystems.filter(system => 
     addedSystems.has(system.id) || 
@@ -47,6 +51,9 @@ export function CharacterMagicSelector({
     !activeSystems.some(active => active.id === system.id) &&
     system.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  console.log('CharacterMagicSelector - availableSystemsToAdd:', availableSystemsToAdd);
+  console.log('CharacterMagicSelector - activeSystems:', activeSystems);
 
   const addMagicSystem = (system: MagicSystem) => {
     // Add system to the added systems set
