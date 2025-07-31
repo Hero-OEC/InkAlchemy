@@ -194,12 +194,12 @@ export default function EventDetails() {
 
   // Get event relationships
   const eventRelationships = relationships.filter(rel => 
-    rel.fromElementType === 'event' && rel.fromElementId === event.id
+    rel.sourceType === 'event' && rel.sourceId === event.id
   );
   
   const eventCharacters = eventRelationships
-    .filter(rel => rel.toElementType === 'character')
-    .map(rel => characters.find(char => char.id === rel.toElementId))
+    .filter(rel => rel.targetType === 'character')
+    .map(rel => characters.find(char => char.id === rel.targetId))
     .filter(Boolean) as Character[];
   
   const eventLocation = event.locationId 
@@ -285,7 +285,7 @@ export default function EventDetails() {
             <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
               <h2 className="text-xl font-semibold text-brand-900 mb-4">Event Description</h2>
               {event.description ? (
-                <EditorContentRenderer content={event.description} />
+                <EditorContentRenderer data={JSON.parse(event.description)} />
               ) : (
                 <p className="text-brand-500 italic">
                   No description provided for this event.
@@ -303,7 +303,7 @@ export default function EventDetails() {
                 <MiniCard
                   icon={MapPin}
                   title={eventLocation.name}
-                  badge={eventLocation.type}
+                  badge={eventLocation.type || "Location"}
                   badgeVariant="type"
                   onClick={() => handleLocationClick(eventLocation.id)}
                   className="w-full"
@@ -325,7 +325,7 @@ export default function EventDetails() {
                       key={character.id}
                       icon={Users}
                       title={character.name}
-                      badge={character.type}
+                      badge={character.role || "Character"}
                       badgeVariant="type"
                       onClick={() => handleCharacterClick(character.id)}
                       className="w-full"
