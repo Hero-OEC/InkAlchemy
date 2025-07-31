@@ -182,10 +182,38 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
+    // Automatically assign magic system based on selected spells
+    let magicSystemId = data.magicSystemId;
+    
+    if (selectedSpells.length > 0) {
+      // Count spells per magic system to find the primary system
+      const systemCounts = new Map<number, number>();
+      
+      selectedSpells.forEach(spellId => {
+        const spell = projectSpells.find(s => s.id === spellId);
+        if (spell?.magicSystemId) {
+          const currentCount = systemCounts.get(spell.magicSystemId) || 0;
+          systemCounts.set(spell.magicSystemId, currentCount + 1);
+        }
+      });
+      
+      // Find the magic system with the most spells
+      if (systemCounts.size > 0) {
+        const [primarySystemId] = Array.from(systemCounts.entries())
+          .sort((a, b) => b[1] - a[1])[0];
+        magicSystemId = primarySystemId;
+      }
+    }
+    
+    const submissionData = {
+      ...data,
+      magicSystemId
+    };
+    
     if (character) {
-      updateMutation.mutate(data);
+      updateMutation.mutate(submissionData);
     } else {
-      createMutation.mutate(data);
+      createMutation.mutate(submissionData);
     }
   };
 
