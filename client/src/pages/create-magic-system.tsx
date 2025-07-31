@@ -60,7 +60,7 @@ export default function CreateMagicSystem() {
         title: "Magic system created",
         description: "Your magic system has been created successfully.",
       });
-      setLocation(`/projects/${projectId}/magic-systems/${newSystem.id}`);
+      setLocation(`/projects/${projectId}/magic-systems`);
     },
     onError: () => {
       toast({
