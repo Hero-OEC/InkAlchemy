@@ -354,7 +354,7 @@ export default function CharacterDetails() {
 
                     if (magicSystemsWithSpells.length === 0) {
                       return (
-                        <div className="text-center py-8 bg-brand-100 rounded-lg border-2 border-dashed border-brand-300">
+                        <div className="text-center py-8 rounded-lg">
                           <div className="flex items-center justify-center gap-2 mb-3">
                             <Sparkles className="w-12 h-12 text-brand-400" />
                             <Zap className="w-12 h-12 text-brand-400" />
