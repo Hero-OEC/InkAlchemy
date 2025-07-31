@@ -96,7 +96,6 @@ export function CharacterMagicSelector({
 
   const addMagicSystem = (system: MagicSystem) => {
     console.log('Adding magic system:', system);
-    let updatedMap: Map<number, SelectedSystem>;
     
     setSelectedSystems(prev => {
       const newMap = new Map(prev);
@@ -105,46 +104,41 @@ export function CharacterMagicSelector({
           system,
           selectedSpells: new Set()
         });
-        console.log('System added to map:', system.name);
+        console.log('System added to map:', system.name, 'New map size:', newMap.size);
+        
+        // Notify parent immediately with the new map
+        const allSelectedSpells: number[] = [];
+        newMap.forEach(({ selectedSpells }) => {
+          selectedSpells.forEach(spellId => allSelectedSpells.push(spellId));
+        });
+        console.log('Calling onSelectionChange with spells:', allSelectedSpells);
+        onSelectionChange(allSelectedSpells);
       } else {
         console.log('System already exists in map:', system.name);
       }
-      updatedMap = newMap;
       return newMap;
     });
     
     setSearchTerm(""); // Clear search after adding
-    
-    // Notify parent after state update completes
-    setTimeout(() => {
-      if (updatedMap) {
-        console.log('Notifying parent of changes:', updatedMap);
-        notifyParentOfChanges(updatedMap);
-      }
-    }, 0);
   };
 
   const removeMagicSystem = (systemId: number) => {
-    let updatedMap: Map<number, SelectedSystem>;
-    
     setSelectedSystems(prev => {
       const newMap = new Map(prev);
       newMap.delete(systemId);
-      updatedMap = newMap;
+      
+      // Notify parent immediately with the new map
+      const allSelectedSpells: number[] = [];
+      newMap.forEach(({ selectedSpells }) => {
+        selectedSpells.forEach(spellId => allSelectedSpells.push(spellId));
+      });
+      onSelectionChange(allSelectedSpells);
+      
       return newMap;
     });
-    
-    // Notify parent after state update completes
-    setTimeout(() => {
-      if (updatedMap) {
-        notifyParentOfChanges(updatedMap);
-      }
-    }, 0);
   };
 
   const toggleSpell = (systemId: number, spellId: number) => {
-    let updatedMap: Map<number, SelectedSystem>;
-    
     setSelectedSystems(prev => {
       const newMap = new Map(prev);
       const systemData = newMap.get(systemId);
@@ -162,18 +156,17 @@ export function CharacterMagicSelector({
           ...systemData,
           selectedSpells: newSelectedSpells
         });
+        
+        // Notify parent immediately with the new map
+        const allSelectedSpells: number[] = [];
+        newMap.forEach(({ selectedSpells }) => {
+          selectedSpells.forEach(spellId => allSelectedSpells.push(spellId));
+        });
+        onSelectionChange(allSelectedSpells);
       }
       
-      updatedMap = newMap;
       return newMap;
     });
-    
-    // Notify parent after state update completes
-    setTimeout(() => {
-      if (updatedMap) {
-        notifyParentOfChanges(updatedMap);
-      }
-    }, 0);
   };
 
   const availableSystemsToAdd = filteredSystems.filter(system => 
