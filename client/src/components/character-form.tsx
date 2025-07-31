@@ -95,12 +95,12 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
     },
   });
 
-  // Initialize selected spells when character spells load
+  // Initialize selected spells when character spells load (only once)
   useEffect(() => {
-    if (characterSpells.length > 0) {
+    if (characterSpells.length > 0 && selectedSpells.length === 0) {
       setSelectedSpells(characterSpells.map(spell => spell.id));
     }
-  }, [characterSpells]);
+  }, [characterSpells, selectedSpells.length]);
 
   const updateCharacterSpells = async (characterId: number) => {
     // Remove all current character spells
