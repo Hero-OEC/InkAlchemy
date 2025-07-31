@@ -169,11 +169,12 @@ export function CharacterMagicSelector({
                       return (
                         <div
                           key={spell.id}
+                          onClick={() => toggleSpell(spell.id)}
                           className={cn(
-                            "flex items-center gap-3 p-3 rounded-md border transition-colors",
+                            "flex items-center gap-3 p-3 rounded-md border transition-colors cursor-pointer",
                             isSelected 
                               ? "bg-secondary border-border hover:bg-accent" 
-                              : "bg-brand-50 border-brand-200"
+                              : "bg-brand-50 border-brand-200 hover:bg-brand-100"
                           )}
                         >
                           <Checkbox
