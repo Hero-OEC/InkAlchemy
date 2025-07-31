@@ -209,10 +209,13 @@ export function CharacterMagicSelector({
       {/* Empty State */}
       {activeSystems.length === 0 && (
         <div className="text-center py-8 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20">
-          <Sparkles className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-          <h3 className="font-medium text-muted-foreground mb-2">No Magic Systems Added</h3>
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Sparkles className="w-12 h-12 text-muted-foreground" />
+            <Zap className="w-12 h-12 text-muted-foreground" />
+          </div>
+          <h3 className="font-medium text-muted-foreground mb-2">No Magic/Power Systems Added</h3>
           <p className="text-sm text-muted-foreground">
-            Search above to add magic systems and select spells/abilities
+            Search above to add magic/power systems and select spells/abilities
           </p>
         </div>
       )}
