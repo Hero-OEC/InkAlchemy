@@ -275,7 +275,7 @@ export default function RaceDetails() {
             {/* Magical Affinity */}
             <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
               <h3 className="text-lg font-semibold text-brand-900 mb-4">Magical Affinity</h3>
-              {race?.magicalAffinity ? (
+              {race?.magicalAffinity !== null && race?.magicalAffinity !== undefined ? (
                 <div className="flex justify-between">
                   <span className="text-brand-600">Level:</span>
                   <span className="text-brand-900 capitalize">
