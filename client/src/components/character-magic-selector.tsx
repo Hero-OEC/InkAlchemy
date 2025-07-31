@@ -177,19 +177,30 @@ export function CharacterMagicSelector({
           placeholder="Search magic systems..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onBlur={(e) => {
+            // Delay clearing search to allow clicks to register
+            setTimeout(() => {
+              if (!e.currentTarget.contains(document.activeElement)) {
+                setSearchTerm("");
+              }
+            }, 150);
+          }}
           className="pl-10"
         />
         
         {/* Search Results Dropdown */}
         {searchTerm && availableSystemsToAdd.length > 0 && (
-          <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 z-[9999] mt-1 bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
             {availableSystemsToAdd.map(system => {
               const SystemIcon = system.type === "magic" ? Sparkles : Zap;
               return (
                 <div
                   key={system.id}
                   className="flex items-center gap-3 p-3 hover:bg-accent cursor-pointer transition-colors"
-                  onClick={() => addMagicSystem(system)}
+                  onMouseDown={(e) => {
+                    e.preventDefault(); // Prevent form losing focus
+                    addMagicSystem(system);
+                  }}
                 >
                   <div className="p-1.5 rounded-lg bg-brand-200">
                     <SystemIcon className="w-4 h-4 text-brand-700" />
