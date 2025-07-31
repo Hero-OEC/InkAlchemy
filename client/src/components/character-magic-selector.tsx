@@ -33,10 +33,12 @@ export function CharacterMagicSelector({
   className
 }: CharacterMagicSelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [addedSystems, setAddedSystems] = useState<Set<number>>(new Set());
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  // Simple logic: find which magic systems have selected spells
+  // Find systems that are either added manually or have selected spells
   const activeSystems = availableMagicSystems.filter(system => 
+    addedSystems.has(system.id) || 
     system.spells?.some(spell => selectedSpells.includes(spell.id))
   );
 
@@ -47,11 +49,19 @@ export function CharacterMagicSelector({
   );
 
   const addMagicSystem = (system: MagicSystem) => {
-    // Simply close search - system is now "active" by having its spells available
+    // Add system to the added systems set
+    setAddedSystems(prev => new Set([...Array.from(prev), system.id]));
     setSearchTerm("");
   };
 
   const removeMagicSystem = (systemId: number) => {
+    // Remove system from added systems
+    setAddedSystems(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(systemId);
+      return newSet;
+    });
+    
     // Remove all spells from this system
     const systemToRemove = availableMagicSystems.find(s => s.id === systemId);
     if (systemToRemove?.spells) {
