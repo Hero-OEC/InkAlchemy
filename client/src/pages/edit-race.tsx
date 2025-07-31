@@ -353,27 +353,21 @@ export default function EditRace() {
                 </div>
               </div>
 
-              {/* Special Abilities */}
+              {/* Magical Affinity */}
               <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Abilities & Powers</h3>
-                <div className="space-y-4">
-                  <div>
-                    <Select
-                      label="Magical Affinity"
-                      placeholder="Select magical ability..."
-                      options={[
-                        { value: "none", label: "No Magic" },
-                        { value: "low", label: "Low Magic Sensitivity" },
-                        { value: "medium", label: "Moderate Magic User" },
-                        { value: "high", label: "Highly Magical" },
-                        { value: "innate", label: "Innate Magic Powers" }
-                      ]}
-                      value={magicalAffinity}
-                      onChange={setMagicalAffinity}
-                    />
-                  </div>
-
-                </div>
+                <Select
+                  label="Magical Affinity"
+                  placeholder="Select magical ability..."
+                  options={[
+                    { value: "none", label: "No Magic" },
+                    { value: "low", label: "Low Magic Sensitivity" },
+                    { value: "medium", label: "Moderate Magic User" },
+                    { value: "high", label: "Highly Magical" },
+                    { value: "innate", label: "Innate Magic Powers" }
+                  ]}
+                  value={magicalAffinity}
+                  onChange={setMagicalAffinity}
+                />
               </div>
 
               {/* Characters Section */}
@@ -419,7 +413,7 @@ export default function EditRace() {
                         key={character.id}
                         icon={Users}
                         title={[character.prefix, character.name, character.suffix].filter(Boolean).join(" ")}
-                        badge={character.type || "supporting"}
+                        badge={character.role || "supporting"}
                         badgeVariant="type"
                         variant="editable"
                         onClick={() => setLocation(`/projects/${projectId}/characters/${character.id}`)}
