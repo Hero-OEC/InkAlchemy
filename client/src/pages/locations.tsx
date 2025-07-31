@@ -22,7 +22,7 @@ const LOCATION_TYPE_ICONS = {
   forest: TreePine,
   mountain: Mountain,
   river: Waves,
-  lake: Globe,
+  lake: Waves,
   ocean: Waves,
   desert: Mountain,
   building: Building2,
