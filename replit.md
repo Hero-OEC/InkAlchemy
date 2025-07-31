@@ -688,3 +688,4 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Event details pages now properly display characters involved in events through relationship connections
 - Updated race forms and details page: changed "Abilities & Powers" to "Magical Affinity" with cleaner single-dropdown layout
 - Added magicalAffinity field to database schema and race details page now properly displays selected magical affinity levels
+- Fixed character timeline display by updating relationship field references from deprecated names to current schema (sourceType/sourceId, targetType/targetId)

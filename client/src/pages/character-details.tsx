@@ -367,10 +367,10 @@ export default function CharacterDetails() {
                       // Filter events where this character is involved
                       const characterEvents = events.filter(event => {
                         const eventRelationships = relationships.filter((rel: any) => 
-                          rel.fromElementType === 'event' && 
-                          rel.fromElementId === event.id &&
-                          rel.toElementType === 'character' &&
-                          rel.toElementId === character.id
+                          rel.sourceType === 'event' && 
+                          rel.sourceId === event.id &&
+                          rel.targetType === 'character' &&
+                          rel.targetId === character.id
                         );
                         return eventRelationships.length > 0;
                       });
@@ -378,12 +378,12 @@ export default function CharacterDetails() {
                       // Process events with relationships to add character and location data
                       const processedEvents = characterEvents.map(event => {
                         const eventRelationships = relationships.filter((rel: any) => 
-                          rel.fromElementType === 'event' && rel.fromElementId === event.id
+                          rel.sourceType === 'event' && rel.sourceId === event.id
                         );
                         
                         const eventCharacters = eventRelationships
-                          .filter((rel: any) => rel.toElementType === 'character')
-                          .map((rel: any) => characters.find(char => char.id === rel.toElementId))
+                          .filter((rel: any) => rel.targetType === 'character')
+                          .map((rel: any) => characters.find(char => char.id === rel.targetId))
                           .filter(Boolean) as Character[];
                         
                         const eventLocation = event.locationId 
