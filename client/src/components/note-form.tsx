@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -21,9 +22,10 @@ interface NoteFormProps {
   onSuccess: () => void;
   onCancel: () => void;
   onCategoryChange?: (category: string) => void;
+  onLoadingChange?: (isLoading: boolean) => void;
 }
 
-export function NoteForm({ note, projectId, onSuccess, onCancel, onCategoryChange }: NoteFormProps) {
+export function NoteForm({ note, projectId, onSuccess, onCancel, onCategoryChange, onLoadingChange }: NoteFormProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -101,6 +103,11 @@ export function NoteForm({ note, projectId, onSuccess, onCancel, onCategoryChang
   };
 
   const isLoading = createMutation.isPending || updateMutation.isPending;
+
+  // Notify parent about loading state changes
+  useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   return (
     <Form {...form}>

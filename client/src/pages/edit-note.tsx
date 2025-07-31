@@ -23,6 +23,7 @@ export default function EditNote() {
   const { projectId, noteId } = useParams();
   const [, setLocation] = useLocation();
   const [currentCategory, setCurrentCategory] = useState<string>("general");
+  const [isFormLoading, setIsFormLoading] = useState<boolean>(false);
 
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -141,8 +142,9 @@ export default function EditNote() {
               type="submit" 
               form="note-form"
               variant="primary"
+              disabled={isFormLoading}
             >
-              Update Note
+              {isFormLoading ? "Updating..." : "Update Note"}
             </Button>
           </div>
         </div>
@@ -154,6 +156,7 @@ export default function EditNote() {
           onSuccess={handleSuccess}
           onCancel={handleSuccess}
           onCategoryChange={handleCategoryChange}
+          onLoadingChange={setIsFormLoading}
         />
       </main>
     </div>

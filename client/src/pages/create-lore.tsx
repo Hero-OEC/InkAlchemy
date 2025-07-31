@@ -25,6 +25,7 @@ export default function CreateLore() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
   const [currentCategory, setCurrentCategory] = useState<string>("other");
+  const [isFormLoading, setIsFormLoading] = useState<boolean>(false);
 
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -132,8 +133,9 @@ export default function CreateLore() {
               type="submit" 
               form="lore-form"
               variant="primary"
+              disabled={isFormLoading}
             >
-              Create Lore
+              {isFormLoading ? "Creating..." : "Create Lore"}
             </Button>
           </div>
         </div>
@@ -144,6 +146,7 @@ export default function CreateLore() {
           onSuccess={handleSuccess}
           onCancel={handleSuccess}
           onCategoryChange={handleCategoryChange}
+          onLoadingChange={setIsFormLoading}
         />
       </main>
     </div>

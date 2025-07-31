@@ -23,6 +23,7 @@ export default function CreateNote() {
   const { projectId } = useParams();
   const [, setLocation] = useLocation();
   const [currentCategory, setCurrentCategory] = useState<string>("general");
+  const [isFormLoading, setIsFormLoading] = useState<boolean>(false);
 
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -128,8 +129,9 @@ export default function CreateNote() {
               type="submit" 
               form="note-form"
               variant="primary"
+              disabled={isFormLoading}
             >
-              Create Note
+              {isFormLoading ? "Creating..." : "Create Note"}
             </Button>
           </div>
         </div>
@@ -140,6 +142,7 @@ export default function CreateNote() {
           onSuccess={handleSuccess}
           onCancel={handleSuccess}
           onCategoryChange={handleCategoryChange}
+          onLoadingChange={setIsFormLoading}
         />
       </main>
     </div>

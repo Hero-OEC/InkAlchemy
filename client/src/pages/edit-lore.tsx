@@ -25,6 +25,7 @@ export default function EditLore() {
   const { projectId, loreId } = useParams();
   const [, setLocation] = useLocation();
   const [currentCategory, setCurrentCategory] = useState<string>("other");
+  const [isFormLoading, setIsFormLoading] = useState<boolean>(false);
 
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -146,8 +147,9 @@ export default function EditLore() {
               type="submit" 
               form="lore-form"
               variant="primary"
+              disabled={isFormLoading}
             >
-              Update Lore
+              {isFormLoading ? "Updating..." : "Update Lore"}
             </Button>
           </div>
         </div>
@@ -159,6 +161,7 @@ export default function EditLore() {
           onSuccess={handleSuccess}
           onCancel={handleSuccess}
           onCategoryChange={handleCategoryChange}
+          onLoadingChange={setIsFormLoading}
         />
       </main>
     </div>
