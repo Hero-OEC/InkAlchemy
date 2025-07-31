@@ -102,7 +102,7 @@ export function CharacterMagicSelector({
                   <button
                     key={system.id}
                     onClick={() => addMagicSystem(system)}
-                    className="w-full p-3 text-left hover:bg-brand-50 transition-colors flex items-center gap-3"
+                    className="w-full p-3 text-left hover:bg-brand-100 transition-colors flex items-center gap-3"
                   >
                     <div className="p-1.5 rounded bg-brand-200">
                       <SystemIcon className="w-4 h-4 text-brand-700" />
@@ -172,7 +172,7 @@ export function CharacterMagicSelector({
                           className={cn(
                             "flex items-center gap-3 p-3 rounded-md border transition-colors",
                             isSelected 
-                              ? "bg-secondary border-border hover:bg-brand-50" 
+                              ? "bg-secondary border-border hover:bg-brand-100" 
                               : "bg-brand-50 border-brand-200"
                           )}
                         >
