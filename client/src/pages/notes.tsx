@@ -39,7 +39,7 @@ export default function Notes() {
   });
 
   const { data: notes = [], isLoading: notesLoading } = useQuery<Note[]>({
-    queryKey: ['/api/projects', projectId, 'notes'],
+    queryKey: ['/api/projects', String(projectId), 'notes'],
   });
 
   // Check if any core data is still loading
@@ -73,8 +73,8 @@ export default function Notes() {
   const deleteMutation = useMutation({
     mutationFn: (noteId: number) => apiRequest(`/api/notes/${noteId}`, { method: 'DELETE' }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'notes'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', String(projectId), 'notes'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', String(projectId), 'stats'] });
       setDeleteItem(null);
     },
   });

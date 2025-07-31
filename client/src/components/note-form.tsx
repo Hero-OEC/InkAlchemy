@@ -46,10 +46,10 @@ export function NoteForm({ note, projectId, onSuccess, onCancel, onCategoryChang
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', projectId, 'notes'] 
+        queryKey: ['/api/projects', String(projectId), 'notes'] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', projectId, 'stats'] 
+        queryKey: ['/api/projects', String(projectId), 'stats'] 
       });
       toast({
         title: "Success",
@@ -74,7 +74,7 @@ export function NoteForm({ note, projectId, onSuccess, onCancel, onCategoryChang
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', projectId, 'notes'] 
+        queryKey: ['/api/projects', String(projectId), 'notes'] 
       });
       queryClient.invalidateQueries({ 
         queryKey: ['/api/notes', note?.id] 
