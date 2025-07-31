@@ -686,3 +686,5 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Added loading indicators to lore and notes creation/editing buttons showing "Creating..." or "Updating..." states
 - Fixed location type icons mismatch between main page and create/edit pages - all pages now use consistent icon mapping
 - Standardized location type icons across all components: locations page, create/edit forms, details page, and form component
+- Changed lake icon from Globe to Waves for better visual consistency with other water-related locations
+- Removed "nomadic" option from race homeland selection in both create and edit race forms

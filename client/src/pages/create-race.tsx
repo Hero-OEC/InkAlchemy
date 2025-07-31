@@ -241,7 +241,6 @@ export default function CreateRace() {
                       placeholder="Select homeland location..."
                       options={[
                         { value: "", label: "No homeland specified" },
-                        { value: "nomadic", label: "Nomadic/No Fixed Home" },
                         ...locations.map(location => ({
                           value: location.id.toString(),
                           label: location.name
