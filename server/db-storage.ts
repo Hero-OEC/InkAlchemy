@@ -190,6 +190,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteMagicSystem(id: number): Promise<boolean> {
+    // First get all spell IDs associated with this magic system
+    const associatedSpells = await db.select({ id: spells.id }).from(spells).where(eq(spells.magicSystemId, id));
+    const spellIds = associatedSpells.map(spell => spell.id);
+    
+    // Delete all character-spell relationships for these spells
+    if (spellIds.length > 0) {
+      await db.delete(characterSpells).where(inArray(characterSpells.spellId, spellIds));
+    }
+    
+    // Delete all spells associated with this magic system
+    await db.delete(spells).where(eq(spells.magicSystemId, id));
+    
+    // Then delete the magic system itself
     const result = await db.delete(magicSystems).where(eq(magicSystems.id, id)).returning();
     return result.length > 0;
   }
