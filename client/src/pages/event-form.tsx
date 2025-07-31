@@ -64,9 +64,9 @@ const STAGE_COLORS = {
 };
 
 const eventFormSchema = insertEventSchema.extend({
-  year: z.number().min(1, "Year is required"),
-  month: z.number().min(1, "Month is required").max(12, "Month must be between 1-12"),
-  day: z.number().min(1, "Day is required").max(31, "Day must be between 1-31"),
+  year: z.number().optional().refine((val) => val === undefined || val >= 1, "Year must be at least 1"),
+  month: z.number().optional().refine((val) => val === undefined || (val >= 1 && val <= 12), "Month must be between 1-12"),
+  day: z.number().optional().refine((val) => val === undefined || (val >= 1 && val <= 31), "Day must be between 1-31"),
 });
 
 type EventFormData = z.infer<typeof eventFormSchema>;
@@ -113,9 +113,9 @@ export default function EventForm() {
       description: event?.description || "",
       type: event?.type || "meeting",
       stage: event?.stage || "planning",
-      year: event?.year || 1,
-      month: event?.month || 1,
-      day: event?.day || 1,
+      year: event?.year || undefined,
+      month: event?.month || undefined,
+      day: event?.day || undefined,
       locationId: event?.locationId || undefined,
       projectId: parseInt(projectId!),
     },
@@ -253,10 +253,18 @@ export default function EventForm() {
   };
 
   const onSubmit = (data: EventFormData) => {
+    // Ensure date fields have valid values for API submission
+    const eventData = {
+      ...data,
+      year: data.year || 1,
+      month: data.month || 1,
+      day: data.day || 1,
+    };
+    
     if (isEditing) {
-      updateMutation.mutate(data);
+      updateMutation.mutate(eventData);
     } else {
-      createMutation.mutate(data);
+      createMutation.mutate(eventData);
     }
   };
 
@@ -610,7 +618,7 @@ export default function EventForm() {
                         key={character.id}
                         icon={Users}
                         title={character.name}
-                        badge={character.type || "Character"}
+                        badge={character.role || "Character"}
                         badgeVariant="type"
                         variant="editable"
                         onDelete={() => handleRemoveCharacter(character.id)}

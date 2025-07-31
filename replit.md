@@ -688,3 +688,5 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Standardized location type icons across all components: locations page, create/edit forms, details page, and form component
 - Changed lake icon from Globe to Waves for better visual consistency with other water-related locations
 - Removed "nomadic" option from race homeland selection in both create and edit race forms
+- Fixed event creation form date fields to show empty placeholders instead of default values (1,1,1)
+- Updated form validation to handle optional date fields while ensuring valid API submission
