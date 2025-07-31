@@ -85,6 +85,7 @@ export function CharacterMagicSelector({
       selectedSpells.forEach(spellId => allSelectedSpells.push(spellId));
     });
     
+    console.log('Calling onSelectionChange with spells:', allSelectedSpells);
     onSelectionChange(allSelectedSpells);
   };
 
@@ -94,6 +95,7 @@ export function CharacterMagicSelector({
   );
 
   const addMagicSystem = (system: MagicSystem) => {
+    console.log('Adding magic system:', system);
     let updatedMap: Map<number, SelectedSystem>;
     
     setSelectedSystems(prev => {
@@ -103,6 +105,9 @@ export function CharacterMagicSelector({
           system,
           selectedSpells: new Set()
         });
+        console.log('System added to map:', system.name);
+      } else {
+        console.log('System already exists in map:', system.name);
       }
       updatedMap = newMap;
       return newMap;
@@ -113,6 +118,7 @@ export function CharacterMagicSelector({
     // Notify parent after state update completes
     setTimeout(() => {
       if (updatedMap) {
+        console.log('Notifying parent of changes:', updatedMap);
         notifyParentOfChanges(updatedMap);
       }
     }, 0);

@@ -45,6 +45,12 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("details");
   const [selectedSpells, setSelectedSpells] = useState<number[]>([]);
+
+  // Add logging to see when selectedSpells changes
+  const handleSpellSelectionChange = (spells: number[]) => {
+    console.log('CharacterForm: setSelectedSpells called with:', spells);
+    setSelectedSpells(spells);
+  };
   const [isUploading, setIsUploading] = useState(false);
 
   const { data: magicSystems = [], isLoading: magicSystemsLoading } = useQuery<MagicSystem[]>({
@@ -342,7 +348,7 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                   <CharacterMagicSelector
                     availableMagicSystems={magicSystemsWithSpells}
                     selectedSpells={selectedSpells}
-                    onSelectionChange={setSelectedSpells}
+                    onSelectionChange={handleSpellSelectionChange}
                   />
                 </div>
               )}
