@@ -180,7 +180,8 @@ export function CharacterMagicSelector({
           onBlur={(e) => {
             // Delay clearing search to allow clicks to register
             setTimeout(() => {
-              if (!e.currentTarget.contains(document.activeElement)) {
+              const activeElement = document.activeElement;
+              if (!activeElement || !e.currentTarget.contains(activeElement)) {
                 setSearchTerm("");
               }
             }, 150);
