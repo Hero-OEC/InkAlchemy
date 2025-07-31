@@ -333,18 +333,21 @@ export default function CharacterDetails() {
 
                     if (magicSystemsWithSpells.length === 0) {
                       return (
-                        <div className="text-center py-8 bg-brand-50 rounded-lg">
-                          <Sparkles className="w-12 h-12 text-brand-400 mx-auto mb-3" />
-                          <p className="text-brand-600">No magic systems or abilities assigned to this character.</p>
+                        <div className="text-center py-8 bg-brand-100 rounded-lg border-2 border-dashed border-brand-300">
+                          <div className="flex items-center justify-center gap-2 mb-3">
+                            <Sparkles className="w-12 h-12 text-brand-400" />
+                            <Zap className="w-12 h-12 text-brand-400" />
+                          </div>
+                          <p className="text-brand-600 font-medium">No magic/power systems assigned to this character.</p>
                           <p className="text-sm text-brand-500 mt-2">
-                            Edit this character to assign spells and abilities from available magic systems.
+                            Edit this character to assign spells and abilities from available magic/power systems.
                           </p>
                         </div>
                       );
                     }
 
                     return (
-                      <div className="space-y-6">
+                      <div className="space-y-4">
                         {magicSystemsWithSpells.map(system => (
                           <CharacterMagicCard
                             key={system.id}
