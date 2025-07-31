@@ -41,28 +41,44 @@ export function CharacterMagicSelector({
   const [selectedSystems, setSelectedSystems] = useState<Map<number, SelectedSystem>>(new Map());
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  // Initialize selected systems based on selectedSpells
+  // Debug log component renders and props
+  console.log('CharacterMagicSelector render:', {
+    availableMagicSystems: availableMagicSystems.length,
+    selectedSpells: selectedSpells.length,
+    selectedSystemsSize: selectedSystems.size,
+    selectedSystemIds: Array.from(selectedSystems.keys())
+  });
+
+  // Initialize selected systems based on selectedSpells only once or when props change significantly
+  const [isInitialized, setIsInitialized] = useState(false);
+  
   useEffect(() => {
-    const systemsMap = new Map<number, SelectedSystem>();
-    
-    selectedSpells.forEach(spellId => {
-      const system = availableMagicSystems.find(sys => 
-        sys.spells?.some(spell => spell.id === spellId)
-      );
+    // Only initialize from props if not already initialized or if selectedSpells has actual content
+    if (!isInitialized || (selectedSpells.length > 0 && selectedSystems.size === 0)) {
+      console.log('useEffect running - initializing selected systems from props');
+      const systemsMap = new Map<number, SelectedSystem>();
       
-      if (system) {
-        if (!systemsMap.has(system.id)) {
-          systemsMap.set(system.id, {
-            system,
-            selectedSpells: new Set()
-          });
+      selectedSpells.forEach(spellId => {
+        const system = availableMagicSystems.find(sys => 
+          sys.spells?.some(spell => spell.id === spellId)
+        );
+        
+        if (system) {
+          if (!systemsMap.has(system.id)) {
+            systemsMap.set(system.id, {
+              system,
+              selectedSpells: new Set()
+            });
+          }
+          systemsMap.get(system.id)!.selectedSpells.add(spellId);
         }
-        systemsMap.get(system.id)!.selectedSpells.add(spellId);
-      }
-    });
-    
-    setSelectedSystems(systemsMap);
-  }, [selectedSpells, availableMagicSystems]);
+      });
+      
+      console.log('Setting systems map from useEffect:', systemsMap.size);
+      setSelectedSystems(systemsMap);
+      setIsInitialized(true);
+    }
+  }, [selectedSpells, availableMagicSystems, isInitialized, selectedSystems.size]);
 
   // Handle click outside to close dropdown
   useEffect(() => {
