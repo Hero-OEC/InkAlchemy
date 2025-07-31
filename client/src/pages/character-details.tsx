@@ -320,16 +320,37 @@ export default function CharacterDetails() {
                 <div>
                   <h3 className="text-lg font-semibold text-brand-900 mb-6">Magic Systems & Abilities</h3>
                   {(() => {
-                    // Group character spells by magic system
-                    const magicSystemsWithSpells = magicSystems.map(system => {
-                      const systemSpells = characterSpells.filter(spell => 
-                        spell.magicSystemId === system.id
-                      );
-                      return {
-                        ...system,
-                        spells: systemSpells
-                      };
-                    }).filter(system => system.spells.length > 0);
+                    // Get magic systems assigned to this character
+                    const assignedSystemIds = new Set<number>();
+                    
+                    // Add the character's directly assigned magic system
+                    if (character.magicSystemId) {
+                      assignedSystemIds.add(character.magicSystemId);
+                    }
+                    
+                    // Add systems that have spells assigned to this character
+                    characterSpells.forEach(spell => {
+                      if (spell.magicSystemId) {
+                        assignedSystemIds.add(spell.magicSystemId);
+                      }
+                    });
+
+                    // Build the systems with their character spells
+                    const magicSystemsWithSpells = Array.from(assignedSystemIds)
+                      .map(systemId => {
+                        const system = magicSystems.find(s => s.id === systemId);
+                        if (!system) return null;
+                        
+                        const systemSpells = characterSpells.filter(spell => 
+                          spell.magicSystemId === system.id
+                        );
+                        
+                        return {
+                          ...system,
+                          spells: systemSpells
+                        };
+                      })
+                      .filter(Boolean) as any[];
 
                     if (magicSystemsWithSpells.length === 0) {
                       return (
