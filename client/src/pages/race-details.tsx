@@ -272,10 +272,23 @@ export default function RaceDetails() {
               </div>
             </div>
 
-            {/* Abilities & Powers */}
+            {/* Magical Affinity */}
             <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
-              <h3 className="text-lg font-semibold text-brand-900 mb-4">Abilities & Powers</h3>
-              <p className="text-sm text-brand-600 text-center py-2">No special abilities defined</p>
+              <h3 className="text-lg font-semibold text-brand-900 mb-4">Magical Affinity</h3>
+              {race?.magicalAffinity ? (
+                <div className="flex justify-between">
+                  <span className="text-brand-600">Level:</span>
+                  <span className="text-brand-900 capitalize">
+                    {race.magicalAffinity === 'none' && 'No Magic'}
+                    {race.magicalAffinity === 'low' && 'Low Magic Sensitivity'}
+                    {race.magicalAffinity === 'medium' && 'Moderate Magic User'}
+                    {race.magicalAffinity === 'high' && 'Highly Magical'}
+                    {race.magicalAffinity === 'innate' && 'Innate Magic Powers'}
+                  </span>
+                </div>
+              ) : (
+                <p className="text-sm text-brand-600 text-center py-2">No magical affinity set</p>
+              )}
             </div>
 
             {/* Characters */}

@@ -686,3 +686,5 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Fixed character badge display to use 'role' field instead of deprecated 'type' field
 - Fixed EditorContentRenderer usage to use correct 'data' prop instead of 'content' prop
 - Event details pages now properly display characters involved in events through relationship connections
+- Updated race forms and details page: changed "Abilities & Powers" to "Magical Affinity" with cleaner single-dropdown layout
+- Added magicalAffinity field to database schema and race details page now properly displays selected magical affinity levels
