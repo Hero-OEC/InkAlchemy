@@ -5,7 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { LocationForm } from "@/components/location-form";
 import { LocationFormHeaderSkeleton, LocationFormContentSkeleton } from "@/components/skeleton";
-import { ArrowLeft, Building2, Trees, Castle, Mountain, Home, Landmark, Globe, Crown, Zap } from "lucide-react";
+import { ArrowLeft, Building2, Trees, Castle, Mountain, Home, Landmark, Globe, Crown, Zap, TreePine, Waves, MapPin } from "lucide-react";
 import type { Project } from "@shared/schema";
 
 // Location type icons
@@ -13,24 +13,24 @@ const LOCATION_TYPE_ICONS = {
   settlement: Building2,
   city: Building2,
   village: Home,
-  town: Building2,
+  town: Home,
   natural: Trees,
-  forest: Trees,
+  forest: TreePine,
   mountain: Mountain,
-  river: Globe,
+  river: Waves,
   lake: Globe,
-  ocean: Globe,
-  desert: Mountain, // Using Mountain as desert icon
-  building: Landmark,
+  ocean: Waves,
+  desert: Mountain,
+  building: Building2,
   fortress: Castle,
   castle: Castle,
   temple: Landmark,
   academy: Landmark,
   tower: Castle,
-  dungeon: Castle,
-  realm: Crown, // Using Crown for realm/kingdom
-  dimension: Zap, // Using Zap for dimension/portal
-  other: Globe,
+  dungeon: Landmark,
+  realm: Crown,
+  dimension: Landmark,
+  other: MapPin,
 };
 
 export default function CreateLocation() {

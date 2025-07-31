@@ -8,7 +8,7 @@ import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { SearchComponent } from "@/components/search-component";
 import { Button } from "@/components/button-variations";
 import { LocationPageHeaderSkeleton, LocationsGridSkeleton } from "@/components/skeleton";
-import { Plus, Building2, Trees, Castle, Mountain, Home, Landmark, Globe } from "lucide-react";
+import { Plus, Building2, Trees, Castle, Mountain, Home, Landmark, Globe, Crown, Zap, TreePine, Waves, MapPin } from "lucide-react";
 import type { Project, Location } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -17,21 +17,24 @@ const LOCATION_TYPE_ICONS = {
   settlement: Building2,
   city: Building2,
   village: Home,
-  town: Building2,
+  town: Home,
   natural: Trees,
-  forest: Trees,
+  forest: TreePine,
   mountain: Mountain,
-  river: Globe,
+  river: Waves,
   lake: Globe,
-  ocean: Globe,
-  building: Landmark,
+  ocean: Waves,
+  desert: Mountain,
+  building: Building2,
   fortress: Castle,
   castle: Castle,
   temple: Landmark,
   academy: Landmark,
   tower: Castle,
-  dungeon: Castle,
-  other: Globe,
+  dungeon: Landmark,
+  realm: Crown,
+  dimension: Landmark,
+  other: MapPin,
 };
 
 export default function Locations() {

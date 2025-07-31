@@ -9,7 +9,7 @@ import { WordProcessor } from "@/components/word-processor";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertLocationSchema, type Location } from "@shared/schema";
-import { MapPin, Mountain, Building2, Castle, TreePine, Waves, Crown, Home, Landmark } from "lucide-react";
+import { MapPin, Mountain, Building2, Castle, TreePine, Waves, Crown, Home, Landmark, Trees, Globe } from "lucide-react";
 import { z } from "zod";
 
 const formSchema = insertLocationSchema.extend({
@@ -96,25 +96,32 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
 
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
-  // Get icon based on location type
+  // Get icon based on location type - matches LOCATION_TYPE_ICONS in all pages
   const getLocationIcon = (type: string) => {
-    switch (type) {
-      case "city": return Building2;
-      case "town": return Home;
-      case "village": return Home;
-      case "forest": return TreePine;
-      case "mountain": return Mountain;
-      case "ocean": return Waves;
-      case "river": return Waves;
-      case "desert": return Mountain;
-      case "building": return Building2;
-      case "castle": return Castle;
-      case "dungeon": return Landmark;
-      case "realm": return Crown;
-      case "dimension": return Landmark;
-      case "other": return MapPin;
-      default: return MapPin;
-    }
+    const iconMap = {
+      settlement: Building2,
+      city: Building2,
+      village: Home,
+      town: Home,
+      natural: Trees,
+      forest: TreePine,
+      mountain: Mountain,
+      river: Waves,
+      lake: Globe,
+      ocean: Waves,
+      desert: Mountain,
+      building: Building2,
+      fortress: Castle,
+      castle: Castle,
+      temple: Landmark,
+      academy: Landmark,
+      tower: Castle,
+      dungeon: Landmark,
+      realm: Crown,
+      dimension: Landmark,
+      other: MapPin,
+    };
+    return iconMap[type as keyof typeof iconMap] || MapPin;
   };
 
   const selectedType = form.watch("type");

@@ -684,3 +684,5 @@ The architecture prioritizes developer experience with hot reloading, type safet
 - Fixed magic system deletion issue with cascade deletion - now properly removes all associated spells and character-spell relationships before deleting the magic system
 - Fixed cache invalidation for lore and notes - main pages now automatically update when new items are created or edited
 - Added loading indicators to lore and notes creation/editing buttons showing "Creating..." or "Updating..." states
+- Fixed location type icons mismatch between main page and create/edit pages - all pages now use consistent icon mapping
+- Standardized location type icons across all components: locations page, create/edit forms, details page, and form component
