@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, Sparkles, Zap, Plus, X, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -39,6 +39,7 @@ export function CharacterMagicSelector({
 }: CharacterMagicSelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSystems, setSelectedSystems] = useState<Map<number, SelectedSystem>>(new Map());
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   // Initialize selected systems based on selectedSpells
   useEffect(() => {
@@ -62,6 +63,20 @@ export function CharacterMagicSelector({
     
     setSelectedSystems(systemsMap);
   }, [selectedSpells, availableMagicSystems]);
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setSearchTerm("");
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Notify parent when user interacts with the component (not on prop changes)
   const notifyParentOfChanges = (newSelectedSystems: Map<number, SelectedSystem>) => {
@@ -171,21 +186,12 @@ export function CharacterMagicSelector({
       </div>
 
       {/* Search Input */}
-      <div className="relative">
+      <div className="relative" ref={searchContainerRef}>
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           placeholder="Search magic systems..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onBlur={(e) => {
-            // Delay clearing search to allow clicks to register
-            setTimeout(() => {
-              const activeElement = document.activeElement;
-              if (!activeElement || !e.currentTarget.contains(activeElement)) {
-                setSearchTerm("");
-              }
-            }, 150);
-          }}
           className="pl-10"
         />
         
@@ -198,10 +204,7 @@ export function CharacterMagicSelector({
                 <div
                   key={system.id}
                   className="flex items-center gap-3 p-3 hover:bg-accent cursor-pointer transition-colors"
-                  onMouseDown={(e) => {
-                    e.preventDefault(); // Prevent form losing focus
-                    addMagicSystem(system);
-                  }}
+                  onClick={() => addMagicSystem(system)}
                 >
                   <div className="p-1.5 rounded-lg bg-brand-200">
                     <SystemIcon className="w-4 h-4 text-brand-700" />
