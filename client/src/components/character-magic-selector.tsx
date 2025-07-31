@@ -172,8 +172,8 @@ export function CharacterMagicSelector({
                           className={cn(
                             "flex items-center gap-3 p-3 rounded-md border transition-colors",
                             isSelected 
-                              ? "bg-brand-50 border-brand-200" 
-                              : "bg-secondary border-border hover:bg-accent"
+                              ? "bg-secondary border-border hover:bg-accent" 
+                              : "bg-brand-50 border-brand-200"
                           )}
                         >
                           <Checkbox
