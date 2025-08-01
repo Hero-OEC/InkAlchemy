@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { insertCharacterSchema, type Character, type MagicSystem, type Spell, type Race } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
+import { supabase } from "@/lib/supabase";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -406,8 +407,15 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                                       ? `/api/characters/${character.id}/upload-image`
                                       : '/api/upload-image';
                                     
+                                    // Get authentication token from Supabase
+                                    const { data: { session } } = await supabase.auth.getSession();
+                                    const token = session?.access_token;
+                                    
                                     const response = await fetch(uploadUrl, {
                                       method: 'POST',
+                                      headers: {
+                                        ...(token && { 'Authorization': `Bearer ${token}` })
+                                      },
                                       body: formData,
                                     });
                                     
