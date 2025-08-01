@@ -7,7 +7,9 @@ import Delimiter from '@editorjs/delimiter';
 import Table from '@editorjs/table';
 import CodeTool from '@editorjs/code';
 import InlineCode from '@editorjs/inline-code';
+// @ts-ignore
 import LinkTool from '@editorjs/link';
+// @ts-ignore
 import Marker from '@editorjs/marker';
 import Paragraph from '@editorjs/paragraph';
 import ImageTool from '@editorjs/image';
@@ -48,20 +50,13 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
       editor = new EditorJS({
         holder: holderRef.current,
         tools: {
-        header: {
-          class: Header,
-          config: {
-            placeholder: 'Enter a header',
-            levels: [1, 2, 3, 4, 5, 6],
-            defaultLevel: 1
-          }
-        },
+        header: Header,
         paragraph: {
-          class: Paragraph,
+          class: Paragraph as any,
           inlineToolbar: true
         },
         list: {
-          class: List,
+          class: List as any,
           inlineToolbar: true
         },
         quote: {
@@ -72,32 +67,24 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             captionPlaceholder: "Quote's author"
           }
         },
-        delimiter: {
-          class: Delimiter
-        },
+        delimiter: Delimiter,
         table: {
-          class: Table,
+          class: Table as any,
           inlineToolbar: true,
           config: {
             rows: 2,
             cols: 3
           }
         },
-        code: {
-          class: CodeTool
-        },
+        code: CodeTool,
         linkTool: {
-          class: LinkTool,
+          class: LinkTool as any,
           config: {
             endpoint: '/api/fetch-url'
           }
         },
-        marker: {
-          class: Marker
-        },
-        inlineCode: {
-          class: InlineCode
-        },
+        marker: Marker as any,
+        inlineCode: InlineCode,
         image: {
           class: ImageTool,
           config: {
