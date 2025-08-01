@@ -127,59 +127,60 @@ export function CharacterCard({
 
   return (
     <div 
-      className={`bg-brand-100 border border-border rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer ${className}`}
+      className={`bg-brand-100 border border-border rounded-xl hover:shadow-md transition-shadow cursor-pointer overflow-hidden ${className}`}
       onClick={onClick}
     >
       {/* Character Image - 1:1 aspect ratio */}
-      <div className="mb-3">
-        <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden">
-          {imageUrl ? (
-            <img 
-              src={imageUrl} 
-              alt={fullName}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-brand-600">
-              <Users size={48} />
-            </div>
-          )}
+      <div className="aspect-square w-full bg-brand-100">
+        {imageUrl ? (
+          <img 
+            src={imageUrl} 
+            alt={fullName}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-brand-600">
+            <Users size={48} />
+          </div>
+        )}
+      </div>
+
+      {/* Content area with padding */}
+      <div className="p-4">
+        {/* Character Name with Icon */}
+        <div className="mb-2 flex items-center gap-2">
+          <div className="p-1.5 rounded-lg bg-brand-200">
+            <Icon size={24} className="text-brand-700" />
+          </div>
+          <h3 className="text-brand-950 font-semibold text-lg leading-tight">
+            {prefix && <span className="text-sm text-brand-600 font-normal">{prefix} </span>}
+            {name}
+            {suffix && <span className="text-sm text-brand-600 font-normal"> {suffix}</span>}
+          </h3>
         </div>
-      </div>
 
-      {/* Character Name with Icon */}
-      <div className="mb-2 flex items-center gap-2">
-        <div className="p-1.5 rounded-lg bg-brand-200">
-          <Icon size={24} className="text-brand-700" />
+        {/* Character Type Badge */}
+        <div className="mb-3">
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgColor} ${config.textColor}`}>
+            {config.label}
+          </span>
         </div>
-        <h3 className="text-brand-950 font-semibold text-lg leading-tight">
-          {prefix && <span className="text-sm text-brand-600 font-normal">{prefix} </span>}
-          {name}
-          {suffix && <span className="text-sm text-brand-600 font-normal"> {suffix}</span>}
-        </h3>
-      </div>
 
-      {/* Character Type Badge */}
-      <div className="mb-3">
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgColor} ${config.textColor}`}>
-          {config.label}
-        </span>
-      </div>
-
-      {/* Separator Line */}
-      <div className="border-t border-brand-200 pt-3">
-        {/* Dates Section */}
-        <div className="flex justify-between text-xs text-brand-600">
-          {createdAt && (
-            <div>
-              <span className="font-medium">Created:</span> {formatDate(createdAt)}
-            </div>
-          )}
-          {lastEditedAt && (
-            <div>
-              <span className="font-medium">Last edited:</span> {formatDate(lastEditedAt)}
-            </div>
-          )}
+        {/* Separator Line */}
+        <div className="border-t border-brand-200 pt-3">
+          {/* Dates Section */}
+          <div className="flex justify-between text-xs text-brand-600">
+            {createdAt && (
+              <div>
+                <span className="font-medium">Created:</span> {formatDate(createdAt)}
+              </div>
+            )}
+            {lastEditedAt && (
+              <div>
+                <span className="font-medium">Last edited:</span> {formatDate(lastEditedAt)}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
