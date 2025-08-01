@@ -401,15 +401,20 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                                     const formData = new FormData();
                                     formData.append('image', file);
                                     
-                                    const response = await fetch('/api/upload-image', {
+                                    // Use character-specific endpoint if editing existing character
+                                    const uploadUrl = character?.id 
+                                      ? `/api/characters/${character.id}/upload-image`
+                                      : '/api/upload-image';
+                                    
+                                    const response = await fetch(uploadUrl, {
                                       method: 'POST',
                                       body: formData,
                                     });
                                     
                                     if (response.ok) {
                                       const data = await response.json();
-                                      // Handle Editor.js response format: { success: 1, file: { url: "..." } }
-                                      const imageUrl = data.file?.url || data.url;
+                                      // Handle both character upload and Editor.js response formats
+                                      const imageUrl = data.imageUrl || data.file?.url || data.url;
                                       field.onChange(imageUrl);
                                       toast({
                                         title: "Image uploaded successfully",
