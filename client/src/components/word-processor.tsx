@@ -36,6 +36,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
   const editorRef = useRef<EditorJS | null>(null);
   const [previousContent, setPreviousContent] = useState<string>(value || '');
   const { deleteUnusedImages } = useImageCleanup();
+  const changeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!holderRef.current) return;
@@ -113,18 +114,27 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
       minHeight: 300,
       onChange: async () => {
         if (onChange && editorRef.current) {
-          try {
-            const outputData = await editorRef.current.save();
-            const newContent = JSON.stringify(outputData);
-            
-            // Clean up unused images
-            await deleteUnusedImages(previousContent, newContent);
-            setPreviousContent(newContent);
-            
-            onChange(newContent);
-          } catch (error) {
-            console.error('Error saving editor data:', error);
+          // Clear previous timeout
+          if (changeTimeoutRef.current) {
+            clearTimeout(changeTimeoutRef.current);
           }
+          
+          // Debounce the change to avoid too many calls
+          changeTimeoutRef.current = setTimeout(async () => {
+            try {
+              const outputData = await editorRef.current!.save();
+              const newContent = JSON.stringify(outputData);
+              
+              // Clean up unused images (this will log what's happening)
+              await deleteUnusedImages(previousContent, newContent);
+              
+              // Update the content immediately
+              setPreviousContent(newContent);
+              onChange(newContent);
+            } catch (error) {
+              console.error('Error saving editor data:', error);
+            }
+          }, 300); // Reduced debounce for faster response
         }
       },
       onReady: () => {
@@ -138,6 +148,11 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
     }
 
     return () => {
+      // Clear any pending timeouts
+      if (changeTimeoutRef.current) {
+        clearTimeout(changeTimeoutRef.current);
+      }
+      
       if (editorRef.current) {
         try {
           editorRef.current.destroy();
@@ -147,7 +162,12 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
         editorRef.current = null;
       }
     };
-  }, [deleteUnusedImages, previousContent]);
+  }, [deleteUnusedImages, onChange]);
+  
+  // Update previous content when value prop changes
+  useEffect(() => {
+    setPreviousContent(value || '');
+  }, [value]);
 
 
 

@@ -30,6 +30,13 @@ export const useImageCleanup = () => {
       // Find images that were removed
       const removedImages = oldImages.filter(url => !newImages.includes(url));
       
+      console.log('Image cleanup check:', {
+        oldImages: oldImages.length,
+        newImages: newImages.length,
+        removedImages: removedImages.length,
+        removed: removedImages
+      });
+      
       // Delete removed images from storage
       for (const imageUrl of removedImages) {
         if (imageUrl.includes('supabase.co')) {
@@ -44,7 +51,7 @@ export const useImageCleanup = () => {
             const { data: { session } } = await supabase.auth.getSession();
             const token = session?.access_token;
             
-            await fetch('/api/delete-image', {
+            const response = await fetch('/api/delete-image', {
               method: 'DELETE',
               headers: {
                 'Content-Type': 'application/json',
@@ -53,7 +60,11 @@ export const useImageCleanup = () => {
               body: JSON.stringify({ url: imageUrl }),
             });
             
-            console.log(`Cleaned up unused image: ${imageUrl}`);
+            if (response.ok) {
+              console.log(`✅ Successfully deleted unused image: ${imageUrl}`);
+            } else {
+              console.error(`❌ Failed to delete image: ${response.statusText}`);
+            }
           } catch (error) {
             console.error('Failed to delete image:', error);
           }
