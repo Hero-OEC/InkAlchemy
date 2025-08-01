@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./db-storage";
 import { uploadImage, handleImageUpload, handleImageUploadByUrl } from "./image-upload";
+import { deleteImageFromStorage, cleanupContentImages } from "./image-cleanup";
 import { optionalAuth, authenticateUser, type AuthenticatedRequest, supabase } from "./auth-middleware";
 import { 
   insertProjectSchema, insertCharacterSchema, insertLocationSchema, 
@@ -152,24 +153,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           data.imageUrl !== currentCharacter.imageUrl) {
         
         // Clean up old image from storage
-        if (currentCharacter.imageUrl.includes('supabase.co') && supabase) {
-          try {
-            const urlParts = currentCharacter.imageUrl.split('/');
-            const fileName = urlParts[urlParts.length - 1];
-            
-            const { error } = await supabase.storage
-              .from('character-images')
-              .remove([decodeURIComponent(fileName)]);
-              
-            if (error) {
-              console.error('Failed to delete old character image:', error);
-            } else {
-              console.log(`Deleted old character image: ${fileName}`);
-            }
-          } catch (storageError) {
-            console.error('Storage deletion error:', storageError);
-          }
-        }
+        await deleteImageFromStorage(currentCharacter.imageUrl);
+      }
+      
+      // Check if description content changed and clean up unused images
+      if (data.hasOwnProperty('description') && currentCharacter.description) {
+        await cleanupContentImages(currentCharacter.description || '', data.description || '');
       }
       
       const character = await storage.updateCharacter(id, data);
@@ -198,24 +187,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Character not found" });
       }
       
-      // Clean up character image from storage
-      if (character.imageUrl && character.imageUrl.includes('supabase.co') && supabase) {
-        try {
-          const urlParts = character.imageUrl.split('/');
-          const fileName = urlParts[urlParts.length - 1];
-          
-          const { error } = await supabase.storage
-            .from('character-images')
-            .remove([decodeURIComponent(fileName)]);
-            
-          if (error) {
-            console.error('Failed to delete character image:', error);
-          } else {
-            console.log(`Deleted character image: ${fileName}`);
-          }
-        } catch (storageError) {
-          console.error('Storage deletion error:', storageError);
-        }
+      // Clean up character image and description images from storage
+      if (character.imageUrl) {
+        await deleteImageFromStorage(character.imageUrl);
+      }
+      
+      // Clean up any images in character description
+      if (character.description) {
+        await cleanupContentImages(character.description, '');
       }
       
       res.status(204).send();
@@ -300,7 +279,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/locations/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      const currentLocation = await storage.getLocation(id);
+      if (!currentLocation) {
+        return res.status(404).json({ message: "Location not found" });
+      }
+      
       const data = insertLocationSchema.partial().parse(req.body);
+      
+      // Check if description content changed and clean up unused images
+      if (data.hasOwnProperty('description') && currentLocation.description) {
+        await cleanupContentImages(currentLocation.description || '', data.description || '');
+      }
+      
       const location = await storage.updateLocation(id, data);
       if (!location) {
         return res.status(404).json({ message: "Location not found" });
@@ -314,10 +305,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/locations/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get location before deletion to clean up images
+      const location = await storage.getLocation(id);
+      
       const deleted = await storage.deleteLocation(id);
       if (!deleted) {
         return res.status(404).json({ message: "Location not found" });
       }
+      
+      // Clean up any images in location description
+      if (location && location.description) {
+        await cleanupContentImages(location.description, '');
+      }
+      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete location" });
@@ -361,7 +362,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/events/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      const currentEvent = await storage.getEvent(id);
+      if (!currentEvent) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      
       const data = insertEventSchema.partial().parse(req.body);
+      
+      // Check if description content changed and clean up unused images
+      if (data.hasOwnProperty('description') && currentEvent.description) {
+        await cleanupContentImages(currentEvent.description || '', data.description || '');
+      }
+      
       const event = await storage.updateEvent(id, data);
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
@@ -375,10 +388,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/events/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get event before deletion to clean up images
+      const event = await storage.getEvent(id);
+      
       const deleted = await storage.deleteEvent(id);
       if (!deleted) {
         return res.status(404).json({ message: "Event not found" });
       }
+      
+      // Clean up any images in event description
+      if (event && event.description) {
+        await cleanupContentImages(event.description, '');
+      }
+      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete event" });
@@ -576,7 +599,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/lore/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      const currentLoreEntry = await storage.getLoreEntry(id);
+      if (!currentLoreEntry) {
+        return res.status(404).json({ message: "Lore entry not found" });
+      }
+      
       const data = insertLoreEntrySchema.partial().parse(req.body);
+      
+      // Check if content changed and clean up unused images
+      if (data.hasOwnProperty('content') && currentLoreEntry.content) {
+        await cleanupContentImages(currentLoreEntry.content || '', data.content || '');
+      }
+      
       const loreEntry = await storage.updateLoreEntry(id, data);
       if (!loreEntry) {
         return res.status(404).json({ message: "Lore entry not found" });
@@ -590,10 +625,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/lore/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get lore entry before deletion to clean up images
+      const loreEntry = await storage.getLoreEntry(id);
+      
       const deleted = await storage.deleteLoreEntry(id);
       if (!deleted) {
         return res.status(404).json({ message: "Lore entry not found" });
       }
+      
+      // Clean up any images in lore entry content
+      if (loreEntry && loreEntry.content) {
+        await cleanupContentImages(loreEntry.content, '');
+      }
+      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete lore entry" });
@@ -637,7 +682,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/notes/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      const currentNote = await storage.getNote(id);
+      if (!currentNote) {
+        return res.status(404).json({ message: "Note not found" });
+      }
+      
       const data = insertNoteSchema.partial().parse(req.body);
+      
+      // Check if content changed and clean up unused images
+      if (data.hasOwnProperty('content') && currentNote.content) {
+        await cleanupContentImages(currentNote.content || '', data.content || '');
+      }
+      
       const note = await storage.updateNote(id, data);
       if (!note) {
         return res.status(404).json({ message: "Note not found" });
@@ -651,10 +708,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/notes/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get note before deletion to clean up images
+      const note = await storage.getNote(id);
+      
       const deleted = await storage.deleteNote(id);
       if (!deleted) {
         return res.status(404).json({ message: "Note not found" });
       }
+      
+      // Clean up any images in note content
+      if (note && note.content) {
+        await cleanupContentImages(note.content, '');
+      }
+      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete note" });
