@@ -408,7 +408,9 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                                     
                                     if (response.ok) {
                                       const data = await response.json();
-                                      field.onChange(data.url);
+                                      // Handle Editor.js response format: { success: 1, file: { url: "..." } }
+                                      const imageUrl = data.file?.url || data.url;
+                                      field.onChange(imageUrl);
                                       toast({
                                         title: "Image uploaded successfully",
                                         description: "Your character image has been uploaded.",
