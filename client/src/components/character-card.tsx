@@ -132,7 +132,7 @@ export function CharacterCard({
     >
       {/* Character Image - 1:1 aspect ratio */}
       <div className="mb-3">
-        <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200">
+        <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden">
           {imageUrl ? (
             <img 
               src={imageUrl} 
