@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
@@ -13,6 +13,7 @@ import LinkTool from '@editorjs/link';
 import Marker from '@editorjs/marker';
 import Paragraph from '@editorjs/paragraph';
 import ImageTool from '@editorjs/image';
+import { useImageCleanup } from '@/hooks/useImageCleanup';
 import './editor-styles.css';
 
 
@@ -33,6 +34,8 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
 }) => {
   const holderRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<EditorJS | null>(null);
+  const [previousContent, setPreviousContent] = useState<string>(value || '');
+  const { deleteUnusedImages } = useImageCleanup();
 
   useEffect(() => {
     if (!holderRef.current) return;
@@ -112,11 +115,20 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
         if (onChange && editorRef.current) {
           try {
             const outputData = await editorRef.current.save();
-            onChange(JSON.stringify(outputData));
+            const newContent = JSON.stringify(outputData);
+            
+            // Clean up unused images
+            await deleteUnusedImages(previousContent, newContent);
+            setPreviousContent(newContent);
+            
+            onChange(newContent);
           } catch (error) {
             console.error('Error saving editor data:', error);
           }
         }
+      },
+      onReady: () => {
+        console.log('Editor.js is ready to work!');
       }
       });
 
@@ -135,7 +147,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
         editorRef.current = null;
       }
     };
-  }, []);
+  }, [deleteUnusedImages, previousContent]);
 
 
 

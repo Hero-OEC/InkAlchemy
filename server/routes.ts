@@ -1055,6 +1055,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Image upload endpoints for Editor.js
   app.post("/api/upload-image", uploadImage, handleImageUpload);
   app.post("/api/upload-image-by-url", handleImageUploadByUrl);
+  
+  // Image deletion endpoint
+  app.delete("/api/delete-image", authenticateUser, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { url } = req.body;
+      
+      if (!url) {
+        return res.status(400).json({ message: "Image URL is required" });
+      }
+      
+      // Extract filename from Supabase URL
+      if (url.includes('supabase.co') && supabase) {
+        try {
+          const urlParts = url.split('/');
+          const fileName = urlParts[urlParts.length - 1];
+          
+          // Determine which bucket based on URL
+          let bucketName = 'content-images';
+          if (url.includes('character-images')) {
+            bucketName = 'character-images';
+          } else if (url.includes('profile-images')) {
+            bucketName = 'profile-images';
+          }
+          
+          const { error } = await supabase.storage
+            .from(bucketName)
+            .remove([decodeURIComponent(fileName)]);
+            
+          if (error) {
+            console.error('Supabase storage deletion error:', error);
+            return res.status(500).json({ message: "Failed to delete image from storage" });
+          }
+          
+          console.log(`Deleted image from Supabase: ${fileName}`);
+          res.json({ message: "Image deleted successfully" });
+        } catch (storageError) {
+          console.error('Storage deletion error:', storageError);
+          res.status(500).json({ message: "Failed to delete image" });
+        }
+      } else {
+        res.json({ message: "Image URL not recognized or not stored on our servers" });
+      }
+    } catch (error) {
+      console.error('Image deletion error:', error);
+      res.status(500).json({ message: "Failed to delete image" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
