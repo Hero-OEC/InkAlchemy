@@ -80,3 +80,93 @@ h6.ce-header {
   h5.ce-header { font-size: 1.1em; }
   h6.ce-header { font-size: 1em; }
 }
+
+/* Image Tool Styling */
+.image-tool {
+  position: relative;
+}
+
+.image-tool__image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Default image size - medium */
+.image-tool__image--normal {
+  max-width: 60%;
+}
+
+/* Stretched image (full width) */
+.image-tool__image--stretched {
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Small image size */
+.image-tool__image--small {
+  max-width: 40%;
+}
+
+/* Large image size */
+.image-tool__image--large {
+  max-width: 80%;
+}
+
+/* Image with border */
+.image-tool__image--withBorder {
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+/* Image with background */
+.image-tool__image--withBackground {
+  background-color: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+/* Caption styling */
+.image-tool__caption {
+  margin-top: 8px;
+  text-align: center;
+  font-style: italic;
+  color: #64748b;
+  font-size: 0.9em;
+}
+
+/* Tune (settings) menu for images */
+.image-tool__tune {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  padding: 8px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Individual tune buttons */
+.image-tool__tune-button {
+  padding: 4px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.image-tool__tune-button:hover {
+  background: #e2e8f0;
+}
+
+.image-tool__tune-button--active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
