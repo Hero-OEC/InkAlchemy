@@ -359,16 +359,49 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
               <h3 className="text-lg font-semibold text-brand-950 mb-4">Character Profile</h3>
               
               {/* Character Image */}
-              <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-6">
+              <div className="aspect-square w-full bg-brand-100 rounded-lg overflow-hidden border-2 border-brand-200 mb-6 relative">
                 {(form.watch("imageUrl") || "") ? (
-                  <img 
-                    src={form.watch("imageUrl") || ""} 
-                    alt="Character preview"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
+                  <>
+                    <img 
+                      src={form.watch("imageUrl") || ""} 
+                      alt="Character preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const currentImageUrl = form.getValues("imageUrl");
+                        form.setValue("imageUrl", "");
+                        
+                        // If this is an edit and the image was previously saved, trigger cleanup
+                        if (character && currentImageUrl && currentImageUrl.includes('supabase.co')) {
+                          try {
+                            const { data: { session } } = await supabase.auth.getSession();
+                            const token = session?.access_token;
+                            
+                            await fetch('/api/delete-image', {
+                              method: 'DELETE',
+                              headers: {
+                                'Content-Type': 'application/json',
+                                ...(token && { 'Authorization': `Bearer ${token}` })
+                              },
+                              body: JSON.stringify({ url: currentImageUrl }),
+                            });
+                            
+                            console.log('Character image removed from storage');
+                          } catch (error) {
+                            console.error('Failed to delete character image:', error);
+                          }
+                        }
+                      }}
+                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  </>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <Users className="w-16 h-16 text-brand-400" />

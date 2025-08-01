@@ -135,10 +135,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/characters/:id", async (req, res) => {
+  app.patch("/api/characters/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get current character to check if image is being removed/changed
+      const currentCharacter = await storage.getCharacter(id);
+      if (!currentCharacter) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      
       const data = insertCharacterSchema.partial().parse(req.body);
+      
+      // Check if image is being removed or changed
+      if (data.hasOwnProperty('imageUrl') && currentCharacter.imageUrl && 
+          data.imageUrl !== currentCharacter.imageUrl) {
+        
+        // Clean up old image from storage
+        if (currentCharacter.imageUrl.includes('supabase.co') && supabase) {
+          try {
+            const urlParts = currentCharacter.imageUrl.split('/');
+            const fileName = urlParts[urlParts.length - 1];
+            
+            const { error } = await supabase.storage
+              .from('character-images')
+              .remove([decodeURIComponent(fileName)]);
+              
+            if (error) {
+              console.error('Failed to delete old character image:', error);
+            } else {
+              console.log(`Deleted old character image: ${fileName}`);
+            }
+          } catch (storageError) {
+            console.error('Storage deletion error:', storageError);
+          }
+        }
+      }
+      
       const character = await storage.updateCharacter(id, data);
       if (!character) {
         return res.status(404).json({ message: "Character not found" });
@@ -149,13 +182,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/characters/:id", async (req, res) => {
+  app.delete("/api/characters/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get character data before deletion to cleanup image
+      const character = await storage.getCharacter(id);
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      
+      // Delete character from database first
       const deleted = await storage.deleteCharacter(id);
       if (!deleted) {
         return res.status(404).json({ message: "Character not found" });
       }
+      
+      // Clean up character image from storage
+      if (character.imageUrl && character.imageUrl.includes('supabase.co') && supabase) {
+        try {
+          const urlParts = character.imageUrl.split('/');
+          const fileName = urlParts[urlParts.length - 1];
+          
+          const { error } = await supabase.storage
+            .from('character-images')
+            .remove([decodeURIComponent(fileName)]);
+            
+          if (error) {
+            console.error('Failed to delete character image:', error);
+          } else {
+            console.log(`Deleted character image: ${fileName}`);
+          }
+        } catch (storageError) {
+          console.error('Storage deletion error:', storageError);
+        }
+      }
+      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete character" });
