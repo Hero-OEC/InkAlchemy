@@ -424,6 +424,17 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                                       // Handle both character upload and Editor.js response formats
                                       const imageUrl = data.imageUrl || data.file?.url || data.url;
                                       field.onChange(imageUrl);
+                                      
+                                      // If this was a character-specific upload, invalidate character queries
+                                      if (character?.id) {
+                                        queryClient.invalidateQueries({ 
+                                          queryKey: [`/api/characters/${character.id}`] 
+                                        });
+                                        queryClient.invalidateQueries({ 
+                                          queryKey: [`/api/projects/${projectId}/characters`] 
+                                        });
+                                      }
+                                      
                                       toast({
                                         title: "Image uploaded successfully",
                                         description: "Your character image has been uploaded.",
