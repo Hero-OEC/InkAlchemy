@@ -275,6 +275,70 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
+  async getSpellCharacters(spellId: number): Promise<(Character & { proficiency?: string })[]> {
+    const result = await db
+      .select({
+        id: characters.id,
+        projectId: characters.projectId,
+        name: characters.name,
+        prefix: characters.prefix,
+        suffix: characters.suffix,
+        role: characters.role,
+        description: characters.description,
+        age: characters.age,
+        raceId: characters.raceId,
+        magicSystemId: characters.magicSystemId,
+        imageUrl: characters.imageUrl,
+        createdAt: characters.createdAt,
+        updatedAt: characters.updatedAt,
+        proficiency: characterSpells.proficiency,
+      })
+      .from(characterSpells)
+      .innerJoin(characters, eq(characterSpells.characterId, characters.id))
+      .where(eq(characterSpells.spellId, spellId));
+    
+    return result;
+  }
+
+  async getMagicSystemCharacters(magicSystemId: number): Promise<Character[]> {
+    // Get characters in two ways:
+    // 1. Characters directly assigned to this magic system
+    const directAssigned = await db
+      .select()
+      .from(characters)
+      .where(eq(characters.magicSystemId, magicSystemId));
+    
+    // 2. Characters who have spells from this magic system
+    const throughSpells = await db
+      .select({
+        id: characters.id,
+        projectId: characters.projectId,
+        name: characters.name,
+        prefix: characters.prefix,
+        suffix: characters.suffix,
+        role: characters.role,
+        description: characters.description,
+        age: characters.age,
+        raceId: characters.raceId,
+        magicSystemId: characters.magicSystemId,
+        imageUrl: characters.imageUrl,
+        createdAt: characters.createdAt,
+        updatedAt: characters.updatedAt,
+      })
+      .from(characterSpells)
+      .innerJoin(spells, eq(characterSpells.spellId, spells.id))
+      .innerJoin(characters, eq(characterSpells.characterId, characters.id))
+      .where(eq(spells.magicSystemId, magicSystemId));
+    
+    // Combine and deduplicate by character ID
+    const allCharacters = [...directAssigned, ...throughSpells];
+    const uniqueCharacters = allCharacters.filter((char, index, arr) => 
+      arr.findIndex(c => c.id === char.id) === index
+    );
+    
+    return uniqueCharacters;
+  }
+
   // Event Characters
   async getEventCharacters(eventId: number): Promise<(Character & { role?: string })[]> {
     const result = await db

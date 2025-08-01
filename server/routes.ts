@@ -455,6 +455,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get characters that have a specific spell
+  app.get("/api/spells/:spellId/characters", async (req, res) => {
+    try {
+      const spellId = parseInt(req.params.spellId);
+      const characters = await storage.getSpellCharacters(spellId);
+      res.json(characters);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch spell characters" });
+    }
+  });
+
+  // Get all characters that use spells from a magic system
+  app.get("/api/magic-systems/:magicSystemId/characters", async (req, res) => {
+    try {
+      const magicSystemId = parseInt(req.params.magicSystemId);
+      const characters = await storage.getMagicSystemCharacters(magicSystemId);
+      res.json(characters);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch magic system characters" });
+    }
+  });
+
   // Lore Entries
   app.get("/api/projects/:projectId/lore", async (req, res) => {
     try {

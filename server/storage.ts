@@ -62,6 +62,8 @@ export interface IStorage {
   getCharacterSpells(characterId: number): Promise<(Spell & { proficiency?: string })[]>;
   addCharacterSpell(characterSpell: InsertCharacterSpell): Promise<CharacterSpell>;
   removeCharacterSpell(characterId: number, spellId: number): Promise<boolean>;
+  getSpellCharacters(spellId: number): Promise<(Character & { proficiency?: string })[]>;
+  getMagicSystemCharacters(magicSystemId: number): Promise<Character[]>;
 
   // Event Characters
   getEventCharacters(eventId: number): Promise<(Character & { role?: string })[]>;

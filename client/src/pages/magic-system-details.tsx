@@ -81,8 +81,14 @@ export default function MagicSystemDetails() {
     enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
   });
 
+  // Get characters that use this magic system (both direct assignment and through spells)
+  const { data: allSystemUsers = [], isLoading: systemUsersLoading } = useQuery<Character[]>({
+    queryKey: [`/api/magic-systems/${systemId}/characters`],
+    enabled: !!systemId && systemId !== "new" && !isNaN(Number(systemId))
+  });
+
   // Check if any core data is still loading
-  const isLoading = projectLoading || systemLoading || charactersLoading || spellsLoading;
+  const isLoading = projectLoading || systemLoading || charactersLoading || spellsLoading || systemUsersLoading;
 
   const handleNavigation = (page: string) => {
     setLocation(`/projects/${projectId}/${page}`);
@@ -197,11 +203,6 @@ export default function MagicSystemDetails() {
         { id: "details", label: "Details", icon: BookOpen },
         { id: "spells", label: "Spells", icon: Wand2 }
       ];
-
-  // Filter characters that use this magic system via foreign key
-  const systemUsers = characters?.filter(char => 
-    char.magicSystemId === system.id
-  ) || [];
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -453,9 +454,9 @@ export default function MagicSystemDetails() {
             {/* Characters Section */}
             <div className="bg-brand-50 rounded-xl border border-brand-200 p-6">
               <h3 className="text-lg font-semibold text-brand-900 mb-4">Characters Using This System</h3>
-              {systemUsers.length > 0 ? (
+              {allSystemUsers.length > 0 ? (
                 <div className="space-y-3">
-                  {systemUsers.map((character) => (
+                  {allSystemUsers.map((character) => (
                     <MiniCard
                       key={character.id}
                       icon={Users}
