@@ -31,4 +31,6 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 - **Environment Setup**: All required dependencies installed and working, server running on port 5000
 - **Authentication**: Supabase authentication middleware properly initialized and connected
 - **Image Upload Fix**: Fixed character image upload preview issue by handling Editor.js response format correctly
-- **Full Functionality**: All core features working including authentication, database operations, and image uploads
+- **Enhanced Word Processor**: Added resizable images, borders, backgrounds, and captions to Editor.js
+- **Image Storage**: Two separate buckets configured - character-images for character profiles, content-images for rich text
+- **Full Functionality**: All core features working including authentication, database operations, and enhanced image uploads

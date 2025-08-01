@@ -91,7 +91,12 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             endpoints: {
               byFile: '/api/upload-image',
               byUrl: '/api/upload-image-by-url',
-            }
+            },
+            captionPlaceholder: 'Enter image caption...',
+            withBorder: true,
+            withBackground: true,
+            stretched: true,
+            withCaption: true
           }
         }
       },
