@@ -93,40 +93,12 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
               byUrl: '/api/upload-image-by-url',
             },
             captionPlaceholder: 'Enter image caption...',
-            withBorder: true,
-            withBackground: true,
-            stretched: true,
+            withBorder: false,
+            withBackground: false,
+            stretched: false,
             withCaption: true,
-            buttonContent: 'Select an Image',
-            uploader: {
-              uploadByFile(file: File) {
-                return new Promise((resolve, reject) => {
-                  const formData = new FormData();
-                  formData.append('image', file);
-                  
-                  fetch('/api/upload-image', {
-                    method: 'POST',
-                    body: formData,
-                  })
-                  .then(response => response.json())
-                  .then(result => {
-                    if (result.success) {
-                      resolve({
-                        success: 1,
-                        file: {
-                          url: result.file.url
-                        }
-                      });
-                    } else {
-                      reject(result.message || 'Upload failed');
-                    }
-                  })
-                  .catch(error => {
-                    console.error('Upload error:', error);
-                    reject('Upload failed');
-                  });
-                });
-              }
+            additionalRequestHeaders: {
+              'Accept': 'application/json'
             }
           }
         }
