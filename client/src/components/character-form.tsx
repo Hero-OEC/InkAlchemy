@@ -374,30 +374,63 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                       type="button"
                       onClick={async () => {
                         const currentImageUrl = form.getValues("imageUrl");
+                        
+                        // Remove image from form immediately
                         form.setValue("imageUrl", "");
                         
-                        // If this is an edit and the image was previously saved, trigger cleanup
-                        if (character && currentImageUrl && currentImageUrl.includes('supabase.co')) {
+                        // If this is an existing character, update it in the database and clean up storage
+                        if (character && currentImageUrl) {
                           try {
+                            // Update character in database to remove image
                             const { data: { session } } = await supabase.auth.getSession();
                             const token = session?.access_token;
                             
-                            await fetch('/api/delete-image', {
-                              method: 'DELETE',
+                            const response = await fetch(`/api/characters/${character.id}`, {
+                              method: 'PATCH',
                               headers: {
                                 'Content-Type': 'application/json',
                                 ...(token && { 'Authorization': `Bearer ${token}` })
                               },
-                              body: JSON.stringify({ url: currentImageUrl }),
+                              body: JSON.stringify({ imageUrl: "" }),
                             });
                             
-                            console.log('Character image removed from storage');
+                            if (response.ok) {
+                              // Refresh queries to update UI
+                              queryClient.invalidateQueries({ 
+                                queryKey: [`/api/characters/${character.id}`] 
+                              });
+                              queryClient.invalidateQueries({ 
+                                queryKey: [`/api/projects/${projectId}/characters`] 
+                              });
+                              
+                              toast({
+                                title: "Image removed",
+                                description: "Character image has been removed successfully.",
+                              });
+                              
+                              console.log('Character image removed from database and storage');
+                            } else {
+                              throw new Error('Failed to update character');
+                            }
                           } catch (error) {
-                            console.error('Failed to delete character image:', error);
+                            console.error('Failed to remove character image:', error);
+                            toast({
+                              title: "Error",
+                              description: "Failed to remove image. Please try again.",
+                              variant: "destructive",
+                            });
+                            // Restore the image URL if the update failed
+                            form.setValue("imageUrl", currentImageUrl);
                           }
+                        } else {
+                          toast({
+                            title: "Image removed",
+                            description: "Image removed from form.",
+                          });
                         }
                       }}
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors shadow-sm"
+                      title="Remove image"
                     >
                       <X size={16} />
                     </button>
