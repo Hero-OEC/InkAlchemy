@@ -93,10 +93,13 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
               byUrl: '/api/upload-image-by-url',
             },
             captionPlaceholder: 'Enter image caption...',
-            withBorder: true,
-            withBackground: true,
-            stretched: true,
-            withCaption: true
+            withBorder: false,
+            withBackground: false,
+            stretched: false,
+            withCaption: true,
+            additionalRequestHeaders: {
+              'Accept': 'application/json'
+            }
           }
         }
       },
