@@ -12,6 +12,8 @@ import { CharacterDetailsHeaderSkeleton, CharacterDetailsContentSkeleton } from 
 import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles, Calendar, User, ArrowLeft, FileText, Clock, GraduationCap, UserPlus, UserMinus } from "lucide-react";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell, Race } from "@shared/schema";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "wouter";
 
 const CHARACTER_TYPE_CONFIG = {
   protagonist: { icon: Crown, label: "Protagonist", bgColor: "bg-brand-500", textColor: "text-white" },
@@ -33,6 +35,8 @@ export default function CharacterDetails() {
   const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goBack, navigateWithReferrer } = useNavigation();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // Don't track detail pages in history - only main pages should be tracked
 
@@ -85,6 +89,26 @@ export default function CharacterDetails() {
   const { data: characterSpells = [], isLoading: spellsLoading } = useQuery<(Spell & { proficiency?: string })[]>({
     queryKey: [`/api/characters/${numericCharacterId}/spells`],
     enabled: !!character,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const token = localStorage.getItem('supabase-token');
+      const response = await fetch(`/api/characters/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete character');
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['characters'] });
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      navigate('/dashboard');
+    },
   });
 
   // Check if any core data is still loading
@@ -170,7 +194,7 @@ export default function CharacterDetails() {
   const config = CHARACTER_TYPE_CONFIG[(character as any).type as keyof typeof CHARACTER_TYPE_CONFIG];
   const Icon = config?.icon || Users;
   const fullName = [character.prefix, character.name, character.suffix].filter(Boolean).join(" ");
-  
+
   // Find the character's race
   const characterRace = character.raceId ? races.find(race => race.id === character.raceId) : null;
 
@@ -184,13 +208,9 @@ export default function CharacterDetails() {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/characters/${characterId}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        setLocation(`/projects/${projectId}/characters`);
-      }
+      deleteMutation.mutate(Number(characterId));
+      setShowDeleteDialog(false);
+
     } catch (error) {
       console.error('Error deleting character:', error);
     }
@@ -219,7 +239,7 @@ export default function CharacterDetails() {
         onNavigate={handleNavigation}
         projectName={project?.name}
       />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
@@ -322,12 +342,12 @@ export default function CharacterDetails() {
                   {(() => {
                     // Get magic systems assigned to this character
                     const assignedSystemIds = new Set<number>();
-                    
+
                     // Add the character's directly assigned magic system
                     if (character.magicSystemId) {
                       assignedSystemIds.add(character.magicSystemId);
                     }
-                    
+
                     // Add systems that have spells assigned to this character
                     characterSpells.forEach(spell => {
                       if (spell.magicSystemId) {
@@ -340,11 +360,11 @@ export default function CharacterDetails() {
                       .map(systemId => {
                         const system = magicSystems.find(s => s.id === systemId);
                         if (!system) return null;
-                        
+
                         const systemSpells = characterSpells.filter(spell => 
                           spell.magicSystemId === system.id
                         );
-                        
+
                         return {
                           ...system,
                           spells: systemSpells
@@ -404,12 +424,12 @@ export default function CharacterDetails() {
                         const eventRelationships = relationships.filter((rel: any) => 
                           rel.sourceType === 'event' && rel.sourceId === event.id
                         );
-                        
+
                         const eventCharacters = eventRelationships
                           .filter((rel: any) => rel.targetType === 'character')
                           .map((rel: any) => characters.find(char => char.id === rel.targetId))
                           .filter(Boolean) as Character[];
-                        
+
                         const eventLocation = event.locationId 
                           ? locations.find(loc => loc.id === event.locationId)
                           : undefined;
@@ -468,7 +488,7 @@ export default function CharacterDetails() {
                   </div>
                 )}
               </div>
-              
+
               {/* Basic Info */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 p-3 bg-brand-100 border border-brand-200 rounded-lg">

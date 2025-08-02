@@ -66,7 +66,7 @@ export default function EventDetails() {
   const { goBack, navigateWithReferrer } = useNavigation();
 
   // Don't track detail pages in history - only main pages should be tracked
-  
+
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
@@ -123,10 +123,14 @@ export default function EventDetails() {
 
   const handleDelete = async () => {
     try {
+      const token = localStorage.getItem('supabase-token');
       const response = await fetch(`/api/events/${eventId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
-      
+
       if (response.ok) {
         setLocation(`/projects/${projectId}/timeline`);
       }
@@ -196,12 +200,12 @@ export default function EventDetails() {
   const eventRelationships = relationships.filter(rel => 
     rel.sourceType === 'event' && rel.sourceId === event.id
   );
-  
+
   const eventCharacters = eventRelationships
     .filter(rel => rel.targetType === 'character')
     .map(rel => characters.find(char => char.id === rel.targetId))
     .filter(Boolean) as Character[];
-  
+
   const eventLocation = event.locationId 
     ? locations.find(loc => loc.id === event.locationId)
     : undefined;
@@ -217,7 +221,7 @@ export default function EventDetails() {
         projectName={project?.name}
         onNavigate={handleNavigation}
       />
-      
+
       <main className="max-w-7xl mx-auto px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
