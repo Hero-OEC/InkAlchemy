@@ -445,7 +445,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/magic-systems/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get current magic system before update to clean up unused images
+      const currentMagicSystem = await storage.getMagicSystem(id);
+      if (!currentMagicSystem) {
+        return res.status(404).json({ message: "Magic system not found" });
+      }
+      
       const data = insertMagicSystemSchema.partial().parse(req.body);
+      
+      // Check if description content changed and clean up unused images
+      if (data.hasOwnProperty('description') && currentMagicSystem.description) {
+        await cleanupContentImages(currentMagicSystem.description || '', data.description || '');
+      }
+      
       const magicSystem = await storage.updateMagicSystem(id, data);
       if (!magicSystem) {
         return res.status(404).json({ message: "Magic system not found" });
@@ -463,6 +476,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get magic system before deletion to clean up images
       const magicSystem = await storage.getMagicSystem(id);
       
+      // Get all spells associated with this magic system before deletion
+      const spells = await storage.getSpells(id);
+      
       const deleted = await storage.deleteMagicSystem(id);
       if (!deleted) {
         return res.status(404).json({ message: "Magic system not found" });
@@ -473,8 +489,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await cleanupContentImages(magicSystem.description, '');
       }
       
+      // Clean up images in all associated spells
+      for (const spell of spells) {
+        if (spell.description) {
+          await cleanupContentImages(spell.description, '');
+        }
+      }
+      
+      console.log(`✅ Magic system cascade deletion complete: cleaned up ${spells.length} spells`);
+      
       res.status(204).send();
     } catch (error) {
+      console.error('Magic system deletion error:', error);
       res.status(500).json({ message: "Failed to delete magic system" });
     }
   });
@@ -526,7 +552,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/spells/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get current spell before update to clean up unused images
+      const currentSpell = await storage.getSpell(id);
+      if (!currentSpell) {
+        return res.status(404).json({ message: "Spell not found" });
+      }
+      
       const data = insertSpellSchema.partial().parse(req.body);
+      
+      // Check if description content changed and clean up unused images
+      if (data.hasOwnProperty('description') && currentSpell.description) {
+        await cleanupContentImages(currentSpell.description || '', data.description || '');
+      }
+      
       const spell = await storage.updateSpell(id, data);
       if (!spell) {
         return res.status(404).json({ message: "Spell not found" });
@@ -540,12 +579,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/spells/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get spell before deletion to clean up images
+      const spell = await storage.getSpell(id);
+      
       const deleted = await storage.deleteSpell(id);
       if (!deleted) {
         return res.status(404).json({ message: "Spell not found" });
       }
+      
+      // Clean up any images in spell description
+      if (spell && spell.description) {
+        await cleanupContentImages(spell.description, '');
+        console.log(`✅ Spell deletion complete: cleaned up images for "${spell.name}"`);
+      }
+      
       res.status(204).send();
     } catch (error) {
+      console.error('Spell deletion error:', error);
       res.status(500).json({ message: "Failed to delete spell" });
     }
   });
