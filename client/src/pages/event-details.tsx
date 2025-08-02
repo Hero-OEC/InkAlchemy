@@ -10,6 +10,7 @@ import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { EventDetailsHeaderSkeleton, EventDetailsContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, Trash2, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { apiRequest } from "@/lib/queryClient";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
 
 // Event type icons (same as timeline)
@@ -123,17 +124,11 @@ export default function EventDetails() {
 
   const handleDelete = async () => {
     try {
-      const token = localStorage.getItem('supabase-token');
-      const response = await fetch(`/api/events/${eventId}`, {
+      await apiRequest(`/api/events/${eventId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
       });
-
-      if (response.ok) {
-        setLocation(`/projects/${projectId}/timeline`);
-      }
+      
+      setLocation(`/projects/${projectId}/timeline`);
     } catch (error) {
       console.error('Error deleting event:', error);
     }
