@@ -13,7 +13,6 @@ import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles,
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell, Race } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "wouter";
 
 const CHARACTER_TYPE_CONFIG = {
   protagonist: { icon: Crown, label: "Protagonist", bgColor: "bg-brand-500", textColor: "text-white" },
