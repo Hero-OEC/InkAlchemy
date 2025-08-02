@@ -106,8 +106,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteCharacter(id: number): Promise<boolean> {
-    const result = await db.delete(characters).where(eq(characters.id, id)).returning();
-    return result.length > 0;
+    try {
+      // Delete all references to this character first
+      await db.delete(characterSpells).where(eq(characterSpells.characterId, id));
+      await db.delete(eventCharacters).where(eq(eventCharacters.characterId, id));
+      await db.delete(relationships).where(
+        and(
+          eq(relationships.sourceType, 'character'),
+          eq(relationships.sourceId, id)
+        )
+      );
+      await db.delete(relationships).where(
+        and(
+          eq(relationships.targetType, 'character'),
+          eq(relationships.targetId, id)
+        )
+      );
+      
+      // Now delete the character itself
+      const result = await db.delete(characters).where(eq(characters.id, id)).returning();
+      return result.length > 0;
+    } catch (error) {
+      console.error('Error deleting character:', error);
+      return false;
+    }
   }
 
   // Locations

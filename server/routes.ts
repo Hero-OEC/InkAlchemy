@@ -184,22 +184,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Delete character from database first
       const deleted = await storage.deleteCharacter(id);
       if (!deleted) {
-        return res.status(404).json({ message: "Character not found" });
+        return res.status(500).json({ message: "Failed to delete character from database" });
       }
       
       // Clean up character image and description images from storage
-      if (character.imageUrl) {
-        await deleteImageFromStorage(character.imageUrl);
-      }
-      
-      // Clean up any images in character description
-      if (character.description) {
-        await cleanupContentImages(character.description, '');
+      try {
+        if (character.imageUrl) {
+          await deleteImageFromStorage(character.imageUrl);
+        }
+        
+        // Clean up any images in character description
+        if (character.description) {
+          await cleanupContentImages(character.description, '');
+        }
+      } catch (imageError) {
+        console.error('Error cleaning up character images:', imageError);
+        // Don't fail the request if image cleanup fails
       }
       
       res.status(204).send();
     } catch (error) {
-      res.status(500).json({ message: "Failed to delete character" });
+      console.error('Character deletion error:', error);
+      res.status(500).json({ 
+        message: "Failed to delete character",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
