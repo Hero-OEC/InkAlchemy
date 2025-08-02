@@ -38,9 +38,13 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
   const [previousContent, setPreviousContent] = useState<string>(value || '');
   const { deleteUnusedImages } = useImageCleanup();
   const changeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const initializingRef = useRef(false);
 
   useEffect(() => {
-    if (!holderRef.current) return;
+    if (!holderRef.current || isInitialized || initializingRef.current) return;
+
+    initializingRef.current = true;
 
     let initialData;
     try {
@@ -126,55 +130,54 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
       autofocus: true,
       minHeight: 300,
       onChange: async () => {
-        if (onChange && editorRef.current) {
-          // Clear previous timeout
-          if (changeTimeoutRef.current) {
-            clearTimeout(changeTimeoutRef.current);
-          }
-          
-          // Debounce the change to avoid too many calls
-          changeTimeoutRef.current = setTimeout(async () => {
-            try {
-              // Add a small delay to avoid rapid successive saves
-              await new Promise(resolve => setTimeout(resolve, 100));
-              
-              if (!editorRef.current) return;
-              
-              const outputData = await editorRef.current.save();
-              console.log('Word processor saving data:', outputData);
-              const newContent = JSON.stringify(outputData);
-              
-              // Only proceed if content actually changed
-              if (newContent !== previousContent) {
-                // Clean up unused images (this will log what's happening)
-                await deleteUnusedImages(previousContent, newContent);
-                
-                // Update the content immediately
-                setPreviousContent(newContent);
-                onChange(newContent);
-              }
-            } catch (error) {
-              // Suppress SecurityError from getLayoutMap() which is a browser permission issue
-              if (error instanceof Error && error.name === 'SecurityError') {
-                console.warn('Browser security restriction detected, skipping this save cycle');
-                return;
-              } else {
-                console.error('Error saving editor data:', error);
-              }
-            }
-          }, 1500); // Increased debounce further to reduce frequency
+        if (!onChange || !editorRef.current || !isInitialized) return;
+        
+        // Clear previous timeout
+        if (changeTimeoutRef.current) {
+          clearTimeout(changeTimeoutRef.current);
         }
+        
+        // Debounce the change to avoid too many calls
+        changeTimeoutRef.current = setTimeout(async () => {
+          try {
+            if (!editorRef.current) return;
+            
+            const outputData = await editorRef.current.save();
+            const newContent = JSON.stringify(outputData);
+            
+            // Only proceed if content actually changed
+            if (newContent !== previousContent) {
+              console.log('Word processor content changed, saving...');
+              
+              // Clean up unused images
+              await deleteUnusedImages(previousContent, newContent);
+              
+              // Update the content
+              setPreviousContent(newContent);
+              onChange(newContent);
+            }
+          } catch (error) {
+            // Suppress SecurityError - these are harmless browser restrictions
+            if (error instanceof Error && error.name !== 'SecurityError') {
+              console.error('Error saving editor data:', error);
+            }
+          }
+        }, 2000); // Longer debounce to reduce save frequency
       },
       onReady: () => {
         console.log('Editor.js is ready to work!');
+        setIsInitialized(true);
+        initializingRef.current = false;
       }
-      });
+    });
 
-      editorRef.current = editor;
+    editorRef.current = editor;
     } catch (error) {
+      initializingRef.current = false;
       // Suppress SecurityError from getLayoutMap() which is a browser permission issue
       if (error instanceof Error && error.name === 'SecurityError') {
         console.warn('Browser security restriction detected during initialization, but Editor.js will work normally');
+        setIsInitialized(true); // Still consider it initialized
       } else {
         console.error('Error initializing Editor.js:', error);
       }
@@ -190,12 +193,17 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
         try {
           editorRef.current.destroy();
         } catch (error) {
-          console.error('Error destroying editor:', error);
+          // Suppress destroy errors
+          if (error instanceof Error && error.name !== 'SecurityError') {
+            console.error('Error destroying editor:', error);
+          }
         }
         editorRef.current = null;
       }
+      setIsInitialized(false);
+      initializingRef.current = false;
     };
-  }, [deleteUnusedImages, onChange]);
+  }, []);
   
   // Update previous content when value prop changes
   useEffect(() => {
