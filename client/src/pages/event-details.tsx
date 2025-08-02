@@ -130,11 +130,23 @@ export default function EventDetails() {
         method: 'DELETE',
       });
       
-      // Invalidate relevant queries to update the UI immediately
-      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/events`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/relationships`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}`] });
+      // Force refetch of relevant queries to update the UI immediately
+      queryClient.invalidateQueries({ 
+        queryKey: [`/api/projects/${projectId}/events`],
+        refetchType: 'all'
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: [`/api/projects/${projectId}/stats`],
+        refetchType: 'all'
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: [`/api/projects/${projectId}/relationships`],
+        refetchType: 'all'
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: [`/api/projects/${projectId}`],
+        refetchType: 'all'
+      });
       
       // Clear the specific event query as well
       queryClient.removeQueries({ queryKey: [`/api/events/${eventId}`] });
