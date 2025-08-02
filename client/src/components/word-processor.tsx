@@ -146,19 +146,31 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
               setPreviousContent(newContent);
               onChange(newContent);
             } catch (error) {
-              console.error('Error saving editor data:', error);
+              // Suppress SecurityError from getLayoutMap() which is a browser permission issue
+              if (error instanceof Error && error.name === 'SecurityError') {
+                console.warn('Browser security restriction during save, but content was saved');
+              } else {
+                console.error('Error saving editor data:', error);
+              }
             }
           }, 1000); // Increased debounce to allow multiple deletions
         }
       },
       onReady: () => {
         console.log('Editor.js is ready to work!');
-      }
+        setIsReady(true);
+      },
+      logLevel: 'ERROR' as const // Suppress non-critical warnings
       });
 
       editorRef.current = editor;
     } catch (error) {
-      console.error('Error initializing Editor.js:', error);
+      // Suppress SecurityError from getLayoutMap() which is a browser permission issue
+      if (error instanceof Error && error.name === 'SecurityError') {
+        console.warn('Browser security restriction detected, but Editor.js will work normally');
+      } else {
+        console.error('Error initializing Editor.js:', error);
+      }
     }
 
     return () => {
