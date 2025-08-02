@@ -100,6 +100,7 @@ export default function CharacterDetails() {
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/characters`] });
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
+      setShowDeleteDialog(false);
       setLocation(`/projects/${projectId}/characters`);
     },
   });
@@ -202,8 +203,6 @@ export default function CharacterDetails() {
   const handleDelete = async () => {
     try {
       deleteMutation.mutate(Number(characterId));
-      setShowDeleteDialog(false);
-
     } catch (error) {
       console.error('Error deleting character:', error);
     }
@@ -515,6 +514,7 @@ export default function CharacterDetails() {
         title="Delete Character"
         description={`Are you sure you want to delete "${character?.name}"? This action cannot be undone and will remove all associated relationships and data.`}
         itemName={character?.name || "this character"}
+        isLoading={deleteMutation.isPending}
       />
     </div>
   );

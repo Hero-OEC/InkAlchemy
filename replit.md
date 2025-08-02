@@ -50,3 +50,4 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 - **Race Deletion Implementation**: Added proper race deletion with confirmation dialog, server-side foreign key constraint checking, and informative error messages when race is used by characters
 - **Navigation Error Fix**: Fixed useNavigate runtime error in character-details.tsx by replacing with wouter's setLocation navigation
 - **Character Deletion Fix**: Fixed character deletion authentication error by replacing manual fetch with apiRequest function for proper Supabase JWT handling
+- **Character Deletion UI**: Added proper loading indication to delete confirmation dialog with isPending state from React Query mutation
