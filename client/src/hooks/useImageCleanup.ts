@@ -37,37 +37,52 @@ export const useImageCleanup = () => {
         removed: removedImages
       });
       
-      // Delete removed images from storage
-      for (const imageUrl of removedImages) {
-        if (imageUrl.includes('supabase.co')) {
-          try {
-            // Get authentication token
-            const { createClient } = await import('@supabase/supabase-js');
-            const supabase = createClient(
-              import.meta.env.VITE_SUPABASE_URL,
-              import.meta.env.VITE_SUPABASE_ANON_KEY
-            );
-            
-            const { data: { session } } = await supabase.auth.getSession();
-            const token = session?.access_token;
-            
-            const response = await fetch('/api/delete-image', {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-                ...(token && { 'Authorization': `Bearer ${token}` })
-              },
-              body: JSON.stringify({ url: imageUrl }),
-            });
-            
-            if (response.ok) {
-              console.log(`✅ Successfully deleted unused image: ${imageUrl}`);
-            } else {
-              console.error(`❌ Failed to delete image: ${response.statusText}`);
+      // Delete removed images from storage - process all at once
+      if (removedImages.length > 0) {
+        // Get authentication token once
+        const { createClient } = await import('@supabase/supabase-js');
+        const supabase = createClient(
+          import.meta.env.VITE_SUPABASE_URL,
+          import.meta.env.VITE_SUPABASE_ANON_KEY
+        );
+        
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        
+        // Process all deletions concurrently for better performance
+        const deletePromises = removedImages
+          .filter(imageUrl => imageUrl.includes('supabase.co'))
+          .map(async (imageUrl) => {
+            try {
+              const response = await fetch('/api/delete-image', {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                  ...(token && { 'Authorization': `Bearer ${token}` })
+                },
+                body: JSON.stringify({ url: imageUrl }),
+              });
+              
+              if (response.ok) {
+                console.log(`✅ Successfully deleted unused image: ${imageUrl}`);
+                return { url: imageUrl, success: true };
+              } else {
+                console.error(`❌ Failed to delete image: ${response.statusText}`);
+                return { url: imageUrl, success: false, error: response.statusText };
+              }
+            } catch (error) {
+              console.error('Failed to delete image:', error);
+              return { url: imageUrl, success: false, error: error instanceof Error ? error.message : 'Unknown error' };
             }
-          } catch (error) {
-            console.error('Failed to delete image:', error);
-          }
+          });
+        
+        // Wait for all deletions to complete
+        const results = await Promise.allSettled(deletePromises);
+        const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+        const failed = results.length - successful;
+        
+        if (successful > 0) {
+          console.log(`✅ Batch deletion complete: ${successful} successful, ${failed} failed`);
         }
       }
     } catch (error) {

@@ -148,7 +148,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             } catch (error) {
               console.error('Error saving editor data:', error);
             }
-          }, 300); // Reduced debounce for faster response
+          }, 1000); // Increased debounce to allow multiple deletions
         }
       },
       onReady: () => {
