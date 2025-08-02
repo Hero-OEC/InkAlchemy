@@ -54,117 +54,117 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
     }
 
     let editor: EditorJS;
-    
+
     try {
       editor = new EditorJS({
         holder: holderRef.current,
         tools: {
-        header: Header,
-        paragraph: {
-          class: Paragraph as any,
-          inlineToolbar: true
-        },
-        list: {
-          class: List as any,
-          inlineToolbar: true
-        },
-        quote: {
-          class: Quote,
-          inlineToolbar: true,
-          config: {
-            quotePlaceholder: 'Enter a quote',
-            captionPlaceholder: "Quote's author"
-          }
-        },
-        delimiter: Delimiter,
-        table: {
-          class: Table as any,
-          inlineToolbar: true,
-          config: {
-            rows: 2,
-            cols: 3
-          }
-        },
-        code: CodeTool,
-        linkTool: {
-          class: LinkTool as any,
-          config: {
-            endpoint: '/api/fetch-url'
-          }
-        },
-        marker: Marker as any,
-        inlineCode: InlineCode,
-        image: {
-          class: ImageTool,
-          config: {
-            endpoints: {
-              byFile: '/api/upload-image',
-              byUrl: '/api/upload-image-by-url',
-            },
-            captionPlaceholder: 'Enter image caption...',
-            withBorder: false,
-            withBackground: false,
-            stretched: false,
-            withCaption: true,
-            field: 'image'
-          }
-        }
-      },
-      data: initialData,
-      readOnly,
-      placeholder,
-      autofocus: true,
-      minHeight: 300,
-      onChange: async () => {
-        if (!onChange || !editorRef.current || !isInitialized) return;
-        
-        // Clear previous timeout
-        if (changeTimeoutRef.current) {
-          clearTimeout(changeTimeoutRef.current);
-        }
-        
-        // Debounce the change to avoid too many calls
-        changeTimeoutRef.current = setTimeout(async () => {
-          try {
-            if (!editorRef.current) return;
-            
-            const outputData = await editorRef.current.save();
-            const newContent = JSON.stringify(outputData);
-            
-            console.log('Word processor attempting to save...', {
-              previousLength: previousContent.length,
-              newLength: newContent.length,
-              hasBlocks: outputData.blocks?.length || 0,
-              contentChanged: newContent !== previousContent
-            });
-            
-            // Always call onChange to ensure parent components receive updates
-            setPreviousContent(newContent);
-            onChange(newContent);
-            console.log('Content change transmitted to parent component');
-            
-            // Clean up unused images (but don't block saving if this fails)
-            try {
-              await deleteUnusedImages(previousContent, newContent);
-            } catch (cleanupError) {
-              console.warn('Image cleanup failed (but content was saved):', cleanupError);
+          header: Header,
+          paragraph: {
+            class: Paragraph as any,
+            inlineToolbar: true
+          },
+          list: {
+            class: List as any,
+            inlineToolbar: true
+          },
+          quote: {
+            class: Quote,
+            inlineToolbar: true,
+            config: {
+              quotePlaceholder: 'Enter a quote',
+              captionPlaceholder: "Quote's author"
             }
-          } catch (error) {
-            // Suppress SecurityError - these are harmless browser restrictions
-            if (error instanceof Error && error.name !== 'SecurityError') {
-              console.error('Error saving editor data:', error);
+          },
+          delimiter: Delimiter,
+          table: {
+            class: Table as any,
+            inlineToolbar: true,
+            config: {
+              rows: 2,
+              cols: 3
+            }
+          },
+          code: CodeTool,
+          linkTool: {
+            class: LinkTool as any,
+            config: {
+              endpoint: '/api/fetch-url'
+            }
+          },
+          marker: Marker as any,
+          inlineCode: InlineCode,
+          image: {
+            class: ImageTool,
+            config: {
+              endpoints: {
+                byFile: '/api/upload-image',
+                byUrl: '/api/upload-image-by-url'
+              },
+              captionPlaceholder: 'Enter image caption...',
+              withBorder: false,
+              withBackground: false,
+              stretched: false,
+              withCaption: true,
+              field: 'image'
             }
           }
-        }, 1000); // Reduced debounce for more responsive saving
-      },
-      onReady: () => {
-        console.log('Editor.js is ready to work!');
-        setIsInitialized(true);
-        initializingRef.current = false;
-      }
-    });
+        },
+        data: initialData,
+        readOnly,
+        placeholder,
+        autofocus: false, // Disable autofocus to avoid security issues
+        minHeight: 300,
+        onChange: async () => {
+          if (!onChange || !editorRef.current || !isInitialized) return;
 
-    editorRef.current = editor;
+          // Clear previous timeout
+          if (changeTimeoutRef.current) {
+            clearTimeout(changeTimeoutRef.current);
+          }
+
+          // Debounce the change to avoid too many calls
+          changeTimeoutRef.current = setTimeout(async () => {
+            try {
+              if (!editorRef.current) return;
+
+              const outputData = await editorRef.current.save();
+              const newContent = JSON.stringify(outputData);
+
+              console.log('Word processor attempting to save...', {
+                previousLength: previousContent.length,
+                newLength: newContent.length,
+                hasBlocks: outputData.blocks?.length || 0,
+                contentChanged: newContent !== previousContent
+              });
+
+              // Always call onChange to ensure parent components receive updates
+              setPreviousContent(newContent);
+              onChange(newContent);
+              console.log('Content change transmitted to parent component');
+
+              // Clean up unused images (but don't block saving if this fails)
+              try {
+                await deleteUnusedImages(previousContent, newContent);
+              } catch (cleanupError) {
+                console.warn('Image cleanup failed (but content was saved):', cleanupError);
+              }
+            } catch (error) {
+              // Suppress SecurityError - these are harmless browser restrictions
+              if (error instanceof Error && error.name !== 'SecurityError') {
+                console.error('Error saving editor data:', error);
+              }
+            }
+          }, 1000); // Reduced debounce for more responsive saving
+        },
+        onReady: () => {
+          console.log('Editor.js is ready to work!');
+          setIsInitialized(true);
+          initializingRef.current = false;
+        }
+      });
+
+      editorRef.current = editor;
     } catch (error) {
       initializingRef.current = false;
       // Suppress SecurityError from getLayoutMap() which is a browser permission issue
@@ -181,7 +181,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
       if (changeTimeoutRef.current) {
         clearTimeout(changeTimeoutRef.current);
       }
-      
+
       if (editorRef.current) {
         try {
           editorRef.current.destroy();
@@ -197,12 +197,12 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
       initializingRef.current = false;
     };
   }, []);
-  
+
   // Update previous content when value prop changes and reinitialize if needed
   useEffect(() => {
     const newValue = value || '';
     setPreviousContent(newValue);
-    
+
     // If editor is initialized and value changed externally, update editor content
     if (editorRef.current && isInitialized && newValue !== previousContent) {
       try {
