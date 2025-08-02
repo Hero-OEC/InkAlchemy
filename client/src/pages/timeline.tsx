@@ -23,6 +23,7 @@ export default function Timeline() {
 
   const { data: events = [], isLoading: eventsLoading } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
+    staleTime: 0, // Force refetch on component mount
   });
 
   const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
@@ -282,6 +283,7 @@ export default function Timeline() {
         ) : (
           <div className="p-6">
             <SerpentineTimeline
+              key={`timeline-${events.length}-${events.map(e => e.id).join('-')}`}
               events={filteredEvents}
               characters={characters}
               locations={locations}
