@@ -45,3 +45,4 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 - **Enhanced Security**: Added authentication middleware to all deletion endpoints for proper access control
 - **Full Functionality**: All core features working including authentication, database operations, comprehensive image management, real-time content updates, and complete cascade deletion
 - **Final Migration Fix**: Fixed event deletion authentication error by replacing manual localStorage token access with proper apiRequest function that handles Supabase authentication correctly
+- **Cache Invalidation Fix**: Added React Query cache invalidation to event deletion for automatic timeline page updates

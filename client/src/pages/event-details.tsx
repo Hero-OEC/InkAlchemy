@@ -10,7 +10,7 @@ import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { EventDetailsHeaderSkeleton, EventDetailsContentSkeleton } from "@/components/skeleton";
 import { ArrowLeft, Calendar, Crown, MapPin, Sword, Shield, Users, Zap, Heart, Skull, Eye, Lightbulb, PenTool, FileText, Edit, Trash2, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Project, Event, Character, Location, Relationship } from "@shared/schema";
 
 // Event type icons (same as timeline)
@@ -127,6 +127,11 @@ export default function EventDetails() {
       await apiRequest(`/api/events/${eventId}`, {
         method: 'DELETE',
       });
+      
+      // Invalidate relevant queries to update the UI
+      await queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/events`] });
+      await queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      await queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}`] });
       
       setLocation(`/projects/${projectId}/timeline`);
     } catch (error) {
