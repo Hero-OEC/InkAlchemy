@@ -36,4 +36,6 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 - **Image Deletion System**: Automatic cleanup of unused images from storage when deleted from word processor or character forms
 - **Character Image Management**: Remove button for character images with immediate storage cleanup
 - **Smart Image Cleanup**: Word processor automatically detects and removes unused images from content with debounced change detection
+- **Editor.js Header Configuration Fix**: Resolved authentication header error in word processor image uploads
+- **Image Upload API**: Configured with optional authentication middleware for seamless editor integration
 - **Full Functionality**: All core features working including authentication, database operations, and comprehensive image management

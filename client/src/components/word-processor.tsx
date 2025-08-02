@@ -51,8 +51,8 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
 
     let editor: EditorJS;
     
-    // Function to get auth headers for image uploads
-    const getAuthHeaders = async () => {
+    // Get initial auth headers for image uploads
+    const getInitialAuthHeaders = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const headers: Record<string, string> = {
         'Accept': 'application/json'
@@ -116,7 +116,6 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             withBackground: false,
             stretched: false,
             withCaption: true,
-            additionalRequestHeaders: getAuthHeaders,
             field: 'image'
           }
         }
