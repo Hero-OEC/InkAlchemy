@@ -889,12 +889,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/races/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Check if any characters are using this race
+      const charactersUsingRace = await storage.getCharactersByRace(id);
+      if (charactersUsingRace.length > 0) {
+        const characterNames = charactersUsingRace.map(c => c.name).join(', ');
+        return res.status(400).json({ 
+          message: `Cannot delete race. It is being used by the following characters: ${characterNames}. Please update these characters to use a different race first.` 
+        });
+      }
+      
       const deleted = await storage.deleteRace(id);
       if (!deleted) {
         return res.status(404).json({ message: "Race not found" });
       }
       res.status(204).send();
     } catch (error) {
+      console.error('Race deletion error:', error);
       res.status(500).json({ message: "Failed to delete race" });
     }
   });

@@ -463,6 +463,10 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
+  async getCharactersByRace(raceId: number): Promise<Character[]> {
+    return await db.select().from(characters).where(eq(characters.raceId, raceId));
+  }
+
   // Relationships
   async getRelationships(projectId: number): Promise<Relationship[]> {
     return await db.select().from(relationships).where(eq(relationships.projectId, projectId));

@@ -1,5 +1,5 @@
 import { useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
@@ -7,8 +7,11 @@ import { CharacterCard } from "@/components/character-card";
 import { MiniCard } from "@/components/mini-card";
 import { Button } from "@/components/button-variations";
 import { SearchComponent } from "@/components/search-component";
+import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { CharactersSectionHeaderSkeleton, RacesGridSkeleton, CharactersGridSkeleton } from "@/components/skeleton";
 import { Plus, Users, UserCheck } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 import type { Project, Character, Race } from "@shared/schema";
 
 export default function Characters() {
@@ -21,6 +24,10 @@ export default function Characters() {
   const [raceActiveFilters, setRaceActiveFilters] = useState<Record<string, any>>({});
   const [characterSearchQuery, setCharacterSearchQuery] = useState("");
   const [characterActiveFilters, setCharacterActiveFilters] = useState<Record<string, any>>({});
+  
+  // Delete confirmation states
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [raceToDelete, setRaceToDelete] = useState<Race | null>(null);
   
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -156,9 +163,38 @@ export default function Characters() {
     setLocation(`/projects/${projectId}/races/${race.id}/edit`);
   };
 
+  // Race deletion mutation
+  const deleteRaceMutation = useMutation({
+    mutationFn: async (raceId: number) => {
+      await apiRequest(`/api/races/${raceId}`, { method: 'DELETE' });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/races`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/characters`] });
+      setShowDeleteDialog(false);
+      setRaceToDelete(null);
+    },
+    onError: (error: any) => {
+      console.error('Race deletion failed:', error);
+      // Keep dialog open to show error state
+    }
+  });
+
   const handleRaceDelete = (race: Race) => {
-    // TODO: Implement race deletion with confirmation dialog
-    console.log("Delete race:", race.name);
+    setRaceToDelete(race);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmRaceDelete = () => {
+    if (raceToDelete) {
+      deleteRaceMutation.mutate(raceToDelete.id);
+    }
+  };
+
+  const cancelRaceDelete = () => {
+    setShowDeleteDialog(false);
+    setRaceToDelete(null);
   };
 
   if (isLoading) {
@@ -303,6 +339,16 @@ export default function Characters() {
           )}
         </div>
       </main>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmation
+        isOpen={showDeleteDialog}
+        onConfirm={confirmRaceDelete}
+        onClose={cancelRaceDelete}
+        title={`Delete Race: ${raceToDelete?.name || ""}`}
+        description={`Are you sure you want to delete the race "${raceToDelete?.name || ""}"? This action cannot be undone. If this race is being used by any characters, you'll need to update those characters first.`}
+        isLoading={deleteRaceMutation.isPending}
+      />
     </div>
   );
 }
