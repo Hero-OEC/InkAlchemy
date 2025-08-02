@@ -135,30 +135,34 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           // Debounce the change to avoid too many calls
           changeTimeoutRef.current = setTimeout(async () => {
             try {
-              const outputData = await editorRef.current!.save();
+              // Add a small delay to avoid rapid successive saves
+              await new Promise(resolve => setTimeout(resolve, 100));
+              
+              if (!editorRef.current) return;
+              
+              const outputData = await editorRef.current.save();
               console.log('Word processor saving data:', outputData);
               const newContent = JSON.stringify(outputData);
               
-              // Clean up unused images (this will log what's happening)
-              await deleteUnusedImages(previousContent, newContent);
-              
-              // Update the content immediately
-              setPreviousContent(newContent);
-              onChange(newContent);
+              // Only proceed if content actually changed
+              if (newContent !== previousContent) {
+                // Clean up unused images (this will log what's happening)
+                await deleteUnusedImages(previousContent, newContent);
+                
+                // Update the content immediately
+                setPreviousContent(newContent);
+                onChange(newContent);
+              }
             } catch (error) {
               // Suppress SecurityError from getLayoutMap() which is a browser permission issue
               if (error instanceof Error && error.name === 'SecurityError') {
-                console.warn('Browser security restriction during save, but content was saved');
-                // Still call onChange even if there's a SecurityError
-                const outputData = await editorRef.current!.save();
-                const newContent = JSON.stringify(outputData);
-                setPreviousContent(newContent);
-                onChange(newContent);
+                console.warn('Browser security restriction detected, skipping this save cycle');
+                return;
               } else {
                 console.error('Error saving editor data:', error);
               }
             }
-          }, 1000); // Increased debounce to allow multiple deletions
+          }, 1500); // Increased debounce further to reduce frequency
         }
       },
       onReady: () => {
@@ -170,7 +174,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
     } catch (error) {
       // Suppress SecurityError from getLayoutMap() which is a browser permission issue
       if (error instanceof Error && error.name === 'SecurityError') {
-        console.warn('Browser security restriction detected, but Editor.js will work normally');
+        console.warn('Browser security restriction detected during initialization, but Editor.js will work normally');
       } else {
         console.error('Error initializing Editor.js:', error);
       }
