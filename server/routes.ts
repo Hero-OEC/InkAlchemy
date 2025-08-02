@@ -287,9 +287,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const data = insertLocationSchema.partial().parse(req.body);
       
-      // Check if description content changed and clean up unused images
-      if (data.hasOwnProperty('description') && currentLocation.description) {
-        await cleanupContentImages(currentLocation.description || '', data.description || '');
+      // Check if content changed and clean up unused images
+      if (data.hasOwnProperty('content') && currentLocation.content) {
+        await cleanupContentImages(currentLocation.content || '', data.content || '');
       }
       
       const location = await storage.updateLocation(id, data);
@@ -302,7 +302,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/locations/:id", async (req, res) => {
+  app.delete("/api/locations/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -314,9 +314,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Location not found" });
       }
       
-      // Clean up any images in location description
-      if (location && location.description) {
-        await cleanupContentImages(location.description, '');
+      // Clean up any images in location content
+      if (location && location.content) {
+        await cleanupContentImages(location.content, '');
       }
       
       res.status(204).send();
@@ -385,7 +385,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/events/:id", async (req, res) => {
+  app.delete("/api/events/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -456,13 +456,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/magic-systems/:id", async (req, res) => {
+  app.delete("/api/magic-systems/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get magic system before deletion to clean up images
+      const magicSystem = await storage.getMagicSystem(id);
+      
       const deleted = await storage.deleteMagicSystem(id);
       if (!deleted) {
         return res.status(404).json({ message: "Magic system not found" });
       }
+      
+      // Clean up any images in magic system description
+      if (magicSystem && magicSystem.description) {
+        await cleanupContentImages(magicSystem.description, '');
+      }
+      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete magic system" });
@@ -527,7 +537,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/spells/:id", async (req, res) => {
+  app.delete("/api/spells/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const deleted = await storage.deleteSpell(id);
@@ -622,7 +632,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/lore/:id", async (req, res) => {
+  app.delete("/api/lore/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -705,7 +715,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/notes/:id", async (req, res) => {
+  app.delete("/api/notes/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       

@@ -40,4 +40,7 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 - **Image Upload API**: Configured with optional authentication middleware for seamless editor integration
 - **Cache Invalidation Fix**: Fixed React Query cache invalidation in character forms to ensure real-time content updates
 - **Image Renderer Enhancement**: Added comprehensive debugging and error handling for image display in Editor.js content
-- **Full Functionality**: All core features working including authentication, database operations, comprehensive image management, and real-time content updates
+- **Multiple Image Deletion**: Optimized word processor to handle multiple image deletions with batch processing and increased debounce timing
+- **Cascade Deletion**: Complete cascade deletion system - deleting any entity (character, location, event, lore, note, magic system) automatically cleans up all associated images from storage
+- **Enhanced Security**: Added authentication middleware to all deletion endpoints for proper access control
+- **Full Functionality**: All core features working including authentication, database operations, comprehensive image management, real-time content updates, and complete cascade deletion
