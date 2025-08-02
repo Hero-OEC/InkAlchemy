@@ -34,7 +34,6 @@ export default function CharacterDetails() {
   const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goBack, navigateWithReferrer } = useNavigation();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // Don't track detail pages in history - only main pages should be tracked
@@ -106,7 +105,7 @@ export default function CharacterDetails() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['characters'] });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
-      navigate('/dashboard');
+      setLocation('/dashboard');
     },
   });
 
