@@ -55,18 +55,25 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
 
     let editor: EditorJS;
     
-    // Get initial auth headers for image uploads
-    const getInitialAuthHeaders = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const headers: Record<string, string> = {
-        'Accept': 'application/json'
-      };
-      
-      if (session?.access_token) {
-        headers['Authorization'] = `Bearer ${session.access_token}`;
+    // Get auth headers for image uploads
+    const getAuthHeaders = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const headers: Record<string, string> = {
+          'Accept': 'application/json'
+        };
+        
+        if (session?.access_token) {
+          headers['Authorization'] = `Bearer ${session.access_token}`;
+        }
+        
+        return headers;
+      } catch (error) {
+        console.warn('Could not get auth headers:', error);
+        return {
+          'Accept': 'application/json'
+        };
       }
-      
-      return headers;
     };
     
     try {
@@ -120,7 +127,8 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             withBackground: false,
             stretched: false,
             withCaption: true,
-            field: 'image'
+            field: 'image',
+            additionalRequestHeaders: getAuthHeaders
           }
         }
       },
@@ -147,14 +155,23 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             
             // Only proceed if content actually changed
             if (newContent !== previousContent) {
-              console.log('Word processor content changed, saving...');
+              console.log('Word processor content changed, saving...', {
+                previousLength: previousContent.length,
+                newLength: newContent.length,
+                hasBlocks: outputData.blocks?.length || 0
+              });
               
               // Clean up unused images
-              await deleteUnusedImages(previousContent, newContent);
+              try {
+                await deleteUnusedImages(previousContent, newContent);
+              } catch (cleanupError) {
+                console.warn('Image cleanup failed:', cleanupError);
+              }
               
               // Update the content
               setPreviousContent(newContent);
               onChange(newContent);
+              console.log('Content saved successfully');
             }
           } catch (error) {
             // Suppress SecurityError - these are harmless browser restrictions
@@ -162,7 +179,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
               console.error('Error saving editor data:', error);
             }
           }
-        }, 2000); // Longer debounce to reduce save frequency
+        }, 1500); // Reduced debounce for more responsive saving
       },
       onReady: () => {
         console.log('Editor.js is ready to work!');
@@ -205,10 +222,22 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
     };
   }, []);
   
-  // Update previous content when value prop changes
+  // Update previous content when value prop changes and reinitialize if needed
   useEffect(() => {
-    setPreviousContent(value || '');
-  }, [value]);
+    const newValue = value || '';
+    setPreviousContent(newValue);
+    
+    // If editor is initialized and value changed externally, update editor content
+    if (editorRef.current && isInitialized && newValue !== previousContent) {
+      try {
+        const data = newValue ? JSON.parse(newValue) : { blocks: [] };
+        editorRef.current.render(data);
+        console.log('Editor content updated from external value change');
+      } catch (error) {
+        console.warn('Could not update editor with new value:', error);
+      }
+    }
+  }, [value, isInitialized, previousContent]);
 
 
 
