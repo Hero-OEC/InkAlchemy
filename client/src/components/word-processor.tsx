@@ -14,6 +14,7 @@ import Marker from '@editorjs/marker';
 import Paragraph from '@editorjs/paragraph';
 import ImageTool from '@editorjs/image';
 import { useImageCleanup } from '@/hooks/useImageCleanup';
+import { supabase } from '@/lib/supabase';
 import './editor-styles.css';
 
 
@@ -49,6 +50,20 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
     }
 
     let editor: EditorJS;
+    
+    // Function to get auth headers for image uploads
+    const getAuthHeaders = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = {
+        'Accept': 'application/json'
+      };
+      
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+      
+      return headers;
+    };
     
     try {
       editor = new EditorJS({
@@ -101,9 +116,8 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             withBackground: false,
             stretched: false,
             withCaption: true,
-            additionalRequestHeaders: {
-              'Accept': 'application/json'
-            }
+            additionalRequestHeaders: getAuthHeaders,
+            field: 'image'
           }
         }
       },

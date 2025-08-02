@@ -1181,9 +1181,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Image upload endpoints for Editor.js
-  app.post("/api/upload-image", uploadImage, handleImageUpload);
-  app.post("/api/upload-image-by-url", handleImageUploadByUrl);
+  // Image upload endpoints for Editor.js (with optional auth)
+  app.post("/api/upload-image", optionalAuth, uploadImage, handleImageUpload);
+  app.post("/api/upload-image-by-url", optionalAuth, handleImageUploadByUrl);
   
   // Image deletion endpoint
   app.delete("/api/delete-image", authenticateUser, async (req: AuthenticatedRequest, res) => {
