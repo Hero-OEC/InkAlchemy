@@ -103,16 +103,36 @@ export const EditorContentRenderer: React.FC<EditorContentRendererProps> = ({
         );
 
       case 'image':
+        // Debug: Log the image block data to see the structure
+        console.log('Image block data:', block.data);
+        
+        // Handle different possible data structures
+        const imageUrl = block.data.file?.url || block.data.url || block.data.src;
+        
+        if (!imageUrl) {
+          console.error('No image URL found in block data:', block.data);
+          return (
+            <div key={block.id} className="my-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">Image data missing or invalid</p>
+              <pre className="text-xs text-gray-600 mt-2">{JSON.stringify(block.data, null, 2)}</pre>
+            </div>
+          );
+        }
+        
         return (
           <div key={block.id} className="my-6">
             <img 
-              src={block.data.file.url} 
+              src={imageUrl} 
               alt={block.data.caption || "Content image"}
               className={`rounded-lg mx-auto ${
                 block.data.stretched ? "w-full" : "max-w-lg"
               } ${block.data.withBorder ? "border border-brand-200" : ""} ${
                 block.data.withBackground ? "bg-brand-50 p-4" : ""
               }`}
+              onError={(e) => {
+                console.error('Image failed to load:', imageUrl);
+                e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDIwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik05MCA0MEwxMTAgNjBMMTMwIDQwTDE1MCA2MEgxMDBWNDBaIiBmaWxsPSIjOUIzNEY4Ii8+CjxjaXJjbGUgY3g9IjcwIiBjeT0iNDAiIHI9IjEwIiBmaWxsPSIjRjU5RTBCIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2UgZmFpbGVkIHRvIGxvYWQ8L3RleHQ+Cjwvc3ZnPgo=';
+              }}
             />
             {block.data.caption && (
               <p className="text-center text-brand-600 text-sm mt-2 italic">
@@ -130,6 +150,9 @@ export const EditorContentRenderer: React.FC<EditorContentRendererProps> = ({
         );
     }
   };
+
+  // Debug: Log the entire data structure
+  console.log('EditorJS data for rendering:', data);
 
   return (
     <div className={`prose prose-brand max-w-none ${className}`}>

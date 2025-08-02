@@ -136,6 +136,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
           changeTimeoutRef.current = setTimeout(async () => {
             try {
               const outputData = await editorRef.current!.save();
+              console.log('Word processor saving data:', outputData);
               const newContent = JSON.stringify(outputData);
               
               // Clean up unused images (this will log what's happening)
