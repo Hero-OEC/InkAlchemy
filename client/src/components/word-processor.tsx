@@ -149,6 +149,11 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
               // Suppress SecurityError from getLayoutMap() which is a browser permission issue
               if (error instanceof Error && error.name === 'SecurityError') {
                 console.warn('Browser security restriction during save, but content was saved');
+                // Still call onChange even if there's a SecurityError
+                const outputData = await editorRef.current!.save();
+                const newContent = JSON.stringify(outputData);
+                setPreviousContent(newContent);
+                onChange(newContent);
               } else {
                 console.error('Error saving editor data:', error);
               }
@@ -158,9 +163,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
       },
       onReady: () => {
         console.log('Editor.js is ready to work!');
-        setIsReady(true);
-      },
-      logLevel: 'ERROR' as const // Suppress non-critical warnings
+      }
       });
 
       editorRef.current = editor;
