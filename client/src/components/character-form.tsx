@@ -184,6 +184,9 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log('Form submitted with data:', data);
+    console.log('Description field value:', data.description);
+    
     if (character) {
       updateMutation.mutate(data);
     } else {
@@ -230,6 +233,10 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
               type="submit"
               variant="primary"
               disabled={isLoading}
+              onClick={(e) => {
+                console.log('Save button clicked, form values:', form.getValues());
+                // Let the form handle submission
+              }}
             >
               {isLoading ? "Saving..." : character ? "Update Character" : "Create Character"}
             </Button>
