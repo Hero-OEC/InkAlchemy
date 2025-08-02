@@ -55,17 +55,6 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
 
     let editor: EditorJS;
     
-    // Get auth headers synchronously for image uploads
-    const getAuthHeaders = () => {
-      const headers: Record<string, string> = {
-        'Accept': 'application/json'
-      };
-      
-      // Note: We'll handle auth through cookies/sessions on the server side
-      // The image upload endpoints have optional auth middleware
-      return headers;
-    };
-    
     try {
       editor = new EditorJS({
         holder: holderRef.current,
@@ -117,8 +106,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             withBackground: false,
             stretched: false,
             withCaption: true,
-            field: 'image',
-            additionalRequestHeaders: getAuthHeaders()
+            field: 'image'
           }
         }
       },
@@ -143,25 +131,23 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             const outputData = await editorRef.current.save();
             const newContent = JSON.stringify(outputData);
             
-            // Only proceed if content actually changed
-            if (newContent !== previousContent) {
-              console.log('Word processor content changed, saving...', {
-                previousLength: previousContent.length,
-                newLength: newContent.length,
-                hasBlocks: outputData.blocks?.length || 0
-              });
-              
-              // Clean up unused images
-              try {
-                await deleteUnusedImages(previousContent, newContent);
-              } catch (cleanupError) {
-                console.warn('Image cleanup failed:', cleanupError);
-              }
-              
-              // Update the content
-              setPreviousContent(newContent);
-              onChange(newContent);
-              console.log('Content saved successfully');
+            console.log('Word processor attempting to save...', {
+              previousLength: previousContent.length,
+              newLength: newContent.length,
+              hasBlocks: outputData.blocks?.length || 0,
+              contentChanged: newContent !== previousContent
+            });
+            
+            // Always call onChange to ensure parent components receive updates
+            setPreviousContent(newContent);
+            onChange(newContent);
+            console.log('Content change transmitted to parent component');
+            
+            // Clean up unused images (but don't block saving if this fails)
+            try {
+              await deleteUnusedImages(previousContent, newContent);
+            } catch (cleanupError) {
+              console.warn('Image cleanup failed (but content was saved):', cleanupError);
             }
           } catch (error) {
             // Suppress SecurityError - these are harmless browser restrictions
@@ -169,7 +155,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
               console.error('Error saving editor data:', error);
             }
           }
-        }, 1500); // Reduced debounce for more responsive saving
+        }, 1000); // Reduced debounce for more responsive saving
       },
       onReady: () => {
         console.log('Editor.js is ready to work!');
