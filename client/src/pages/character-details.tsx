@@ -13,6 +13,7 @@ import { Edit, Trash2, Users, Crown, Sword, Shield, Zap, Heart, Skull, Sparkles,
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import type { Project, Character, MagicSystem, Event, Location, Relationship, Spell, Race } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 const CHARACTER_TYPE_CONFIG = {
   protagonist: { icon: Crown, label: "Protagonist", bgColor: "bg-brand-500", textColor: "text-white" },
@@ -91,21 +92,15 @@ export default function CharacterDetails() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      const token = localStorage.getItem('supabase-token');
-      const response = await fetch(`/api/characters/${id}`, {
+      await apiRequest(`/api/characters/${id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
       });
-      if (!response.ok) {
-        throw new Error('Failed to delete character');
-      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['characters'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/characters`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
-      setLocation('/dashboard');
+      setLocation(`/projects/${projectId}/characters`);
     },
   });
 

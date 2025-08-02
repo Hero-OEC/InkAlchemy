@@ -49,3 +49,4 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 - **Timeline Auto-Update Fix**: Resolved timeline page not updating after event deletion by adding staleTime: 0 to events query and dynamic key prop to force SerpentineTimeline re-rendering
 - **Race Deletion Implementation**: Added proper race deletion with confirmation dialog, server-side foreign key constraint checking, and informative error messages when race is used by characters
 - **Navigation Error Fix**: Fixed useNavigate runtime error in character-details.tsx by replacing with wouter's setLocation navigation
+- **Character Deletion Fix**: Fixed character deletion authentication error by replacing manual fetch with apiRequest function for proper Supabase JWT handling
