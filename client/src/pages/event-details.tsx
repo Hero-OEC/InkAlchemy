@@ -130,27 +130,14 @@ export default function EventDetails() {
         method: 'DELETE',
       });
       
-      // Force refetch of relevant queries to update the UI immediately
-      queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}/events`],
-        refetchType: 'all'
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}/stats`],
-        refetchType: 'all'
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}/relationships`],
-        refetchType: 'all'
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: [`/api/projects/${projectId}`],
-        refetchType: 'all'
-      });
-      
-      // Clear the specific event query as well
+      // Remove queries from cache to force fresh data fetch
+      queryClient.removeQueries({ queryKey: [`/api/projects/${projectId}/events`] });
+      queryClient.removeQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      queryClient.removeQueries({ queryKey: [`/api/projects/${projectId}/relationships`] });
+      queryClient.removeQueries({ queryKey: [`/api/projects/${projectId}`] });
       queryClient.removeQueries({ queryKey: [`/api/events/${eventId}`] });
       
+      // Navigate to timeline - this will trigger fresh data fetching
       setLocation(`/projects/${projectId}/timeline`);
     });
   };
