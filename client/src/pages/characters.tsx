@@ -39,6 +39,7 @@ export default function Characters() {
 
   const { data: races = [], isLoading: racesLoading } = useQuery<Race[]>({
     queryKey: [`/api/projects/${projectId}/races`],
+    staleTime: 0,
   });
 
   // Check if any core data is still loading
@@ -169,7 +170,8 @@ export default function Characters() {
       await apiRequest(`/api/races/${raceId}`, { method: 'DELETE' });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/races`] });
+      // Remove the queries entirely to force refetch
+      queryClient.removeQueries({ queryKey: [`/api/projects/${projectId}/races`] });
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/characters`] });
       setShowDeleteDialog(false);
