@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { MiniCard } from "@/components/mini-card";
 import { Button } from "@/components/button-variations";
-import { DeleteConfirmation } from "@/components/delete-confirmation";
+import { DeleteConfirmation, useDeleteConfirmation } from "@/components/delete-confirmation";
 import { useNavigation } from "@/contexts/navigation-context";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { EventDetailsHeaderSkeleton, EventDetailsContentSkeleton } from "@/components/skeleton";
@@ -63,8 +63,10 @@ const STAGE_COLORS = {
 export default function EventDetails() {
   const { projectId, eventId } = useParams();
   const [currentPath, setLocation] = useLocation();
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goBack, navigateWithReferrer } = useNavigation();
+  
+  // Use the delete confirmation hook for proper loading state management
+  const deleteConfirmation = useDeleteConfirmation();
 
   // Don't track detail pages in history - only main pages should be tracked
 
@@ -123,7 +125,7 @@ export default function EventDetails() {
   };
 
   const handleDelete = async () => {
-    try {
+    await deleteConfirmation.handleConfirm(async () => {
       await apiRequest(`/api/events/${eventId}`, {
         method: 'DELETE',
       });
@@ -134,9 +136,7 @@ export default function EventDetails() {
       await queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}`] });
       
       setLocation(`/projects/${projectId}/timeline`);
-    } catch (error) {
-      console.error('Error deleting event:', error);
-    }
+    });
   };
 
   if (isLoading) {
@@ -273,7 +273,7 @@ export default function EventDetails() {
             <Button
               variant="danger"
               size="md"
-              onClick={() => setShowDeleteDialog(true)}
+              onClick={deleteConfirmation.openModal}
               className="flex items-center gap-2"
             >
               <Trash2 className="w-4 h-4" />
@@ -347,12 +347,13 @@ export default function EventDetails() {
       </main>
 
       <DeleteConfirmation
-        isOpen={showDeleteDialog}
-        onClose={() => setShowDeleteDialog(false)}
+        isOpen={deleteConfirmation.isOpen}
+        onClose={deleteConfirmation.closeModal}
         onConfirm={handleDelete}
         title="Delete Event"
         description={`Are you sure you want to delete "${event?.title}"? This action cannot be undone and will remove all associated relationships and data.`}
         itemName={event?.title || "this event"}
+        isLoading={deleteConfirmation.isLoading}
       />
     </div>
   );
