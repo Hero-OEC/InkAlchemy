@@ -20,6 +20,7 @@ import './editor-styles.css';
 
 interface WordProcessorProps {
   value?: string;
+  data?: string; // Support both prop names for backward compatibility
   onChange?: (data: string) => void;
   placeholder?: string;
   readOnly?: boolean;
@@ -28,6 +29,7 @@ interface WordProcessorProps {
 
 export const WordProcessor: React.FC<WordProcessorProps> = ({
   value,
+  data, // Support both prop names
   onChange,
   placeholder = "Start writing...",
   readOnly = false,
@@ -35,7 +37,8 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
 }) => {
   const holderRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<EditorJS | null>(null);
-  const [previousContent, setPreviousContent] = useState<string>(value || '');
+  const actualValue = value || data || '';
+  const [previousContent, setPreviousContent] = useState<string>(actualValue);
   const { deleteUnusedImages } = useImageCleanup();
   const changeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -48,7 +51,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
 
     let initialData;
     try {
-      initialData = value ? JSON.parse(value) : { blocks: [] };
+      initialData = actualValue ? JSON.parse(actualValue) : { blocks: [] };
     } catch {
       initialData = { blocks: [] };
     }
@@ -116,14 +119,14 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
         autofocus: false, // Disable autofocus to avoid security issues
         minHeight: 300,
         onChange: async () => {
-          if (!onChange || !editorRef.current || !isInitialized) return;
+          if (!onChange || !editorRef.current) return;
 
           // Clear previous timeout
           if (changeTimeoutRef.current) {
             clearTimeout(changeTimeoutRef.current);
           }
 
-          // Debounce the change to avoid too many calls
+          // Reduced debounce for more responsive saving
           changeTimeoutRef.current = setTimeout(async () => {
             try {
               if (!editorRef.current) return;
@@ -131,23 +134,26 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
               const outputData = await editorRef.current.save();
               const newContent = JSON.stringify(outputData);
 
-              console.log('Word processor attempting to save...', {
+              console.log('Word processor saving content:', {
                 previousLength: previousContent.length,
                 newLength: newContent.length,
                 hasBlocks: outputData.blocks?.length || 0,
-                contentChanged: newContent !== previousContent
+                contentChanged: newContent !== previousContent,
+                isInitialized
               });
 
-              // Always call onChange to ensure parent components receive updates
-              setPreviousContent(newContent);
-              onChange(newContent);
-              console.log('Content change transmitted to parent component');
+              // Only call onChange if content actually changed
+              if (newContent !== previousContent) {
+                setPreviousContent(newContent);
+                onChange(newContent);
+                console.log('✅ Content saved successfully');
 
-              // Clean up unused images (but don't block saving if this fails)
-              try {
-                await deleteUnusedImages(previousContent, newContent);
-              } catch (cleanupError) {
-                console.warn('Image cleanup failed (but content was saved):', cleanupError);
+                // Clean up unused images (but don't block saving if this fails)
+                try {
+                  await deleteUnusedImages(previousContent, newContent);
+                } catch (cleanupError) {
+                  console.warn('Image cleanup failed (but content was saved):', cleanupError);
+                }
               }
             } catch (error) {
               // Suppress SecurityError - these are harmless browser restrictions
@@ -155,10 +161,10 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
                 console.error('Error saving editor data:', error);
               }
             }
-          }, 1000); // Reduced debounce for more responsive saving
+          }, 500); // Faster response time
         },
         onReady: () => {
-          console.log('Editor.js is ready to work!');
+          console.log('✅ Editor.js is ready to work!');
           setIsInitialized(true);
           initializingRef.current = false;
         }
@@ -200,20 +206,20 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
 
   // Update previous content when value prop changes and reinitialize if needed
   useEffect(() => {
-    const newValue = value || '';
-    setPreviousContent(newValue);
-
+    const newValue = actualValue;
+    
     // If editor is initialized and value changed externally, update editor content
     if (editorRef.current && isInitialized && newValue !== previousContent) {
       try {
         const data = newValue ? JSON.parse(newValue) : { blocks: [] };
         editorRef.current.render(data);
+        setPreviousContent(newValue);
         console.log('Editor content updated from external value change');
       } catch (error) {
         console.warn('Could not update editor with new value:', error);
       }
     }
-  }, [value, isInitialized, previousContent]);
+  }, [actualValue, isInitialized, previousContent]);
 
 
 

@@ -393,7 +393,7 @@ function ComponentsShowcase() {
             Clean Editor.js component with no custom styling - just the base functionality. Fully responsive to container width.
           </p>
           <WordProcessor
-            data={editorData}
+            value={editorData}
             onChange={setEditorData}
             placeholder="Start writing your story..."
           />
