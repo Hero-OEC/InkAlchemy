@@ -158,8 +158,12 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
     onSuccess: async (updatedCharacter) => {
       await updateCharacterSpells(updatedCharacter.id);
       
+      // Invalidate all character-related caches
       queryClient.invalidateQueries({ 
         queryKey: [`/api/projects/${projectId}/characters`] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: [`/api/characters/${updatedCharacter.id}`] 
       });
       queryClient.invalidateQueries({ 
         queryKey: [`/api/characters/${updatedCharacter.id}/spells`] 
