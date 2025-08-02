@@ -55,25 +55,15 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
 
     let editor: EditorJS;
     
-    // Get auth headers for image uploads
-    const getAuthHeaders = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const headers: Record<string, string> = {
-          'Accept': 'application/json'
-        };
-        
-        if (session?.access_token) {
-          headers['Authorization'] = `Bearer ${session.access_token}`;
-        }
-        
-        return headers;
-      } catch (error) {
-        console.warn('Could not get auth headers:', error);
-        return {
-          'Accept': 'application/json'
-        };
-      }
+    // Get auth headers synchronously for image uploads
+    const getAuthHeaders = () => {
+      const headers: Record<string, string> = {
+        'Accept': 'application/json'
+      };
+      
+      // Note: We'll handle auth through cookies/sessions on the server side
+      // The image upload endpoints have optional auth middleware
+      return headers;
     };
     
     try {
@@ -128,7 +118,7 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
             stretched: false,
             withCaption: true,
             field: 'image',
-            additionalRequestHeaders: getAuthHeaders
+            additionalRequestHeaders: getAuthHeaders()
           }
         }
       },
