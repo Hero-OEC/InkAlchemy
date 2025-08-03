@@ -55,3 +55,4 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 - **Replit Environment Migration**: Successfully migrated InkAlchemy from Replit Agent to standard Replit environment with PostgreSQL database
 - **Location Deletion Fix**: Fixed location deletion authentication error by replacing manual fetch with apiRequest function for proper Supabase JWT handling
 - **Location Deletion UI**: Added proper loading indication to delete confirmation dialog with isPending state from React Query mutation
+- **Enhanced Activity Tracking**: Fixed editing history dashboard to properly track all entity types including races, with comprehensive create/edit tracking and real-time data refresh

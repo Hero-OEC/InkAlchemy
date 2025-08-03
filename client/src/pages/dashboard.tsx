@@ -5,9 +5,9 @@ import { Navbar } from "@/components/navbar";
 import { DashboardHeaderSkeleton, StatsGridSkeleton, EditHistorySkeleton } from "@/components/skeleton";
 import { 
   Users, MapPin, Calendar, Sparkles, BookOpen, StickyNote,
-  Edit3, Plus, Trash2, Clock
+  Edit3, Plus, Trash2, Clock, Crown
 } from "lucide-react";
-import type { Project, Character, Location, Event, MagicSystem, LoreEntry, Note } from "@shared/schema";
+import type { Project, Character, Location, Event, MagicSystem, LoreEntry, Note, Race } from "@shared/schema";
 
 export default function Dashboard() {
   const { projectId } = useParams();
@@ -28,32 +28,43 @@ export default function Dashboard() {
 
   const { data: characters, isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
+    staleTime: 0,
   });
 
   const { data: locations, isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
+    staleTime: 0,
   });
 
   const { data: events, isLoading: eventsLoading } = useQuery<Event[]>({
     queryKey: [`/api/projects/${projectId}/events`],
+    staleTime: 0,
   });
 
   const { data: magicSystems, isLoading: magicSystemsLoading } = useQuery<MagicSystem[]>({
     queryKey: [`/api/projects/${projectId}/magic-systems`],
+    staleTime: 0,
   });
 
   const { data: loreEntries, isLoading: loreLoading } = useQuery<LoreEntry[]>({
     queryKey: [`/api/projects/${projectId}/lore`],
+    staleTime: 0,
   });
 
   const { data: notes, isLoading: notesLoading } = useQuery<Note[]>({
     queryKey: [`/api/projects/${projectId}/notes`],
+    staleTime: 0,
+  });
+
+  const { data: races, isLoading: racesLoading } = useQuery<Race[]>({
+    queryKey: [`/api/projects/${projectId}/races`],
+    staleTime: 0,
   });
 
   // Check if any data is still loading
   const isLoading = projectLoading || statsLoading || charactersLoading || 
                    locationsLoading || eventsLoading || magicSystemsLoading || 
-                   loreLoading || notesLoading;
+                   loreLoading || notesLoading || racesLoading;
 
   // Set page title
   useEffect(() => {
@@ -116,6 +127,18 @@ export default function Dashboard() {
         icon: MapPin,
         timestamp: loc.createdAt || new Date()
       });
+      
+      if (loc.updatedAt && loc.updatedAt > loc.createdAt) {
+        history.push({
+          id: `location-edit-${loc.id}`,
+          type: 'edit',
+          category: 'Locations',
+          title: loc.name,
+          summary: `Updated location details and description`,
+          icon: MapPin,
+          timestamp: loc.updatedAt
+        });
+      }
     });
 
     // Add events to history
@@ -129,6 +152,18 @@ export default function Dashboard() {
         icon: Calendar,
         timestamp: event.createdAt || new Date()
       });
+      
+      if (event.updatedAt && event.updatedAt > event.createdAt) {
+        history.push({
+          id: `event-edit-${event.id}`,
+          type: 'edit',
+          category: 'Timeline',
+          title: event.title,
+          summary: `Updated event details and timeline`,
+          icon: Calendar,
+          timestamp: event.updatedAt
+        });
+      }
     });
 
     // Add magic systems to history
@@ -142,6 +177,18 @@ export default function Dashboard() {
         icon: Sparkles,
         timestamp: magic.createdAt || new Date()
       });
+      
+      if (magic.updatedAt && magic.updatedAt > magic.createdAt) {
+        history.push({
+          id: `magic-edit-${magic.id}`,
+          type: 'edit',
+          category: 'Magic Systems',
+          title: magic.name,
+          summary: `Updated magic system rules and properties`,
+          icon: Sparkles,
+          timestamp: magic.updatedAt
+        });
+      }
     });
 
     // Add lore entries to history
@@ -155,6 +202,18 @@ export default function Dashboard() {
         icon: BookOpen,
         timestamp: lore.createdAt || new Date()
       });
+      
+      if (lore.updatedAt && lore.updatedAt > lore.createdAt) {
+        history.push({
+          id: `lore-edit-${lore.id}`,
+          type: 'edit',
+          category: 'Lore',
+          title: lore.title,
+          summary: `Updated lore content and details`,
+          icon: BookOpen,
+          timestamp: lore.updatedAt
+        });
+      }
     });
 
     // Add notes to history
@@ -168,6 +227,43 @@ export default function Dashboard() {
         icon: StickyNote,
         timestamp: note.createdAt || new Date()
       });
+      
+      if (note.updatedAt && note.updatedAt > note.createdAt) {
+        history.push({
+          id: `note-edit-${note.id}`,
+          type: 'edit',
+          category: 'Notes',
+          title: note.title,
+          summary: `Updated note content`,
+          icon: StickyNote,
+          timestamp: note.updatedAt
+        });
+      }
+    });
+
+    // Add races to history
+    races?.forEach(race => {
+      history.push({
+        id: `race-${race.id}`,
+        type: 'create',
+        category: 'Races',
+        title: race.name,
+        summary: `Created race - ${race.description?.substring(0, 50) || 'No description'}...`,
+        icon: Crown,
+        timestamp: race.createdAt || new Date()
+      });
+      
+      if (race.updatedAt && race.updatedAt > race.createdAt) {
+        history.push({
+          id: `race-edit-${race.id}`,
+          type: 'edit',
+          category: 'Races',
+          title: race.name,
+          summary: `Updated race details and characteristics`,
+          icon: Crown,
+          timestamp: race.updatedAt
+        });
+      }
     });
 
     // Sort by timestamp (most recent first)
