@@ -52,3 +52,6 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 - **Character Deletion Fix**: Fixed character deletion authentication error by replacing manual fetch with apiRequest function for proper Supabase JWT handling
 - **Character Deletion UI**: Added proper loading indication to delete confirmation dialog with isPending state from React Query mutation
 - **Race Deletion Cache Fix**: Fixed race deletion not updating page automatically by setting staleTime: 0 and using removeQueries for immediate cache refresh
+- **Replit Environment Migration**: Successfully migrated InkAlchemy from Replit Agent to standard Replit environment with PostgreSQL database
+- **Location Deletion Fix**: Fixed location deletion authentication error by replacing manual fetch with apiRequest function for proper Supabase JWT handling
+- **Location Deletion UI**: Added proper loading indication to delete confirmation dialog with isPending state from React Query mutation

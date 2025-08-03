@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigation } from "@/contexts/navigation-context";
+import { apiRequest } from "@/lib/queryClient";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { MiniCard } from "@/components/mini-card";
@@ -43,6 +44,7 @@ export default function LocationDetails() {
   const [activeTab, setActiveTab] = useState("details");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goBack, navigateWithReferrer } = useNavigation();
+  const queryClient = useQueryClient();
 
   // Don't track detail pages in history - only main pages should be tracked
 
@@ -105,18 +107,23 @@ export default function LocationDetails() {
     setLocation(`/projects/${projectId}/locations/${locationId}/edit`);
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/locations/${locationId}`, {
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest(`/api/locations/${id}`, {
         method: 'DELETE',
       });
-      
-      if (response.ok) {
-        setLocation(`/projects/${projectId}/locations`);
-      }
-    } catch (error) {
-      console.error('Error deleting location:', error);
-    }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/locations`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      setShowDeleteDialog(false);
+      setLocation(`/projects/${projectId}/locations`);
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(Number(locationId));
   };
 
   const handleCharacterClick = (character: Character) => {
@@ -371,6 +378,7 @@ export default function LocationDetails() {
         title="Delete Location"
         description={`Are you sure you want to delete "${location?.name}"? This action cannot be undone and will remove all associated events and data.`}
         itemName={location?.name || "this location"}
+        isLoading={deleteMutation.isPending}
       />
     </div>
   );
