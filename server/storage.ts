@@ -1,5 +1,5 @@
 import { 
-  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, eventCharacters, races,
+  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, eventCharacters, races, activities,
   type Project, type InsertProject,
   type Character, type InsertCharacter,
   type Location, type InsertLocation,
@@ -11,7 +11,8 @@ import {
   type Relationship, type InsertRelationship,
   type CharacterSpell, type InsertCharacterSpell,
   type EventCharacter, type InsertEventCharacter,
-  type Race, type InsertRace
+  type Race, type InsertRace,
+  type Activity
 } from "@shared/schema";
 
 export interface IStorage {
@@ -101,6 +102,9 @@ export interface IStorage {
   // Search
   searchElements(projectId: number, query: string): Promise<any[]>;
 
+  // Activities
+  getProjectActivities(projectId: number): Promise<Activity[]>;
+
   // Stats
   getProjectStats(projectId: number): Promise<{
     characters: number;
@@ -125,6 +129,7 @@ export class MemStorage implements IStorage {
   private relationships: Map<number, Relationship>;
   private characterSpells: Map<number, CharacterSpell>;
   private eventCharacters: Map<number, EventCharacter>;
+  private activities: Map<number, Activity>;
   private currentId: number;
 
   constructor() {
@@ -140,6 +145,7 @@ export class MemStorage implements IStorage {
     this.relationships = new Map();
     this.characterSpells = new Map();
     this.eventCharacters = new Map();
+    this.activities = new Map();
     this.currentId = 10;
 
     // Create a default project
@@ -1623,6 +1629,12 @@ export class MemStorage implements IStorage {
   }
 
   // Stats
+  async getProjectActivities(projectId: number): Promise<Activity[]> {
+    return Array.from(this.activities.values())
+      .filter(activity => activity.projectId === projectId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
   async getProjectStats(projectId: number): Promise<{
     characters: number;
     locations: number;

@@ -7,7 +7,7 @@ import {
   Users, MapPin, Calendar, Sparkles, BookOpen, StickyNote,
   Edit3, Plus, Trash2, Clock, Crown
 } from "lucide-react";
-import type { Project, Character, Location, Event, MagicSystem, LoreEntry, Note, Race } from "@shared/schema";
+import type { Project, Character, Location, Event, MagicSystem, LoreEntry, Note, Race, Activity } from "@shared/schema";
 
 export default function Dashboard() {
   const { projectId } = useParams();
@@ -61,10 +61,15 @@ export default function Dashboard() {
     staleTime: 0,
   });
 
+  const { data: activities, isLoading: activitiesLoading } = useQuery<Activity[]>({
+    queryKey: [`/api/projects/${projectId}/activities`],
+    staleTime: 0,
+  });
+
   // Check if any data is still loading
   const isLoading = projectLoading || statsLoading || charactersLoading || 
                    locationsLoading || eventsLoading || magicSystemsLoading || 
-                   loreLoading || notesLoading || racesLoading;
+                   loreLoading || notesLoading || racesLoading || activitiesLoading;
 
   // Set page title
   useEffect(() => {
@@ -79,198 +84,43 @@ export default function Dashboard() {
     setLocation(`/projects/${projectId}/${page}`);
   };
 
-  // Create edit history from all elements
-  const createEditHistory = () => {
-    const history: Array<{
-      id: string;
-      type: 'create' | 'edit' | 'delete';
-      category: string;
-      title: string;
-      summary: string;
-      icon: typeof Users;
-      timestamp: Date;
-    }> = [];
-
-    // Add characters to history
-    characters?.forEach(char => {
-      history.push({
-        id: `character-${char.id}`,
-        type: 'create',
-        category: 'Characters',
-        title: char.name,
-        summary: `Created ${char.role || 'character'} - ${char.description?.substring(0, 50) || 'No description'}...`,
-        icon: Users,
-        timestamp: char.createdAt || new Date()
-      });
-      
-      if (char.updatedAt && char.updatedAt > char.createdAt) {
-        history.push({
-          id: `character-edit-${char.id}`,
-          type: 'edit',
-          category: 'Characters',
-          title: char.name,
-          summary: `Updated character details and properties`,
-          icon: Users,
-          timestamp: char.updatedAt
-        });
-      }
-    });
-
-    // Add locations to history
-    locations?.forEach(loc => {
-      history.push({
-        id: `location-${loc.id}`,
-        type: 'create',
-        category: 'Locations',
-        title: loc.name,
-        summary: `Created ${loc.type || 'location'} - ${loc.content?.substring(0, 50) || 'No content'}...`,
-        icon: MapPin,
-        timestamp: loc.createdAt || new Date()
-      });
-      
-      if (loc.updatedAt && loc.updatedAt > loc.createdAt) {
-        history.push({
-          id: `location-edit-${loc.id}`,
-          type: 'edit',
-          category: 'Locations',
-          title: loc.name,
-          summary: `Updated location details and description`,
-          icon: MapPin,
-          timestamp: loc.updatedAt
-        });
-      }
-    });
-
-    // Add events to history
-    events?.forEach(event => {
-      history.push({
-        id: `event-${event.id}`,
-        type: 'create',
-        category: 'Timeline',
-        title: event.title,
-        summary: `Added timeline event - ${event.description?.substring(0, 50) || 'No description'}...`,
-        icon: Calendar,
-        timestamp: event.createdAt || new Date()
-      });
-      
-      if (event.updatedAt && event.updatedAt > event.createdAt) {
-        history.push({
-          id: `event-edit-${event.id}`,
-          type: 'edit',
-          category: 'Timeline',
-          title: event.title,
-          summary: `Updated event details and timeline`,
-          icon: Calendar,
-          timestamp: event.updatedAt
-        });
-      }
-    });
-
-    // Add magic systems to history
-    magicSystems?.forEach(magic => {
-      history.push({
-        id: `magic-${magic.id}`,
-        type: 'create',
-        category: 'Magic Systems',
-        title: magic.name,
-        summary: `Created magic system - ${magic.description?.substring(0, 50) || 'No description'}...`,
-        icon: Sparkles,
-        timestamp: magic.createdAt || new Date()
-      });
-      
-      if (magic.updatedAt && magic.updatedAt > magic.createdAt) {
-        history.push({
-          id: `magic-edit-${magic.id}`,
-          type: 'edit',
-          category: 'Magic Systems',
-          title: magic.name,
-          summary: `Updated magic system rules and properties`,
-          icon: Sparkles,
-          timestamp: magic.updatedAt
-        });
-      }
-    });
-
-    // Add lore entries to history
-    loreEntries?.forEach(lore => {
-      history.push({
-        id: `lore-${lore.id}`,
-        type: 'create',
-        category: 'Lore',
-        title: lore.title,
-        summary: `Added lore entry - ${lore.content?.substring(0, 50) || 'No content'}...`,
-        icon: BookOpen,
-        timestamp: lore.createdAt || new Date()
-      });
-      
-      if (lore.updatedAt && lore.updatedAt > lore.createdAt) {
-        history.push({
-          id: `lore-edit-${lore.id}`,
-          type: 'edit',
-          category: 'Lore',
-          title: lore.title,
-          summary: `Updated lore content and details`,
-          icon: BookOpen,
-          timestamp: lore.updatedAt
-        });
-      }
-    });
-
-    // Add notes to history
-    notes?.forEach(note => {
-      history.push({
-        id: `note-${note.id}`,
-        type: 'create',
-        category: 'Notes',
-        title: note.title,
-        summary: `Created note - ${note.content?.substring(0, 50) || 'No content'}...`,
-        icon: StickyNote,
-        timestamp: note.createdAt || new Date()
-      });
-      
-      if (note.updatedAt && note.updatedAt > note.createdAt) {
-        history.push({
-          id: `note-edit-${note.id}`,
-          type: 'edit',
-          category: 'Notes',
-          title: note.title,
-          summary: `Updated note content`,
-          icon: StickyNote,
-          timestamp: note.updatedAt
-        });
-      }
-    });
-
-    // Add races to history
-    races?.forEach(race => {
-      history.push({
-        id: `race-${race.id}`,
-        type: 'create',
-        category: 'Races',
-        title: race.name,
-        summary: `Created race - ${race.description?.substring(0, 50) || 'No description'}...`,
-        icon: Crown,
-        timestamp: race.createdAt || new Date()
-      });
-      
-      if (race.updatedAt && race.updatedAt > race.createdAt) {
-        history.push({
-          id: `race-edit-${race.id}`,
-          type: 'edit',
-          category: 'Races',
-          title: race.name,
-          summary: `Updated race details and characteristics`,
-          icon: Crown,
-          timestamp: race.updatedAt
-        });
-      }
-    });
-
-    // Sort by timestamp (most recent first)
-    return history.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  // Helper functions for activity display
+  const getIconForEntityType = (entityType: string) => {
+    switch (entityType) {
+      case 'character': return Users;
+      case 'location': return MapPin;
+      case 'event': return Calendar;
+      case 'magic_system': return Sparkles;
+      case 'lore': return BookOpen;
+      case 'note': return StickyNote;
+      case 'race': return Crown;
+      default: return Edit3;
+    }
   };
 
-  const editHistory = createEditHistory();
+  const getCategoryForEntityType = (entityType: string) => {
+    switch (entityType) {
+      case 'character': return 'Characters';
+      case 'location': return 'Locations';
+      case 'event': return 'Timeline';
+      case 'magic_system': return 'Magic Systems';
+      case 'lore': return 'Lore';
+      case 'note': return 'Notes';
+      case 'race': return 'Races';
+      default: return 'Other';
+    }
+  };
+
+  // Convert activities to display format
+  const editHistory = activities?.map(activity => ({
+    id: activity.id.toString(),
+    type: activity.action as 'create' | 'update' | 'delete',
+    category: getCategoryForEntityType(activity.entityType),
+    title: activity.entityName,
+    summary: activity.description || '',
+    icon: getIconForEntityType(activity.entityType),
+    timestamp: activity.createdAt
+  })) || [];
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -284,7 +134,7 @@ export default function Dashboard() {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'create': return Plus;
-      case 'edit': return Edit3;
+      case 'update': return Edit3;
       case 'delete': return Trash2;
       default: return Edit3;
     }
@@ -293,7 +143,7 @@ export default function Dashboard() {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'create': return 'text-white bg-brand-600';
-      case 'edit': return 'text-white bg-brand-700';
+      case 'update': return 'text-white bg-brand-700';
       case 'delete': return 'text-white bg-brand-800';
       default: return 'text-white bg-brand-600';
     }

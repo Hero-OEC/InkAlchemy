@@ -186,6 +186,20 @@ export const relationships = pgTable("relationships", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Activity log table for tracking all database changes
+export const activities = pgTable("activities", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").references(() => projects.id).notNull(),
+  entityType: text("entity_type").notNull(), // character, location, event, race, magic_system, lore, note
+  entityId: integer("entity_id").notNull(), // ID of the affected entity
+  entityName: text("entity_name").notNull(), // Name/title of the entity for display
+  action: text("action").notNull(), // create, update, delete
+  description: text("description"), // Human-readable description of the change
+  metadata: text("metadata"), // JSON string with additional details
+  userId: text("user_id").notNull(), // User who performed the action
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Create insert schemas
 export const insertProjectSchema = createInsertSchema(projects).omit({
   id: true,
@@ -261,6 +275,11 @@ export const insertRelationshipSchema = createInsertSchema(relationships).omit({
   createdAt: true,
 });
 
+export const insertActivitySchema = createInsertSchema(activities).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Infer types
 export type Project = typeof projects.$inferSelect;
 export type InsertProject = z.infer<typeof insertProjectSchema>;
@@ -300,6 +319,9 @@ export type InsertNote = z.infer<typeof insertNoteSchema>;
 
 export type Relationship = typeof relationships.$inferSelect;
 export type InsertRelationship = z.infer<typeof insertRelationshipSchema>;
+
+export type Activity = typeof activities.$inferSelect;
+export type InsertActivity = z.infer<typeof insertActivitySchema>;
 
 // User authentication schemas
 export const insertUserSchema = createInsertSchema(users).omit({

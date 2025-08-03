@@ -1,7 +1,7 @@
 import { db } from "./db";
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, desc } from "drizzle-orm";
 import { 
-  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, eventCharacters, races,
+  projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, eventCharacters, races, activities,
   type Project, type InsertProject,
   type Character, type InsertCharacter,
   type Location, type InsertLocation,
@@ -13,7 +13,8 @@ import {
   type Relationship, type InsertRelationship,
   type CharacterSpell, type InsertCharacterSpell,
   type EventCharacter, type InsertEventCharacter,
-  type Race, type InsertRace
+  type Race, type InsertRace,
+  type Activity
 } from "@shared/schema";
 import type { IStorage } from "./storage";
 
@@ -589,6 +590,16 @@ export class DatabaseStorage implements IStorage {
       loreEntries: loreEntriesResult.length,
       notes: notesResult.length
     };
+  }
+
+  // Activities
+  async getProjectActivities(projectId: number): Promise<Activity[]> {
+    const result = await db.select()
+      .from(activities)
+      .where(eq(activities.projectId, projectId))
+      .orderBy(desc(activities.createdAt));
+    
+    return result;
   }
 
   // User data cleanup - cascade delete all user data

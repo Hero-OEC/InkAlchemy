@@ -10,6 +10,7 @@ import {
   insertLoreEntrySchema, insertNoteSchema, insertRelationshipSchema,
   insertCharacterSpellSchema, insertRaceSchema 
 } from "@shared/schema";
+import { ActivityLogger } from "./activity-logger";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Apply optional auth to all API routes
@@ -126,10 +127,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/characters", async (req, res) => {
+  app.post("/api/characters", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertCharacterSchema.parse(req.body);
       const character = await storage.createCharacter(data);
+      
+      // Log activity
+      await ActivityLogger.logCreate(
+        character.projectId,
+        'character',
+        character.id,
+        character.name,
+        req.userId!
+      );
+      
       res.status(201).json(character);
     } catch (error) {
       res.status(400).json({ message: "Invalid character data" });
@@ -165,6 +176,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!character) {
         return res.status(404).json({ message: "Character not found" });
       }
+      
+      // Log activity
+      await ActivityLogger.logUpdate(
+        character.projectId,
+        'character',
+        character.id,
+        character.name,
+        req.userId!,
+        data
+      );
+      
       res.json(character);
     } catch (error) {
       res.status(400).json({ message: "Invalid character data" });
@@ -180,6 +202,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!character) {
         return res.status(404).json({ message: "Character not found" });
       }
+      
+      // Log activity before deletion
+      await ActivityLogger.logDelete(
+        character.projectId,
+        'character',
+        character.id,
+        character.name,
+        req.userId!
+      );
       
       // Delete character from database first
       const deleted = await storage.deleteCharacter(id);
@@ -275,17 +306,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/locations", async (req, res) => {
+  app.post("/api/locations", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertLocationSchema.parse(req.body);
       const location = await storage.createLocation(data);
+      
+      // Log activity
+      await ActivityLogger.logCreate(
+        location.projectId,
+        'location',
+        location.id,
+        location.name,
+        req.userId!
+      );
+      
       res.status(201).json(location);
     } catch (error) {
       res.status(400).json({ message: "Invalid location data" });
     }
   });
 
-  app.patch("/api/locations/:id", async (req, res) => {
+  app.patch("/api/locations/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -305,6 +346,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!location) {
         return res.status(404).json({ message: "Location not found" });
       }
+      
+      // Log activity
+      await ActivityLogger.logUpdate(
+        location.projectId,
+        'location',
+        location.id,
+        location.name,
+        req.userId!,
+        data
+      );
+      
       res.json(location);
     } catch (error) {
       res.status(400).json({ message: "Invalid location data" });
@@ -315,8 +367,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       
-      // Get location before deletion to clean up images
+      // Get location before deletion to clean up images and log activity
       const location = await storage.getLocation(id);
+      if (!location) {
+        return res.status(404).json({ message: "Location not found" });
+      }
+      
+      // Log activity before deletion
+      await ActivityLogger.logDelete(
+        location.projectId,
+        'location',
+        location.id,
+        location.name,
+        req.userId!
+      );
       
       const deleted = await storage.deleteLocation(id);
       if (!deleted) {
@@ -324,7 +388,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Clean up any images in location content
-      if (location && location.content) {
+      if (location.content) {
         await cleanupContentImages(location.content, '');
       }
       
@@ -871,17 +935,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/races", async (req, res) => {
+  app.post("/api/races", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertRaceSchema.parse(req.body);
       const race = await storage.createRace(data);
+      
+      // Log activity
+      await ActivityLogger.logCreate(
+        race.projectId,
+        'race',
+        race.id,
+        race.name,
+        req.userId!
+      );
+      
       res.status(201).json(race);
     } catch (error) {
       res.status(400).json({ message: "Invalid race data" });
     }
   });
 
-  app.patch("/api/races/:id", async (req, res) => {
+  app.patch("/api/races/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const data = insertRaceSchema.partial().parse(req.body);
@@ -889,15 +963,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!race) {
         return res.status(404).json({ message: "Race not found" });
       }
+      
+      // Log activity
+      await ActivityLogger.logUpdate(
+        race.projectId,
+        'race',
+        race.id,
+        race.name,
+        req.userId!,
+        data
+      );
+      
       res.json(race);
     } catch (error) {
       res.status(400).json({ message: "Invalid race data" });
     }
   });
 
-  app.delete("/api/races/:id", async (req, res) => {
+  app.delete("/api/races/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get race data before deletion
+      const race = await storage.getRace(id);
+      if (!race) {
+        return res.status(404).json({ message: "Race not found" });
+      }
       
       // Check if any characters are using this race
       const charactersUsingRace = await storage.getCharactersByRace(id);
@@ -908,6 +999,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      // Log activity before deletion
+      await ActivityLogger.logDelete(
+        race.projectId,
+        'race',
+        race.id,
+        race.name,
+        req.userId!
+      );
+      
       const deleted = await storage.deleteRace(id);
       if (!deleted) {
         return res.status(404).json({ message: "Race not found" });
@@ -916,6 +1016,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Race deletion error:', error);
       res.status(500).json({ message: "Failed to delete race" });
+    }
+  });
+
+  // Activities
+  app.get("/api/projects/:projectId/activities", authenticateUser, async (req: AuthenticatedRequest, res) => {
+    try {
+      const projectId = parseInt(req.params.projectId);
+      const activities = await storage.getProjectActivities(projectId);
+      res.json(activities);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch project activities" });
     }
   });
 
