@@ -87,6 +87,9 @@ export default function RaceDetails() {
   const deleteRaceMutation = useMutation({
     mutationFn: () => apiRequest(`/api/races/${raceId}`, { method: 'DELETE' }),
     onSuccess: () => {
+      // Close dialog after successful deletion
+      setShowDeleteDialog(false);
+      
       // Invalidate all related queries to ensure UI updates everywhere
       queryClient.removeQueries({ queryKey: [`/api/races/${raceId}`] });
       queryClient.removeQueries({ queryKey: [`/api/projects/${projectId}/races`] });
@@ -99,12 +102,13 @@ export default function RaceDetails() {
     },
     onError: (error) => {
       console.error('Error deleting race:', error);
+      // Keep dialog open on error so user can try again
     }
   });
 
   const handleDelete = () => {
     deleteRaceMutation.mutate();
-    setShowDeleteDialog(false);
+    // Don't close dialog immediately - let the mutation handle it
   };
 
   if (isLoading) {
@@ -332,6 +336,7 @@ export default function RaceDetails() {
           onConfirm={handleDelete}
           title="Delete Race"
           description={`Are you sure you want to delete "${race?.name}"? This action cannot be undone.`}
+          isLoading={deleteRaceMutation.isPending}
         />
       </main>
     </div>
