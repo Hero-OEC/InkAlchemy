@@ -1640,6 +1640,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Password reset endpoints
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      if (!supabase) {
+        return res.status(500).json({ message: "Authentication service not configured" });
+      }
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${req.protocol}://${req.get('host')}/reset-password`,
+      });
+      
+      if (error) {
+        console.error('Password reset error:', error);
+        // Don't reveal whether email exists for security
+        return res.json({ message: "If the email exists, a reset link has been sent" });
+      }
+      
+      res.json({ message: "Password reset email sent successfully" });
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      res.status(500).json({ message: "Failed to send reset email" });
+    }
+  });
+
+  app.post("/api/auth/validate-reset-token", async (req, res) => {
+    try {
+      const { token } = req.body;
+      
+      if (!token) {
+        return res.status(400).json({ message: "Reset token is required" });
+      }
+      
+      if (!supabase) {
+        return res.status(500).json({ message: "Authentication service not configured" });
+      }
+      
+      // Try to create a session with the token
+      const { data, error } = await supabase.auth.verifyOtp({
+        type: 'recovery',
+        token_hash: token,
+      });
+      
+      if (error || !data.user) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+      
+      res.json({ message: "Token is valid", userId: data.user.id });
+    } catch (error) {
+      console.error('Token validation error:', error);
+      res.status(400).json({ message: "Invalid reset token" });
+    }
+  });
+
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const { token, password } = req.body;
+      
+      if (!token || !password) {
+        return res.status(400).json({ message: "Token and password are required" });
+      }
+      
+      if (password.length < 8) {
+        return res.status(400).json({ message: "Password must be at least 8 characters" });
+      }
+      
+      if (!supabase) {
+        return res.status(500).json({ message: "Authentication service not configured" });
+      }
+      
+      // First verify the token and create a session
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+        type: 'recovery',
+        token_hash: token,
+      });
+      
+      if (verifyError || !data.user) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+      
+      // Now update the password with the authenticated session
+      const { error: updateError } = await supabase.auth.updateUser({ 
+        password: password 
+      });
+      
+      if (updateError) {
+        console.error('Password update error:', updateError);
+        return res.status(400).json({ message: "Failed to update password" });
+      }
+      
+      res.json({ message: "Password reset successfully" });
+    } catch (error) {
+      console.error('Reset password error:', error);
+      res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

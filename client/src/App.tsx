@@ -2,6 +2,8 @@ import { Route, Router } from "wouter";
 import { AuthProvider, useAuth } from "./contexts/auth-context";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
+import ForgotPassword from "./pages/forgot-password";
+import ResetPassword from "./pages/reset-password";
 import Welcome from "./pages/welcome";
 import Dashboard from "./pages/dashboard";
 import Characters from "./pages/characters";
@@ -63,6 +65,8 @@ function AppRoutes() {
     <Router>
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
+      <Route path="/forgot-password" component={ForgotPassword} />
+      <Route path="/reset-password" component={ResetPassword} />
       <Route path="/" component={() => <ProtectedRoute component={Welcome} />} />
       <Route path="/projects/:projectId/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/projects/:projectId/characters" component={() => <ProtectedRoute component={Characters} />} />
