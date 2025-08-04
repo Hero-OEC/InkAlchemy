@@ -94,6 +94,8 @@ export default function Dashboard() {
       case 'lore': return BookOpen;
       case 'note': return StickyNote;
       case 'race': return Crown;
+      case 'spell': return Sparkles;
+      case 'effect': return Sparkles;
       default: return Edit3;
     }
   };
@@ -103,10 +105,12 @@ export default function Dashboard() {
       case 'character': return 'Characters';
       case 'location': return 'Locations';
       case 'event': return 'Timeline';
-      case 'magic_system': return 'Magic Systems';
+      case 'magic_system': return 'Systems';
       case 'lore': return 'Lore';
       case 'note': return 'Notes';
       case 'race': return 'Races';
+      case 'spell': return 'Spells';
+      case 'effect': return 'Effects';
       default: return 'Other';
     }
   };
