@@ -165,7 +165,7 @@ export function CharacterMagicSelector({
               {systemSpells.length > 0 ? (
                 <div className="space-y-2">
                   <h5 className="text-sm font-medium text-muted-foreground">
-                    Available {system.type === "magic" ? "Spells" : "Abilities"}
+                    Available Effects
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {systemSpells.map((spell) => {

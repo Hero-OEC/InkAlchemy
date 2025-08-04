@@ -22,7 +22,7 @@ export function Navigation({ onSearch }: NavigationProps) {
     { path: "/characters", label: "Characters", icon: "fas fa-users" },
     { path: "/locations", label: "Locations", icon: "fas fa-map-marker-alt" },
     { path: "/timeline", label: "Timeline", icon: "fas fa-clock" },
-    { path: "/magic-systems", label: "Magic Systems", icon: "fas fa-magic" },
+    { path: "/magic-systems", label: "Systems", icon: "fas fa-magic" },
     { path: "/lore", label: "Lore", icon: "fas fa-book" },
   ];
 

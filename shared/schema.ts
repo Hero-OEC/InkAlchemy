@@ -299,6 +299,12 @@ export type InsertMagicSystem = z.infer<typeof insertMagicSystemSchema>;
 export type Spell = typeof spells.$inferSelect;
 export type InsertSpell = z.infer<typeof insertSpellSchema>;
 
+// Naming convention aliases for UI terminology
+export type System = MagicSystem;  // Systems = Magic Systems
+export type InsertSystem = InsertMagicSystem;
+export type Effect = Spell;       // Effects = Spells  
+export type InsertEffect = InsertSpell;
+
 export type Race = typeof races.$inferSelect;
 export type InsertRace = z.infer<typeof insertRaceSchema>;
 

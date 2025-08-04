@@ -16,12 +16,12 @@ import { apiRequest } from "@/lib/queryClient";
 const SYSTEM_TYPE_CONFIG = {
   magic: {
     icon: Sparkles,
-    label: "Magic System",
+    label: "Magic",
     color: "bg-purple-500"
   },
   power: {
     icon: Zap,
-    label: "Power System", 
+    label: "Power", 
     color: "bg-blue-500"
   }
 };
@@ -59,8 +59,8 @@ export default function MagicSystems() {
       key: "type",
       label: "Type",
       options: [
-        { value: "magic", label: "Magic System" },
-        { value: "power", label: "Power System" }
+        { value: "magic", label: "Magic" },
+        { value: "power", label: "Power" }
       ]
     },
     {
@@ -102,9 +102,9 @@ export default function MagicSystems() {
   // Set page title
   useEffect(() => {
     if (project?.name) {
-      document.title = `Magic Systems - ${project.name} | InkAlchemy`;
+      document.title = `Systems - ${project.name} | InkAlchemy`;
     } else {
-      document.title = "Magic Systems | InkAlchemy";
+      document.title = "Systems | InkAlchemy";
     }
   }, [project?.name]);
 
@@ -176,12 +176,12 @@ export default function MagicSystems() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-brand-900 mb-2">Magic & Power Systems</h1>
-            <p className="text-brand-600">Manage the supernatural and extraordinary abilities in your world</p>
+            <h1 className="text-4xl font-bold text-brand-900 mb-2">Systems</h1>
+            <p className="text-brand-600">Manage magical and power systems that define abilities in your world</p>
           </div>
           <div className="flex items-center gap-4 flex-shrink-0">
             <SearchComponent
-              placeholder="Search magic systems..."
+              placeholder="Search systems..."
               onSearch={setSearchQuery}
               onFilterChange={setActiveFilters}
               filters={searchFilters}
@@ -205,9 +205,9 @@ export default function MagicSystems() {
             <div className="bg-brand-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
               <Sparkles size={32} className="text-brand-500" />
             </div>
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">No Magic Systems Yet</h2>
+            <h2 className="text-2xl font-bold text-brand-900 mb-4">No Systems Yet</h2>
             <p className="text-brand-600 mb-8 max-w-md mx-auto">
-              Create your first magic or power system to define how supernatural abilities work in your world.
+              Create your first system to define how magical and supernatural abilities work in your world.
             </p>
             <Button 
               variant="primary" 

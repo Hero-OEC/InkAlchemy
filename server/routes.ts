@@ -551,10 +551,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/projects/:projectId/magic-systems", async (req, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      if (isNaN(projectId)) {
+        return res.status(400).json({ message: "Invalid project ID" });
+      }
+      console.log(`Fetching magic systems for project ${projectId}`);
       const magicSystems = await storage.getMagicSystems(projectId);
+      console.log(`Found ${magicSystems.length} magic systems`);
       res.json(magicSystems);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch magic systems" });
+      console.error("Magic systems fetch error:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch magic systems",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 

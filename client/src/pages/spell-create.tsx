@@ -38,15 +38,15 @@ export default function SpellCreate() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/magic-systems/${systemId}/spells`] });
       toast({
-        title: magicSystem?.type === "power" ? "Ability created" : "Spell created",
-        description: `Your ${magicSystem?.type === "power" ? "ability" : "spell"} has been successfully created.`,
+        title: "Effect created",
+        description: `Your effect has been successfully created.`,
       });
       handleBack();
     },
     onError: () => {
       toast({
         title: "Error",
-        description: `Failed to create ${magicSystem?.type === "power" ? "ability" : "spell"}. Please try again.`,
+        description: `Failed to create effect. Please try again.`,
         variant: "destructive",
       });
     },

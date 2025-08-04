@@ -19,12 +19,12 @@ import { apiRequest } from "@/lib/queryClient";
 const SYSTEM_TYPE_CONFIG = {
   magic: {
     icon: Sparkles,
-    label: "Magic System",
+    label: "Magic",
     color: "bg-purple-500"
   },
   power: {
     icon: Zap,
-    label: "Power System", 
+    label: "Power", 
     color: "bg-blue-500"
   }
 };
@@ -68,7 +68,7 @@ export default function MagicSystemDetails() {
     } else if (system?.name) {
       document.title = `${system.name} | InkAlchemy`;
     } else {
-      document.title = "Magic System Details | InkAlchemy";
+      document.title = "System Details | InkAlchemy";
     }
   }, [system?.name, project?.name]);
 
@@ -185,7 +185,7 @@ export default function MagicSystemDetails() {
           onNavigate={handleNavigation}
         />
         <div className="flex items-center justify-center py-20">
-          <p className="text-brand-600">Magic system not found</p>
+          <p className="text-brand-600">System not found</p>
         </div>
       </div>
     );
@@ -194,14 +194,9 @@ export default function MagicSystemDetails() {
   const Icon = getSystemIcon(system);
   
   // Get tabs based on system type
-  const tabs = system.type === "power" 
-    ? [
+  const tabs = [
         { id: "details", label: "Details", icon: BookOpen },
-        { id: "abilities", label: "Abilities", icon: Zap }
-      ]
-    : [
-        { id: "details", label: "Details", icon: BookOpen },
-        { id: "spells", label: "Spells", icon: Wand2 }
+        { id: "effects", label: "Effects", icon: Wand2 }
       ];
 
   const formatDate = (date: Date) => {
@@ -241,9 +236,8 @@ export default function MagicSystemDetails() {
           </div>
         );
 
-      case "abilities":
-      case "spells":
-        const contentType = system.type === "power" ? "abilities" : "spells";
+      case "effects":
+        const contentType = "effects";
         const actualSpells = spells || [];
         
         // Filter spells based on search
@@ -261,11 +255,11 @@ export default function MagicSystemDetails() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-brand-900">
-                {system.type === "power" ? "Abilities" : "Spells"}
+                Effects
               </h3>
               <div className="flex items-center gap-4 flex-shrink-0">
                 <SearchComponent
-                  placeholder={`Search ${system.type === "power" ? "abilities" : "spells"}...`}
+                  placeholder={`Search effects...`}
                   onSearch={setSpellSearchQuery}
                   onFilterChange={() => {}} // No filters needed
                   filters={[]} // No filters
@@ -278,7 +272,7 @@ export default function MagicSystemDetails() {
                   className="whitespace-nowrap"
                 >
                   <Plus size={16} className="mr-2" />
-                  Add {system.type === "power" ? "Ability" : "Spell"}
+                  Add Effect
                 </Button>
               </div>
             </div>
@@ -292,21 +286,17 @@ export default function MagicSystemDetails() {
                     <Wand2 size={24} className="text-brand-500" />
                   )}
                 </div>
-                <h4 className="text-xl font-semibold text-brand-900 mb-2">No {system.type === "power" ? "Abilities" : "Spells"} Yet</h4>
+                <h4 className="text-xl font-semibold text-brand-900 mb-2">No Effects Yet</h4>
                 <p className="text-brand-600 mb-4">
-                  Start building your {system.type === "power" ? "ability" : "spell"} collection for this system.
+                  Start building your effect collection for this system.
                 </p>
                 <Button 
                   onClick={() => {
-                    if (system.type === "power") {
-                      setLocation(`/projects/${projectId}/magic-systems/${systemId}/abilities/new`);
-                    } else {
-                      setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
-                    }
+                    setLocation(`/projects/${projectId}/magic-systems/${systemId}/spells/new`);
                   }}
                 >
                   <Plus size={16} className="mr-2" />
-                  Create First {system.type === "power" ? "Ability" : "Spell"}
+                  Create First Effect
                 </Button>
               </div>
             ) : filteredSpells.length === 0 ? (
@@ -320,7 +310,7 @@ export default function MagicSystemDetails() {
                 </div>
                 <h4 className="text-xl font-semibold text-brand-900 mb-2">No Results Found</h4>
                 <p className="text-brand-600 mb-4">
-                  No {system.type === "power" ? "abilities" : "spells"} match your search criteria.
+                  No effects match your search criteria.
                 </p>
               </div>
             ) : (

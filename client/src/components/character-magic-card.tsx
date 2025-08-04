@@ -94,7 +94,7 @@ export function CharacterMagicCard({
       {availableSpells.length === 0 && (
         <div className="text-center py-4 text-muted-foreground">
           <p className="text-sm">
-            No {magicSystem.type === "magic" ? "spells" : "abilities"} assigned
+            No effects assigned
           </p>
         </div>
       )}

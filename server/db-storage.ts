@@ -14,7 +14,8 @@ import {
   type CharacterSpell, type InsertCharacterSpell,
   type EventCharacter, type InsertEventCharacter,
   type Race, type InsertRace,
-  type Activity
+  type Activity,
+  characterMagicSystems, type CharacterMagicSystem, type InsertCharacterMagicSystem
 } from "@shared/schema";
 import type { IStorage } from "./storage";
 

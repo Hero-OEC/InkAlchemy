@@ -105,7 +105,7 @@ export default function SpellDetails() {
     } else if (spell?.name) {
       document.title = `${spell.name} | InkAlchemy`;
     } else {
-      document.title = "Spell Details | InkAlchemy";
+      document.title = "Effect Details | InkAlchemy";
     }
   }, [spell?.name, project?.name, magicSystem?.type]);
 

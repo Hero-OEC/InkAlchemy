@@ -241,7 +241,7 @@ export default function Dashboard() {
             <div className="bg-brand-100 rounded-lg p-6 border border-brand-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-brand-700">Magic Systems</p>
+                  <p className="text-sm font-medium text-brand-700">Systems</p>
                   <p className="text-3xl font-bold text-brand-900">{stats.magicSystems}</p>
                 </div>
                 <div className="flex-shrink-0 ml-4">
