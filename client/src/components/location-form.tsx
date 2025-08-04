@@ -39,24 +39,10 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest("/api/locations", { method: "POST", body: JSON.stringify(data) }),
-    onSuccess: (newLocation) => {
-      // Update cache directly without refetching
-      const cacheKey = ['/api/projects', projectId, 'locations'];
-      console.log('Cache key for update:', cacheKey);
-      console.log('Current cache data before update:', queryClient.getQueryData(cacheKey));
-      
-      queryClient.setQueryData(
-        cacheKey,
-        (oldData: Location[] = []) => {
-          console.log('Updating locations cache:', { oldData, newLocation, totalAfter: oldData.length + 1 });
-          const newData = [...oldData, newLocation];
-          console.log('New cache data:', newData);
-          return newData;
-        }
-      );
-      
-      console.log('Cache data after update:', queryClient.getQueryData(cacheKey));
-      
+    onSuccess: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/projects', projectId, 'locations'] 
+      });
       queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'stats'] 
       });
@@ -82,16 +68,12 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest(`/api/locations/${location?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: (updatedLocation) => {
-      // Update cache directly without refetching
-      queryClient.setQueryData(
-        ['/api/projects', projectId, 'locations'],
-        (oldData: Location[] = []) => 
-          oldData.map(loc => loc.id === location?.id ? updatedLocation : loc)
-      );
-      queryClient.setQueryData(
-        ['/api/locations', location?.id],
-        updatedLocation
-      );
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/projects', projectId, 'locations'] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/locations', location?.id] 
+      });
       queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'activities'] 
       });

@@ -85,11 +85,7 @@ export default function Locations() {
   const deleteMutation = useMutation({
     mutationFn: (locationId: number) => apiRequest(`/api/locations/${locationId}`, { method: 'DELETE' }),
     onSuccess: (_, deletedLocationId) => {
-      // Update cache directly by removing the item
-      queryClient.setQueryData(
-        ['/api/projects', projectId, 'locations'],
-        (oldData: Location[] = []) => oldData.filter(loc => loc.id !== deletedLocationId)
-      );
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'locations'] });
       queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'stats'] });
       queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'activities'] });
       setDeleteItem(null);
