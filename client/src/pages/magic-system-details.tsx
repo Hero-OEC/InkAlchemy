@@ -102,18 +102,21 @@ export default function MagicSystemDetails() {
     setLocation(`/projects/${projectId}/magic-systems/${systemId}/edit`);
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/magic-systems/${systemId}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        setLocation(`/projects/${projectId}/magic-systems`);
-      }
-    } catch (error) {
+  const deleteMutation = useMutation({
+    mutationFn: () => apiRequest(`/api/magic-systems/${systemId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/magic-systems`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
+      setLocation(`/projects/${projectId}/magic-systems`);
+    },
+    onError: (error) => {
       console.error('Error deleting magic system:', error);
     }
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate();
   };
 
   const handleCharacterClick = (characterId: number) => {
@@ -488,6 +491,7 @@ export default function MagicSystemDetails() {
         title="Delete Magic System"
         description={`Are you sure you want to delete "${system?.name}"? This action cannot be undone and will remove all associated spells and data.`}
         itemName={system?.name || "this magic system"}
+        isLoading={deleteMutation.isPending}
       />
 
       <DeleteConfirmation
