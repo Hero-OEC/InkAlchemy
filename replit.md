@@ -3,8 +3,9 @@
 ## Overview
 InkAlchemy is a comprehensive worldbuilding and story management platform for writers and creators. It provides tools to organize characters, locations, timelines, magic systems, lore, and notes within structured projects. The platform aims to streamline the creative process by offering a centralized, intuitive system for developing intricate story worlds.
 
-## Migration Status: ✅ COMPLETE
+## Migration Status: ✅ COMPLETE  
 Successfully migrated from Replit Agent to standard Replit environment (August 2025).
+Connected to Supabase PostgreSQL database with full authentication support.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
