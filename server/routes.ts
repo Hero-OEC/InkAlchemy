@@ -52,6 +52,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const bodyData = projectBodySchema.parse(req.body);
       const projectData = { ...bodyData, userId: req.userId! };
       const project = await storage.createProject(projectData);
+      
+      // Log project creation activity
+      await ActivityLogger.logCreate(
+        project.id,
+        'project',
+        project.id,
+        project.name,
+        req.userId!
+      );
+      
       res.status(201).json(project);
     } catch (error) {
       console.error("Project creation error:", error);
@@ -75,6 +85,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       const data = insertProjectSchema.partial().parse(req.body);
       const updatedProject = await storage.updateProject(id, data);
+      if (!updatedProject) {
+        return res.status(404).json({ message: "Project not found" });
+      }
+      
+      // Log activity
+      await ActivityLogger.logUpdate(
+        updatedProject.id,
+        'project',
+        updatedProject.id,
+        updatedProject.name,
+        req.userId!,
+        data
+      );
+      
       res.json(updatedProject);
     } catch (error) {
       res.status(400).json({ message: "Invalid project data" });
@@ -92,6 +116,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (project.userId !== req.userId) {
         return res.status(403).json({ message: "Access denied" });
       }
+      // Log activity before deletion
+      await ActivityLogger.logDelete(
+        project.id,
+        'project',
+        project.id,
+        project.name,
+        req.userId!
+      );
+      
       const deleted = await storage.deleteProject(id);
       res.status(204).send();
     } catch (error) {
@@ -422,17 +455,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/events", async (req, res) => {
+  app.post("/api/events", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertEventSchema.parse(req.body);
       const event = await storage.createEvent(data);
+      
+      // Log activity
+      await ActivityLogger.logCreate(
+        event.projectId,
+        'event',
+        event.id,
+        event.title,
+        req.userId!
+      );
+      
       res.status(201).json(event);
     } catch (error) {
       res.status(400).json({ message: "Invalid event data" });
     }
   });
 
-  app.patch("/api/events/:id", async (req, res) => {
+  app.patch("/api/events/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -452,6 +495,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
       }
+      
+      // Log activity
+      await ActivityLogger.logUpdate(
+        event.projectId,
+        'event',
+        event.id,
+        event.title,
+        req.userId!,
+        data
+      );
+      
       res.json(event);
     } catch (error) {
       res.status(400).json({ message: "Invalid event data" });
@@ -464,6 +518,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get event before deletion to clean up images
       const event = await storage.getEvent(id);
+      if (!event) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      
+      // Log activity before deletion
+      await ActivityLogger.logDelete(
+        event.projectId,
+        'event',
+        event.id,
+        event.title,
+        req.userId!
+      );
       
       const deleted = await storage.deleteEvent(id);
       if (!deleted) {
@@ -471,7 +537,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Clean up any images in event description
-      if (event && event.description) {
+      if (event.description) {
         await cleanupContentImages(event.description, '');
       }
       
@@ -505,17 +571,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/magic-systems", async (req, res) => {
+  app.post("/api/magic-systems", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertMagicSystemSchema.parse(req.body);
       const magicSystem = await storage.createMagicSystem(data);
+      
+      // Log activity
+      await ActivityLogger.logCreate(
+        magicSystem.projectId,
+        'magic_system',
+        magicSystem.id,
+        magicSystem.name,
+        req.userId!
+      );
+      
       res.status(201).json(magicSystem);
     } catch (error) {
       res.status(400).json({ message: "Invalid magic system data" });
     }
   });
 
-  app.patch("/api/magic-systems/:id", async (req, res) => {
+  app.patch("/api/magic-systems/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -536,6 +612,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!magicSystem) {
         return res.status(404).json({ message: "Magic system not found" });
       }
+      
+      // Log activity
+      await ActivityLogger.logUpdate(
+        magicSystem.projectId,
+        'magic_system',
+        magicSystem.id,
+        magicSystem.name,
+        req.userId!,
+        data
+      );
+      
       res.json(magicSystem);
     } catch (error) {
       res.status(400).json({ message: "Invalid magic system data" });
@@ -548,6 +635,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get magic system before deletion to clean up images
       const magicSystem = await storage.getMagicSystem(id);
+      if (!magicSystem) {
+        return res.status(404).json({ message: "Magic system not found" });
+      }
+      
+      // Log activity before deletion
+      await ActivityLogger.logDelete(
+        magicSystem.projectId,
+        'magic_system',
+        magicSystem.id,
+        magicSystem.name,
+        req.userId!
+      );
       
       // Get all spells associated with this magic system before deletion
       const spells = await storage.getSpells(id);
@@ -720,17 +819,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/lore", async (req, res) => {
+  app.post("/api/lore", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertLoreEntrySchema.parse(req.body);
       const loreEntry = await storage.createLoreEntry(data);
+      
+      // Log activity
+      await ActivityLogger.logCreate(
+        loreEntry.projectId,
+        'lore',
+        loreEntry.id,
+        loreEntry.title,
+        req.userId!
+      );
+      
       res.status(201).json(loreEntry);
     } catch (error) {
       res.status(400).json({ message: "Invalid lore entry data" });
     }
   });
 
-  app.patch("/api/lore/:id", async (req, res) => {
+  app.patch("/api/lore/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -750,6 +859,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!loreEntry) {
         return res.status(404).json({ message: "Lore entry not found" });
       }
+      
+      // Log activity
+      await ActivityLogger.logUpdate(
+        loreEntry.projectId,
+        'lore',
+        loreEntry.id,
+        loreEntry.title,
+        req.userId!,
+        data
+      );
+      
       res.json(loreEntry);
     } catch (error) {
       res.status(400).json({ message: "Invalid lore entry data" });
@@ -762,6 +882,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get lore entry before deletion to clean up images
       const loreEntry = await storage.getLoreEntry(id);
+      if (!loreEntry) {
+        return res.status(404).json({ message: "Lore entry not found" });
+      }
+      
+      // Log activity before deletion
+      await ActivityLogger.logDelete(
+        loreEntry.projectId,
+        'lore',
+        loreEntry.id,
+        loreEntry.title,
+        req.userId!
+      );
       
       const deleted = await storage.deleteLoreEntry(id);
       if (!deleted) {
@@ -769,7 +901,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Clean up any images in lore entry content
-      if (loreEntry && loreEntry.content) {
+      if (loreEntry.content) {
         await cleanupContentImages(loreEntry.content, '');
       }
       
@@ -803,17 +935,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/notes", async (req, res) => {
+  app.post("/api/notes", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertNoteSchema.parse(req.body);
       const note = await storage.createNote(data);
+      
+      // Log activity
+      await ActivityLogger.logCreate(
+        note.projectId,
+        'note',
+        note.id,
+        note.title,
+        req.userId!
+      );
+      
       res.status(201).json(note);
     } catch (error) {
       res.status(400).json({ message: "Invalid note data" });
     }
   });
 
-  app.patch("/api/notes/:id", async (req, res) => {
+  app.patch("/api/notes/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -833,6 +975,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!note) {
         return res.status(404).json({ message: "Note not found" });
       }
+      
+      // Log activity
+      await ActivityLogger.logUpdate(
+        note.projectId,
+        'note',
+        note.id,
+        note.title,
+        req.userId!,
+        data
+      );
+      
       res.json(note);
     } catch (error) {
       res.status(400).json({ message: "Invalid note data" });
@@ -845,6 +998,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get note before deletion to clean up images
       const note = await storage.getNote(id);
+      if (!note) {
+        return res.status(404).json({ message: "Note not found" });
+      }
+      
+      // Log activity before deletion
+      await ActivityLogger.logDelete(
+        note.projectId,
+        'note',
+        note.id,
+        note.title,
+        req.userId!
+      );
       
       const deleted = await storage.deleteNote(id);
       if (!deleted) {
@@ -852,7 +1017,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Clean up any images in note content
-      if (note && note.content) {
+      if (note.content) {
         await cleanupContentImages(note.content, '');
       }
       
