@@ -42,12 +42,12 @@ export function LoreForm({ lore, projectId, onSuccess, onCancel, onCategoryChang
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest("/api/lore", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', String(projectId), 'lore'] 
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', String(projectId), 'stats'] 
-      });
+      // Invalidate the lore list
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/lore`] });
+      // Invalidate project stats
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      // Invalidate activities for edit history
+      queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
       toast({
         title: "Success",
         description: "Lore entry created successfully",
@@ -67,12 +67,14 @@ export function LoreForm({ lore, projectId, onSuccess, onCancel, onCategoryChang
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest(`/api/lore/${lore?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', String(projectId), 'lore'] 
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/lore', lore?.id] 
-      });
+      // Invalidate the specific lore entry
+      queryClient.invalidateQueries({ queryKey: [`/api/lore/${lore?.id}`] });
+      // Invalidate the lore list
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/lore`] });
+      // Invalidate project stats
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      // Invalidate activities for edit history
+      queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
       toast({
         title: "Success",
         description: "Lore entry updated successfully",

@@ -36,7 +36,8 @@ export default function LoreDetails() {
 
   const { data: lore, isLoading: loreLoading } = useQuery<LoreEntry>({
     queryKey: [`/api/lore/${loreId}`],
-    enabled: !!loreId && loreId !== "new" && !isNaN(Number(loreId))
+    enabled: !!loreId && loreId !== "new" && !isNaN(Number(loreId)),
+    staleTime: 0
   });
 
   // Check if any core data is still loading
