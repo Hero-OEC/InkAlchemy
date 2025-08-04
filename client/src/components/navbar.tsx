@@ -18,7 +18,7 @@ const navigationItems = [
   { id: "timeline", label: "Timeline", icon: Calendar },
   { id: "characters", label: "Characters", icon: Users },
   { id: "locations", label: "Locations", icon: MapPin },
-  { id: "magic-systems", label: "Magic", icon: Sparkles },
+  { id: "magic-systems", label: "Systems", icon: Sparkles },
   { id: "lore", label: "Lore", icon: Book },
   { id: "notes", label: "Notes", icon: StickyNote },
 ];

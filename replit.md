@@ -83,3 +83,4 @@ The application uses Supabase as the primary database. Required environment vari
 - **Database Standardization**: Configured Supabase as default database solution for consistent deployment
 - **Spell Activity Tracking Fixed**: Added comprehensive activity logging for spell CRUD operations with proper authentication
 - **Complete Activity System**: All entities now properly tracked in edit history including spells within magic systems
+- **Terminology Migration Complete**: Successfully updated all UI components from "Magic Systems/Power Systems" → "Systems" and "Spells/Abilities" → "Effects" throughout application including navigation, pages, forms, and component labels while maintaining backend compatibility
