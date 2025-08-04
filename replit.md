@@ -58,6 +58,8 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 - **Enhanced Activity Tracking**: Fixed editing history dashboard to properly track all entity types including races, with comprehensive create/edit tracking and real-time data refresh
 - **Complete Activity System**: Implemented comprehensive activity logging across all CRUD operations for all entities (projects, characters, locations, events, magic systems, lore entries, notes, races) with proper authentication and cache invalidation
 - **Race Deletion Authentication Fix**: Fixed race deletion authentication error by replacing raw fetch with proper apiRequest function and React Query mutation pattern
+- **Cache Invalidation Enhancement**: Improved race deletion to properly invalidate all related queries (characters, activities, stats) for immediate UI updates
+- **React State Warning Fix**: Resolved React development warning about state updates during rendering in race-details component
 
 ### August 2025 - Replit Environment Migration Complete
 - **Successful Migration**: InkAlchemy successfully migrated from Replit Agent to standard Replit environment
