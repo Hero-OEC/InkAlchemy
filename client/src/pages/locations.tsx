@@ -52,6 +52,7 @@ export default function Locations() {
 
   const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: ['/api/projects', projectId, 'locations'],
+    staleTime: 0, // Always refresh data
   });
 
   // Check if any core data is still loading
@@ -85,8 +86,10 @@ export default function Locations() {
   const deleteMutation = useMutation({
     mutationFn: (locationId: number) => apiRequest(`/api/locations/${locationId}`, { method: 'DELETE' }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'locations'] });
+      // Force remove and refetch locations data
+      queryClient.removeQueries({ queryKey: ['/api/projects', projectId, 'locations'] });
       queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'activities'] });
       setDeleteItem(null);
     },
   });
