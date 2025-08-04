@@ -78,8 +78,14 @@ export default function EditMagicSystem() {
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest(`/api/magic-systems/${systemId}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/magic-systems', systemId] });
-      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'magic-systems'] });
+      // Invalidate the specific magic system
+      queryClient.invalidateQueries({ queryKey: [`/api/magic-systems/${systemId}`] });
+      // Invalidate the magic systems list
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/magic-systems`] });
+      // Invalidate project stats
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      // Invalidate activities for edit history
+      queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
       toast({
         title: "Magic system updated",
         description: "Your magic system has been updated successfully.",
