@@ -280,7 +280,10 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(spells, eq(characterSpells.spellId, spells.id))
       .where(eq(characterSpells.characterId, characterId));
     
-    return result;
+    return result.map(r => ({
+      ...r,
+      proficiency: r.proficiency || undefined
+    }));
   }
 
   async addCharacterSpell(characterSpell: InsertCharacterSpell): Promise<CharacterSpell> {
@@ -320,7 +323,10 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(characters, eq(characterSpells.characterId, characters.id))
       .where(eq(characterSpells.spellId, spellId));
     
-    return result;
+    return result.map(r => ({
+      ...r,
+      proficiency: r.proficiency || undefined
+    }));
   }
 
   async getMagicSystemCharacters(magicSystemId: number): Promise<Character[]> {
@@ -384,7 +390,10 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(characters, eq(eventCharacters.characterId, characters.id))
       .where(eq(eventCharacters.eventId, eventId));
     
-    return result;
+    return result.map(r => ({
+      ...r,
+      role: r.role || undefined
+    }));
   }
 
   async addEventCharacter(eventCharacter: InsertEventCharacter): Promise<EventCharacter> {
@@ -534,23 +543,23 @@ export class DatabaseStorage implements IStorage {
       db.select().from(events).where(eq(events.projectId, projectId))
     ]);
 
-    const results = [];
+    const results: any[] = [];
     
     characterResults.forEach(char => {
       if (char.name.toLowerCase().includes(lowerQuery)) {
-        results.push({ type: 'character', ...char });
+        results.push({ ...char, type: 'character' });
       }
     });
     
     locationResults.forEach(loc => {
       if (loc.name.toLowerCase().includes(lowerQuery)) {
-        results.push({ type: 'location', ...loc });
+        results.push({ ...loc, type: 'location' });
       }
     });
     
     eventResults.forEach(event => {
       if (event.title.toLowerCase().includes(lowerQuery)) {
-        results.push({ type: 'event', ...event });
+        results.push({ ...event, type: 'event' });
       }
     });
     
