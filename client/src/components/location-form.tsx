@@ -21,10 +21,9 @@ interface LocationFormProps {
   projectId: string;
   onSuccess: () => void;
   onTypeChange?: (type: string) => void;
-  onLocationCreated?: () => void;
 }
 
-export function LocationForm({ location, projectId, onSuccess, onTypeChange, onLocationCreated }: LocationFormProps) {
+export function LocationForm({ location, projectId, onSuccess, onTypeChange }: LocationFormProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -41,8 +40,12 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange, onL
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest("/api/locations", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: async () => {
-      console.log('Location created, invalidating cache for projectId:', projectId);
-      await queryClient.invalidateQueries({ 
+      console.log('Location created, forcing refetch for projectId:', projectId);
+      // Remove and refetch the locations data
+      queryClient.removeQueries({ 
+        queryKey: ['/api/projects', projectId, 'locations'] 
+      });
+      await queryClient.refetchQueries({ 
         queryKey: ['/api/projects', projectId, 'locations'] 
       });
       await queryClient.invalidateQueries({ 
@@ -51,8 +54,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange, onL
       await queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'activities'] 
       });
-      console.log('Cache invalidated, calling onLocationCreated');
-      onLocationCreated?.();
+      console.log('Cache removed and refetched');
       toast({
         title: "Success",
         description: "Location created successfully",
@@ -72,8 +74,12 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange, onL
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest(`/api/locations/${location?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: async (updatedLocation) => {
-      console.log('Location updated, invalidating cache for projectId:', projectId);
-      await queryClient.invalidateQueries({ 
+      console.log('Location updated, forcing refetch for projectId:', projectId);
+      // Remove and refetch the locations data
+      queryClient.removeQueries({ 
+        queryKey: ['/api/projects', projectId, 'locations'] 
+      });
+      await queryClient.refetchQueries({ 
         queryKey: ['/api/projects', projectId, 'locations'] 
       });
       await queryClient.invalidateQueries({ 
@@ -82,7 +88,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange, onL
       await queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'activities'] 
       });
-      console.log('Cache invalidated, calling onSuccess');
+      console.log('Cache removed and refetched');
       toast({
         title: "Success",
         description: "Location updated successfully",
