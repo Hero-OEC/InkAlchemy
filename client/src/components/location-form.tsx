@@ -39,11 +39,12 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest("/api/locations", { method: "POST", body: JSON.stringify(data) }),
-    onSuccess: () => {
-      // Force remove and refetch locations data
-      queryClient.removeQueries({ 
-        queryKey: ['/api/projects', projectId, 'locations'] 
-      });
+    onSuccess: (newLocation) => {
+      // Update cache directly without refetching
+      queryClient.setQueryData(
+        ['/api/projects', projectId, 'locations'],
+        (oldData: Location[] = []) => [...oldData, newLocation]
+      );
       queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'stats'] 
       });
@@ -68,14 +69,17 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
   const updateMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest(`/api/locations/${location?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
-    onSuccess: () => {
-      // Force remove and refetch locations data
-      queryClient.removeQueries({ 
-        queryKey: ['/api/projects', projectId, 'locations'] 
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/locations', location?.id] 
-      });
+    onSuccess: (updatedLocation) => {
+      // Update cache directly without refetching
+      queryClient.setQueryData(
+        ['/api/projects', projectId, 'locations'],
+        (oldData: Location[] = []) => 
+          oldData.map(loc => loc.id === location?.id ? updatedLocation : loc)
+      );
+      queryClient.setQueryData(
+        ['/api/locations', location?.id],
+        updatedLocation
+      );
       queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'activities'] 
       });
