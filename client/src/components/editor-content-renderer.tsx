@@ -107,10 +107,51 @@ export const EditorContentRenderer: React.FC<EditorContentRendererProps> = ({
         console.log('Image block data:', block.data);
         
         // Handle different possible data structures
-        const imageUrl = block.data.file?.url || block.data.url || block.data.src;
+        // Editor.js can store images in various formats:
+        // 1. { file: { url: "..." } } - Standard Editor.js ImageTool response
+        // 2. { url: "..." } - Direct URL format
+        // 3. { src: "..." } - Alternative format
+        // 4. Sometimes nested deeper in data structure
+        let imageUrl = null;
+        
+        if (block.data) {
+          // Try different possible paths for the image URL
+          imageUrl = block.data.file?.url || 
+                     block.data.url || 
+                     block.data.src ||
+                     block.data.file?.src ||
+                     block.data.image?.url ||
+                     block.data.image?.src;
+          
+          // If still no URL, check if the entire data is just a URL string
+          if (!imageUrl && typeof block.data === 'string') {
+            imageUrl = block.data;
+          }
+          
+          // Final fallback: check if there's a nested file object
+          if (!imageUrl && block.data.file && typeof block.data.file === 'object') {
+            const fileKeys = Object.keys(block.data.file);
+            for (const key of fileKeys) {
+              if (typeof block.data.file[key] === 'string' && block.data.file[key].startsWith('http')) {
+                imageUrl = block.data.file[key];
+                break;
+              }
+            }
+          }
+        }
         
         if (!imageUrl) {
           console.error('No image URL found in block data:', block.data);
+          console.error('Attempted paths:', {
+            'file.url': block.data?.file?.url,
+            'url': block.data?.url,
+            'src': block.data?.src,
+            'file.src': block.data?.file?.src,
+            'image.url': block.data?.image?.url,
+            'image.src': block.data?.image?.src,
+            'typeof data': typeof block.data,
+            'data keys': block.data ? Object.keys(block.data) : 'no data'
+          });
           return (
             <div key={block.id} className="my-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-600 text-sm">Image data missing or invalid</p>
@@ -118,6 +159,8 @@ export const EditorContentRenderer: React.FC<EditorContentRendererProps> = ({
             </div>
           );
         }
+        
+        console.log('Successfully extracted image URL:', imageUrl);
         
         return (
           <div key={block.id} className="my-6">
