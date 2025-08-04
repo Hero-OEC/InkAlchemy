@@ -87,6 +87,7 @@ export class ActivityLogger {
       case 'location': return 'MapPin';
       case 'event': return 'Calendar';
       case 'magic_system': return 'Sparkles';
+      case 'spell': return 'Zap';
       case 'lore': return 'BookOpen';
       case 'note': return 'StickyNote';
       case 'race': return 'Crown';
@@ -100,6 +101,7 @@ export class ActivityLogger {
       case 'location': return 'Locations';
       case 'event': return 'Timeline';
       case 'magic_system': return 'Magic Systems';
+      case 'spell': return 'Spells';
       case 'lore': return 'Lore';
       case 'note': return 'Notes';
       case 'race': return 'Races';

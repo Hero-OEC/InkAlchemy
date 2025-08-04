@@ -190,7 +190,7 @@ export const relationships = pgTable("relationships", {
 export const activities = pgTable("activities", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id").references(() => projects.id).notNull(),
-  entityType: text("entity_type").notNull(), // character, location, event, race, magic_system, lore, note
+  entityType: text("entity_type").notNull(), // character, location, event, race, magic_system, spell, lore, note
   entityId: integer("entity_id").notNull(), // ID of the affected entity
   entityName: text("entity_name").notNull(), // Name/title of the entity for display
   action: text("action").notNull(), // create, update, delete

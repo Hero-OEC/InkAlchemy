@@ -711,17 +711,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/spells", async (req, res) => {
+  app.post("/api/spells", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertSpellSchema.parse(req.body);
       const spell = await storage.createSpell(data);
+      
+      // Log the activity
+      await ActivityLogger.logCreate(
+        spell.projectId,
+        'spell',
+        spell.id,
+        spell.name,
+        req.userId!,
+        { magicSystemId: spell.magicSystemId, level: spell.level }
+      );
+      
       res.status(201).json(spell);
     } catch (error) {
+      console.error('Spell creation error:', error);
       res.status(400).json({ message: "Invalid spell data" });
     }
   });
 
-  app.patch("/api/spells/:id", async (req, res) => {
+  app.patch("/api/spells/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -742,8 +754,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!spell) {
         return res.status(404).json({ message: "Spell not found" });
       }
+      
+      // Log the activity with changes
+      const changes: Record<string, any> = {};
+      if (data.name && data.name !== currentSpell.name) changes.name = { from: currentSpell.name, to: data.name };
+      if (data.level && data.level !== currentSpell.level) changes.level = { from: currentSpell.level, to: data.level };
+      if (data.description !== undefined && data.description !== currentSpell.description) changes.description = { updated: true };
+      
+      await ActivityLogger.logUpdate(
+        spell.projectId,
+        'spell',
+        spell.id,
+        spell.name,
+        req.userId!,
+        changes
+      );
+      
       res.json(spell);
     } catch (error) {
+      console.error('Spell update error:', error);
       res.status(400).json({ message: "Invalid spell data" });
     }
   });
@@ -752,16 +781,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       
-      // Get spell before deletion to clean up images
+      // Get spell before deletion to clean up images and log activity
       const spell = await storage.getSpell(id);
+      if (!spell) {
+        return res.status(404).json({ message: "Spell not found" });
+      }
       
       const deleted = await storage.deleteSpell(id);
       if (!deleted) {
         return res.status(404).json({ message: "Spell not found" });
       }
       
+      // Log the activity
+      await ActivityLogger.logDelete(
+        spell.projectId,
+        'spell',
+        spell.id,
+        spell.name,
+        req.userId!,
+        { magicSystemId: spell.magicSystemId, level: spell.level }
+      );
+      
       // Clean up any images in spell description
-      if (spell && spell.description) {
+      if (spell.description) {
         await cleanupContentImages(spell.description, '');
         console.log(`✅ Spell deletion complete: cleaned up images for "${spell.name}"`);
       }
