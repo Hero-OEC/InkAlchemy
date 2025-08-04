@@ -233,7 +233,14 @@ export default function RaceDetails() {
             <div className="bg-brand-50 rounded-xl border border-brand-200 p-8">
               <div className="prose prose-brand max-w-none">
                 {race?.description ? (
-                  <EditorContentRenderer data={race.description} />
+                  (() => {
+                    try {
+                      return <EditorContentRenderer data={JSON.parse(race.description)} />;
+                    } catch (error) {
+                      console.error('Failed to parse race description JSON:', error);
+                      return <p className="text-brand-700 leading-relaxed">{race.description}</p>;
+                    }
+                  })()
                 ) : (
                   <p className="text-brand-700 leading-relaxed">No description available</p>
                 )}
