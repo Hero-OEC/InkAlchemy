@@ -1,6 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
@@ -9,6 +9,7 @@ import { LoreDetailsHeaderSkeleton, LoreDetailsContentSkeleton } from "@/compone
 import { ArrowLeft, Edit, Trash2, BookOpen, Crown, Scroll, Landmark, Sword, Users, Globe, Calendar } from "lucide-react";
 import type { Project, LoreEntry } from "@shared/schema";
 import { format } from "date-fns";
+import { apiRequest } from "@/lib/queryClient";
 
 // Lore category config
 const LORE_CATEGORY_CONFIG = {
@@ -27,6 +28,7 @@ export default function LoreDetails() {
   const { projectId, loreId } = useParams();
   const [, setLocation] = useLocation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -76,18 +78,21 @@ export default function LoreDetails() {
     setLocation(`/projects/${projectId}/lore/${loreId}/edit`);
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/lore/${loreId}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        setLocation(`/projects/${projectId}/lore`);
-      }
-    } catch (error) {
+  const deleteMutation = useMutation({
+    mutationFn: () => apiRequest(`/api/lore/${loreId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/lore`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
+      setLocation(`/projects/${projectId}/lore`);
+    },
+    onError: (error) => {
       console.error('Error deleting lore:', error);
     }
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate();
   };
 
   if (isLoading) {
@@ -242,6 +247,7 @@ export default function LoreDetails() {
         title="Delete Lore Entry"
         description={`Are you sure you want to delete "${lore?.title}"? This action cannot be undone.`}
         itemName={lore?.title || "this lore entry"}
+        isLoading={deleteMutation.isPending}
       />
     </div>
   );
