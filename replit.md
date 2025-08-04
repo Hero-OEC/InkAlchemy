@@ -26,10 +26,10 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 
 ## Database Configuration
 The application uses Supabase as the primary database. Required environment variables:
-- `DATABASE_URL`: Supabase PostgreSQL connection string (format: postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres)
-- `VITE_SUPABASE_URL`: Supabase project URL
-- `VITE_SUPABASE_ANON_KEY`: Supabase anonymous key
-- `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key
+- `DATABASE_URL`: postgresql://postgres.nkmtcxeahydditymadlw:123qweasdZXCrakan@aws-0-eu-central-1.pooler.supabase.com:6543/postgres
+- `VITE_SUPABASE_URL`: https://nkmtcxeahydditymadlw.supabase.co
+- `VITE_SUPABASE_ANON_KEY`: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rbXRjeGVhaHlkZGl0eW1hZGx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzNTg5NDEsImV4cCI6MjA2ODkzNDk0MX0.Pj3LuJkY_lREQiwnSb3-kaabPyNXouAp8LZfjg5s3r0
+- `SUPABASE_SERVICE_ROLE_KEY`: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rbXRjeGVhaHlkZGl0eW1hZGx3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzM1ODk0MSwiZXhwIjoyMDY4OTM0OTQxfQ.S89sI5ZjiQLR6St5EhVSrkmKjov-TcOLnrE0kdUGCkk
 
 ## Recent Changes
 
@@ -84,6 +84,7 @@ The application uses Supabase as the primary database. Required environment vari
 - **Environment Compatibility**: Application running smoothly on port 5000 with proper client/server separation
 - **Security Maintained**: All security practices preserved with proper authentication middleware
 - **Database Standardization**: Configured Supabase as default database solution for consistent deployment
+- **Supabase Connection Verified**: Successfully connected to production Supabase database with all environment variables properly configured in Replit Secrets
 - **Spell Activity Tracking Fixed**: Added comprehensive activity logging for spell CRUD operations with proper authentication
 - **Complete Activity System**: All entities now properly tracked in edit history including spells within magic systems
 - **Terminology Migration Complete**: Successfully updated all UI components from "Magic Systems/Power Systems" → "Systems" throughout application. Implemented contextual terminology where users see "Spells" for magic systems and "Abilities" for power systems, while using "Effects" as internal/database terminology. All navigation, pages, forms, and component labels updated consistently while maintaining backend compatibility
