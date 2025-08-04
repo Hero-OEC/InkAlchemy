@@ -55,7 +55,7 @@ export default function Locations() {
     staleTime: 0, // Always refetch when invalidated
   });
 
-  console.log('Locations query data:', { locations, projectId, queryKey: ['/api/projects', projectId, 'locations'] });
+
 
   // Check if any core data is still loading
   const isLoading = projectLoading || locationsLoading;
@@ -88,7 +88,6 @@ export default function Locations() {
   const deleteMutation = useMutation({
     mutationFn: (locationId: number) => apiRequest(`/api/locations/${locationId}`, { method: 'DELETE' }),
     onSuccess: (_, deletedLocationId) => {
-      console.log('Delete successful, invalidating queries');
       queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'locations'] });
       queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'stats'] });
       queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'activities'] });

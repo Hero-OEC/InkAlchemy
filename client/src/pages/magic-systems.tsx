@@ -47,6 +47,7 @@ export default function MagicSystems() {
 
   const { data: magicSystems, isLoading: magicSystemsLoading } = useQuery<MagicSystem[]>({
     queryKey: ['/api/projects', projectId, 'magic-systems'],
+    staleTime: 0, // Always refetch when invalidated
   });
 
   // Check if any core data is still loading

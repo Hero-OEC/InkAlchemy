@@ -40,6 +40,7 @@ export default function Notes() {
 
   const { data: notes = [], isLoading: notesLoading } = useQuery<Note[]>({
     queryKey: ['/api/projects', String(projectId), 'notes'],
+    staleTime: 0, // Always refetch when invalidated
   });
 
   // Check if any core data is still loading

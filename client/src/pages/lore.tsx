@@ -40,6 +40,7 @@ export default function Lore() {
 
   const { data: loreEntries = [], isLoading: loreLoading } = useQuery<LoreEntry[]>({
     queryKey: ['/api/projects', String(projectId), 'lore'],
+    staleTime: 0, // Always refetch when invalidated
   });
 
   // Check if any core data is still loading

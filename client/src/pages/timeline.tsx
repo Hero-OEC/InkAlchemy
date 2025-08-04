@@ -28,14 +28,17 @@ export default function Timeline() {
 
   const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
+    staleTime: 0, // Always refetch when invalidated
   });
 
   const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
     queryKey: [`/api/projects/${projectId}/locations`],
+    staleTime: 0, // Always refetch when invalidated
   });
 
   const { data: relationships = [], isLoading: relationshipsLoading } = useQuery<Relationship[]>({
     queryKey: [`/api/projects/${projectId}/relationships`],
+    staleTime: 0, // Always refetch when invalidated
   });
 
   // Check if any core data is still loading

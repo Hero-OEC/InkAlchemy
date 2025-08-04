@@ -70,6 +70,7 @@ The application uses Supabase as the primary database. Required environment vari
 - **Race Deletion Authentication Fix**: Fixed race deletion authentication error by replacing raw fetch with proper apiRequest function and React Query mutation pattern
 - **Cache Invalidation Enhancement**: Improved race deletion to properly invalidate all related queries (characters, activities, stats) for immediate UI updates
 - **React State Warning Fix**: Resolved React development warning about state updates during rendering in race-details component
+- **Cache Invalidation Issue Fix**: Resolved critical UI update bug where location creation/editing didn't show new data without page reload. Root cause was staleTime: Infinity preventing refetch after cache invalidation. Fixed by adding staleTime: 0 to location queries to force immediate refetch when invalidated
 
 ### August 2025 - Replit Environment Migration Complete
 - **Successful Migration**: InkAlchemy successfully migrated from Replit Agent to standard Replit environment
