@@ -90,9 +90,12 @@ export default function RaceDetails() {
   const deleteRaceMutation = useMutation({
     mutationFn: () => apiRequest(`/api/races/${raceId}`, { method: 'DELETE' }),
     onSuccess: () => {
-      // Invalidate race queries
+      // Invalidate all related queries to ensure UI updates everywhere
       queryClient.removeQueries({ queryKey: [`/api/races/${raceId}`] });
       queryClient.removeQueries({ queryKey: [`/api/projects/${projectId}/races`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/characters`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/activities`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
       
       // Navigate back to characters page
       setLocation(`/projects/${projectId}/characters`);

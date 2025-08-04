@@ -35,6 +35,7 @@ export default function Characters() {
 
   const { data: characters = [], isLoading: charactersLoading } = useQuery<Character[]>({
     queryKey: [`/api/projects/${projectId}/characters`],
+    staleTime: 0,
   });
 
   const { data: races = [], isLoading: racesLoading } = useQuery<Race[]>({
