@@ -18,7 +18,7 @@ const formSchema = insertLocationSchema.extend({
 
 interface LocationFormProps {
   location?: Location | null;
-  projectId: number;
+  projectId: string;
   onSuccess: () => void;
   onTypeChange?: (type: string) => void;
 }
@@ -29,7 +29,7 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      projectId,
+      projectId: Number(projectId),
       name: location?.name || "",
       type: location?.type || "",
       content: location?.content || "",
@@ -41,10 +41,22 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
       apiRequest("/api/locations", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: (newLocation) => {
       // Update cache directly without refetching
+      const cacheKey = ['/api/projects', projectId, 'locations'];
+      console.log('Cache key for update:', cacheKey);
+      console.log('Current cache data before update:', queryClient.getQueryData(cacheKey));
+      
       queryClient.setQueryData(
-        ['/api/projects', projectId, 'locations'],
-        (oldData: Location[] = []) => [...oldData, newLocation]
+        cacheKey,
+        (oldData: Location[] = []) => {
+          console.log('Updating locations cache:', { oldData, newLocation, totalAfter: oldData.length + 1 });
+          const newData = [...oldData, newLocation];
+          console.log('New cache data:', newData);
+          return newData;
+        }
       );
+      
+      console.log('Cache data after update:', queryClient.getQueryData(cacheKey));
+      
       queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'stats'] 
       });

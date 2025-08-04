@@ -119,7 +119,7 @@ export default function CreateLocation() {
 
         {/* Form */}
         <LocationForm 
-          projectId={Number(projectId)} 
+          projectId={projectId!} 
           onSuccess={handleSuccess}
           onTypeChange={handleTypeChange}
         />

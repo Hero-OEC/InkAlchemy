@@ -136,7 +136,7 @@ export default function EditLocation() {
         {/* Form */}
         <LocationForm 
           location={location}
-          projectId={Number(projectId)} 
+          projectId={projectId!} 
           onSuccess={handleSuccess}
           onTypeChange={handleTypeChange}
         />
