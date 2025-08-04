@@ -122,6 +122,12 @@ export default function CreateLocation() {
           projectId={projectId!} 
           onSuccess={handleSuccess}
           onTypeChange={handleTypeChange}
+          onLocationCreated={() => {
+            console.log('Location created callback, forcing page refresh in 500ms');
+            setTimeout(() => {
+              setLocation(`/projects/${projectId}/locations`);
+            }, 500);
+          }}
         />
       </main>
     </div>

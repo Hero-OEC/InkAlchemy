@@ -50,9 +50,11 @@ export default function Locations() {
     queryKey: [`/api/projects/${projectId}`],
   });
 
-  const { data: locations = [], isLoading: locationsLoading } = useQuery<Location[]>({
+  const { data: locations = [], isLoading: locationsLoading, refetch: refetchLocations } = useQuery<Location[]>({
     queryKey: ['/api/projects', projectId, 'locations'],
   });
+
+  console.log('Locations query data:', { locations, projectId, queryKey: ['/api/projects', projectId, 'locations'] });
 
   // Check if any core data is still loading
   const isLoading = projectLoading || locationsLoading;

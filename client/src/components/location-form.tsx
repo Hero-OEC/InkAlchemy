@@ -21,9 +21,10 @@ interface LocationFormProps {
   projectId: string;
   onSuccess: () => void;
   onTypeChange?: (type: string) => void;
+  onLocationCreated?: () => void;
 }
 
-export function LocationForm({ location, projectId, onSuccess, onTypeChange }: LocationFormProps) {
+export function LocationForm({ location, projectId, onSuccess, onTypeChange, onLocationCreated }: LocationFormProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,16 +40,19 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest("/api/locations", { method: "POST", body: JSON.stringify(data) }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ 
+    onSuccess: async () => {
+      console.log('Location created, invalidating cache for projectId:', projectId);
+      await queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'locations'] 
       });
-      queryClient.invalidateQueries({ 
+      await queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'stats'] 
       });
-      queryClient.invalidateQueries({ 
+      await queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'activities'] 
       });
+      console.log('Cache invalidated, calling onLocationCreated');
+      onLocationCreated?.();
       toast({
         title: "Success",
         description: "Location created successfully",
@@ -67,16 +71,18 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
   const updateMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest(`/api/locations/${location?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
-    onSuccess: (updatedLocation) => {
-      queryClient.invalidateQueries({ 
+    onSuccess: async (updatedLocation) => {
+      console.log('Location updated, invalidating cache for projectId:', projectId);
+      await queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'locations'] 
       });
-      queryClient.invalidateQueries({ 
+      await queryClient.invalidateQueries({ 
         queryKey: ['/api/locations', location?.id] 
       });
-      queryClient.invalidateQueries({ 
+      await queryClient.invalidateQueries({ 
         queryKey: ['/api/projects', projectId, 'activities'] 
       });
+      console.log('Cache invalidated, calling onSuccess');
       toast({
         title: "Success",
         description: "Location updated successfully",
