@@ -393,7 +393,7 @@ export class DatabaseStorage implements IStorage {
     return result.map(r => ({
       ...r,
       role: r.role || undefined
-    }));
+    })) as (Character & { role?: string })[];
   }
 
   async addEventCharacter(eventCharacter: InsertEventCharacter): Promise<EventCharacter> {
