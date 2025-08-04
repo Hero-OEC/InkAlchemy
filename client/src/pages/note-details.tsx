@@ -1,6 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/button-variations";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
@@ -9,6 +9,7 @@ import { NoteDetailsHeaderSkeleton, NoteDetailsContentSkeleton } from "@/compone
 import { ArrowLeft, Edit, Trash2, StickyNote, Lightbulb, Bell, FileText, User, MapPin, Search } from "lucide-react";
 import type { Project, Note } from "@shared/schema";
 import { format } from "date-fns";
+import { apiRequest } from "@/lib/queryClient";
 
 // Note category config
 const NOTE_CATEGORY_CONFIG = {
@@ -25,6 +26,7 @@ export default function NoteDetails() {
   const { projectId, noteId } = useParams();
   const [, setLocation] = useLocation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
@@ -75,18 +77,21 @@ export default function NoteDetails() {
     setLocation(`/projects/${projectId}/notes/${noteId}/edit`);
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/notes/${noteId}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        setLocation(`/projects/${projectId}/notes`);
-      }
-    } catch (error) {
+  const deleteMutation = useMutation({
+    mutationFn: () => apiRequest(`/api/notes/${noteId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/notes`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
+      setLocation(`/projects/${projectId}/notes`);
+    },
+    onError: (error) => {
       console.error('Error deleting note:', error);
     }
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate();
   };
 
   if (isLoading) {
@@ -238,6 +243,7 @@ export default function NoteDetails() {
         title="Delete Note"
         description={`Are you sure you want to delete "${note?.title}"? This action cannot be undone.`}
         itemName={note?.title || "this note"}
+        isLoading={deleteMutation.isPending}
       />
     </div>
   );
