@@ -1,5 +1,5 @@
 import { useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@/contexts/navigation-context";
 import { Navbar } from "@/components/navbar";
@@ -8,6 +8,7 @@ import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { MiniCard } from "@/components/mini-card";
 import { EditorContentRenderer } from "@/components/editor-content-renderer";
 import { RaceDetailsHeaderSkeleton, RaceDetailsContentSkeleton } from "@/components/skeleton";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Users, Edit, ArrowLeft, Trash2, MapPin, Mountain, Crown } from "lucide-react";
 import type { Race, Project, Character, Location } from "@shared/schema";
 
@@ -85,18 +86,25 @@ export default function RaceDetails() {
     setLocation(`/projects/${projectId}/races/${raceId}/edit`);
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/races/${raceId}`, {
-        method: 'DELETE',
-      });
+  // Race deletion mutation
+  const deleteRaceMutation = useMutation({
+    mutationFn: () => apiRequest(`/api/races/${raceId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      // Invalidate race queries
+      queryClient.removeQueries({ queryKey: [`/api/races/${raceId}`] });
+      queryClient.removeQueries({ queryKey: [`/api/projects/${projectId}/races`] });
       
-      if (response.ok) {
-        setLocation(`/projects/${projectId}/characters`);
-      }
-    } catch (error) {
+      // Navigate back to characters page
+      setLocation(`/projects/${projectId}/characters`);
+    },
+    onError: (error) => {
       console.error('Error deleting race:', error);
     }
+  });
+
+  const handleDelete = () => {
+    deleteRaceMutation.mutate();
+    setShowDeleteDialog(false);
   };
 
   if (isLoading) {
