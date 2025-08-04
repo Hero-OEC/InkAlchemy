@@ -372,7 +372,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Check if content changed and clean up unused images
       if (data.hasOwnProperty('content') && currentLocation.content) {
-        await cleanupContentImages(currentLocation.content || '', data.content || '');
+        console.log('🔍 DEBUG - Location content update:', {
+          hasOldContent: !!currentLocation.content,
+          hasNewContent: !!data.content,
+          oldContentLength: currentLocation.content?.length || 0,
+          newContentLength: data.content?.length || 0,
+          oldContentSample: currentLocation.content?.substring(0, 200),
+          newContentSample: data.content?.substring(0, 200)
+        });
+        // Temporarily disable cleanup to debug
+        // await cleanupContentImages(currentLocation.content || '', data.content || '');
       }
       
       const location = await storage.updateLocation(id, data);

@@ -61,7 +61,8 @@ export default function LocationDetails() {
 
   const { data: location, isLoading: locationLoading } = useQuery<Location>({
     queryKey: [`/api/locations/${locationId}`],
-    enabled: !!locationId && locationId !== "new" && !isNaN(Number(locationId))
+    enabled: !!locationId && locationId !== "new" && !isNaN(Number(locationId)),
+    staleTime: 0 // Always refetch when invalidated
   });
 
   // Set page title

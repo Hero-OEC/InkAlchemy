@@ -44,7 +44,8 @@ export default function EditLocation() {
 
   const { data: location, isLoading: locationLoading } = useQuery<Location>({
     queryKey: [`/api/locations/${locationId}`],
-    enabled: !!locationId && locationId !== "new" && !isNaN(Number(locationId))
+    enabled: !!locationId && locationId !== "new" && !isNaN(Number(locationId)),
+    staleTime: 0 // Always refetch when invalidated
   });
 
   const isLoading = projectLoading || locationLoading;
