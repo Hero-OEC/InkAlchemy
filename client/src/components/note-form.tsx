@@ -45,12 +45,12 @@ export function NoteForm({ note, projectId, onSuccess, onCancel, onCategoryChang
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', String(projectId), 'notes'] 
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', String(projectId), 'stats'] 
-      });
+      // Invalidate the notes list
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/notes`] });
+      // Invalidate project stats
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      // Invalidate activities for edit history
+      queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
       toast({
         title: "Success",
         description: "Note created successfully",
@@ -73,12 +73,14 @@ export function NoteForm({ note, projectId, onSuccess, onCancel, onCategoryChang
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', String(projectId), 'notes'] 
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/notes', note?.id] 
-      });
+      // Invalidate the specific note
+      queryClient.invalidateQueries({ queryKey: [`/api/notes/${note?.id}`] });
+      // Invalidate the notes list
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/notes`] });
+      // Invalidate project stats
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      // Invalidate activities for edit history
+      queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
       toast({
         title: "Success",
         description: "Note updated successfully",

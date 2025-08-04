@@ -32,7 +32,8 @@ export default function NoteDetails() {
 
   const { data: note, isLoading: noteLoading } = useQuery<Note>({
     queryKey: [`/api/notes/${noteId}`],
-    enabled: !!noteId && noteId !== "new" && !isNaN(Number(noteId))
+    enabled: !!noteId && noteId !== "new" && !isNaN(Number(noteId)),
+    staleTime: 0
   });
 
   // Check if any core data is still loading
