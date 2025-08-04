@@ -52,6 +52,7 @@ export default function Locations() {
 
   const { data: locations = [], isLoading: locationsLoading, refetch: refetchLocations } = useQuery<Location[]>({
     queryKey: ['/api/projects', projectId, 'locations'],
+    staleTime: 0, // Always refetch when invalidated
   });
 
   console.log('Locations query data:', { locations, projectId, queryKey: ['/api/projects', projectId, 'locations'] });
@@ -87,6 +88,7 @@ export default function Locations() {
   const deleteMutation = useMutation({
     mutationFn: (locationId: number) => apiRequest(`/api/locations/${locationId}`, { method: 'DELETE' }),
     onSuccess: (_, deletedLocationId) => {
+      console.log('Delete successful, invalidating queries');
       queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'locations'] });
       queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'stats'] });
       queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'activities'] });

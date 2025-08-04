@@ -39,22 +39,12 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest("/api/locations", { method: "POST", body: JSON.stringify(data) }),
-    onSuccess: async () => {
-      console.log('Location created, forcing refetch for projectId:', projectId);
-      // Remove and refetch the locations data
-      queryClient.removeQueries({ 
-        queryKey: ['/api/projects', projectId, 'locations'] 
-      });
-      await queryClient.refetchQueries({ 
-        queryKey: ['/api/projects', projectId, 'locations'] 
-      });
-      await queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', projectId, 'stats'] 
-      });
-      await queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', projectId, 'activities'] 
-      });
-      console.log('Cache removed and refetched');
+    onSuccess: () => {
+      console.log('Location created, using same pattern as delete');
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'locations'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'activities'] });
+      console.log('Queries invalidated');
       toast({
         title: "Success",
         description: "Location created successfully",
@@ -73,22 +63,12 @@ export function LocationForm({ location, projectId, onSuccess, onTypeChange }: L
   const updateMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
       apiRequest(`/api/locations/${location?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
-    onSuccess: async (updatedLocation) => {
-      console.log('Location updated, forcing refetch for projectId:', projectId);
-      // Remove and refetch the locations data
-      queryClient.removeQueries({ 
-        queryKey: ['/api/projects', projectId, 'locations'] 
-      });
-      await queryClient.refetchQueries({ 
-        queryKey: ['/api/projects', projectId, 'locations'] 
-      });
-      await queryClient.invalidateQueries({ 
-        queryKey: ['/api/locations', location?.id] 
-      });
-      await queryClient.invalidateQueries({ 
-        queryKey: ['/api/projects', projectId, 'activities'] 
-      });
-      console.log('Cache removed and refetched');
+    onSuccess: (updatedLocation) => {
+      console.log('Location updated, using same pattern as delete');
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'locations'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/locations', location?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'activities'] });
+      console.log('Queries invalidated');
       toast({
         title: "Success",
         description: "Location updated successfully",
