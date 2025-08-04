@@ -99,13 +99,13 @@ export default function SpellDetails() {
   // Set page title
   useEffect(() => {
     if (spell?.name && project?.name) {
-      const systemType = magicSystem?.type || "magic";
-      const itemType = systemType === "power" ? "ability" : "spell";
       document.title = `${spell.name} - ${project.name} | InkAlchemy`;
     } else if (spell?.name) {
       document.title = `${spell.name} | InkAlchemy`;
     } else {
-      document.title = "Effect Details | InkAlchemy";
+      const systemType = magicSystem?.type || "magic";
+      const itemType = systemType === "power" ? "Ability" : "Spell";
+      document.title = `${itemType} Details | InkAlchemy`;
     }
   }, [spell?.name, project?.name, magicSystem?.type]);
 

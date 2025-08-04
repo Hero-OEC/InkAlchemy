@@ -194,9 +194,14 @@ export default function MagicSystemDetails() {
   const Icon = getSystemIcon(system);
   
   // Get tabs based on system type
-  const tabs = [
+  const tabs = system.type === "power" 
+    ? [
         { id: "details", label: "Details", icon: BookOpen },
-        { id: "effects", label: "Effects", icon: Wand2 }
+        { id: "effects", label: "Abilities", icon: Zap }
+      ]
+    : [
+        { id: "details", label: "Details", icon: BookOpen },
+        { id: "effects", label: "Spells", icon: Wand2 }
       ];
 
   const formatDate = (date: Date) => {
@@ -237,7 +242,7 @@ export default function MagicSystemDetails() {
         );
 
       case "effects":
-        const contentType = "effects";
+        const contentType = system.type === "power" ? "abilities" : "spells";
         const actualSpells = spells || [];
         
         // Filter spells based on search
@@ -255,11 +260,11 @@ export default function MagicSystemDetails() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-brand-900">
-                Effects
+                {system.type === "power" ? "Abilities" : "Spells"}
               </h3>
               <div className="flex items-center gap-4 flex-shrink-0">
                 <SearchComponent
-                  placeholder={`Search effects...`}
+                  placeholder={`Search ${system.type === "power" ? "abilities" : "spells"}...`}
                   onSearch={setSpellSearchQuery}
                   onFilterChange={() => {}} // No filters needed
                   filters={[]} // No filters
@@ -272,7 +277,7 @@ export default function MagicSystemDetails() {
                   className="whitespace-nowrap"
                 >
                   <Plus size={16} className="mr-2" />
-                  Add Effect
+                  Add {system.type === "power" ? "Ability" : "Spell"}
                 </Button>
               </div>
             </div>
@@ -286,9 +291,9 @@ export default function MagicSystemDetails() {
                     <Wand2 size={24} className="text-brand-500" />
                   )}
                 </div>
-                <h4 className="text-xl font-semibold text-brand-900 mb-2">No Effects Yet</h4>
+                <h4 className="text-xl font-semibold text-brand-900 mb-2">No {system.type === "power" ? "Abilities" : "Spells"} Yet</h4>
                 <p className="text-brand-600 mb-4">
-                  Start building your effect collection for this system.
+                  Start building your {system.type === "power" ? "ability" : "spell"} collection for this system.
                 </p>
                 <Button 
                   onClick={() => {
@@ -296,7 +301,7 @@ export default function MagicSystemDetails() {
                   }}
                 >
                   <Plus size={16} className="mr-2" />
-                  Create First Effect
+                  Create First {system.type === "power" ? "Ability" : "Spell"}
                 </Button>
               </div>
             ) : filteredSpells.length === 0 ? (
@@ -310,7 +315,7 @@ export default function MagicSystemDetails() {
                 </div>
                 <h4 className="text-xl font-semibold text-brand-900 mb-2">No Results Found</h4>
                 <p className="text-brand-600 mb-4">
-                  No effects match your search criteria.
+                  No {system.type === "power" ? "abilities" : "spells"} match your search criteria.
                 </p>
               </div>
             ) : (
