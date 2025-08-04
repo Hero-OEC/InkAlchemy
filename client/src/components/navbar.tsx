@@ -78,7 +78,7 @@ export function Navbar({
             <div className="flex flex-col">
               <h1 className="text-lg font-semibold text-brand-800">InkAlchemy</h1>
               <span className="text-xs text-brand-600 -mt-1 font-normal">
-                {hasActiveProject && projectName ? projectName : "Worldbuilding Management Platform"}
+                Worldbuilding Management Platform
               </span>
             </div>
           </button>
