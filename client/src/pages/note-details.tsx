@@ -136,7 +136,7 @@ export default function NoteDetails() {
           projectName={project?.name}
           onNavigate={handleNavigation}
         />
-        <main className="max-w-4xl mx-auto px-6 py-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-20">
             <StickyNote className="w-16 h-16 mx-auto mb-4 text-brand-300" />
             <h2 className="text-xl font-semibold text-brand-900 mb-2">Note Not Found</h2>
@@ -160,7 +160,7 @@ export default function NoteDetails() {
         projectName={project?.name}
       />
       
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button

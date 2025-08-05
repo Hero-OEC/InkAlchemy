@@ -148,7 +148,7 @@ export default function SpellDetails() {
           projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <main className="max-w-6xl mx-auto px-6 py-8 flex flex-col items-center">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="w-full max-w-5xl">
             {/* Header with Back Button Skeleton */}
             <div className="flex items-center gap-4 mb-8">
@@ -207,7 +207,7 @@ export default function SpellDetails() {
         onNavigate={handleNavigation}
       />
       
-      <main className="max-w-6xl mx-auto px-6 py-8 flex flex-col items-center">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="w-full max-w-5xl">
           {/* Header with Back Button */}
           <div className="flex items-center gap-4 mb-8">

@@ -140,7 +140,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
           projectName={project?.name}
           onNavigate={(path) => setLocation(path)}
         />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="animate-pulse">
             <div className="h-8 bg-brand-200 rounded mb-4"></div>
             <div className="h-96 bg-brand-200 rounded"></div>
@@ -157,7 +157,7 @@ export default function RaceForm({ mode }: RaceFormProps) {
         projectName={project?.name}
         onNavigate={(path) => setLocation(path)}
       />
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <Button
