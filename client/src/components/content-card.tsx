@@ -8,6 +8,30 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
+// Utility function to extract plain text from Editor.js content
+function extractTextFromEditorContent(content: string): string {
+  if (!content) return "";
+  
+  try {
+    const parsedContent = JSON.parse(content);
+    
+    if (!parsedContent.blocks || !Array.isArray(parsedContent.blocks)) {
+      return content; // Return as-is if not Editor.js format
+    }
+    
+    // Extract text only from paragraph blocks, ignore all other block types
+    const textBlocks = parsedContent.blocks
+      .filter((block: any) => block.type === "paragraph")
+      .map((block: any) => block.data?.text || "")
+      .filter((text: string) => text.trim() !== "");
+    
+    return textBlocks.join(" ").trim();
+  } catch (error) {
+    // If JSON parsing fails, return the content as-is (likely plain text)
+    return content;
+  }
+}
+
 export interface ContentCardProps {
   id: number;
   title: string;
@@ -155,7 +179,7 @@ export function ContentCard({
 
       {/* Description */}
       <p className="text-sm font-normal text-brand-700 leading-relaxed mb-4 line-clamp-3">
-        {description}
+        {extractTextFromEditorContent(description)}
       </p>
 
       {/* Metadata Footer */}
