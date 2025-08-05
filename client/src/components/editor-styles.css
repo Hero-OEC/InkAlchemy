@@ -8,22 +8,19 @@
 /* Essential base styles for proper Editor.js functionality */
 .codex-editor__redactor {
   padding-bottom: 200px;
-  /* Override Editor.js default narrow width */
-  max-width: none !important;
-}
-
-/* Make the editor container use more available width */
-.codex-editor {
-  max-width: none !important;
+  /* Override Editor.js default narrow width - use wider but not full width */
+  max-width: 90% !important;
+  margin: 0 auto;
 }
 
 /* Allow block content to use more width while preserving toolbar positioning */
 .ce-block__content {
-  max-width: none !important;
-  margin: 0 auto !important;
+  /* Expand from Editor.js default of ~650px to use more space */
+  max-width: 100% !important;
+  margin: 0 !important;
 }
 
-/* Fix toolbar positioning to stay with blocks */
+/* Restore proper toolbar positioning */
 .ce-block {
   position: relative;
 }
