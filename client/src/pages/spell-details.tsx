@@ -1,7 +1,8 @@
 
 import { useParams, useLocation } from "wouter";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmation } from "@/components/delete-confirmation";
@@ -121,22 +122,32 @@ export default function SpellDetails() {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/spells/${spellId}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        if (spell?.magicSystemId) {
-          setLocation(`/projects/${projectId}/magic-systems/${spell.magicSystemId}`);
-        } else {
-          setLocation(`/projects/${projectId}/magic-systems`);
-        }
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: () => apiRequest(`/api/spells/${spellId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
+      if (spell?.magicSystemId) {
+        queryClient.invalidateQueries({ queryKey: [`/api/magic-systems/${spell.magicSystemId}/spells`] });
       }
-    } catch (error) {
+      
+      // Navigate back
+      if (spell?.magicSystemId) {
+        setLocation(`/projects/${projectId}/magic-systems/${spell.magicSystemId}`);
+      } else {
+        setLocation(`/projects/${projectId}/magic-systems`);
+      }
+    },
+    onError: (error) => {
       console.error('Error deleting spell/ability:', error);
     }
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate();
   };
 
   if (isLoading) {
