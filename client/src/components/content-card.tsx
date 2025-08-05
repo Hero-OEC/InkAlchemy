@@ -19,10 +19,15 @@ function extractTextFromEditorContent(content: string): string {
       return content; // Return as-is if not Editor.js format
     }
     
-    // Extract text only from paragraph blocks, ignore all other block types
+    // Extract text ONLY from paragraph blocks
+    // Ignore ALL other block types: header, list, checklist, quote, image, delimiter, table, code, etc.
     const textBlocks = parsedContent.blocks
       .filter((block: any) => block.type === "paragraph")
-      .map((block: any) => block.data?.text || "")
+      .map((block: any) => {
+        const text = block.data?.text || "";
+        // Strip any HTML tags that might be in the text (from inline formatting)
+        return text.replace(/<[^>]*>/g, "");
+      })
       .filter((text: string) => text.trim() !== "");
     
     return textBlocks.join(" ").trim();
