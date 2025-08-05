@@ -254,7 +254,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Clean up character image and description images from storage
       try {
         if (character.imageUrl) {
-          await deleteImageFromStorage(character.imageUrl);
+          console.log(`🗑️ Attempting to delete character image: ${character.imageUrl}`);
+          const deleteResult = await deleteImageFromStorage(character.imageUrl);
+          console.log(`🗑️ Character image deletion result: ${deleteResult}`);
         }
         
         // Clean up any images in character description
