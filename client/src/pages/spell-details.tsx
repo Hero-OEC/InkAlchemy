@@ -127,6 +127,9 @@ export default function SpellDetails() {
   const deleteMutation = useMutation({
     mutationFn: () => apiRequest(`/api/spells/${spellId}`, { method: 'DELETE' }),
     onSuccess: () => {
+      // Close the dialog first
+      setShowDeleteDialog(false);
+      
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/stats`] });
       queryClient.invalidateQueries({ queryKey: [`/api/user/activities`] });
@@ -143,6 +146,7 @@ export default function SpellDetails() {
     },
     onError: (error) => {
       console.error('Error deleting spell/ability:', error);
+      setShowDeleteDialog(false);
     }
   });
 
@@ -310,6 +314,7 @@ export default function SpellDetails() {
         title={`Delete ${itemTypeCapitalized}`}
         description={`Are you sure you want to delete "${spell?.name}"? This action cannot be undone.`}
         itemName={spell?.name || `this ${itemType}`}
+        isDeleting={deleteMutation.isPending}
       />
     </div>
   );
