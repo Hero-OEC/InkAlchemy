@@ -12,6 +12,9 @@ app.use(express.urlencoded({ extended: false }));
 // Serve uploaded files
 app.use('/uploads', express.static('public/uploads'));
 
+// Serve favicon and other static assets from public directory
+app.use(express.static('public'));
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
