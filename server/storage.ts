@@ -43,6 +43,7 @@ export interface IStorage {
   createEvent(event: InsertEvent): Promise<Event>;
   updateEvent(id: number, event: Partial<InsertEvent>): Promise<Event | undefined>;
   deleteEvent(id: number): Promise<boolean>;
+  getEventsByLocation(locationId: number): Promise<Event[]>;
 
   // Magic Systems
   getMagicSystems(projectId: number): Promise<MagicSystem[]>;

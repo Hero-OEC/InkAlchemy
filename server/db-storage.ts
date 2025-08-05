@@ -190,6 +190,10 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
+  async getEventsByLocation(locationId: number): Promise<Event[]> {
+    return await db.select().from(events).where(eq(events.locationId, locationId));
+  }
+
   // Magic Systems
   async getMagicSystems(projectId: number): Promise<MagicSystem[]> {
     return await db.select().from(magicSystems).where(eq(magicSystems.projectId, projectId));
