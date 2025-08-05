@@ -13,6 +13,26 @@ if (typeof window !== 'undefined' && (window as any).eruda) {
   }
 }
 
+// Global error handlers to prevent unhandled promise rejections
+window.addEventListener('unhandledrejection', (event) => {
+  console.warn('Unhandled promise rejection:', event.reason);
+  
+  // Prevent the default browser behavior (logging to console)
+  event.preventDefault();
+  
+  // Handle specific known errors gracefully
+  if (event.reason?.message?.includes('Failed to fetch') || 
+      event.reason?.message?.includes('NetworkError') ||
+      event.reason?.message?.includes('ERR_BLOCKED_BY_CLIENT')) {
+    console.log('Network error caught and handled gracefully');
+    return;
+  }
+});
+
+window.addEventListener('error', (event) => {
+  console.warn('Global error caught:', event.error);
+});
+
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <App />

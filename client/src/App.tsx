@@ -2,6 +2,51 @@ import React from "react";
 import { Route, Router } from "wouter";
 import { AuthProvider, useAuth } from "./contexts/auth-context";
 
+// Supabase Setup Check
+function SupabaseSetupCheck({ children }: { children: React.ReactNode }) {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
+  
+  const isConfigured = supabaseUrl !== 'https://placeholder.supabase.co' && supabaseKey !== 'placeholder-key';
+  
+  if (!isConfigured) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-brand-100">
+        <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-brand-900 mb-2">Setup Required</h1>
+            <p className="text-brand-600">InkAlchemy needs to be connected to Supabase to work properly.</p>
+          </div>
+          
+          <div className="bg-brand-50 border border-brand-200 rounded-lg p-4 mb-6 text-left">
+            <h3 className="font-semibold text-brand-900 mb-2">Quick Setup:</h3>
+            <ol className="text-sm text-brand-700 space-y-2">
+              <li>1. Create a free Supabase project at <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">supabase.com</a></li>
+              <li>2. Get your project URL and anon key from Settings → API</li>
+              <li>3. Add them to your Replit Secrets:
+                <ul className="ml-4 mt-1 space-y-1">
+                  <li>• <code className="bg-brand-100 px-1 rounded">VITE_SUPABASE_URL</code></li>
+                  <li>• <code className="bg-brand-100 px-1 rounded">VITE_SUPABASE_ANON_KEY</code></li>
+                </ul>
+              </li>
+              <li>4. Refresh this page</li>
+            </ol>
+          </div>
+          
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700 transition-colors"
+          >
+            Check Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
+  return <>{children}</>;
+}
+
 // Error Boundary Component
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -157,9 +202,11 @@ function AppRoutes() {
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <SupabaseSetupCheck>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </SupabaseSetupCheck>
     </ErrorBoundary>
   );
 }
