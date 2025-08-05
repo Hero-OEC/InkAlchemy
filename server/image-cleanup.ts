@@ -6,31 +6,68 @@ export async function deleteImageFromStorage(imageUrl: string): Promise<boolean>
   }
 
   try {
-    const urlParts = imageUrl.split('/');
-    const fileName = urlParts[urlParts.length - 1];
-    
-    // Determine which bucket based on URL
-    let bucketName = 'content-images';
-    if (imageUrl.includes('character-images')) {
-      bucketName = 'character-images';
-    } else if (imageUrl.includes('profile-images')) {
-      bucketName = 'profile-images';
+    // Extract full path from URL for proper folder-aware deletion
+    const urlParts = imageUrl.split('/storage/v1/object/public/');
+    if (urlParts.length < 2) {
+      console.error('Invalid Supabase storage URL format');
+      return false;
     }
+    
+    const pathParts = urlParts[1].split('/');
+    const bucketName = pathParts[0];
+    const filePath = pathParts.slice(1).join('/');
+    
+    console.log(`Attempting to delete: ${filePath} from bucket: ${bucketName}`);
     
     const { error } = await supabase.storage
       .from(bucketName)
-      .remove([decodeURIComponent(fileName)]);
+      .remove([decodeURIComponent(filePath)]);
       
     if (error) {
       console.error('Supabase storage deletion error:', error);
       return false;
     }
     
-    console.log(`Successfully deleted image from ${bucketName}: ${fileName}`);
+    console.log(`Successfully deleted image from ${bucketName}: ${filePath}`);
+    
+    // Try to clean up empty folder if this was in a character-specific or user-specific folder
+    if (filePath.includes('/') && bucketName === 'character-images') {
+      await cleanupEmptyFolder(bucketName, filePath);
+    }
+    
     return true;
   } catch (error) {
     console.error('Image deletion error:', error);
     return false;
+  }
+}
+
+async function cleanupEmptyFolder(bucketName: string, filePath: string): Promise<void> {
+  if (!supabase) {
+    return;
+  }
+  
+  try {
+    const folderPath = filePath.substring(0, filePath.lastIndexOf('/'));
+    
+    // List remaining files in the folder
+    const { data: files, error } = await supabase.storage
+      .from(bucketName)
+      .list(folderPath);
+    
+    if (error) {
+      console.log(`Could not check folder contents for cleanup: ${error.message}`);
+      return;
+    }
+    
+    // If folder is empty, try to remove it (this might not work in all storage systems)
+    if (!files || files.length === 0) {
+      console.log(`Folder ${folderPath} is empty after file deletion, but Supabase doesn't support folder deletion`);
+      // Note: Supabase Storage doesn't support deleting empty folders
+      // They are automatically cleaned up over time or remain as empty containers
+    }
+  } catch (error) {
+    console.log('Folder cleanup check failed:', error);
   }
 }
 
