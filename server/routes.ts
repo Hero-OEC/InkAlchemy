@@ -432,13 +432,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Clean up any images in location content
-      if (location.content) {
-        await cleanupContentImages(location.content, '');
+      try {
+        if (location.content) {
+          console.log('🗑️ Cleaning up location content images...');
+          await cleanupContentImages(location.content, '');
+        }
+      } catch (imageError) {
+        console.error('Error cleaning up location images:', imageError);
+        // Don't fail the deletion if image cleanup fails
       }
       
       res.status(204).send();
     } catch (error) {
-      res.status(500).json({ message: "Failed to delete location" });
+      console.error('Location deletion error:', error);
+      res.status(500).json({ 
+        message: "Failed to delete location",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 

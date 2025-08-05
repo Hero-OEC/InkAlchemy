@@ -73,6 +73,13 @@ async function cleanupEmptyFolder(bucketName: string, filePath: string): Promise
 
 export async function cleanupContentImages(oldContent: string, newContent: string): Promise<void> {
   try {
+    console.log('🧹 Starting content image cleanup:', {
+      oldContentLength: oldContent?.length || 0,
+      newContentLength: newContent?.length || 0,
+      hasOldContent: !!oldContent,
+      hasNewContent: !!newContent
+    });
+
     // Parse old and new content to find images
     const getImagesFromContent = (content: string) => {
       if (!content) return [];
@@ -89,7 +96,8 @@ export async function cleanupContentImages(oldContent: string, newContent: strin
         }
         
         return images;
-      } catch {
+      } catch (parseError) {
+        console.error('Failed to parse content for image cleanup:', parseError);
         return [];
       }
     };
@@ -100,20 +108,30 @@ export async function cleanupContentImages(oldContent: string, newContent: strin
     // Find images that were removed
     const removedImages = oldImages.filter(url => !newImages.includes(url));
     
-    console.log('Content image cleanup:', {
+    console.log('Content image cleanup analysis:', {
       oldImages: oldImages.length,
       newImages: newImages.length,
-      removedImages: removedImages.length
+      removedImages: removedImages.length,
+      removedImagesList: removedImages
     });
     
     // Delete removed images from storage
     for (const imageUrl of removedImages) {
-      const success = await deleteImageFromStorage(imageUrl);
-      if (success) {
-        console.log(`✅ Cleaned up unused content image: ${imageUrl}`);
+      try {
+        const success = await deleteImageFromStorage(imageUrl);
+        if (success) {
+          console.log(`✅ Cleaned up unused content image: ${imageUrl}`);
+        } else {
+          console.log(`⚠️ Failed to clean up image: ${imageUrl}`);
+        }
+      } catch (deleteError) {
+        console.error(`❌ Error deleting image ${imageUrl}:`, deleteError);
       }
     }
+    
+    console.log('🧹 Content image cleanup completed');
   } catch (error) {
-    console.error('Error during content image cleanup:', error);
+    console.error('❌ Error during content image cleanup:', error);
+    throw error; // Re-throw to help identify the issue in the parent function
   }
 }
