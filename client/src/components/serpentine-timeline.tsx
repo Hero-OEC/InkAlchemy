@@ -518,6 +518,41 @@ export function SerpentineTimeline({
 
   // Get responsive values
   const { eventsPerRow, maxWidth } = useResponsiveTimeline(responsive, overrideEventsPerRow, overrideMaxWidth);
+  
+  // Track actual container width for centering
+  const [containerWidth, setContainerWidth] = useState(0);
+  
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      const container = document.querySelector('.timeline-container') as HTMLElement;
+      if (container) {
+        setContainerWidth(container.clientWidth);
+      }
+    };
+
+    // Initial measurement
+    updateContainerWidth();
+
+    // Watch for resize
+    window.addEventListener('resize', updateContainerWidth);
+    
+    // Use ResizeObserver for more accurate tracking
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(updateContainerWidth);
+      const container = document.querySelector('.timeline-container');
+      if (container) {
+        resizeObserver.observe(container);
+      }
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateContainerWidth);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, []);
 
   // Sort and group events by date
   const groupedEvents = useMemo(() => {
@@ -552,10 +587,10 @@ export function SerpentineTimeline({
       dateKey: string 
     })[] = [];
     
-    // Use the maxWidth from responsive hook for consistent calculations
-    const containerWidth = parseInt(maxWidth.replace('px', ''));
-    const margin = Math.max(40, containerWidth * 0.05); // 5% margin, min 40px
-    const usableWidth = containerWidth - (margin * 2);
+    // Use tracked container width, fallback to maxWidth
+    const actualWidth = containerWidth || parseInt(maxWidth.replace('px', ''));
+    const margin = Math.max(40, actualWidth * 0.05); // 5% margin, min 40px
+    const usableWidth = actualWidth - (margin * 2);
     const verticalSpacing = 150; // Vertical spacing between rows
     const startY = 80; // Starting Y position
 
@@ -594,7 +629,7 @@ export function SerpentineTimeline({
     });
 
     return positions;
-  }, [groupedEvents, eventsPerRow, maxWidth]);
+  }, [groupedEvents, eventsPerRow, maxWidth, containerWidth]);
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -604,7 +639,7 @@ export function SerpentineTimeline({
       </div>
       {/* Timeline Container */}
       <div 
-        className="relative w-full"
+        className="relative w-full timeline-container"
         style={{ 
           height: `${Math.ceil(groupedEvents.length / eventsPerRow) * 150 + 160}px`,
           minHeight: "400px"
@@ -619,9 +654,9 @@ export function SerpentineTimeline({
               d={(() => {
                 if (groupedEvents.length === 0) return "";
                 
-                const containerWidth = parseInt(maxWidth.replace('px', ''));
-                const margin = Math.max(40, containerWidth * 0.05);
-                const usableWidth = containerWidth - (margin * 2);
+                const actualWidth = containerWidth || parseInt(maxWidth.replace('px', ''));
+                const margin = Math.max(40, actualWidth * 0.05);
+                const usableWidth = actualWidth - (margin * 2);
                 const verticalSpacing = 150; // Vertical spacing between rows
                 const startY = 80;
                 
@@ -659,7 +694,7 @@ export function SerpentineTimeline({
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
                       const nextY = y + verticalSpacing;
-                      const curveOffset = Math.min(40, containerWidth * 0.02);
+                      const curveOffset = Math.min(40, actualWidth * 0.02);
                       pathCommands.push(`Q ${timelineEndX + curveOffset} ${y + verticalSpacing/2} ${timelineEndX} ${nextY}`);
                     }
                   } else {
@@ -675,7 +710,7 @@ export function SerpentineTimeline({
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
                       const nextY = y + verticalSpacing;
-                      const curveOffset = Math.min(40, containerWidth * 0.02);
+                      const curveOffset = Math.min(40, actualWidth * 0.02);
                       pathCommands.push(`Q ${timelineStartX - curveOffset} ${y + verticalSpacing/2} ${timelineStartX} ${nextY}`);
                     }
                   }
