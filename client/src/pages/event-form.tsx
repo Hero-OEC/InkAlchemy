@@ -350,7 +350,7 @@ export default function EventForm() {
           onNavigate={handleNavigation}
         />
         
-        <main className="max-w-6xl mx-auto px-8 py-8">
+        <main className="max-w-7xl mx-auto px-8 py-8">
           {/* Header with Back Button Skeleton */}
           <div className="flex items-center gap-4 mb-8">
             <Button
@@ -383,7 +383,7 @@ export default function EventForm() {
         onNavigate={handleNavigation}
       />
       
-      <main className="max-w-6xl mx-auto px-8 py-8">
+      <main className="max-w-7xl mx-auto px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
