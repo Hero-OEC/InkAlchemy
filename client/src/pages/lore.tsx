@@ -111,17 +111,50 @@ export default function Lore() {
     return true;
   });
 
+  // Helper function to extract plain text from Editor.js content
+  const extractTextFromEditorContent = (content: string): string => {
+    if (!content) return "";
+    
+    try {
+      const parsedContent = JSON.parse(content);
+      
+      if (!parsedContent.blocks || !Array.isArray(parsedContent.blocks)) {
+        return content; // Return as-is if not Editor.js format
+      }
+      
+      // Extract text ONLY from paragraph blocks
+      // Ignore ALL other block types: header, list, checklist, quote, image, delimiter, table, code, etc.
+      const textBlocks = parsedContent.blocks
+        .filter((block: any) => block.type === "paragraph")
+        .map((block: any) => {
+          const text = block.data?.text || "";
+          // Strip any HTML tags that might be in the text (from inline formatting)
+          return text.replace(/<[^>]*>/g, "");
+        })
+        .filter((text: string) => text.trim() !== "");
+      
+      return textBlocks.join(" ").trim();
+    } catch (error) {
+      // If JSON parsing fails, return the content as-is (likely plain text)
+      return content;
+    }
+  };
+
   // Convert filtered lore entries to ContentCard format
   const loreCards = filteredLoreEntries.map(lore => {
     const category = lore.category || "other";
     const icon = LORE_CATEGORY_ICONS[category as keyof typeof LORE_CATEGORY_ICONS] || BookOpen;
+    
+    // Extract plain text from Editor.js content
+    const extractedText = extractTextFromEditorContent(lore.content || "");
+    const description = extractedText || "No content available";
     
     return {
       id: lore.id,
       title: lore.title,
       type: "lore" as const,
       subtype: category,
-      description: lore.content && lore.content.length > 100 ? `${lore.content.substring(0, 100)}...` : (lore.content || "No content available"),
+      description: description,
       icon: icon,
       createdAt: lore.createdAt,
       lastEditedAt: lore.updatedAt,

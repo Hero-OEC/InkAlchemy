@@ -33,7 +33,7 @@ export default function Notes() {
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
   const { navigateWithReferrer } = useNavigation();
-  
+
   const { data: project, isLoading: projectLoading } = useQuery<Project>({
     queryKey: [`/api/projects/${projectId}`],
   });
@@ -99,7 +99,7 @@ export default function Notes() {
         note.title.toLowerCase().includes(searchLower) ||
         note.content.toLowerCase().includes(searchLower) ||
         (note.category && note.category.toLowerCase().includes(searchLower));
-      
+
       if (!matchesSearch) return false;
     }
 
@@ -113,18 +113,48 @@ export default function Notes() {
     return true;
   });
 
+  // Helper function to extract plain text from Editor.js content
+  const extractTextFromEditorContent = (content: string): string => {
+    if (!content) return "";
+
+    try {
+      const parsedContent = JSON.parse(content);
+
+      if (!parsedContent.blocks || !Array.isArray(parsedContent.blocks)) {
+        return content; // Return as-is if not Editor.js format
+      }
+
+      // Extract text ONLY from paragraph blocks
+      // Ignore ALL other block types: header, list, checklist, quote, image, delimiter, table, code, etc.
+      const textBlocks = parsedContent.blocks
+        .filter((block: any) => block.type === "paragraph")
+        .map((block: any) => {
+          const text = block.data?.text || "";
+          // Strip any HTML tags that might be in the text (from inline formatting)
+          return text.replace(/<[^>]*>/g, "");
+        })
+        .filter((text: string) => text.trim() !== "");
+
+      return textBlocks.join(" ").trim();
+    } catch (error) {
+      // If JSON parsing fails, return the content as-is (likely plain text)
+      return content;
+    }
+  };
+
   // Convert filtered notes to ContentCard format
   const noteCards = filteredNotes.map(note => {
-    const category = note.category || "general";
-    const icon = NOTE_CATEGORY_ICONS[category as keyof typeof NOTE_CATEGORY_ICONS] || StickyNote;
-    
+    // Extract plain text from Editor.js content
+    const extractedText = extractTextFromEditorContent(note.content || "");
+    const description = extractedText || "No content available";
+
     return {
       id: note.id,
       title: note.title,
       type: "note" as const,
-      subtype: category,
-      description: note.content.length > 100 ? `${note.content.substring(0, 100)}...` : note.content,
-      icon: icon,
+      subtype: "quick-note",
+      description: description,
+      icon: StickyNote,
       createdAt: note.createdAt,
       lastEditedAt: note.updatedAt,
     };
@@ -175,7 +205,7 @@ export default function Notes() {
         projectName={project?.name}
         onNavigate={handleNavigation}
       />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="flex justify-between items-start mb-8">
