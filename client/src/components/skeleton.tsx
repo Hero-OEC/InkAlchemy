@@ -222,7 +222,7 @@ export function SerpentineTimelineSkeleton() {
 
         {/* Timeline Path Background */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-full max-w-4xl">
+          <div className="w-full max-w-7xl">
             <Skeleton className="h-1 w-full rounded-full opacity-30" />
           </div>
         </div>
