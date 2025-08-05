@@ -19,6 +19,35 @@ interface SerpentineTimelineProps {
   responsive?: boolean; // Enable automatic responsive behavior (default: true)
 }
 
+// Helper function to extract plain text from Editor.js content
+const extractTextFromEditorContent = (content: string): string => {
+  if (!content) return "";
+  
+  try {
+    const parsedContent = JSON.parse(content);
+    
+    if (!parsedContent.blocks || !Array.isArray(parsedContent.blocks)) {
+      return content; // Return as-is if not Editor.js format
+    }
+    
+    // Extract text ONLY from paragraph blocks
+    // Ignore ALL other block types: header, list, checklist, quote, image, delimiter, table, code, etc.
+    const textBlocks = parsedContent.blocks
+      .filter((block: any) => block.type === "paragraph")
+      .map((block: any) => {
+        const text = block.data?.text || "";
+        // Strip any HTML tags that might be in the text (from inline formatting)
+        return text.replace(/<[^>]*>/g, "");
+      })
+      .filter((text: string) => text.trim() !== "");
+    
+    return textBlocks.join(" ").trim();
+  } catch (error) {
+    // If JSON parsing fails, return the content as-is (likely plain text)
+    return content;
+  }
+};
+
 interface EventBubbleProps {
   event: TimelineEvent;
   events?: TimelineEvent[]; // Array of all events for multi-event scenarios
@@ -346,7 +375,7 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
                     </div>
                     {evt.description && (
                       <p className="text-xs text-muted-foreground">
-                        {truncateDescription(evt.description, 80)}
+                        {truncateDescription(extractTextFromEditorContent(evt.description) || "No content available", 80)}
                       </p>
                     )}
                   </div>
@@ -381,7 +410,7 @@ function EventBubble({ event, events, multiCount, position, side, onEventClick }
               </div>
               {event.description && (
                 <p className="text-sm text-popover-foreground mb-3">
-                  {truncateDescription(event.description)}
+                  {truncateDescription(extractTextFromEditorContent(event.description) || "No content available")}
                 </p>
               )}
               {/* Location and Characters Section */}
