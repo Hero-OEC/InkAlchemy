@@ -480,8 +480,65 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                               type="button"
                               variant="outline"
                               size="sm"
-                              onClick={() => field.onChange("")}
+                              onClick={async () => {
+                                const currentImageUrl = field.value;
+                                
+                                // Remove image from form immediately
+                                field.onChange("");
+                                
+                                // If this is an existing character, update it in the database and clean up storage
+                                if (character && currentImageUrl) {
+                                  try {
+                                    // Update character in database to remove image
+                                    const { data: { session } } = await supabase.auth.getSession();
+                                    const token = session?.access_token;
+                                    
+                                    const response = await fetch(`/api/characters/${character.id}`, {
+                                      method: 'PATCH',
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                        ...(token && { 'Authorization': `Bearer ${token}` })
+                                      },
+                                      body: JSON.stringify({ imageUrl: "" }),
+                                    });
+                                    
+                                    if (response.ok) {
+                                      // Refresh queries to update UI
+                                      queryClient.invalidateQueries({ 
+                                        queryKey: [`/api/characters/${character.id}`] 
+                                      });
+                                      queryClient.invalidateQueries({ 
+                                        queryKey: [`/api/projects/${projectId}/characters`] 
+                                      });
+                                      
+                                      toast({
+                                        title: "Image removed",
+                                        description: "Character image has been removed successfully.",
+                                      });
+                                      
+                                      console.log('Character image removed from database and storage');
+                                    } else {
+                                      throw new Error('Failed to update character');
+                                    }
+                                  } catch (error) {
+                                    console.error('Failed to remove character image:', error);
+                                    toast({
+                                      title: "Error",
+                                      description: "Failed to remove image. Please try again.",
+                                      variant: "destructive",
+                                    });
+                                    // Restore the image URL if the update failed
+                                    field.onChange(currentImageUrl);
+                                  }
+                                } else {
+                                  toast({
+                                    title: "Image removed",
+                                    description: "Image removed from form.",
+                                  });
+                                }
+                              }}
                               className="px-3"
+                              title="Remove image"
                             >
                               <X className="w-4 h-4" />
                             </Button>
