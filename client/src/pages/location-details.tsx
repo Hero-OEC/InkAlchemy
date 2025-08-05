@@ -344,7 +344,7 @@ export default function LocationDetails() {
 
             {activeTab === "timeline" && (
               <div>
-                <h3 className="text-lg font-semibold text-brand-900 mb-4">Timeline: Events at {location.name}</h3>
+                <h3 className="text-lg font-semibold text-brand-900 mb-4">Location Timeline</h3>
                 {processedEvents.length > 0 ? (
                   <div className="bg-brand-50 rounded-lg p-4">
                     <SerpentineTimeline
