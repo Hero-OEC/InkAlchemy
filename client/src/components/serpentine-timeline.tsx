@@ -552,9 +552,9 @@ export function SerpentineTimeline({
       dateKey: string 
     })[] = [];
     
-    // Use viewport width for calculations, with responsive margins
+    // Use viewport width for calculations, with minimal margins
     const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
-    const margin = Math.max(80, viewportWidth * 0.1); // 10% margin, min 80px
+    const margin = Math.max(40, viewportWidth * 0.03); // 3% margin, min 40px
     const usableWidth = viewportWidth - (margin * 2);
     const verticalSpacing = 150; // Vertical spacing between rows
     const startY = 80; // Starting Y position
@@ -569,8 +569,8 @@ export function SerpentineTimeline({
       let x: number;
       let side: "left" | "right";
       
-      // Use only 70% of available width for tighter spacing, center the timeline
-      const timelineWidth = usableWidth * 0.7;
+      // Use 90% of available width for better space utilization
+      const timelineWidth = usableWidth * 0.9;
       const timelineStartX = margin + (usableWidth - timelineWidth) / 2;
       
       if (isEvenRow) {
@@ -620,13 +620,13 @@ export function SerpentineTimeline({
                 if (groupedEvents.length === 0) return "";
                 
                 const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
-                const margin = Math.max(80, viewportWidth * 0.1);
+                const margin = Math.max(40, viewportWidth * 0.03);
                 const usableWidth = viewportWidth - (margin * 2);
                 const verticalSpacing = 150; // Vertical spacing between rows
                 const startY = 80;
                 
-                // Use same 70% timeline width as bubbles
-                const timelineWidth = usableWidth * 0.7;
+                // Use same 90% timeline width as bubbles
+                const timelineWidth = usableWidth * 0.9;
                 const timelineStartX = margin + (usableWidth - timelineWidth) / 2;
                 const timelineEndX = timelineStartX + timelineWidth;
                 
