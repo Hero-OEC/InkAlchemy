@@ -603,16 +603,13 @@ export function SerpentineTimeline({
       </div>
       {/* Timeline Container */}
       <div 
-        className="relative rounded-lg overflow-hidden p-4 bg-[#fcf8ee00]"
+        className="relative mx-auto"
+        style={{ 
+          width: maxWidth, 
+          height: `${Math.ceil(groupedEvents.length / eventsPerRow) * 150 + 160}px`,
+          minHeight: "400px"
+        }}
       >
-        <div 
-          className="relative mx-auto"
-          style={{ 
-            width: maxWidth, 
-            height: `${Math.ceil(groupedEvents.length / eventsPerRow) * 150 + 160}px`,
-            minHeight: "400px"
-          }}
-        >
           {/* Dynamic Serpentine Path */}
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
@@ -717,7 +714,6 @@ export function SerpentineTimeline({
               </div>
             </div>
           )}
-        </div>
       </div>
     </div>
   );
