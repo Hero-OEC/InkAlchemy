@@ -74,6 +74,7 @@ The application uses Supabase as the primary database. Required environment vari
 - **Cache Invalidation Issue Fix**: Resolved critical UI update bug where location creation/editing didn't show new data without page reload. Root cause was staleTime: Infinity preventing refetch after cache invalidation. Fixed by adding staleTime: 0 to location queries to force immediate refetch when invalidated
 - **Magic System Edit Cache Fix**: Fixed magic system editing not updating UI until page reload. Root cause was incorrect query key patterns in cache invalidation. Updated to match actual query keys used in components for immediate UI updates after edits
 - **Magic System Delete Authentication Fix**: Fixed magic system deletion authorization errors by replacing raw fetch() with proper apiRequest function that includes JWT authentication headers automatically
+- **Layout Width Consistency Improvements**: Fixed width inconsistencies across all entity pages for better user experience and consistent design. Updated magic system edit/create pages to use full-width WordProcessor layout, fixed location create/edit pages from max-w-4xl to max-w-7xl, event form from max-w-6xl to max-w-7xl, and spell/effect pages from max-w-4xl to max-w-6xl to match their respective details pages
 
 ### August 2025 - Replit Environment Migration Complete
 - **Successful Migration**: InkAlchemy successfully migrated from Replit Agent to standard Replit environment
