@@ -243,7 +243,7 @@ export default function Welcome() {
       <div className="min-h-screen bg-brand-50">
         <Navbar hasActiveProject={false} />
         
-        <div className="max-w-6xl mx-auto px-4 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Welcome Header Skeleton */}
           <WelcomeHeaderSkeleton />
 
@@ -263,7 +263,7 @@ export default function Welcome() {
     <div className="min-h-screen bg-brand-50">
       <Navbar hasActiveProject={false} />
       
-      <div className="max-w-6xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Welcome Header */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-brand-950 mb-6">Welcome to InkAlchemy</h1>

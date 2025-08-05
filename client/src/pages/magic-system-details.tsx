@@ -155,7 +155,7 @@ export default function MagicSystemDetails() {
           projectName="Loading..."
           onNavigate={handleNavigation}
         />
-        <main className="max-w-6xl mx-auto px-6 py-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header with Back Button Skeleton */}
           <div className="flex items-center gap-4 mb-8">
             <Button
@@ -356,7 +356,7 @@ export default function MagicSystemDetails() {
         onNavigate={handleNavigation}
       />
       
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">
           <Button
