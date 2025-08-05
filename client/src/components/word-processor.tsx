@@ -39,8 +39,13 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
   const editorRef = useRef<EditorJS | null>(null);
   const actualValue = value || data || '';
   const [previousContent, setPreviousContent] = useState<string>(actualValue);
+  const { deleteUnusedImages } = useImageCleanup();
+  const changeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const isInternalUpdateRef = useRef(false); // Track if update is from our onChange
+  const initializingRef = useRef(false);
   
-  // Add debugging for reset issues
+  // Add debugging for reset issues (after isInitialized is declared)
   console.log('WordProcessor render:', {
     hasValue: !!value,
     hasData: !!data,
@@ -48,11 +53,6 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
     previousContentLength: previousContent.length,
     isInitialized
   });
-  const { deleteUnusedImages } = useImageCleanup();
-  const changeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const isInternalUpdateRef = useRef(false); // Track if update is from our onChange
-  const initializingRef = useRef(false);
 
   useEffect(() => {
     if (!holderRef.current || isInitialized || initializingRef.current) return;
