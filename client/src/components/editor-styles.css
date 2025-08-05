@@ -8,6 +8,28 @@
 /* Essential base styles for proper Editor.js functionality */
 .codex-editor__redactor {
   padding-bottom: 200px;
+  /* Remove max-width constraint to use full available space */
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Make the editor container use full width */
+.codex-editor {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Ensure blocks use full width */
+.ce-block {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Fix block content width */
+.ce-block__content {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
 }
 
 /* Fix toolbar positioning to stay with blocks */

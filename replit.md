@@ -33,6 +33,10 @@ The application uses Supabase as the primary database. Required environment vari
 
 ## Recent Changes
 
+### August 2025 - Final Migration to Replit Environment Complete
+- **WordProcessor Width Fix**: Fixed narrow WordProcessor issue across all pages by overriding Editor.js default width constraints. Added CSS rules to make WordProcessor use full available container width on all creation/editing pages (magic systems, races, characters, locations, events, lore, notes)
+- **Migration Completed**: Successfully completed migration from Replit Agent to standard Replit environment with all functionality working
+
 ### August 2025 - Successful Migration to Replit Environment
 - **Migration Completed**: Successfully migrated InkAlchemy from Replit Agent to standard Replit environment
 - **Database Setup**: Connected application to Supabase PostgreSQL database with proper schema synchronization
