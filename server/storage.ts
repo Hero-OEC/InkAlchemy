@@ -1253,6 +1253,10 @@ export class MemStorage implements IStorage {
     return this.events.delete(id);
   }
 
+  async getEventsByLocation(locationId: number): Promise<Event[]> {
+    return Array.from(this.events.values()).filter(e => e.locationId === locationId);
+  }
+
   // Magic Systems
   async getMagicSystems(projectId: number): Promise<MagicSystem[]> {
     return Array.from(this.magicSystems.values()).filter(m => m.projectId === projectId);

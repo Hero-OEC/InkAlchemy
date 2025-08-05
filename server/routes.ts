@@ -425,6 +425,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         location.name,
         req.userId!
       );
+
+      // Handle cascade deletion: find all events that reference this location
+      const eventsWithLocation = await storage.getEventsByLocation(id);
+      console.log(`🔗 Found ${eventsWithLocation.length} events referencing location ${id}`);
+      
+      // Option 1: Set locationId to null for events (preserve events but remove location reference)
+      // Option 2: Delete events entirely (more destructive)
+      // We'll use Option 1 to preserve user data
+      for (const event of eventsWithLocation) {
+        console.log(`🔄 Removing location reference from event: ${event.title}`);
+        await storage.updateEvent(event.id, { locationId: null });
+      }
       
       const deleted = await storage.deleteLocation(id);
       if (!deleted) {
