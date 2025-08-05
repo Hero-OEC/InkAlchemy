@@ -30,14 +30,40 @@ const upload = multer({
   }
 });
 
+// Track recent uploads to prevent duplicates
+const recentUploads = new Map<string, { timestamp: number; url: string }>();
+const DUPLICATE_WINDOW_MS = 2000; // 2 second window to detect duplicates
+
 export const uploadImage = upload.single('image');
 
 export const handleImageUpload = async (req: Request, res: Response) => {
   try {
+    console.log('📸 Image upload request received:', {
+      hasFile: !!req.file,
+      filename: req.file?.originalname,
+      size: req.file?.size,
+      timestamp: new Date().toISOString()
+    });
+
     if (!req.file) {
       return res.status(400).json({
         success: 0,
         message: 'No file uploaded'
+      });
+    }
+
+    // Check for duplicate uploads within the time window
+    const uploadKey = `${req.file.originalname}-${req.file.size}`;
+    const now = Date.now();
+    const recent = recentUploads.get(uploadKey);
+    
+    if (recent && (now - recent.timestamp) < DUPLICATE_WINDOW_MS) {
+      console.log('📸 Duplicate upload detected, returning cached result:', uploadKey);
+      return res.json({
+        success: 1,
+        file: {
+          url: recent.url
+        }
       });
     }
 
@@ -67,7 +93,7 @@ export const handleImageUpload = async (req: Request, res: Response) => {
           
           if (publicUrlData.publicUrl) {
             fileUrl = publicUrlData.publicUrl;
-            console.log(`Editor image uploaded to Supabase: ${fileUrl}`);
+            console.log(`📸 Editor image uploaded to Supabase: ${fileUrl}`);
           }
         }
       } catch (storageError) {
@@ -76,6 +102,22 @@ export const handleImageUpload = async (req: Request, res: Response) => {
       }
     }
     
+    // Cache this upload to prevent duplicates
+    recentUploads.set(uploadKey, { timestamp: now, url: fileUrl });
+    
+    // Clean up old entries periodically
+    if (recentUploads.size > 100) {
+      const cutoff = now - DUPLICATE_WINDOW_MS;
+      const keysToDelete: string[] = [];
+      recentUploads.forEach((value, key) => {
+        if (value.timestamp < cutoff) {
+          keysToDelete.push(key);
+        }
+      });
+      keysToDelete.forEach(key => recentUploads.delete(key));
+    }
+
+    console.log(`📸 Responding with upload success: ${fileUrl}`);
     res.json({
       success: 1,
       file: {
