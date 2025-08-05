@@ -39,9 +39,19 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
   const editorRef = useRef<EditorJS | null>(null);
   const actualValue = value || data || '';
   const [previousContent, setPreviousContent] = useState<string>(actualValue);
+  
+  // Add debugging for reset issues
+  console.log('WordProcessor render:', {
+    hasValue: !!value,
+    hasData: !!data,
+    actualValueLength: actualValue.length,
+    previousContentLength: previousContent.length,
+    isInitialized
+  });
   const { deleteUnusedImages } = useImageCleanup();
   const changeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const isInternalUpdateRef = useRef(false); // Track if update is from our onChange
   const initializingRef = useRef(false);
 
   useEffect(() => {
@@ -139,14 +149,20 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
                 newLength: newContent.length,
                 hasBlocks: outputData.blocks?.length || 0,
                 contentChanged: newContent !== previousContent,
-                isInitialized
+                isInitialized,
+                outputData: outputData.blocks?.length > 0 ? 'HAS_CONTENT' : 'EMPTY'
               });
 
               // Only call onChange if content actually changed
               if (newContent !== previousContent) {
+                isInternalUpdateRef.current = true; // Mark as internal update
                 setPreviousContent(newContent);
                 onChange(newContent);
                 console.log('✅ Content saved successfully');
+                // Reset flag after a brief delay
+                setTimeout(() => {
+                  isInternalUpdateRef.current = false;
+                }, 100);
 
                 // Clean up unused images (but don't block saving if this fails)
                 try {
@@ -209,14 +225,25 @@ export const WordProcessor: React.FC<WordProcessorProps> = ({
     const newValue = actualValue;
     
     // If editor is initialized and value changed externally, update editor content
-    if (editorRef.current && isInitialized && newValue !== previousContent) {
+    // But avoid updates that might be from our own onChange handler
+    if (editorRef.current && isInitialized && newValue !== previousContent && !isInternalUpdateRef.current) {
       try {
         const data = newValue ? JSON.parse(newValue) : { blocks: [] };
-        editorRef.current.render(data);
-        setPreviousContent(newValue);
-        console.log('Editor content updated from external value change');
+        
+        // Additional check: don't render if the content is the same (this prevents loops)
+        if (JSON.stringify(data) !== previousContent) {
+          console.log('Editor content updated from external value change', {
+            newValueLength: newValue.length,
+            previousContentLength: previousContent.length,
+            hasBlocks: data.blocks?.length || 0
+          });
+          
+          editorRef.current.render(data);
+          setPreviousContent(newValue);
+        }
       } catch (error) {
         console.warn('Could not update editor with new value:', error);
+        // Don't reset content if parsing fails
       }
     }
   }, [actualValue, isInitialized, previousContent]);
