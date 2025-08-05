@@ -552,9 +552,10 @@ export function SerpentineTimeline({
       dateKey: string 
     })[] = [];
     
-    const containerWidth = parseInt(maxWidth.replace('px', ''));
-    const margin = Math.max(60, containerWidth * 0.08); // Responsive margin (8% of width, min 60px)
-    const usableWidth = containerWidth - (margin * 2);
+    // Use viewport width for calculations, with responsive margins
+    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
+    const margin = Math.max(80, viewportWidth * 0.1); // 10% margin, min 80px
+    const usableWidth = viewportWidth - (margin * 2);
     const verticalSpacing = 150; // Vertical spacing between rows
     const startY = 80; // Starting Y position
 
@@ -593,7 +594,7 @@ export function SerpentineTimeline({
     });
 
     return positions;
-  }, [groupedEvents, eventsPerRow, maxWidth]);
+  }, [groupedEvents, eventsPerRow]);
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -603,9 +604,8 @@ export function SerpentineTimeline({
       </div>
       {/* Timeline Container */}
       <div 
-        className="relative mx-auto"
+        className="relative w-full"
         style={{ 
-          width: maxWidth, 
           height: `${Math.ceil(groupedEvents.length / eventsPerRow) * 150 + 160}px`,
           minHeight: "400px"
         }}
@@ -619,9 +619,9 @@ export function SerpentineTimeline({
               d={(() => {
                 if (groupedEvents.length === 0) return "";
                 
-                const containerWidth = parseInt(maxWidth.replace('px', ''));
-                const margin = Math.max(60, containerWidth * 0.08);
-                const usableWidth = containerWidth - (margin * 2);
+                const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
+                const margin = Math.max(80, viewportWidth * 0.1);
+                const usableWidth = viewportWidth - (margin * 2);
                 const verticalSpacing = 150; // Vertical spacing between rows
                 const startY = 80;
                 
@@ -659,7 +659,7 @@ export function SerpentineTimeline({
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
                       const nextY = y + verticalSpacing;
-                      const curveOffset = Math.min(40, containerWidth * 0.04);
+                      const curveOffset = Math.min(40, viewportWidth * 0.02);
                       pathCommands.push(`Q ${timelineEndX + curveOffset} ${y + verticalSpacing/2} ${timelineEndX} ${nextY}`);
                     }
                   } else {
@@ -675,7 +675,7 @@ export function SerpentineTimeline({
                     // Add curve to next row if not last row
                     if (row < totalRows - 1) {
                       const nextY = y + verticalSpacing;
-                      const curveOffset = Math.min(40, containerWidth * 0.04);
+                      const curveOffset = Math.min(40, viewportWidth * 0.02);
                       pathCommands.push(`Q ${timelineStartX - curveOffset} ${y + verticalSpacing/2} ${timelineStartX} ${nextY}`);
                     }
                   }
