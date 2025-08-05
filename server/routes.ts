@@ -1602,6 +1602,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/upload-image", optionalAuth, uploadImage, handleImageUpload);
   app.post("/api/upload-image-by-url", optionalAuth, handleImageUploadByUrl);
   
+  // Character image upload for new characters (without character ID)
+  app.post("/api/upload-character-image", authenticateUser, uploadImage, async (req: AuthenticatedRequest, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+
+      let imageUrl = `/uploads/${Date.now()}-${req.file.originalname}`;
+      
+      // Upload to Supabase character-images bucket
+      if (supabase) {
+        try {
+          const fileName = `${req.userId}/${Date.now()}-${req.file.originalname}`;
+          const { data, error } = await supabase.storage
+            .from('character-images')
+            .upload(fileName, req.file.buffer, {
+              contentType: req.file.mimetype,
+              upsert: true
+            });
+
+          if (error) {
+            console.error('Supabase character image upload error:', error);
+          } else {
+            // Get public URL
+            const { data: publicUrlData } = supabase.storage
+              .from('character-images')
+              .getPublicUrl(fileName);
+            
+            if (publicUrlData.publicUrl) {
+              imageUrl = publicUrlData.publicUrl;
+              console.log(`New character image uploaded to Supabase: ${imageUrl}`);
+            }
+          }
+        } catch (storageError) {
+          console.error('Character image storage error:', storageError);
+          // Continue with local storage as fallback
+        }
+      }
+      
+      res.json({ 
+        imageUrl: imageUrl,
+        message: "Character image uploaded successfully"
+      });
+    } catch (error) {
+      console.error('Character image upload error:', error);
+      res.status(500).json({ message: "Failed to upload character image" });
+    }
+  });
+  
   // Image deletion endpoint
   app.delete("/api/delete-image", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {

@@ -415,10 +415,10 @@ export function CharacterForm({ character, projectId, onSuccess, onCancel }: Cha
                                     const formData = new FormData();
                                     formData.append('image', file);
                                     
-                                    // Use character-specific endpoint if editing existing character
+                                    // Use character-specific endpoint for all character images
                                     const uploadUrl = character?.id 
                                       ? `/api/characters/${character.id}/upload-image`
-                                      : '/api/upload-image';
+                                      : '/api/upload-character-image';
                                     
                                     // Get authentication token from Supabase
                                     const { data: { session } } = await supabase.auth.getSession();
