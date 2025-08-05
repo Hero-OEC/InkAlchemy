@@ -219,9 +219,11 @@ export default function CreateRace() {
                 <WordProcessor
                   onChange={(data) => {
                     try {
-                      setDescription(JSON.parse(data));
-                    } catch {
-                      setDescription(null);
+                      const parsed = JSON.parse(data);
+                      setDescription(parsed);
+                    } catch (error) {
+                      // Don't reset description on parse error - keep previous state
+                      console.warn('Failed to parse WordProcessor data, keeping previous state:', error);
                     }
                   }}
                   placeholder="Describe the race's characteristics, appearance, culture, and abilities..."
