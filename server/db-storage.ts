@@ -74,6 +74,7 @@ export class DatabaseStorage implements IStorage {
       await db.delete(loreEntries).where(eq(loreEntries.projectId, id));
       await db.delete(notes).where(eq(notes.projectId, id));
       await db.delete(races).where(eq(races.projectId, id));
+      await db.delete(activities).where(eq(activities.projectId, id));
       
       // 4. Finally delete the project itself
       const result = await db.delete(projects).where(eq(projects.id, id)).returning();
