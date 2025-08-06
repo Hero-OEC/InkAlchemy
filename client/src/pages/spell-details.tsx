@@ -314,7 +314,7 @@ export default function SpellDetails() {
         title={`Delete ${itemTypeCapitalized}`}
         description={`Are you sure you want to delete "${spell?.name}"? This action cannot be undone.`}
         itemName={spell?.name || `this ${itemType}`}
-        isDeleting={deleteMutation.isPending}
+        isLoading={deleteMutation.isPending}
       />
     </div>
   );
