@@ -113,26 +113,176 @@ The application will automatically create the necessary database tables on first
 3. **Run the Project**: Use the "Run" button or `npm run dev`
 4. **Deploy**: Click the "Deploy" button in Replit for production deployment
 
-### Option 2: Manual Deployment
+### Option 2: VPS/Server Deployment
 
-1. **Install Dependencies**:
+#### Prerequisites for VPS
+- **Node.js 18+**: `curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && sudo apt-get install -y nodejs`
+- **PM2** (Process Manager): `npm install -g pm2`
+- **Nginx** (Reverse Proxy): `sudo apt update && sudo apt install nginx`
+- **Git**: `sudo apt install git`
+
+#### VPS Deployment Steps
+
+1. **Clone Repository**:
+   ```bash
+   git clone <your-repo-url>
+   cd inkalchemy
+   ```
+
+2. **Install Dependencies**:
    ```bash
    npm install
    ```
 
-2. **Set Environment Variables**: Create a `.env` file with your configuration
+3. **Configure Environment**:
+   ```bash
+   # Create production environment file
+   nano .env
+   
+   # Add your configuration:
+   DATABASE_URL=your_supabase_database_url
+   VITE_SUPABASE_URL=your_supabase_project_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+   NODE_ENV=production
+   PORT=5000
+   ```
 
-3. **Build the Application**:
+4. **Build Application**:
    ```bash
    npm run build
    ```
 
-4. **Start Production Server**:
+5. **Configure PM2**:
    ```bash
-   npm start
+   # Create PM2 ecosystem file
+   nano ecosystem.config.js
+   ```
+   
+   Add this configuration:
+   ```javascript
+   module.exports = {
+     apps: [{
+       name: 'inkalchemy',
+       script: 'server/index.js',
+       instances: 'max',
+       exec_mode: 'cluster',
+       env: {
+         NODE_ENV: 'production',
+         PORT: 5000
+       },
+       error_file: './logs/err.log',
+       out_file: './logs/out.log',
+       log_file: './logs/combined.log',
+       time: true
+     }]
+   };
    ```
 
-### Option 3: Vercel/Netlify
+6. **Start with PM2**:
+   ```bash
+   # Create logs directory
+   mkdir logs
+   
+   # Start application
+   pm2 start ecosystem.config.js
+   
+   # Save PM2 configuration
+   pm2 save
+   
+   # Setup PM2 to start on system boot
+   pm2 startup
+   ```
+
+7. **Configure Nginx**:
+   ```bash
+   # Create Nginx configuration
+   sudo nano /etc/nginx/sites-available/inkalchemy
+   ```
+   
+   Add this configuration:
+   ```nginx
+   server {
+       listen 80;
+       server_name your-domain.com www.your-domain.com;
+
+       # Increase upload size limit for images
+       client_max_body_size 10M;
+
+       location / {
+           proxy_pass http://localhost:5000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+           proxy_cache_bypass $http_upgrade;
+           
+           # Timeout settings
+           proxy_connect_timeout 60s;
+           proxy_send_timeout 60s;
+           proxy_read_timeout 60s;
+       }
+
+       # Serve static files directly
+       location /static/ {
+           alias /path/to/your/app/dist/;
+           expires 1y;
+           add_header Cache-Control "public, immutable";
+       }
+   }
+   ```
+
+8. **Enable Nginx Site**:
+   ```bash
+   # Enable site
+   sudo ln -s /etc/nginx/sites-available/inkalchemy /etc/nginx/sites-enabled/
+   
+   # Test configuration
+   sudo nginx -t
+   
+   # Restart Nginx
+   sudo systemctl restart nginx
+   ```
+
+9. **Configure SSL with Let's Encrypt** (Optional but recommended):
+   ```bash
+   # Install Certbot
+   sudo apt install certbot python3-certbot-nginx
+   
+   # Get SSL certificate
+   sudo certbot --nginx -d your-domain.com -d www.your-domain.com
+   ```
+
+#### VPS Management Commands
+
+```bash
+# View application logs
+pm2 logs inkalchemy
+
+# Restart application
+pm2 restart inkalchemy
+
+# Stop application
+pm2 stop inkalchemy
+
+# Monitor application
+pm2 monit
+
+# Update application
+git pull
+npm install
+npm run build
+pm2 restart inkalchemy
+
+# View Nginx logs
+sudo tail -f /var/log/nginx/access.log
+sudo tail -f /var/log/nginx/error.log
+```
+
+### Option 3: Cloud Platforms (Vercel/Netlify/Railway)
 
 1. **Connect Repository**: Link your Git repository
 2. **Configure Build Settings**:
@@ -171,6 +321,39 @@ The application will automatically create the necessary database tables on first
 - `npm run build`: Build for production
 - `npm run preview`: Preview production build locally
 - `npm run type-check`: Run TypeScript type checking
+
+## Production Considerations
+
+### Performance Optimization
+- **Database Connection Pooling**: Supabase handles connection pooling automatically
+- **Caching**: TanStack Query provides client-side caching
+- **Image Optimization**: Images are served directly from Supabase Storage CDN
+- **Compression**: Enable gzip compression in your reverse proxy (Nginx)
+
+### Security Best Practices
+- **Environment Variables**: Never commit secrets to version control
+- **HTTPS**: Always use SSL certificates in production
+- **CORS**: Configure proper CORS headers for your domain
+- **Rate Limiting**: Consider implementing rate limiting for API endpoints
+- **Firewall**: Configure UFW or iptables to restrict unnecessary ports
+
+### Monitoring & Logging
+- **PM2 Monitoring**: Use `pm2 monit` for real-time process monitoring
+- **Log Rotation**: Configure log rotation to prevent disk space issues
+- **Uptime Monitoring**: Set up external monitoring (UptimeRobot, Pingdom)
+- **Error Tracking**: Consider integrating Sentry or similar error tracking
+
+### Backup Strategy
+- **Database**: Supabase provides automatic backups
+- **User Uploads**: Supabase Storage has built-in redundancy
+- **Application Code**: Ensure your code is in version control
+- **Environment Config**: Keep secure backups of your environment variables
+
+### Scaling Considerations
+- **Horizontal Scaling**: PM2 cluster mode utilizes multiple CPU cores
+- **Database**: Supabase handles database scaling automatically
+- **CDN**: Consider adding Cloudflare for additional caching and DDoS protection
+- **Load Balancing**: For high traffic, implement load balancing across multiple servers
 
 ## Configuration
 
