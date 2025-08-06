@@ -45,39 +45,66 @@ export class DatabaseStorage implements IStorage {
 
   async deleteProject(id: number): Promise<boolean> {
     try {
-      // Delete all project-related data in the correct order (respecting foreign key constraints)
+      console.log(`Starting deletion of project ${id} and all related data`);
       
-      // 1. Get all characters for this project first
+      // 1. Get all characters, events, magic systems, and spells for this project first
       const projectCharacters = await db.select({ id: characters.id }).from(characters).where(eq(characters.projectId, id));
       const characterIds = projectCharacters.map(c => c.id);
+      console.log(`Found ${characterIds.length} characters to delete`);
       
-      // Get all events for this project  
       const projectEvents = await db.select({ id: events.id }).from(events).where(eq(events.projectId, id));
       const eventIds = projectEvents.map(e => e.id);
+      console.log(`Found ${eventIds.length} events to delete`);
       
-      // 2. Delete junction table records that reference characters/events
+      const projectMagicSystems = await db.select({ id: magicSystems.id }).from(magicSystems).where(eq(magicSystems.projectId, id));
+      const magicSystemIds = projectMagicSystems.map(ms => ms.id);
+      console.log(`Found ${magicSystemIds.length} magic systems to delete`);
+      
+      const projectSpells = await db.select({ id: spells.id }).from(spells).where(eq(spells.projectId, id));
+      const spellIds = projectSpells.map(s => s.id);
+      console.log(`Found ${spellIds.length} spells to delete`);
+      
+      // 2. Delete all junction table records first (deepest dependencies)
       if (characterIds.length > 0) {
+        console.log('Deleting character-spell relationships...');
         await db.delete(characterSpells).where(inArray(characterSpells.characterId, characterIds));
+        console.log('Deleting character-magic-system relationships...');
+        await db.delete(characterMagicSystems).where(inArray(characterMagicSystems.characterId, characterIds));
       }
       
       if (eventIds.length > 0) {
+        console.log('Deleting event-character relationships...');
         await db.delete(eventCharacters).where(inArray(eventCharacters.eventId, eventIds));
       }
       
-      // 3. Delete all main entities that reference the project
-      await db.delete(spells).where(eq(spells.projectId, id));
-      await db.delete(relationships).where(eq(relationships.projectId, id));
-      await db.delete(characters).where(eq(characters.projectId, id));
-      await db.delete(events).where(eq(events.projectId, id));
-      await db.delete(magicSystems).where(eq(magicSystems.projectId, id));
-      await db.delete(locations).where(eq(locations.projectId, id));
-      await db.delete(loreEntries).where(eq(loreEntries.projectId, id));
-      await db.delete(notes).where(eq(notes.projectId, id));
-      await db.delete(races).where(eq(races.projectId, id));
+      // 3. Delete activities table first (has FK to project)
+      console.log('Deleting activities...');
       await db.delete(activities).where(eq(activities.projectId, id));
       
-      // 4. Finally delete the project itself
+      // 4. Delete all main entities that reference the project
+      console.log('Deleting spells...');
+      await db.delete(spells).where(eq(spells.projectId, id));
+      console.log('Deleting relationships...');
+      await db.delete(relationships).where(eq(relationships.projectId, id));
+      console.log('Deleting characters...');
+      await db.delete(characters).where(eq(characters.projectId, id));
+      console.log('Deleting events...');
+      await db.delete(events).where(eq(events.projectId, id));
+      console.log('Deleting magic systems...');
+      await db.delete(magicSystems).where(eq(magicSystems.projectId, id));
+      console.log('Deleting locations...');
+      await db.delete(locations).where(eq(locations.projectId, id));
+      console.log('Deleting lore entries...');
+      await db.delete(loreEntries).where(eq(loreEntries.projectId, id));
+      console.log('Deleting notes...');
+      await db.delete(notes).where(eq(notes.projectId, id));
+      console.log('Deleting races...');
+      await db.delete(races).where(eq(races.projectId, id));
+      
+      // 5. Finally delete the project itself
+      console.log(`Deleting project ${id}...`);
       const result = await db.delete(projects).where(eq(projects.id, id)).returning();
+      console.log(`Project ${id} deletion complete`);
       return result.length > 0;
     } catch (error) {
       console.error('Error deleting project and related data:', error);
