@@ -1,4 +1,3 @@
-
 // Cloudflare Workers entry point using Supabase for everything
 // This avoids Node.js dependencies and uses Supabase's edge-compatible client
 
@@ -43,14 +42,14 @@ function createAdminSupabaseClient(env: Env) {
 }
 
 // Initialize Supabase client with user token for RLS-enforced operations
-function createUserSupabaseClient(env: Env, userToken: string) {
+async function createUserSupabaseClient(env: Env, userToken: string) {
   const client = createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
     }
   });
-  
+
   // Set the user's JWT token for RLS
   await client.auth.setSession({
     access_token: userToken,
@@ -60,7 +59,7 @@ function createUserSupabaseClient(env: Env, userToken: string) {
     token_type: 'bearer',
     user: null
   });
-  
+
   return client;
 }
 
@@ -68,16 +67,16 @@ function createUserSupabaseClient(env: Env, userToken: string) {
 async function authenticateUser(request: Request, env: Env): Promise<{ userId: string; token: string } | null> {
   try {
     const authHeader = request.headers.get('authorization');
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return null;
     }
 
     const token = authHeader.substring(7); // Remove "Bearer " prefix
-    
+
     const supabase = createSupabaseClient(env);
     const { data: { user }, error } = await supabase.auth.getUser(token);
-    
+
     if (error || !user) {
       console.error('Authentication error:', error);
       return null;
@@ -106,7 +105,7 @@ class WorkersRouter {
     // Find matching route
     for (const route of this.routes) {
       if (method !== route.method) continue;
-      
+
       const params = this.extractParams(route.pattern, pathname);
       if (params !== null) {
         return route.handler(request, env, params);
@@ -180,12 +179,12 @@ async function withAuth(
 router.register('GET', '/api/projects', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: projects, error } = await supabase
         .from('projects')
         .select('*')
         .eq('user_id', userId);
-      
+
       if (error) throw error;
       return jsonResponse(projects);
     } catch (error) {
@@ -198,21 +197,21 @@ router.register('GET', '/api/projects/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: project, error } = await supabase
         .from('projects')
         .select('*')
         .eq('id', id)
         .eq('user_id', userId)
         .single();
-      
+
       if (error) {
         if (error.code === 'PGRST116') { // No rows returned
           return jsonResponse({ message: "Project not found" }, 404);
         }
         throw error;
       }
-      
+
       return jsonResponse(project);
     } catch (error) {
       return jsonResponse({ message: "Failed to fetch project" }, 500);
@@ -224,13 +223,13 @@ router.register('POST', '/api/projects', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: project, error } = await supabase
         .from('projects')
         .insert([{ ...body, user_id: userId }])
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(project, 201);
     } catch (error) {
@@ -244,7 +243,7 @@ router.register('PUT', '/api/projects/:id', async (request, env, params) => {
     try {
       const id = parseInt(params.id);
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: project, error } = await supabase
         .from('projects')
         .update(body)
@@ -252,7 +251,7 @@ router.register('PUT', '/api/projects/:id', async (request, env, params) => {
         .eq('user_id', userId)
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(project);
     } catch (error) {
@@ -265,13 +264,13 @@ router.register('DELETE', '/api/projects/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { error } = await supabase
         .from('projects')
         .delete()
         .eq('id', id)
         .eq('user_id', userId);
-      
+
       if (error) throw error;
       return jsonResponse({ message: "Project deleted successfully" });
     } catch (error) {
@@ -285,8 +284,8 @@ router.register('GET', '/api/projects/:projectId/characters', async (request, en
   return withAuth(request, env, async (userId, token) => {
     try {
       const projectId = parseInt(params.projectId);
-      const supabase = createUserSupabaseClient(env, token);
-      
+      const supabase = await createUserSupabaseClient(env, token);
+
       // First verify user owns the project
       const { data: project } = await supabase
         .from('projects')
@@ -294,16 +293,16 @@ router.register('GET', '/api/projects/:projectId/characters', async (request, en
         .eq('id', projectId)
         .eq('user_id', userId)
         .single();
-      
+
       if (!project) {
         return jsonResponse({ message: "Access denied" }, 403);
       }
-      
+
       const { data: characters, error } = await supabase
         .from('characters')
         .select('*')
         .eq('project_id', projectId);
-      
+
       if (error) throw error;
       return jsonResponse(characters);
     } catch (error) {
@@ -321,14 +320,14 @@ router.register('GET', '/api/characters/:id', async (request, env, params) => {
       .select('*')
       .eq('id', id)
       .single();
-    
+
     if (error) {
       if (error.code === 'PGRST116') {
         return jsonResponse({ message: "Character not found" }, 404);
       }
       throw error;
     }
-    
+
     return jsonResponse(character);
   } catch (error) {
     return jsonResponse({ message: "Failed to fetch character" }, 500);
@@ -339,13 +338,13 @@ router.register('POST', '/api/characters', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: character, error } = await supabase
         .from('characters')
         .insert([body])
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(character, 201);
     } catch (error) {
@@ -359,14 +358,14 @@ router.register('PUT', '/api/characters/:id', async (request, env, params) => {
     try {
       const id = parseInt(params.id);
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: character, error } = await supabase
         .from('characters')
         .update(body)
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(character);
     } catch (error) {
@@ -379,12 +378,12 @@ router.register('DELETE', '/api/characters/:id', async (request, env, params) =>
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { error } = await supabase
         .from('characters')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
       return jsonResponse({ message: "Character deleted successfully" });
     } catch (error) {
@@ -398,24 +397,24 @@ router.register('GET', '/api/projects/:projectId/locations', async (request, env
   return withAuth(request, env, async (userId, token) => {
     try {
       const projectId = parseInt(params.projectId);
-      const supabase = createUserSupabaseClient(env, token);
-      
+      const supabase = await createUserSupabaseClient(env, token);
+
       const { data: project } = await supabase
         .from('projects')
         .select('id')
         .eq('id', projectId)
         .eq('user_id', userId)
         .single();
-      
+
       if (!project) {
         return jsonResponse({ message: "Access denied" }, 403);
       }
-      
+
       const { data: locations, error } = await supabase
         .from('locations')
         .select('*')
         .eq('project_id', projectId);
-      
+
       if (error) throw error;
       return jsonResponse(locations);
     } catch (error) {
@@ -428,13 +427,13 @@ router.register('POST', '/api/locations', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: location, error } = await supabase
         .from('locations')
         .insert([body])
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(location, 201);
     } catch (error) {
@@ -448,24 +447,24 @@ router.register('GET', '/api/projects/:projectId/magic-systems', async (request,
   return withAuth(request, env, async (userId, token) => {
     try {
       const projectId = parseInt(params.projectId);
-      const supabase = createUserSupabaseClient(env, token);
-      
+      const supabase = await createUserSupabaseClient(env, token);
+
       const { data: project } = await supabase
         .from('projects')
         .select('id')
         .eq('id', projectId)
         .eq('user_id', userId)
         .single();
-      
+
       if (!project) {
         return jsonResponse({ message: "Access denied" }, 403);
       }
-      
+
       const { data: magicSystems, error } = await supabase
         .from('magic_systems')
         .select('*')
         .eq('project_id', projectId);
-      
+
       if (error) throw error;
       return jsonResponse(magicSystems);
     } catch (error) {
@@ -478,13 +477,13 @@ router.register('POST', '/api/magic-systems', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: magicSystem, error } = await supabase
         .from('magic_systems')
         .insert([body])
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(magicSystem, 201);
     } catch (error) {
@@ -498,24 +497,24 @@ router.register('GET', '/api/projects/:projectId/events', async (request, env, p
   return withAuth(request, env, async (userId, token) => {
     try {
       const projectId = parseInt(params.projectId);
-      const supabase = createUserSupabaseClient(env, token);
-      
+      const supabase = await createUserSupabaseClient(env, token);
+
       const { data: project } = await supabase
         .from('projects')
         .select('id')
         .eq('id', projectId)
         .eq('user_id', userId)
         .single();
-      
+
       if (!project) {
         return jsonResponse({ message: "Access denied" }, 403);
       }
-      
+
       const { data: events, error } = await supabase
         .from('events')
         .select('*')
         .eq('project_id', projectId);
-      
+
       if (error) throw error;
       return jsonResponse(events);
     } catch (error) {
@@ -528,13 +527,13 @@ router.register('POST', '/api/events', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: event, error } = await supabase
         .from('events')
         .insert([body])
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(event, 201);
     } catch (error) {
@@ -550,20 +549,20 @@ router.register('GET', '/api/locations/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: location, error } = await supabase
         .from('locations')
         .select('*')
         .eq('id', id)
         .single();
-      
+
       if (error) {
         if (error.code === 'PGRST116') {
           return jsonResponse({ message: "Location not found" }, 404);
         }
         throw error;
       }
-      
+
       return jsonResponse(location);
     } catch (error) {
       return jsonResponse({ message: "Failed to fetch location" }, 500);
@@ -576,14 +575,14 @@ router.register('PUT', '/api/locations/:id', async (request, env, params) => {
     try {
       const id = parseInt(params.id);
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: location, error } = await supabase
         .from('locations')
         .update(body)
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(location);
     } catch (error) {
@@ -596,12 +595,12 @@ router.register('DELETE', '/api/locations/:id', async (request, env, params) => 
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { error } = await supabase
         .from('locations')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
       return jsonResponse({ message: "Location deleted successfully" });
     } catch (error) {
@@ -615,20 +614,20 @@ router.register('GET', '/api/magic-systems/:id', async (request, env, params) =>
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: magicSystem, error } = await supabase
         .from('magic_systems')
         .select('*')
         .eq('id', id)
         .single();
-      
+
       if (error) {
         if (error.code === 'PGRST116') {
           return jsonResponse({ message: "Magic system not found" }, 404);
         }
         throw error;
       }
-      
+
       return jsonResponse(magicSystem);
     } catch (error) {
       return jsonResponse({ message: "Failed to fetch magic system" }, 500);
@@ -641,14 +640,14 @@ router.register('PUT', '/api/magic-systems/:id', async (request, env, params) =>
     try {
       const id = parseInt(params.id);
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: magicSystem, error } = await supabase
         .from('magic_systems')
         .update(body)
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(magicSystem);
     } catch (error) {
@@ -661,12 +660,12 @@ router.register('DELETE', '/api/magic-systems/:id', async (request, env, params)
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { error } = await supabase
         .from('magic_systems')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
       return jsonResponse({ message: "Magic system deleted successfully" });
     } catch (error) {
@@ -680,20 +679,20 @@ router.register('GET', '/api/events/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: event, error } = await supabase
         .from('events')
         .select('*')
         .eq('id', id)
         .single();
-      
+
       if (error) {
         if (error.code === 'PGRST116') {
           return jsonResponse({ message: "Event not found" }, 404);
         }
         throw error;
       }
-      
+
       return jsonResponse(event);
     } catch (error) {
       return jsonResponse({ message: "Failed to fetch event" }, 500);
@@ -706,14 +705,14 @@ router.register('PUT', '/api/events/:id', async (request, env, params) => {
     try {
       const id = parseInt(params.id);
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: event, error } = await supabase
         .from('events')
         .update(body)
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(event);
     } catch (error) {
@@ -726,12 +725,12 @@ router.register('DELETE', '/api/events/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { error } = await supabase
         .from('events')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
       return jsonResponse({ message: "Event deleted successfully" });
     } catch (error) {
@@ -745,24 +744,24 @@ router.register('GET', '/api/projects/:projectId/spells', async (request, env, p
   return withAuth(request, env, async (userId, token) => {
     try {
       const projectId = parseInt(params.projectId);
-      const supabase = createUserSupabaseClient(env, token);
-      
+      const supabase = await createUserSupabaseClient(env, token);
+
       const { data: project } = await supabase
         .from('projects')
         .select('id')
         .eq('id', projectId)
         .eq('user_id', userId)
         .single();
-      
+
       if (!project) {
         return jsonResponse({ message: "Access denied" }, 403);
       }
-      
+
       const { data: spells, error } = await supabase
         .from('spells')
         .select('*')
         .eq('project_id', projectId);
-      
+
       if (error) throw error;
       return jsonResponse(spells);
     } catch (error) {
@@ -775,20 +774,20 @@ router.register('GET', '/api/spells/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: spell, error } = await supabase
         .from('spells')
         .select('*')
         .eq('id', id)
         .single();
-      
+
       if (error) {
         if (error.code === 'PGRST116') {
           return jsonResponse({ message: "Spell not found" }, 404);
         }
         throw error;
       }
-      
+
       return jsonResponse(spell);
     } catch (error) {
       return jsonResponse({ message: "Failed to fetch spell" }, 500);
@@ -800,13 +799,13 @@ router.register('POST', '/api/spells', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: spell, error } = await supabase
         .from('spells')
         .insert([body])
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(spell, 201);
     } catch (error) {
@@ -820,14 +819,14 @@ router.register('PUT', '/api/spells/:id', async (request, env, params) => {
     try {
       const id = parseInt(params.id);
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: spell, error } = await supabase
         .from('spells')
         .update(body)
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(spell);
     } catch (error) {
@@ -840,12 +839,12 @@ router.register('DELETE', '/api/spells/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { error } = await supabase
         .from('spells')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
       return jsonResponse({ message: "Spell deleted successfully" });
     } catch (error) {
@@ -859,24 +858,24 @@ router.register('GET', '/api/projects/:projectId/lore', async (request, env, par
   return withAuth(request, env, async (userId, token) => {
     try {
       const projectId = parseInt(params.projectId);
-      const supabase = createUserSupabaseClient(env, token);
-      
+      const supabase = await createUserSupabaseClient(env, token);
+
       const { data: project } = await supabase
         .from('projects')
         .select('id')
         .eq('id', projectId)
         .eq('user_id', userId)
         .single();
-      
+
       if (!project) {
         return jsonResponse({ message: "Access denied" }, 403);
       }
-      
+
       const { data: lore, error } = await supabase
         .from('lore_entries')
         .select('*')
         .eq('project_id', projectId);
-      
+
       if (error) throw error;
       return jsonResponse(lore);
     } catch (error) {
@@ -889,20 +888,20 @@ router.register('GET', '/api/lore/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: lore, error } = await supabase
         .from('lore_entries')
         .select('*')
         .eq('id', id)
         .single();
-      
+
       if (error) {
         if (error.code === 'PGRST116') {
           return jsonResponse({ message: "Lore entry not found" }, 404);
         }
         throw error;
       }
-      
+
       return jsonResponse(lore);
     } catch (error) {
       return jsonResponse({ message: "Failed to fetch lore entry" }, 500);
@@ -914,13 +913,13 @@ router.register('POST', '/api/lore', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: lore, error } = await supabase
         .from('lore_entries')
         .insert([body])
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(lore, 201);
     } catch (error) {
@@ -934,14 +933,14 @@ router.register('PUT', '/api/lore/:id', async (request, env, params) => {
     try {
       const id = parseInt(params.id);
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: lore, error } = await supabase
         .from('lore_entries')
         .update(body)
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(lore);
     } catch (error) {
@@ -954,12 +953,12 @@ router.register('DELETE', '/api/lore/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { error } = await supabase
         .from('lore_entries')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
       return jsonResponse({ message: "Lore entry deleted successfully" });
     } catch (error) {
@@ -973,24 +972,24 @@ router.register('GET', '/api/projects/:projectId/notes', async (request, env, pa
   return withAuth(request, env, async (userId, token) => {
     try {
       const projectId = parseInt(params.projectId);
-      const supabase = createUserSupabaseClient(env, token);
-      
+      const supabase = await createUserSupabaseClient(env, token);
+
       const { data: project } = await supabase
         .from('projects')
         .select('id')
         .eq('id', projectId)
         .eq('user_id', userId)
         .single();
-      
+
       if (!project) {
         return jsonResponse({ message: "Access denied" }, 403);
       }
-      
+
       const { data: notes, error } = await supabase
         .from('notes')
         .select('*')
         .eq('project_id', projectId);
-      
+
       if (error) throw error;
       return jsonResponse(notes);
     } catch (error) {
@@ -1003,20 +1002,20 @@ router.register('GET', '/api/notes/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: note, error } = await supabase
         .from('notes')
         .select('*')
         .eq('id', id)
         .single();
-      
+
       if (error) {
         if (error.code === 'PGRST116') {
           return jsonResponse({ message: "Note not found" }, 404);
         }
         throw error;
       }
-      
+
       return jsonResponse(note);
     } catch (error) {
       return jsonResponse({ message: "Failed to fetch note" }, 500);
@@ -1028,13 +1027,13 @@ router.register('POST', '/api/notes', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: note, error } = await supabase
         .from('notes')
         .insert([body])
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(note, 201);
     } catch (error) {
@@ -1048,14 +1047,14 @@ router.register('PUT', '/api/notes/:id', async (request, env, params) => {
     try {
       const id = parseInt(params.id);
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: note, error } = await supabase
         .from('notes')
         .update(body)
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(note);
     } catch (error) {
@@ -1068,12 +1067,12 @@ router.register('DELETE', '/api/notes/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { error } = await supabase
         .from('notes')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
       return jsonResponse({ message: "Note deleted successfully" });
     } catch (error) {
@@ -1087,24 +1086,24 @@ router.register('GET', '/api/projects/:projectId/races', async (request, env, pa
   return withAuth(request, env, async (userId, token) => {
     try {
       const projectId = parseInt(params.projectId);
-      const supabase = createUserSupabaseClient(env, token);
-      
+      const supabase = await createUserSupabaseClient(env, token);
+
       const { data: project } = await supabase
         .from('projects')
         .select('id')
         .eq('id', projectId)
         .eq('user_id', userId)
         .single();
-      
+
       if (!project) {
         return jsonResponse({ message: "Access denied" }, 403);
       }
-      
+
       const { data: races, error } = await supabase
         .from('races')
         .select('*')
         .eq('project_id', projectId);
-      
+
       if (error) throw error;
       return jsonResponse(races);
     } catch (error) {
@@ -1117,20 +1116,20 @@ router.register('GET', '/api/races/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: race, error } = await supabase
         .from('races')
         .select('*')
         .eq('id', id)
         .single();
-      
+
       if (error) {
         if (error.code === 'PGRST116') {
           return jsonResponse({ message: "Race not found" }, 404);
         }
         throw error;
       }
-      
+
       return jsonResponse(race);
     } catch (error) {
       return jsonResponse({ message: "Failed to fetch race" }, 500);
@@ -1142,13 +1141,13 @@ router.register('POST', '/api/races', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: race, error } = await supabase
         .from('races')
         .insert([body])
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(race, 201);
     } catch (error) {
@@ -1162,14 +1161,14 @@ router.register('PUT', '/api/races/:id', async (request, env, params) => {
     try {
       const id = parseInt(params.id);
       const body = await request.json();
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { data: race, error } = await supabase
         .from('races')
         .update(body)
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return jsonResponse(race);
     } catch (error) {
@@ -1182,12 +1181,12 @@ router.register('DELETE', '/api/races/:id', async (request, env, params) => {
   return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createUserSupabaseClient(env, token);
+      const supabase = await createUserSupabaseClient(env, token);
       const { error } = await supabase
         .from('races')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
       return jsonResponse({ message: "Race deleted successfully" });
     } catch (error) {
