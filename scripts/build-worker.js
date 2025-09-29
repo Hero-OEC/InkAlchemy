@@ -16,7 +16,7 @@ try {
 
   // Step 2: Build the worker using Supabase-only approach (bundle everything for Workers runtime)
   console.log('🔧 Building worker...');
-  execSync('npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/worker.js --define:global=globalThis --external:node:* --define:process.env.NODE_ENV=\\"production\\"', { stdio: 'inherit' });
+  execSync('npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/worker.js --define:global=globalThis --external:node:* --define:process.env.NODE_ENV=\\"production\\" --main-fields=module,main --conditions=worker,import', { stdio: 'inherit' });
 
   // Step 3: Verify the build output
   console.log('✅ Verifying build output...');
