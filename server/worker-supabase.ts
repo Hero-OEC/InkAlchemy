@@ -539,6 +539,659 @@ router.register('POST', '/api/events', async (request, env, params) => {
   }, params);
 });
 
+// Add missing endpoints for locations, magic systems, events, spells, lore, notes, races
+
+// Individual location endpoint
+router.register('GET', '/api/locations/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: location, error } = await supabase
+        .from('locations')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return jsonResponse({ message: "Location not found" }, 404);
+        }
+        throw error;
+      }
+      
+      return jsonResponse(location);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch location" }, 500);
+    }
+  }, params);
+});
+
+router.register('PUT', '/api/locations/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: location, error } = await supabase
+        .from('locations')
+        .update(body)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(location);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to update location" }, 500);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/locations/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('locations')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return jsonResponse({ message: "Location deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete location" }, 500);
+    }
+  }, params);
+});
+
+// Individual magic system endpoint
+router.register('GET', '/api/magic-systems/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: magicSystem, error } = await supabase
+        .from('magic_systems')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return jsonResponse({ message: "Magic system not found" }, 404);
+        }
+        throw error;
+      }
+      
+      return jsonResponse(magicSystem);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch magic system" }, 500);
+    }
+  }, params);
+});
+
+router.register('PUT', '/api/magic-systems/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: magicSystem, error } = await supabase
+        .from('magic_systems')
+        .update(body)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(magicSystem);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to update magic system" }, 500);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/magic-systems/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('magic_systems')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return jsonResponse({ message: "Magic system deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete magic system" }, 500);
+    }
+  }, params);
+});
+
+// Individual event endpoint
+router.register('GET', '/api/events/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: event, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return jsonResponse({ message: "Event not found" }, 404);
+        }
+        throw error;
+      }
+      
+      return jsonResponse(event);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch event" }, 500);
+    }
+  }, params);
+});
+
+router.register('PUT', '/api/events/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: event, error } = await supabase
+        .from('events')
+        .update(body)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(event);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to update event" }, 500);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/events/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('events')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return jsonResponse({ message: "Event deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete event" }, 500);
+    }
+  }, params);
+});
+
+// Spells endpoints
+router.register('GET', '/api/projects/:projectId/spells', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      const supabase = createUserSupabaseClient(env, token);
+      
+      const { data: project } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('id', projectId)
+        .eq('user_id', userId)
+        .single();
+      
+      if (!project) {
+        return jsonResponse({ message: "Access denied" }, 403);
+      }
+      
+      const { data: spells, error } = await supabase
+        .from('spells')
+        .select('*')
+        .eq('project_id', projectId);
+      
+      if (error) throw error;
+      return jsonResponse(spells);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch spells" }, 500);
+    }
+  }, params);
+});
+
+router.register('GET', '/api/spells/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: spell, error } = await supabase
+        .from('spells')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return jsonResponse({ message: "Spell not found" }, 404);
+        }
+        throw error;
+      }
+      
+      return jsonResponse(spell);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch spell" }, 500);
+    }
+  }, params);
+});
+
+router.register('POST', '/api/spells', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: spell, error } = await supabase
+        .from('spells')
+        .insert([body])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(spell, 201);
+    } catch (error) {
+      return jsonResponse({ message: "Invalid spell data" }, 400);
+    }
+  }, params);
+});
+
+router.register('PUT', '/api/spells/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: spell, error } = await supabase
+        .from('spells')
+        .update(body)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(spell);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to update spell" }, 500);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/spells/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('spells')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return jsonResponse({ message: "Spell deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete spell" }, 500);
+    }
+  }, params);
+});
+
+// Lore endpoints
+router.register('GET', '/api/projects/:projectId/lore', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      const supabase = createUserSupabaseClient(env, token);
+      
+      const { data: project } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('id', projectId)
+        .eq('user_id', userId)
+        .single();
+      
+      if (!project) {
+        return jsonResponse({ message: "Access denied" }, 403);
+      }
+      
+      const { data: lore, error } = await supabase
+        .from('lore_entries')
+        .select('*')
+        .eq('project_id', projectId);
+      
+      if (error) throw error;
+      return jsonResponse(lore);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch lore" }, 500);
+    }
+  }, params);
+});
+
+router.register('GET', '/api/lore/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: lore, error } = await supabase
+        .from('lore_entries')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return jsonResponse({ message: "Lore entry not found" }, 404);
+        }
+        throw error;
+      }
+      
+      return jsonResponse(lore);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch lore entry" }, 500);
+    }
+  }, params);
+});
+
+router.register('POST', '/api/lore', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: lore, error } = await supabase
+        .from('lore_entries')
+        .insert([body])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(lore, 201);
+    } catch (error) {
+      return jsonResponse({ message: "Invalid lore data" }, 400);
+    }
+  }, params);
+});
+
+router.register('PUT', '/api/lore/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: lore, error } = await supabase
+        .from('lore_entries')
+        .update(body)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(lore);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to update lore entry" }, 500);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/lore/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('lore_entries')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return jsonResponse({ message: "Lore entry deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete lore entry" }, 500);
+    }
+  }, params);
+});
+
+// Notes endpoints
+router.register('GET', '/api/projects/:projectId/notes', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      const supabase = createUserSupabaseClient(env, token);
+      
+      const { data: project } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('id', projectId)
+        .eq('user_id', userId)
+        .single();
+      
+      if (!project) {
+        return jsonResponse({ message: "Access denied" }, 403);
+      }
+      
+      const { data: notes, error } = await supabase
+        .from('notes')
+        .select('*')
+        .eq('project_id', projectId);
+      
+      if (error) throw error;
+      return jsonResponse(notes);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch notes" }, 500);
+    }
+  }, params);
+});
+
+router.register('GET', '/api/notes/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: note, error } = await supabase
+        .from('notes')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return jsonResponse({ message: "Note not found" }, 404);
+        }
+        throw error;
+      }
+      
+      return jsonResponse(note);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch note" }, 500);
+    }
+  }, params);
+});
+
+router.register('POST', '/api/notes', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: note, error } = await supabase
+        .from('notes')
+        .insert([body])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(note, 201);
+    } catch (error) {
+      return jsonResponse({ message: "Invalid note data" }, 400);
+    }
+  }, params);
+});
+
+router.register('PUT', '/api/notes/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: note, error } = await supabase
+        .from('notes')
+        .update(body)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(note);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to update note" }, 500);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/notes/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('notes')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return jsonResponse({ message: "Note deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete note" }, 500);
+    }
+  }, params);
+});
+
+// Races endpoints
+router.register('GET', '/api/projects/:projectId/races', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      const supabase = createUserSupabaseClient(env, token);
+      
+      const { data: project } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('id', projectId)
+        .eq('user_id', userId)
+        .single();
+      
+      if (!project) {
+        return jsonResponse({ message: "Access denied" }, 403);
+      }
+      
+      const { data: races, error } = await supabase
+        .from('races')
+        .select('*')
+        .eq('project_id', projectId);
+      
+      if (error) throw error;
+      return jsonResponse(races);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch races" }, 500);
+    }
+  }, params);
+});
+
+router.register('GET', '/api/races/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: race, error } = await supabase
+        .from('races')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return jsonResponse({ message: "Race not found" }, 404);
+        }
+        throw error;
+      }
+      
+      return jsonResponse(race);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch race" }, 500);
+    }
+  }, params);
+});
+
+router.register('POST', '/api/races', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: race, error } = await supabase
+        .from('races')
+        .insert([body])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(race, 201);
+    } catch (error) {
+      return jsonResponse({ message: "Invalid race data" }, 400);
+    }
+  }, params);
+});
+
+router.register('PUT', '/api/races/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: race, error } = await supabase
+        .from('races')
+        .update(body)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(race);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to update race" }, 500);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/races/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('races')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return jsonResponse({ message: "Race deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete race" }, 500);
+    }
+  }, params);
+});
+
 // Health check endpoint
 router.register('GET', '/api/health', async (request, env, params) => {
   return jsonResponse({ status: 'ok', message: 'InkAlchemy Workers API is running' });
