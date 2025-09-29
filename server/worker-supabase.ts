@@ -23,6 +23,10 @@ interface ExportedHandler<Env = unknown> {
 
 // Initialize Supabase client with anon key for RLS-enforced operations
 function createSupabaseClient(env: Env) {
+  if (!env.VITE_SUPABASE_URL || !env.VITE_SUPABASE_ANON_KEY) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  
   return createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY, {
     auth: {
       autoRefreshToken: false,
@@ -33,6 +37,10 @@ function createSupabaseClient(env: Env) {
 
 // Initialize Supabase client with service role for admin operations only when needed
 function createAdminSupabaseClient(env: Env) {
+  if (!env.VITE_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('Missing Supabase admin environment variables');
+  }
+  
   return createClient(env.VITE_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
     auth: {
       autoRefreshToken: false,
@@ -1203,23 +1211,42 @@ router.register('GET', '/api/health', async (request, env, params) => {
 // Export the main fetch handler
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    // Handle CORS preflight requests
-    if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
-      });
-    }
+    try {
+      // Handle CORS preflight requests
+      if (request.method === 'OPTIONS') {
+        return new Response(null, {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
+        });
+      }
 
-    // Route API requests
-    if (new URL(request.url).pathname.startsWith('/api')) {
-      return router.handle(request, env);
-    }
+      const url = new URL(request.url);
+      console.log(`[${request.method}] ${url.pathname}`);
 
-    // For non-API requests, serve static files (handled by Cloudflare)
-    return new Response('Not Found', { status: 404 });
+      // Route API requests
+      if (url.pathname.startsWith('/api')) {
+        try {
+          return await router.handle(request, env);
+        } catch (error) {
+          console.error('Router error:', error);
+          return jsonResponse({ 
+            message: 'Internal server error',
+            error: error instanceof Error ? error.message : 'Unknown error'
+          }, 500);
+        }
+      }
+
+      // For non-API requests, serve static files (handled by Cloudflare)
+      return new Response('Not Found', { status: 404 });
+    } catch (error) {
+      console.error('Worker error:', error);
+      return jsonResponse({ 
+        message: 'Worker error',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }, 500);
+    }
   },
 } satisfies ExportedHandler<Env>;
