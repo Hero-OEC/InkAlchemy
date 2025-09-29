@@ -9,7 +9,7 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL environment variable is required");
 }
 
-console.log('Connecting to database: Replit PostgreSQL');
+console.log('Connecting to database: Supabase PostgreSQL');
 
 // Create the connection
 const client = postgres(databaseUrl);
