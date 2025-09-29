@@ -1,0 +1,264 @@
+2025-09-29T11:07:48.639Z	Initializing build environment...
+2025-09-29T11:07:48.639Z	Initializing build environment...
+2025-09-29T11:07:54.626Z	Success: Finished initializing build environment
+2025-09-29T11:07:54.792Z	Cloning repository...
+2025-09-29T11:07:55.874Z	Detected the following tools from environment: npm@10.9.2, nodejs@22.16.0
+2025-09-29T11:07:55.875Z	Restoring from dependencies cache
+2025-09-29T11:07:55.877Z	Restoring from build output cache
+2025-09-29T11:07:55.977Z	Installing project dependencies: npm clean-install --progress=false
+2025-09-29T11:07:59.875Z	npm warn deprecated @supabase/auth-helpers-react@0.5.0: This package is now deprecated - please use the @supabase/ssr package instead.
+2025-09-29T11:08:00.369Z	npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+2025-09-29T11:08:00.369Z	npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+2025-09-29T11:08:06.188Z	
+2025-09-29T11:08:06.190Z	added 591 packages, and audited 592 packages in 10s
+2025-09-29T11:08:06.191Z	
+2025-09-29T11:08:06.191Z	81 packages are looking for funding
+2025-09-29T11:08:06.192Z	  run `npm fund` for details
+2025-09-29T11:08:06.225Z	
+2025-09-29T11:08:06.226Z	10 vulnerabilities (3 low, 7 moderate)
+2025-09-29T11:08:06.226Z	
+2025-09-29T11:08:06.226Z	To address issues that do not require attention, run:
+2025-09-29T11:08:06.226Z	  npm audit fix
+2025-09-29T11:08:06.226Z	
+2025-09-29T11:08:06.226Z	To address all issues (including breaking changes), run:
+2025-09-29T11:08:06.226Z	  npm audit fix --force
+2025-09-29T11:08:06.226Z	
+2025-09-29T11:08:06.226Z	Run `npm audit` for details.
+2025-09-29T11:08:06.299Z	Executing user build command: npm run build
+2025-09-29T11:08:07.763Z	
+2025-09-29T11:08:07.763Z	> rest-express@1.0.0 build
+2025-09-29T11:08:07.763Z	> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2025-09-29T11:08:07.763Z	
+2025-09-29T11:08:07.965Z	vite v5.4.19 building for production...
+2025-09-29T11:08:08.017Z	transforming...
+2025-09-29T11:08:08.238Z	Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+2025-09-29T11:08:08.239Z	  npx update-browserslist-db@latest
+2025-09-29T11:08:08.239Z	  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+2025-09-29T11:08:14.289Z	✓ 2281 modules transformed.
+2025-09-29T11:08:15.093Z	[plugin:vite:reporter] [plugin vite:reporter] 
+2025-09-29T11:08:15.096Z	(!) /opt/buildhome/repo/node_modules/@supabase/supabase-js/dist/module/index.js is dynamically imported by /opt/buildhome/repo/client/src/hooks/useImageCleanup.ts but also statically imported by /opt/buildhome/repo/client/src/lib/supabase.ts, dynamic import will not move module into another chunk.
+2025-09-29T11:08:15.096Z	
+2025-09-29T11:08:15.096Z	rendering chunks...
+2025-09-29T11:08:15.140Z	computing gzip size...
+2025-09-29T11:08:15.174Z	../dist/public/index.html                                                 1.01 kB │ gzip:   0.53 kB
+2025-09-29T11:08:15.174Z	../dist/public/assets/inkalchemy_1752303410066-DpdMGM3e.png              17.04 kB
+2025-09-29T11:08:15.176Z	../dist/public/assets/Fandom_heart-logo 1_1753705331492-C2FTAbEg.png     18.95 kB
+2025-09-29T11:08:15.176Z	../dist/public/assets/index-Bx-z54G4.css                                 87.50 kB │ gzip:  14.64 kB
+2025-09-29T11:08:15.176Z	../dist/public/assets/index-FEi3UWS4.js                               1,411.69 kB │ gzip: 369.82 kB
+2025-09-29T11:08:15.176Z	
+2025-09-29T11:08:15.176Z	(!) Some chunks are larger than 500 kB after minification. Consider:
+2025-09-29T11:08:15.176Z	- Using dynamic import() to code-split the application
+2025-09-29T11:08:15.176Z	- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2025-09-29T11:08:15.177Z	- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2025-09-29T11:08:15.177Z	✓ built in 7.19s
+2025-09-29T11:08:15.245Z	
+2025-09-29T11:08:15.246Z	  dist/index.js  99.5kb
+2025-09-29T11:08:15.247Z	
+2025-09-29T11:08:15.247Z	⚡ Done in 9ms
+2025-09-29T11:08:15.255Z	Success: Build command completed
+2025-09-29T11:08:15.255Z	Executing user deploy command: npx wrangler deploy
+2025-09-29T11:08:16.992Z	
+2025-09-29T11:08:16.992Z	 ⛅️ wrangler 4.40.2
+2025-09-29T11:08:16.992Z	───────────────────
+2025-09-29T11:08:17.042Z	▲ [WARNING] Multiple environments are defined in the Wrangler configuration file, but no target environment was specified for the deploy command.
+2025-09-29T11:08:17.042Z	
+2025-09-29T11:08:17.042Z	  To avoid unintentional changes to the wrong environment, it is recommended to explicitly specify the target environment using the `-e|--env` flag.
+2025-09-29T11:08:17.042Z	  If your intention is to use the top-level environment of your configuration simply pass an empty string to the flag to target such environment. For example `--env=""`.
+2025-09-29T11:08:17.043Z	
+2025-09-29T11:08:17.043Z	
+2025-09-29T11:08:17.051Z	[custom build] Running: node scripts/build-worker.js
+2025-09-29T11:08:17.084Z	[custom build] 🔄 Building InkAlchemy for Cloudflare Workers...
+2025-09-29T11:08:17.084Z	[custom build] 
+2025-09-29T11:08:17.084Z	[custom build] 📦 Building frontend...
+2025-09-29T11:08:17.084Z	[custom build] 
+2025-09-29T11:08:17.218Z	[custom build] 
+2025-09-29T11:08:17.218Z	[custom build] > rest-express@1.0.0 build
+2025-09-29T11:08:17.218Z	[custom build] > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2025-09-29T11:08:17.218Z	[custom build] 
+2025-09-29T11:08:17.218Z	[custom build] 
+2025-09-29T11:08:17.393Z	[custom build] vite v5.4.19 building for production...
+2025-09-29T11:08:17.393Z	[custom build] 
+2025-09-29T11:08:17.443Z	[custom build] transforming...
+2025-09-29T11:08:17.443Z	[custom build] 
+2025-09-29T11:08:17.705Z	[custom build] Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+2025-09-29T11:08:17.706Z	[custom build]   npx update-browserslist-db@latest
+2025-09-29T11:08:17.706Z	[custom build]   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+2025-09-29T11:08:17.707Z	[custom build] 
+2025-09-29T11:08:22.755Z	[custom build] ✓ 2281 modules transformed.
+2025-09-29T11:08:22.755Z	[custom build] 
+2025-09-29T11:08:23.482Z	[custom build] [plugin:vite:reporter] [plugin vite:reporter] 
+2025-09-29T11:08:23.482Z	[custom build] (!) /opt/buildhome/repo/node_modules/@supabase/supabase-js/dist/module/index.js is dynamically imported by /opt/buildhome/repo/client/src/hooks/useImageCleanup.ts but also statically imported by /opt/buildhome/repo/client/src/lib/supabase.ts, dynamic import will not move module into another chunk.
+2025-09-29T11:08:23.483Z	[custom build] 
+2025-09-29T11:08:23.483Z	[custom build] 
+2025-09-29T11:08:23.483Z	[custom build] rendering chunks...
+2025-09-29T11:08:23.483Z	[custom build] 
+2025-09-29T11:08:23.528Z	[custom build] computing gzip size...
+2025-09-29T11:08:23.528Z	[custom build] 
+2025-09-29T11:08:23.560Z	[custom build] ../dist/public/index.html                                                 1.01 kB │ gzip:   0.53 kB
+2025-09-29T11:08:23.561Z	[custom build] 
+2025-09-29T11:08:23.561Z	[custom build] ../dist/public/assets/inkalchemy_1752303410066-DpdMGM3e.png              17.04 kB
+2025-09-29T11:08:23.561Z	[custom build] ../dist/public/assets/Fandom_heart-logo 1_1753705331492-C2FTAbEg.png     18.95 kB
+2025-09-29T11:08:23.562Z	[custom build] ../dist/public/assets/index-Bx-z54G4.css                                 87.50 kB │ gzip:  14.64 kB
+2025-09-29T11:08:23.562Z	[custom build] ../dist/public/assets/index-FEi3UWS4.js                               1,411.69 kB │ gzip: 369.82 kB
+2025-09-29T11:08:23.562Z	[custom build] 
+2025-09-29T11:08:23.568Z	[custom build] 
+2025-09-29T11:08:23.568Z	[custom build] (!) Some chunks are larger than 500 kB after minification. Consider:
+2025-09-29T11:08:23.568Z	[custom build] - Using dynamic import() to code-split the application
+2025-09-29T11:08:23.568Z	[custom build] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2025-09-29T11:08:23.568Z	[custom build] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2025-09-29T11:08:23.568Z	[custom build] 
+2025-09-29T11:08:23.568Z	[custom build] ✓ built in 6.15s
+2025-09-29T11:08:23.568Z	[custom build] 
+2025-09-29T11:08:23.640Z	[custom build] 
+2025-09-29T11:08:23.640Z	[custom build]   dist/index.js  99.5kb
+2025-09-29T11:08:23.640Z	[custom build] 
+2025-09-29T11:08:23.640Z	[custom build] ⚡ Done in 15ms
+2025-09-29T11:08:23.640Z	[custom build] 
+2025-09-29T11:08:23.648Z	[custom build] 🔧 Building worker...
+2025-09-29T11:08:23.648Z	[custom build] 
+2025-09-29T11:08:23.890Z	[custom build] ✘ [ERROR] Could not resolve "@supabase/supabase-js"
+2025-09-29T11:08:23.890Z	[custom build] 
+2025-09-29T11:08:23.890Z	[custom build]     server/worker-supabase.ts:4:29:
+2025-09-29T11:08:23.890Z	[custom build]       4 │ import { createClient } from '@supabase/supabase-js';
+2025-09-29T11:08:23.890Z	[custom build]         ╵                              ~~~~~~~~~~~~~~~~~~~~~~~
+2025-09-29T11:08:23.890Z	[custom build] 
+2025-09-29T11:08:23.891Z	[custom build]   The "main" field here was ignored. Main fields must be configured explicitly when using the "neutral" platform.
+2025-09-29T11:08:23.891Z	[custom build] 
+2025-09-29T11:08:23.892Z	[custom build]     node_modules/@supabase/supabase-js/package.json:18:2:
+2025-09-29T11:08:23.892Z	[custom build]       18 │   "main": "dist/main/index.js",
+2025-09-29T11:08:23.892Z	[custom build]          ╵   ~~~~~~
+2025-09-29T11:08:23.892Z	[custom build] 
+2025-09-29T11:08:23.892Z	[custom build]   You can mark the path "@supabase/supabase-js" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+2025-09-29T11:08:23.892Z	[custom build] 
+2025-09-29T11:08:23.892Z	[custom build] 1 error
+2025-09-29T11:08:23.892Z	[custom build] 
+2025-09-29T11:08:23.905Z	[custom build] ❌ Build failed: Command failed: npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/worker.js --define:global=globalThis --external:node:* --define:process.env.NODE_ENV=\"production\"
+2025-09-29T11:08:23.905Z	[custom build] 
+2025-09-29T11:08:23.940Z	✘ [ERROR] Error: Command failed with exit code 1: node scripts/build-worker.js
+2025-09-29T11:08:23.940Z	
+2025-09-29T11:08:23.940Z	  Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+2025-09-29T11:08:23.940Z	    npx update-browserslist-db@latest
+2025-09-29T11:08:23.941Z	    Why you should do it regularly: https://github.com/browserslist/update-db#readme
+2025-09-29T11:08:23.941Z	  [plugin:vite:reporter] [plugin vite:reporter] 
+2025-09-29T11:08:23.941Z	  (!) /opt/buildhome/repo/node_modules/@supabase/supabase-js/dist/module/index.js is dynamically imported by /opt/buildhome/repo/client/src/hooks/useImageCleanup.ts but also statically imported by /opt/buildhome/repo/client/src/lib/supabase.ts, dynamic import will not move module into another chunk.
+2025-09-29T11:08:23.941Z	  
+2025-09-29T11:08:23.941Z	  
+2025-09-29T11:08:23.941Z	  (!) Some chunks are larger than 500 kB after minification. Consider:
+2025-09-29T11:08:23.941Z	  - Using dynamic import() to code-split the application
+2025-09-29T11:08:23.941Z	  - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2025-09-29T11:08:23.941Z	  - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2025-09-29T11:08:23.941Z	  
+2025-09-29T11:08:23.941Z	    dist/index.js  99.5kb
+2025-09-29T11:08:23.941Z	  
+2025-09-29T11:08:23.941Z	  ⚡ Done in 15ms
+2025-09-29T11:08:23.942Z	  ✘ [ERROR] Could not resolve "@supabase/supabase-js"
+2025-09-29T11:08:23.942Z	  
+2025-09-29T11:08:23.942Z	      server/worker-supabase.ts:4:29:
+2025-09-29T11:08:23.942Z	        4 │ import { createClient } from '@supabase/supabase-js';
+2025-09-29T11:08:23.942Z	          ╵                              ~~~~~~~~~~~~~~~~~~~~~~~
+2025-09-29T11:08:23.942Z	  
+2025-09-29T11:08:23.942Z	    The "main" field here was ignored. Main fields must be configured explicitly when using the "neutral" platform.
+2025-09-29T11:08:23.942Z	  
+2025-09-29T11:08:23.942Z	      node_modules/@supabase/supabase-js/package.json:18:2:
+2025-09-29T11:08:23.942Z	        18 │   "main": "dist/main/index.js",
+2025-09-29T11:08:23.942Z	           ╵   ~~~~~~
+2025-09-29T11:08:23.942Z	  
+2025-09-29T11:08:23.942Z	    You can mark the path "@supabase/supabase-js" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+2025-09-29T11:08:23.942Z	  
+2025-09-29T11:08:23.942Z	  1 error
+2025-09-29T11:08:23.942Z	  ❌ Build failed: Command failed: npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/worker.js --define:global=globalThis --external:node:* --define:process.env.NODE_ENV=\"production\"
+2025-09-29T11:08:23.943Z	  🔄 Building InkAlchemy for Cloudflare Workers...
+2025-09-29T11:08:23.943Z	  📦 Building frontend...
+2025-09-29T11:08:23.943Z	  
+2025-09-29T11:08:23.943Z	  > rest-express@1.0.0 build
+2025-09-29T11:08:23.943Z	  > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2025-09-29T11:08:23.943Z	  
+2025-09-29T11:08:23.943Z	  vite v5.4.19 building for production...
+2025-09-29T11:08:23.943Z	  transforming...
+2025-09-29T11:08:23.943Z	  ✓ 2281 modules transformed.
+2025-09-29T11:08:23.943Z	  rendering chunks...
+2025-09-29T11:08:23.943Z	  computing gzip size...
+2025-09-29T11:08:23.944Z	  ../dist/public/index.html                                                 1.01 kB │ gzip:   0.53 kB
+2025-09-29T11:08:23.944Z	  ../dist/public/assets/inkalchemy_1752303410066-DpdMGM3e.png              17.04 kB
+2025-09-29T11:08:23.944Z	  ../dist/public/assets/Fandom_heart-logo 1_1753705331492-C2FTAbEg.png     18.95 kB
+2025-09-29T11:08:23.944Z	  ../dist/public/assets/index-Bx-z54G4.css                                 87.50 kB │ gzip:  14.64 kB
+2025-09-29T11:08:23.944Z	  ../dist/public/assets/index-FEi3UWS4.js                               1,411.69 kB │ gzip: 369.82 kB
+2025-09-29T11:08:23.944Z	  ✓ built in 6.15s
+2025-09-29T11:08:23.944Z	  🔧 Building worker...
+2025-09-29T11:08:23.944Z	      at makeError (/opt/buildhome/repo/node_modules/wrangler/wrangler-dist/cli.js:125277:18)
+2025-09-29T11:08:23.944Z	      at handlePromise (/opt/buildhome/repo/node_modules/wrangler/wrangler-dist/cli.js:125755:29)
+2025-09-29T11:08:23.944Z	      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-09-29T11:08:23.944Z	      at async runCustomBuild (/opt/buildhome/repo/node_modules/wrangler/wrangler-dist/cli.js:125955:7)
+2025-09-29T11:08:23.944Z	      at async getEntry (/opt/buildhome/repo/node_modules/wrangler/wrangler-dist/cli.js:147502:3)
+2025-09-29T11:08:23.944Z	      at async Object.handler (/opt/buildhome/repo/node_modules/wrangler/wrangler-dist/cli.js:148084:23)
+2025-09-29T11:08:23.944Z	      at async Object.handler (/opt/buildhome/repo/node_modules/wrangler/wrangler-dist/cli.js:144948:7) {
+2025-09-29T11:08:23.944Z	    shortMessage: 'Command failed with exit code 1: node scripts/build-worker.js',
+2025-09-29T11:08:23.945Z	    command: 'node scripts/build-worker.js',
+2025-09-29T11:08:23.945Z	    escapedCommand: 'node "scripts/build-worker.js"',
+2025-09-29T11:08:23.945Z	    exitCode: 1,
+2025-09-29T11:08:23.945Z	    signal: undefined,
+2025-09-29T11:08:23.945Z	    signalDescription: undefined,
+2025-09-29T11:08:23.945Z	    stdout: '🔄 Building InkAlchemy for Cloudflare Workers...\n' +
+2025-09-29T11:08:23.945Z	      '📦 Building frontend...\n' +
+2025-09-29T11:08:23.945Z	      '\n' +
+2025-09-29T11:08:23.945Z	      '> rest-express@1.0.0 build\n' +
+2025-09-29T11:08:23.945Z	      '> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist\n' +
+2025-09-29T11:08:23.945Z	      '\n' +
+2025-09-29T11:08:23.945Z	      '\x1B[36mvite v5.4.19 \x1B[32mbuilding for production...\x1B[36m\x1B[39m\n' +
+2025-09-29T11:08:23.945Z	      'transforming...\n' +
+2025-09-29T11:08:23.945Z	      '\x1B[32m✓\x1B[39m 2281 modules transformed.\n' +
+2025-09-29T11:08:23.946Z	      'rendering chunks...\n' +
+2025-09-29T11:08:23.946Z	      'computing gzip size...\n' +
+2025-09-29T11:08:23.946Z	      '\x1B[2m../dist/public/\x1B[22m\x1B[32mindex.html                                             \x1B[39m\x1B[1m\x1B[2m    1.01 kB\x1B[22m\x1B[1m\x1B[22m\x1B[2m │ gzip:   0.53 kB\x1B[22m\n' +
+2025-09-29T11:08:23.946Z	      '\x1B[2m../dist/public/\x1B[22m\x1B[2massets/\x1B[22m\x1B[32minkalchemy_1752303410066-DpdMGM3e.png           \x1B[39m\x1B[1m\x1B[2m   17.04 kB\x1B[22m\x1B[1m\x1B[22m\n' +
+2025-09-29T11:08:23.946Z	      '\x1B[2m../dist/public/\x1B[22m\x1B[2massets/\x1B[22m\x1B[32mFandom_heart-logo 1_1753705331492-C2FTAbEg.png  \x1B[39m\x1B[1m\x1B[2m   18.95 kB\x1B[22m\x1B[1m\x1B[22m\n' +
+2025-09-29T11:08:23.946Z	      '\x1B[2m../dist/public/\x1B[22m\x1B[2massets/\x1B[22m\x1B[35mindex-Bx-z54G4.css                              \x1B[39m\x1B[1m\x1B[2m   87.50 kB\x1B[22m\x1B[1m\x1B[22m\x1B[2m │ gzip:  14.64 kB\x1B[22m\n' +
+2025-09-29T11:08:23.946Z	      '\x1B[2m../dist/public/\x1B[22m\x1B[2massets/\x1B[22m\x1B[36mindex-FEi3UWS4.js                               \x1B[39m\x1B[1m\x1B[33m1,411.69 kB\x1B[39m\x1B[22m\x1B[2m │ gzip: 369.82 kB\x1B[22m\n' +
+2025-09-29T11:08:23.946Z	      '\x1B[32m✓ built in 6.15s\x1B[39m\n' +
+2025-09-29T11:08:23.946Z	      '🔧 Building worker...',
+2025-09-29T11:08:23.946Z	    stderr: 'Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:\n' +
+2025-09-29T11:08:23.946Z	      '  npx update-browserslist-db@latest\n' +
+2025-09-29T11:08:23.946Z	      '  Why you should do it regularly: https://github.com/browserslist/update-db#readme\n' +
+2025-09-29T11:08:23.946Z	      '\x1B[1m\x1B[33m[plugin:vite:reporter]\x1B[39m\x1B[22m \x1B[33m[plugin vite:reporter] \n' +
+2025-09-29T11:08:23.946Z	      '(!) /opt/buildhome/repo/node_modules/@supabase/supabase-js/dist/module/index.js is dynamically imported by /opt/buildhome/repo/client/src/hooks/useImageCleanup.ts but also statically imported by /opt/buildhome/repo/client/src/lib/supabase.ts, dynamic import will not move module into another chunk.\n' +
+2025-09-29T11:08:23.946Z	      '\x1B[39m\n' +
+2025-09-29T11:08:23.946Z	      '\x1B[33m\n' +
+2025-09-29T11:08:23.947Z	      '(!) Some chunks are larger than 500 kB after minification. Consider:\n' +
+2025-09-29T11:08:23.947Z	      '- Using dynamic import() to code-split the application\n' +
+2025-09-29T11:08:23.947Z	      '- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n' +
+2025-09-29T11:08:23.947Z	      '- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\x1B[39m\n' +
+2025-09-29T11:08:23.947Z	      '\n' +
+2025-09-29T11:08:23.947Z	      '  dist/index.js  99.5kb\n' +
+2025-09-29T11:08:23.947Z	      '\n' +
+2025-09-29T11:08:23.947Z	      '⚡ Done in 15ms\n' +
+2025-09-29T11:08:23.947Z	      '✘ [ERROR] Could not resolve "@supabase/supabase-js"\n' +
+2025-09-29T11:08:23.947Z	      '\n' +
+2025-09-29T11:08:23.947Z	      '    server/worker-supabase.ts:4:29:\n' +
+2025-09-29T11:08:23.947Z	      "      4 │ import { createClient } from '@supabase/supabase-js';\n" +
+2025-09-29T11:08:23.947Z	      '        ╵                              ~~~~~~~~~~~~~~~~~~~~~~~\n' +
+2025-09-29T11:08:23.947Z	      '\n' +
+2025-09-29T11:08:23.947Z	      '  The "main" field here was ignored. Main fields must be configured explicitly when using the "neutral" platform.\n' +
+2025-09-29T11:08:23.947Z	      '\n' +
+2025-09-29T11:08:23.947Z	      '    node_modules/@supabase/supabase-js/package.json:18:2:\n' +
+2025-09-29T11:08:23.947Z	      '      18 │   "main": "dist/main/index.js",\n' +
+2025-09-29T11:08:23.948Z	      '         ╵   ~~~~~~\n' +
+2025-09-29T11:08:23.948Z	      '\n' +
+2025-09-29T11:08:23.948Z	      '  You can mark the path "@supabase/supabase-js" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.\n' +
+2025-09-29T11:08:23.948Z	      '\n' +
+2025-09-29T11:08:23.948Z	      '1 error\n' +
+2025-09-29T11:08:23.948Z	      '❌ Build failed: Command failed: npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/worker.js --define:global=globalThis --external:node:* --define:process.env.NODE_ENV=\\"production\\"',
+2025-09-29T11:08:23.948Z	    failed: true,
+2025-09-29T11:08:23.948Z	    timedOut: false,
+2025-09-29T11:08:23.948Z	    isCanceled: false,
+2025-09-29T11:08:23.948Z	    killed: false
+2025-09-29T11:08:23.948Z	  }
+2025-09-29T11:08:23.949Z	
+2025-09-29T11:08:23.949Z	
+2025-09-29T11:08:23.949Z	✘ [ERROR] Running custom build `node scripts/build-worker.js` failed. There are likely more logs from your build command above.
+2025-09-29T11:08:23.949Z	
+2025-09-29T11:08:23.949Z	
+2025-09-29T11:08:23.950Z	
+2025-09-29T11:08:23.950Z	
+2025-09-29T11:08:23.950Z	Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
+2025-09-29T11:08:23.969Z	🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2025-09-29_11-08-16_525.log"
+2025-09-29T11:08:24.052Z	Failed: error occurred while running deploy command
