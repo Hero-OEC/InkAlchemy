@@ -16,7 +16,7 @@ try {
 
   // Step 2: Build the worker using Supabase-only approach (bundle everything for Workers runtime)
   console.log('🔧 Building worker...');
-  execSync('npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --outfile=dist/worker.js', { stdio: 'inherit' });
+  execSync('npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/worker.js --define:global=globalThis --external:node:*', { stdio: 'inherit' });
 
   // Step 3: Copy necessary files
   console.log('📋 Copying configuration files...');

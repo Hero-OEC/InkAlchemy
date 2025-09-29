@@ -1,3 +1,4 @@
+
 // Cloudflare Workers entry point using Supabase for everything
 // This avoids Node.js dependencies and uses Supabase's edge-compatible client
 
@@ -21,7 +22,17 @@ interface ExportedHandler<Env = unknown> {
   fetch?(request: Request, env: Env, ctx: ExecutionContext): Response | Promise<Response>;
 }
 
-// Initialize Supabase client with service role for auth verification only
+// Initialize Supabase client with anon key for RLS-enforced operations
+function createSupabaseClient(env: Env) {
+  return createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  });
+}
+
+// Initialize Supabase client with service role for admin operations only when needed
 function createAdminSupabaseClient(env: Env) {
   return createClient(env.VITE_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
     auth: {
@@ -31,7 +42,7 @@ function createAdminSupabaseClient(env: Env) {
   });
 }
 
-// Initialize Supabase client with anon key and user token for RLS-enforced operations
+// Initialize Supabase client with user token for RLS-enforced operations
 function createUserSupabaseClient(env: Env, userToken: string) {
   const client = createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY, {
     auth: {
@@ -50,7 +61,7 @@ function createUserSupabaseClient(env: Env, userToken: string) {
 }
 
 // Auth helper for Workers
-async function authenticateUser(request: Request, env: Env): Promise<string | null> {
+async function authenticateUser(request: Request, env: Env): Promise<{ userId: string; token: string } | null> {
   try {
     const authHeader = request.headers.get('authorization');
     
@@ -68,7 +79,7 @@ async function authenticateUser(request: Request, env: Env): Promise<string | nu
       return null;
     }
 
-    return user.id;
+    return { userId: user.id, token };
   } catch (error) {
     console.error('Authentication error:', error);
     return null;
@@ -149,23 +160,23 @@ function jsonResponse(data: any, status = 200): Response {
 async function withAuth(
   request: Request,
   env: Env,
-  handler: (userId: string, request: Request, env: Env, params: Record<string, string>) => Promise<Response>,
+  handler: (userId: string, token: string, request: Request, env: Env, params: Record<string, string>) => Promise<Response>,
   params: Record<string, string>
 ): Promise<Response> {
-  const userId = await authenticateUser(request, env);
-  if (!userId) {
+  const auth = await authenticateUser(request, env);
+  if (!auth) {
     return jsonResponse({ message: 'Authentication required' }, 401);
   }
-  return handler(userId, request, env, params);
+  return handler(auth.userId, auth.token, request, env, params);
 }
 
-// Register API routes using Supabase directly
+// Register API routes using Supabase with RLS
 
 // Projects
 router.register('GET', '/api/projects', async (request, env, params) => {
-  return withAuth(request, env, async (userId) => {
+  return withAuth(request, env, async (userId, token) => {
     try {
-      const supabase = createSupabaseClient(env);
+      const supabase = createUserSupabaseClient(env, token);
       const { data: projects, error } = await supabase
         .from('projects')
         .select('*')
@@ -180,10 +191,10 @@ router.register('GET', '/api/projects', async (request, env, params) => {
 });
 
 router.register('GET', '/api/projects/:id', async (request, env, params) => {
-  return withAuth(request, env, async (userId) => {
+  return withAuth(request, env, async (userId, token) => {
     try {
       const id = parseInt(params.id);
-      const supabase = createSupabaseClient(env);
+      const supabase = createUserSupabaseClient(env, token);
       const { data: project, error } = await supabase
         .from('projects')
         .select('*')
@@ -206,10 +217,10 @@ router.register('GET', '/api/projects/:id', async (request, env, params) => {
 });
 
 router.register('POST', '/api/projects', async (request, env, params) => {
-  return withAuth(request, env, async (userId) => {
+  return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createSupabaseClient(env);
+      const supabase = createUserSupabaseClient(env, token);
       const { data: project, error } = await supabase
         .from('projects')
         .insert([{ ...body, user_id: userId }])
@@ -224,12 +235,53 @@ router.register('POST', '/api/projects', async (request, env, params) => {
   }, params);
 });
 
+router.register('PUT', '/api/projects/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: project, error } = await supabase
+        .from('projects')
+        .update(body)
+        .eq('id', id)
+        .eq('user_id', userId)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(project);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to update project" }, 500);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/projects/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId);
+      
+      if (error) throw error;
+      return jsonResponse({ message: "Project deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete project" }, 500);
+    }
+  }, params);
+});
+
 // Characters
 router.register('GET', '/api/projects/:projectId/characters', async (request, env, params) => {
-  return withAuth(request, env, async (userId) => {
+  return withAuth(request, env, async (userId, token) => {
     try {
       const projectId = parseInt(params.projectId);
-      const supabase = createSupabaseClient(env);
+      const supabase = createUserSupabaseClient(env, token);
       
       // First verify user owns the project
       const { data: project } = await supabase
@@ -280,10 +332,10 @@ router.register('GET', '/api/characters/:id', async (request, env, params) => {
 });
 
 router.register('POST', '/api/characters', async (request, env, params) => {
-  return withAuth(request, env, async (userId) => {
+  return withAuth(request, env, async (userId, token) => {
     try {
       const body = await request.json();
-      const supabase = createSupabaseClient(env);
+      const supabase = createUserSupabaseClient(env, token);
       const { data: character, error } = await supabase
         .from('characters')
         .insert([body])
@@ -298,8 +350,194 @@ router.register('POST', '/api/characters', async (request, env, params) => {
   }, params);
 });
 
-// Add similar patterns for other endpoints...
-// Locations, Events, Magic Systems, etc.
+router.register('PUT', '/api/characters/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: character, error } = await supabase
+        .from('characters')
+        .update(body)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(character);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to update character" }, 500);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/characters/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('characters')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return jsonResponse({ message: "Character deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete character" }, 500);
+    }
+  }, params);
+});
+
+// Locations
+router.register('GET', '/api/projects/:projectId/locations', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      const supabase = createUserSupabaseClient(env, token);
+      
+      const { data: project } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('id', projectId)
+        .eq('user_id', userId)
+        .single();
+      
+      if (!project) {
+        return jsonResponse({ message: "Access denied" }, 403);
+      }
+      
+      const { data: locations, error } = await supabase
+        .from('locations')
+        .select('*')
+        .eq('project_id', projectId);
+      
+      if (error) throw error;
+      return jsonResponse(locations);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch locations" }, 500);
+    }
+  }, params);
+});
+
+router.register('POST', '/api/locations', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: location, error } = await supabase
+        .from('locations')
+        .insert([body])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(location, 201);
+    } catch (error) {
+      return jsonResponse({ message: "Invalid location data" }, 400);
+    }
+  }, params);
+});
+
+// Magic Systems
+router.register('GET', '/api/projects/:projectId/magic-systems', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      const supabase = createUserSupabaseClient(env, token);
+      
+      const { data: project } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('id', projectId)
+        .eq('user_id', userId)
+        .single();
+      
+      if (!project) {
+        return jsonResponse({ message: "Access denied" }, 403);
+      }
+      
+      const { data: magicSystems, error } = await supabase
+        .from('magic_systems')
+        .select('*')
+        .eq('project_id', projectId);
+      
+      if (error) throw error;
+      return jsonResponse(magicSystems);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch magic systems" }, 500);
+    }
+  }, params);
+});
+
+router.register('POST', '/api/magic-systems', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: magicSystem, error } = await supabase
+        .from('magic_systems')
+        .insert([body])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(magicSystem, 201);
+    } catch (error) {
+      return jsonResponse({ message: "Invalid magic system data" }, 400);
+    }
+  }, params);
+});
+
+// Events
+router.register('GET', '/api/projects/:projectId/events', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      const supabase = createUserSupabaseClient(env, token);
+      
+      const { data: project } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('id', projectId)
+        .eq('user_id', userId)
+        .single();
+      
+      if (!project) {
+        return jsonResponse({ message: "Access denied" }, 403);
+      }
+      
+      const { data: events, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('project_id', projectId);
+      
+      if (error) throw error;
+      return jsonResponse(events);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch events" }, 500);
+    }
+  }, params);
+});
+
+router.register('POST', '/api/events', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const body = await request.json();
+      const supabase = createUserSupabaseClient(env, token);
+      const { data: event, error } = await supabase
+        .from('events')
+        .insert([body])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return jsonResponse(event, 201);
+    } catch (error) {
+      return jsonResponse({ message: "Invalid event data" }, 400);
+    }
+  }, params);
+});
 
 // Health check endpoint
 router.register('GET', '/api/health', async (request, env, params) => {
