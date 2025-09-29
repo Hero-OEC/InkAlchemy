@@ -52,9 +52,13 @@ function createUserSupabaseClient(env: Env, userToken: string) {
   });
   
   // Set the user's JWT token for RLS
-  client.auth.setSession({
+  await client.auth.setSession({
     access_token: userToken,
-    refresh_token: ''
+    refresh_token: '',
+    expires_in: 3600,
+    expires_at: Math.floor(Date.now() / 1000) + 3600,
+    token_type: 'bearer',
+    user: null
   });
   
   return client;

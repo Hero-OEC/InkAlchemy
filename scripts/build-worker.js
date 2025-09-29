@@ -16,11 +16,17 @@ try {
 
   // Step 2: Build the worker using Supabase-only approach (bundle everything for Workers runtime)
   console.log('🔧 Building worker...');
-  execSync('npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/worker.js --define:global=globalThis --external:node:*', { stdio: 'inherit' });
+  execSync('npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/worker.js --define:global=globalThis --external:node:* --define:process.env.NODE_ENV=\\"production\\"', { stdio: 'inherit' });
 
-  // Step 3: Copy necessary files
-  console.log('📋 Copying configuration files...');
+  // Step 3: Verify the build output
+  console.log('✅ Verifying build output...');
+  if (!fs.existsSync('dist/worker.js')) {
+    throw new Error('Worker build failed - output file not found');
+  }
   
+  const stats = fs.statSync('dist/worker.js');
+  console.log(`📊 Worker bundle size: ${(stats.size / 1024).toFixed(2)} KB`);
+
   // Ensure dist directory exists
   if (!fs.existsSync('dist')) {
     fs.mkdirSync('dist', { recursive: true });
