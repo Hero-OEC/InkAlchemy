@@ -21,14 +21,32 @@ interface ExportedHandler<Env = unknown> {
   fetch?(request: Request, env: Env, ctx: ExecutionContext): Response | Promise<Response>;
 }
 
-// Initialize Supabase client with service role for server-side operations
-function createSupabaseClient(env: Env) {
+// Initialize Supabase client with service role for auth verification only
+function createAdminSupabaseClient(env: Env) {
   return createClient(env.VITE_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
     }
   });
+}
+
+// Initialize Supabase client with anon key and user token for RLS-enforced operations
+function createUserSupabaseClient(env: Env, userToken: string) {
+  const client = createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  });
+  
+  // Set the user's JWT token for RLS
+  client.auth.setSession({
+    access_token: userToken,
+    refresh_token: ''
+  });
+  
+  return client;
 }
 
 // Auth helper for Workers

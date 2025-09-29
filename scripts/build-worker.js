@@ -14,9 +14,9 @@ try {
   console.log('📦 Building frontend...');
   execSync('npm run build', { stdio: 'inherit' });
 
-  // Step 2: Build the worker using Supabase-only approach
+  // Step 2: Build the worker using Supabase-only approach (bundle everything for Workers runtime)
   console.log('🔧 Building worker...');
-  execSync('npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --outfile=dist/worker.js --external:@supabase/supabase-js', { stdio: 'inherit' });
+  execSync('npx esbuild server/worker-supabase.ts --bundle --format=esm --platform=neutral --outfile=dist/worker.js', { stdio: 'inherit' });
 
   // Step 3: Copy necessary files
   console.log('📋 Copying configuration files...');

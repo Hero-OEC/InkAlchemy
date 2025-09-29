@@ -13,9 +13,7 @@ NODE_ENV = "production"
 # Environment variables will be automatically loaded from Replit secrets
 # DATABASE_URL, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
 
-[[routes]]
-pattern = "*"
-zone_name = ""
+# Routes configuration - removed invalid entry, will deploy to workers.dev subdomain
 
 [assets]
 directory = "dist/public"
