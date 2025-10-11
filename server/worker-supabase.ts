@@ -55,17 +55,12 @@ async function createUserSupabaseClient(env: Env, userToken: string) {
     auth: {
       autoRefreshToken: false,
       persistSession: false
+    },
+    global: {
+      headers: {
+        Authorization: `Bearer ${userToken}`
+      }
     }
-  });
-
-  // Set the user's JWT token for RLS
-  await client.auth.setSession({
-    access_token: userToken,
-    refresh_token: '',
-    expires_in: 3600,
-    expires_at: Math.floor(Date.now() / 1000) + 3600,
-    token_type: 'bearer',
-    user: null
   });
 
   return client;
@@ -1201,6 +1196,290 @@ router.register('DELETE', '/api/races/:id', async (request, env, params) => {
       return jsonResponse({ message: "Failed to delete race" }, 500);
     }
   }, params);
+});
+
+// Character Spells
+router.register('GET', '/api/characters/:characterId/spells', async (request, env, params) => {
+  try {
+    const characterId = parseInt(params.characterId);
+    const supabase = createSupabaseClient(env);
+    const { data: characterSpells, error } = await supabase
+      .from('character_spells')
+      .select('*, spells(*)')
+      .eq('character_id', characterId);
+
+    if (error) throw error;
+    return jsonResponse(characterSpells || []);
+  } catch (error) {
+    return jsonResponse({ message: "Failed to fetch character spells" }, 500);
+  }
+});
+
+router.register('POST', '/api/characters/:characterId/spells', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const characterId = parseInt(params.characterId);
+      const body = await request.json();
+      const supabase = await createUserSupabaseClient(env, token);
+      const { data: characterSpell, error } = await supabase
+        .from('character_spells')
+        .insert({ ...body, character_id: characterId })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return jsonResponse(characterSpell, 201);
+    } catch (error) {
+      return jsonResponse({ message: "Invalid character spell data" }, 400);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/characters/:characterId/spells/:spellId', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const characterId = parseInt(params.characterId);
+      const spellId = parseInt(params.spellId);
+      const supabase = await createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('character_spells')
+        .delete()
+        .eq('character_id', characterId)
+        .eq('spell_id', spellId);
+
+      if (error) throw error;
+      return jsonResponse({ message: "Character spell removed successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to remove character spell" }, 500);
+    }
+  }, params);
+});
+
+// Relationships
+router.register('GET', '/api/projects/:projectId/relationships', async (request, env, params) => {
+  try {
+    const projectId = parseInt(params.projectId);
+    const supabase = createSupabaseClient(env);
+    const { data: relationships, error } = await supabase
+      .from('relationships')
+      .select('*')
+      .eq('project_id', projectId);
+
+    if (error) throw error;
+    return jsonResponse(relationships || []);
+  } catch (error) {
+    return jsonResponse({ message: "Failed to fetch relationships" }, 500);
+  }
+});
+
+router.register('POST', '/api/relationships', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const body = await request.json();
+      const supabase = await createUserSupabaseClient(env, token);
+      const { data: relationship, error } = await supabase
+        .from('relationships')
+        .insert(body)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return jsonResponse(relationship, 201);
+    } catch (error) {
+      return jsonResponse({ message: "Invalid relationship data" }, 400);
+    }
+  }, params);
+});
+
+router.register('DELETE', '/api/relationships/:id', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const id = parseInt(params.id);
+      const supabase = await createUserSupabaseClient(env, token);
+      const { error } = await supabase
+        .from('relationships')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      return jsonResponse({ message: "Relationship deleted successfully" });
+    } catch (error) {
+      return jsonResponse({ message: "Failed to delete relationship" }, 500);
+    }
+  }, params);
+});
+
+// Search
+router.register('GET', '/api/projects/:projectId/search', async (request, env, params) => {
+  try {
+    const projectId = parseInt(params.projectId);
+    const url = new URL(request.url);
+    const query = url.searchParams.get('q');
+    
+    if (!query) {
+      return jsonResponse({ message: "Query parameter required" }, 400);
+    }
+
+    const supabase = createSupabaseClient(env);
+    const searchPattern = `%${query}%`;
+
+    // Search across multiple tables
+    const [characters, locations, events, magicSystems, spells, lore, notes, races] = await Promise.all([
+      supabase.from('characters').select('id, name, type:\'character\' as type').eq('project_id', projectId).ilike('name', searchPattern),
+      supabase.from('locations').select('id, name, type:\'location\' as type').eq('project_id', projectId).ilike('name', searchPattern),
+      supabase.from('events').select('id, title as name, type:\'event\' as type').eq('project_id', projectId).ilike('title', searchPattern),
+      supabase.from('magic_systems').select('id, name, type:\'magic_system\' as type').eq('project_id', projectId).ilike('name', searchPattern),
+      supabase.from('spells').select('id, name, type:\'spell\' as type').eq('project_id', projectId).ilike('name', searchPattern),
+      supabase.from('lore_entries').select('id, title as name, type:\'lore\' as type').eq('project_id', projectId).ilike('title', searchPattern),
+      supabase.from('notes').select('id, title as name, type:\'note\' as type').eq('project_id', projectId).ilike('title', searchPattern),
+      supabase.from('races').select('id, name, type:\'race\' as type').eq('project_id', projectId).ilike('name', searchPattern)
+    ]);
+
+    const results = [
+      ...(characters.data || []),
+      ...(locations.data || []),
+      ...(events.data || []),
+      ...(magicSystems.data || []),
+      ...(spells.data || []),
+      ...(lore.data || []),
+      ...(notes.data || []),
+      ...(races.data || [])
+    ];
+
+    return jsonResponse(results);
+  } catch (error) {
+    return jsonResponse({ message: "Search failed" }, 500);
+  }
+});
+
+// Get spell characters
+router.register('GET', '/api/spells/:spellId/characters', async (request, env, params) => {
+  try {
+    const spellId = parseInt(params.spellId);
+    const supabase = createSupabaseClient(env);
+    const { data: characterSpells, error } = await supabase
+      .from('character_spells')
+      .select('*, characters(*)')
+      .eq('spell_id', spellId);
+
+    if (error) throw error;
+    const characters = characterSpells?.map(cs => cs.characters) || [];
+    return jsonResponse(characters);
+  } catch (error) {
+    return jsonResponse({ message: "Failed to fetch spell characters" }, 500);
+  }
+});
+
+// Get magic system characters
+router.register('GET', '/api/magic-systems/:magicSystemId/characters', async (request, env, params) => {
+  try {
+    const magicSystemId = parseInt(params.magicSystemId);
+    const supabase = createSupabaseClient(env);
+    
+    // First get all spells for this magic system
+    const { data: spells, error: spellsError } = await supabase
+      .from('spells')
+      .select('id')
+      .eq('magic_system_id', magicSystemId);
+
+    if (spellsError) throw spellsError;
+    
+    if (!spells || spells.length === 0) {
+      return jsonResponse([]);
+    }
+
+    const spellIds = spells.map(s => s.id);
+
+    // Get all characters that have any of these spells
+    const { data: characterSpells, error } = await supabase
+      .from('character_spells')
+      .select('character_id, characters(*)')
+      .in('spell_id', spellIds);
+
+    if (error) throw error;
+
+    // Deduplicate characters
+    const uniqueCharacters = Array.from(
+      new Map(
+        characterSpells?.map(cs => [cs.character_id, cs.characters])
+      ).values()
+    );
+
+    return jsonResponse(uniqueCharacters);
+  } catch (error) {
+    return jsonResponse({ message: "Failed to fetch magic system characters" }, 500);
+  }
+});
+
+// Get magic system spells
+router.register('GET', '/api/magic-systems/:magicSystemId/spells', async (request, env, params) => {
+  try {
+    const magicSystemId = parseInt(params.magicSystemId);
+    const supabase = createSupabaseClient(env);
+    const { data: spells, error } = await supabase
+      .from('spells')
+      .select('*')
+      .eq('magic_system_id', magicSystemId);
+
+    if (error) throw error;
+    return jsonResponse(spells || []);
+  } catch (error) {
+    return jsonResponse({ message: "Failed to fetch spells" }, 500);
+  }
+});
+
+// Activities
+router.register('GET', '/api/projects/:projectId/activities', async (request, env, params) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      const supabase = await createUserSupabaseClient(env, token);
+      const { data: activities, error } = await supabase
+        .from('activities')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return jsonResponse(activities || []);
+    } catch (error) {
+      return jsonResponse({ message: "Failed to fetch activities" }, 500);
+    }
+  }, params);
+});
+
+// Stats
+router.register('GET', '/api/projects/:projectId/stats', async (request, env, params) => {
+  try {
+    const projectId = parseInt(params.projectId);
+    const supabase = createSupabaseClient(env);
+
+    const [characters, locations, events, magicSystems, spells, lore, notes, races] = await Promise.all([
+      supabase.from('characters').select('id', { count: 'exact', head: true }).eq('project_id', projectId),
+      supabase.from('locations').select('id', { count: 'exact', head: true }).eq('project_id', projectId),
+      supabase.from('events').select('id', { count: 'exact', head: true }).eq('project_id', projectId),
+      supabase.from('magic_systems').select('id', { count: 'exact', head: true }).eq('project_id', projectId),
+      supabase.from('spells').select('id', { count: 'exact', head: true }).eq('project_id', projectId),
+      supabase.from('lore_entries').select('id', { count: 'exact', head: true }).eq('project_id', projectId),
+      supabase.from('notes').select('id', { count: 'exact', head: true }).eq('project_id', projectId),
+      supabase.from('races').select('id', { count: 'exact', head: true }).eq('project_id', projectId)
+    ]);
+
+    const stats = {
+      characters: characters.count || 0,
+      locations: locations.count || 0,
+      events: events.count || 0,
+      magicSystems: magicSystems.count || 0,
+      spells: spells.count || 0,
+      lore: lore.count || 0,
+      notes: notes.count || 0,
+      races: races.count || 0
+    };
+
+    return jsonResponse(stats);
+  } catch (error) {
+    return jsonResponse({ message: "Failed to fetch stats" }, 500);
+  }
 });
 
 // Health check endpoint
