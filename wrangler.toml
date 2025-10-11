@@ -6,14 +6,13 @@ compatibility_flags = ["nodejs_compat"]
 [build]
 command = "node scripts/build-worker.js"
 
-# Enable environment variables from Replit secrets
-[env.production.vars]
-NODE_ENV = "production"
+# Production environment configuration
+[env.production]
+vars = { NODE_ENV = "production" }
 
-# Environment variables will be automatically loaded from Replit secrets
-# DATABASE_URL, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
-
-# Routes configuration - removed invalid entry, will deploy to workers.dev subdomain
+# Note: Secrets (DATABASE_URL, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY)
+# should be set using: wrangler secret put <SECRET_NAME>
+# or via the Cloudflare Workers dashboard
 
 [assets]
 directory = "dist/public"
