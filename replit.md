@@ -13,7 +13,20 @@ InkAlchemy employs a modern full-stack architecture. The frontend is built with 
 
 The application features a comprehensive UI component library, a consistent light-mode theme with a custom brand color palette, and a responsive design. Data flow is managed via TanStack Query for server state, and React's built-in state management for client and form states. Projects are isolated by user accounts, ensuring data privacy and ownership. Core entities include Projects, Characters, Locations, Events, Magic Systems, Lore Entries, Notes, and Relationships, all managed via RESTful API endpoints. Rich text editing is enabled through Editor.js, with content displayed via a custom renderer. All page layouts are standardized to `max-w-7xl` for a consistent user experience. The system includes robust image management with automatic cleanup of unused images and a complete cascade deletion system for all entities. Comprehensive activity logging tracks all CRUD operations across all entity types.
 
-## Recent Fixes (August 2025)
+## Recent Fixes
+
+### October 2025 - Cloudflare Worker Deployment Fix
+- **Schema Mismatches Resolved**: Fixed critical schema mismatches preventing data from saving across all endpoints
+  - Added `culture`, `language`, and `traits` text fields to races table to match race-form.tsx expectations
+  - Added `date`, `importance`, and `status` fields to events table to match event-form.tsx requirements
+- **Enhanced Worker Error Logging**: Implemented comprehensive error logging in worker-supabase.ts
+  - Added detailed console.error logging to auth middleware to expose authentication failures
+  - Enhanced POST endpoint error handling to show validation errors instead of generic "Invalid data" messages
+  - Error logs now display in Cloudflare Workers dashboard for easier debugging
+- **API Request Fixes**: Corrected apiRequest signature usage in event-form.tsx to use proper {url, options} format
+- **Worker Build**: Successfully rebuilt worker bundle at 544KB, ready for deployment to Cloudflare Workers
+
+### August 2025
 - **Database Cascade Deletion**: Fixed foreign key constraint violations in user account deletion by implementing proper deletion order for activities and junction tables
 - **Loading States**: Corrected DeleteConfirmation component prop from `isDeleting` to `isLoading` for proper loading indicators
 - **Data Isolation**: Enhanced user data isolation to prevent cross-account data exposure or accidental deletion
