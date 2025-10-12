@@ -107,19 +107,35 @@ async function withAuth(
   const authHeader = request.headers.get('Authorization');
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return jsonResponse({ message: 'Unauthorized' }, 401);
+    console.error('❌ Auth failed: No authorization header or invalid format');
+    return jsonResponse({ message: 'Unauthorized', error: 'Missing or invalid authorization header' }, 401);
   }
 
   const token = authHeader.substring(7);
-  const supabase = createSupabaseClient(env);
   
-  const { data: { user }, error } = await supabase.auth.getUser(token);
-  
-  if (error || !user) {
-    return jsonResponse({ message: 'Unauthorized' }, 401);
-  }
+  try {
+    const supabase = createSupabaseClient(env);
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    
+    if (error) {
+      console.error('❌ Auth failed: Supabase error:', error);
+      return jsonResponse({ message: 'Unauthorized', error: error.message }, 401);
+    }
+    
+    if (!user) {
+      console.error('❌ Auth failed: No user found for token');
+      return jsonResponse({ message: 'Unauthorized', error: 'Invalid token' }, 401);
+    }
 
-  return await handler(user.id, token);
+    console.log('✅ Auth success for user:', user.id);
+    return await handler(user.id, token);
+  } catch (error) {
+    console.error('❌ Auth exception:', error);
+    return jsonResponse({ 
+      message: 'Authentication error', 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    }, 500);
+  }
 }
 
 // ============================================================================
@@ -174,6 +190,8 @@ router.register('POST', '/api/projects', async (request, env) => {
   return withAuth(request, env, async (userId) => {
     try {
       const body = await request.json();
+      console.log('📝 Creating project with data:', JSON.stringify(body, null, 2));
+      
       const projectBodySchema = insertProjectSchema.omit({ userId: true });
       const bodyData = projectBodySchema.parse(body);
       const projectData = { ...bodyData, userId };
@@ -181,9 +199,15 @@ router.register('POST', '/api/projects', async (request, env) => {
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const project = await storage.createProject(projectData);
       
+      console.log('✅ Project created successfully:', project.id);
       return jsonResponse(project, 201);
     } catch (error) {
-      return jsonResponse({ message: 'Invalid project data' }, 400);
+      console.error('❌ Project creation failed:', error);
+      return jsonResponse({ 
+        message: 'Invalid project data',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        details: error
+      }, 400);
     }
   });
 });
@@ -1047,14 +1071,26 @@ router.register('POST', '/api/races', async (request, env) => {
   return withAuth(request, env, async (userId) => {
     try {
       const body = await request.json();
+      console.log('📝 Creating race with data:', JSON.stringify(body, null, 2));
+      
       const data = insertRaceSchema.parse(body);
       
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const race = await storage.createRace(data);
       
+      console.log('✅ Race created successfully:', race.id);
       return jsonResponse(race, 201);
     } catch (error) {
-      return jsonResponse({ message: 'Invalid race data' }, 400);
+      console.error('❌ Race creation failed:', error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      return jsonResponse({ 
+        message: 'Invalid race data',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        details: error
+      }, 400);
     }
   });
 });
