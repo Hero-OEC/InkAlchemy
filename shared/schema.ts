@@ -66,11 +66,14 @@ export const events = pgTable("events", {
   projectId: integer("project_id").references(() => projects.id).notNull(),
   title: text("title").notNull(),
   description: text("description"),
+  date: text("date"), // ISO date string or custom date format
   year: integer("year").notNull(),
   month: integer("month").notNull(),
   day: integer("day").notNull(),
   type: text("type").default("other"), // battle, meeting, discovery, political, personal, death, travel, magic, other
+  importance: text("importance").default("medium"), // low, medium, high, critical
   stage: text("stage").default("planning"), // planning, writing, first-draft, editing, complete
+  status: text("status").default("planned"), // planned, active, completed
   locationId: integer("location_id").references(() => locations.id),
   characterIds: text("character_ids").array(), // Array of character IDs involved in this event
   order: integer("order").default(0),
@@ -137,6 +140,10 @@ export const races = pgTable("races", {
   // Physical Characteristics
   lifespan: text("lifespan"), // short, human, long, immortal, eternal
   sizeCategory: text("size_category"), // tiny, small, medium, large, huge
+  // Cultural Characteristics
+  culture: text("culture"), // cultural traits and practices
+  language: text("language"), // primary language(s) spoken
+  traits: text("traits"), // unique racial traits
   // Abilities & Powers
   magicalAffinity: text("magical_affinity"), // none, low, medium, high, innate
   createdAt: timestamp("created_at").defaultNow().notNull(),

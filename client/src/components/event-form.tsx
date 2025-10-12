@@ -11,11 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { insertEventSchema, type Event } from "@shared/schema";
 import { z } from "zod";
 
-const formSchema = insertEventSchema.extend({
-  type: z.string().optional(),
-  importance: z.enum(["low", "medium", "high", "critical"]).optional(),
-  status: z.enum(["planned", "active", "completed"]).optional(),
-});
+const formSchema = insertEventSchema;
 
 interface EventFormProps {
   event?: Event | null;
@@ -31,18 +27,24 @@ export function EventForm({ event, projectId, onSuccess }: EventFormProps) {
     defaultValues: {
       projectId,
       title: event?.title || "",
-      description: event?.description || "",
-      date: event?.date || "",
-      type: event?.type || "",
-      importance: event?.importance || "medium",
-      status: event?.status || "planned",
-      order: event?.order || 0,
+      description: event?.description || null,
+      date: event?.date || null,
+      year: event?.year || new Date().getFullYear(),
+      month: event?.month || new Date().getMonth() + 1,
+      day: event?.day || new Date().getDate(),
+      type: event?.type || null,
+      importance: event?.importance || null,
+      stage: event?.stage || null,
+      status: event?.status || null,
+      locationId: event?.locationId || null,
+      characterIds: event?.characterIds || null,
+      order: event?.order || null,
     },
   });
 
   const createMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("POST", "/api/events", data),
+      apiRequest("/api/events", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: ["/api/projects", projectId, "events"] 
@@ -67,7 +69,7 @@ export function EventForm({ event, projectId, onSuccess }: EventFormProps) {
 
   const updateMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => 
-      apiRequest("PATCH", `/api/events/${event?.id}`, data),
+      apiRequest(`/api/events/${event?.id}`, { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: ["/api/projects", projectId, "events"] 
