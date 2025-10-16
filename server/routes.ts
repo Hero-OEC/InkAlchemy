@@ -16,6 +16,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Apply optional auth to all API routes
   app.use("/api", optionalAuth);
 
+  // Helper function to verify project ownership through entity
+  async function verifyProjectOwnership(projectId: number, userId: string): Promise<boolean> {
+    const project = await storage.getProject(projectId);
+    return project !== undefined && project.userId === userId;
+  }
+
   // Projects
   app.get("/api/projects", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
@@ -147,12 +153,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/characters/:id", async (req, res) => {
+  app.get("/api/characters/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const character = await storage.getCharacter(id);
       if (!character) {
         return res.status(404).json({ message: "Character not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(character.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       res.json(character);
     } catch (error) {
@@ -163,6 +173,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/characters", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertCharacterSchema.parse(req.body);
+      // Verify project ownership before creating character
+      if (!(await verifyProjectOwnership(data.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const character = await storage.createCharacter(data);
       
       // Log activity
@@ -188,6 +202,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const currentCharacter = await storage.getCharacter(id);
       if (!currentCharacter) {
         return res.status(404).json({ message: "Character not found" });
+      }
+      // Verify project ownership before allowing updates
+      if (!(await verifyProjectOwnership(currentCharacter.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       const data = insertCharacterSchema.partial().parse(req.body);
@@ -235,6 +253,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!character) {
         return res.status(404).json({ message: "Character not found" });
       }
+      // Verify project ownership before allowing deletion
+      if (!(await verifyProjectOwnership(character.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       
       // Log activity before deletion
       await ActivityLogger.logDelete(
@@ -279,9 +301,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Character Spells
-  app.get("/api/characters/:characterId/spells", async (req, res) => {
+  app.get("/api/characters/:characterId/spells", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const characterId = parseInt(req.params.characterId);
+      // Get character first to verify ownership
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(character.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const spells = await storage.getCharacterSpells(characterId);
       res.json(spells);
     } catch (error) {
@@ -289,9 +320,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/characters/:characterId/spells", async (req, res) => {
+  app.post("/api/characters/:characterId/spells", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const characterId = parseInt(req.params.characterId);
+      // Get character first to verify ownership
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      // Verify project ownership before adding spell
+      if (!(await verifyProjectOwnership(character.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const data = insertCharacterSpellSchema.parse({
         ...req.body,
         characterId
@@ -303,10 +343,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/characters/:characterId/spells/:spellId", async (req, res) => {
+  app.delete("/api/characters/:characterId/spells/:spellId", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const characterId = parseInt(req.params.characterId);
       const spellId = parseInt(req.params.spellId);
+      // Get character first to verify ownership
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      // Verify project ownership before removing spell
+      if (!(await verifyProjectOwnership(character.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const deleted = await storage.removeCharacterSpell(characterId, spellId);
       if (!deleted) {
         return res.status(404).json({ message: "Character spell not found" });
@@ -318,9 +367,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Locations
-  app.get("/api/projects/:projectId/locations", async (req, res) => {
+  app.get("/api/projects/:projectId/locations", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const locations = await storage.getLocations(projectId);
       res.json(locations);
     } catch (error) {
@@ -328,12 +381,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/locations/:id", async (req, res) => {
+  app.get("/api/locations/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const location = await storage.getLocation(id);
       if (!location) {
         return res.status(404).json({ message: "Location not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(location.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       res.json(location);
     } catch (error) {
@@ -344,6 +401,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/locations", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertLocationSchema.parse(req.body);
+      // Verify project ownership before creating location
+      if (!(await verifyProjectOwnership(data.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const location = await storage.createLocation(data);
       
       // Log activity
@@ -368,6 +429,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const currentLocation = await storage.getLocation(id);
       if (!currentLocation) {
         return res.status(404).json({ message: "Location not found" });
+      }
+      // Verify project ownership before allowing updates
+      if (!(await verifyProjectOwnership(currentLocation.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       const data = insertLocationSchema.partial().parse(req.body);
@@ -415,6 +480,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const location = await storage.getLocation(id);
       if (!location) {
         return res.status(404).json({ message: "Location not found" });
+      }
+      // Verify project ownership before allowing deletion
+      if (!(await verifyProjectOwnership(location.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       // Log activity before deletion
@@ -465,9 +534,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Events
-  app.get("/api/projects/:projectId/events", async (req, res) => {
+  app.get("/api/projects/:projectId/events", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const events = await storage.getEvents(projectId);
       res.json(events);
     } catch (error) {
@@ -475,12 +548,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/events/:id", async (req, res) => {
+  app.get("/api/events/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const event = await storage.getEvent(id);
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(event.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       res.json(event);
     } catch (error) {
@@ -491,6 +568,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/events", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertEventSchema.parse(req.body);
+      // Verify project ownership before creating event
+      if (!(await verifyProjectOwnership(data.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const event = await storage.createEvent(data);
       
       // Log activity
@@ -515,6 +596,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const currentEvent = await storage.getEvent(id);
       if (!currentEvent) {
         return res.status(404).json({ message: "Event not found" });
+      }
+      // Verify project ownership before allowing updates
+      if (!(await verifyProjectOwnership(currentEvent.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       const data = insertEventSchema.partial().parse(req.body);
@@ -554,6 +639,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
       }
+      // Verify project ownership before allowing deletion
+      if (!(await verifyProjectOwnership(event.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       
       // Log activity before deletion
       await ActivityLogger.logDelete(
@@ -581,11 +670,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Magic Systems
-  app.get("/api/projects/:projectId/magic-systems", async (req, res) => {
+  app.get("/api/projects/:projectId/magic-systems", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
       if (isNaN(projectId)) {
         return res.status(400).json({ message: "Invalid project ID" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       console.log(`Fetching magic systems for project ${projectId}`);
       const magicSystems = await storage.getMagicSystems(projectId);
@@ -600,12 +693,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/magic-systems/:id", async (req, res) => {
+  app.get("/api/magic-systems/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const magicSystem = await storage.getMagicSystem(id);
       if (!magicSystem) {
         return res.status(404).json({ message: "Magic system not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(magicSystem.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       res.json(magicSystem);
     } catch (error) {
@@ -616,6 +713,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/magic-systems", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertMagicSystemSchema.parse(req.body);
+      // Verify project ownership before creating magic system
+      if (!(await verifyProjectOwnership(data.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const magicSystem = await storage.createMagicSystem(data);
       
       // Log activity
@@ -641,6 +742,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const currentMagicSystem = await storage.getMagicSystem(id);
       if (!currentMagicSystem) {
         return res.status(404).json({ message: "Magic system not found" });
+      }
+      // Verify project ownership before allowing updates
+      if (!(await verifyProjectOwnership(currentMagicSystem.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       const data = insertMagicSystemSchema.partial().parse(req.body);
@@ -679,6 +784,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const magicSystem = await storage.getMagicSystem(id);
       if (!magicSystem) {
         return res.status(404).json({ message: "Magic system not found" });
+      }
+      // Verify project ownership before allowing deletion
+      if (!(await verifyProjectOwnership(magicSystem.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       // Log activity before deletion
@@ -720,9 +829,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Spells
-  app.get("/api/projects/:projectId/spells", async (req, res) => {
+  app.get("/api/projects/:projectId/spells", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const spells = await storage.getAllSpellsForProject(projectId);
       res.json(spells);
     } catch (error) {
@@ -730,9 +843,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/magic-systems/:magicSystemId/spells", async (req, res) => {
+  app.get("/api/magic-systems/:magicSystemId/spells", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const magicSystemId = parseInt(req.params.magicSystemId);
+      // Get magic system first to verify ownership
+      const magicSystem = await storage.getMagicSystem(magicSystemId);
+      if (!magicSystem) {
+        return res.status(404).json({ message: "Magic system not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(magicSystem.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const spells = await storage.getSpells(magicSystemId);
       res.json(spells);
     } catch (error) {
@@ -740,12 +862,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/spells/:id", async (req, res) => {
+  app.get("/api/spells/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const spell = await storage.getSpell(id);
       if (!spell) {
         return res.status(404).json({ message: "Spell not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(spell.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       res.json(spell);
     } catch (error) {
@@ -756,6 +882,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/spells", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertSpellSchema.parse(req.body);
+      // Verify project ownership before creating spell
+      if (!(await verifyProjectOwnership(data.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const spell = await storage.createSpell(data);
       
       // Log the activity
@@ -783,6 +913,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const currentSpell = await storage.getSpell(id);
       if (!currentSpell) {
         return res.status(404).json({ message: "Spell not found" });
+      }
+      // Verify project ownership before allowing updates
+      if (!(await verifyProjectOwnership(currentSpell.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       const data = insertSpellSchema.partial().parse(req.body);
@@ -828,6 +962,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!spell) {
         return res.status(404).json({ message: "Spell not found" });
       }
+      // Verify project ownership before allowing deletion
+      if (!(await verifyProjectOwnership(spell.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       
       const deleted = await storage.deleteSpell(id);
       if (!deleted) {
@@ -858,9 +996,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get characters that have a specific spell
-  app.get("/api/spells/:spellId/characters", async (req, res) => {
+  app.get("/api/spells/:spellId/characters", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const spellId = parseInt(req.params.spellId);
+      // Get spell first to verify ownership
+      const spell = await storage.getSpell(spellId);
+      if (!spell) {
+        return res.status(404).json({ message: "Spell not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(spell.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const characters = await storage.getSpellCharacters(spellId);
       res.json(characters);
     } catch (error) {
@@ -869,9 +1016,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all characters that use spells from a magic system
-  app.get("/api/magic-systems/:magicSystemId/characters", async (req, res) => {
+  app.get("/api/magic-systems/:magicSystemId/characters", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const magicSystemId = parseInt(req.params.magicSystemId);
+      // Get magic system first to verify ownership
+      const magicSystem = await storage.getMagicSystem(magicSystemId);
+      if (!magicSystem) {
+        return res.status(404).json({ message: "Magic system not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(magicSystem.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const characters = await storage.getMagicSystemCharacters(magicSystemId);
       res.json(characters);
     } catch (error) {
@@ -880,9 +1036,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Lore Entries
-  app.get("/api/projects/:projectId/lore", async (req, res) => {
+  app.get("/api/projects/:projectId/lore", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const loreEntries = await storage.getLoreEntries(projectId);
       res.json(loreEntries);
     } catch (error) {
@@ -890,12 +1050,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/lore/:id", async (req, res) => {
+  app.get("/api/lore/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const loreEntry = await storage.getLoreEntry(id);
       if (!loreEntry) {
         return res.status(404).json({ message: "Lore entry not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(loreEntry.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       res.json(loreEntry);
     } catch (error) {
@@ -906,6 +1070,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/lore", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertLoreEntrySchema.parse(req.body);
+      // Verify project ownership before creating lore entry
+      if (!(await verifyProjectOwnership(data.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const loreEntry = await storage.createLoreEntry(data);
       
       // Log activity
@@ -930,6 +1098,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const currentLoreEntry = await storage.getLoreEntry(id);
       if (!currentLoreEntry) {
         return res.status(404).json({ message: "Lore entry not found" });
+      }
+      // Verify project ownership before allowing updates
+      if (!(await verifyProjectOwnership(currentLoreEntry.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       const data = insertLoreEntrySchema.partial().parse(req.body);
@@ -969,6 +1141,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!loreEntry) {
         return res.status(404).json({ message: "Lore entry not found" });
       }
+      // Verify project ownership before allowing deletion
+      if (!(await verifyProjectOwnership(loreEntry.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       
       // Log activity before deletion
       await ActivityLogger.logDelete(
@@ -996,9 +1172,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Notes
-  app.get("/api/projects/:projectId/notes", async (req, res) => {
+  app.get("/api/projects/:projectId/notes", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const notes = await storage.getNotes(projectId);
       res.json(notes);
     } catch (error) {
@@ -1006,12 +1186,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/notes/:id", async (req, res) => {
+  app.get("/api/notes/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const note = await storage.getNote(id);
       if (!note) {
         return res.status(404).json({ message: "Note not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(note.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       res.json(note);
     } catch (error) {
@@ -1022,6 +1206,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notes", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertNoteSchema.parse(req.body);
+      // Verify project ownership before creating note
+      if (!(await verifyProjectOwnership(data.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const note = await storage.createNote(data);
       
       // Log activity
@@ -1046,6 +1234,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const currentNote = await storage.getNote(id);
       if (!currentNote) {
         return res.status(404).json({ message: "Note not found" });
+      }
+      // Verify project ownership before allowing updates
+      if (!(await verifyProjectOwnership(currentNote.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       const data = insertNoteSchema.partial().parse(req.body);
@@ -1085,6 +1277,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!note) {
         return res.status(404).json({ message: "Note not found" });
       }
+      // Verify project ownership before allowing deletion
+      if (!(await verifyProjectOwnership(note.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       
       // Log activity before deletion
       await ActivityLogger.logDelete(
@@ -1112,9 +1308,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Relationships
-  app.get("/api/projects/:projectId/relationships", async (req, res) => {
+  app.get("/api/projects/:projectId/relationships", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const relationships = await storage.getRelationships(projectId);
       res.json(relationships);
     } catch (error) {
@@ -1146,9 +1346,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Search
-  app.get("/api/projects/:projectId/search", async (req, res) => {
+  app.get("/api/projects/:projectId/search", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const query = req.query.q as string;
       if (!query) {
         return res.status(400).json({ message: "Query parameter required" });
@@ -1161,9 +1365,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Races
-  app.get("/api/projects/:projectId/races", async (req, res) => {
+  app.get("/api/projects/:projectId/races", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const races = await storage.getRaces(projectId);
       res.json(races);
     } catch (error) {
@@ -1171,12 +1379,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/races/:id", async (req, res) => {
+  app.get("/api/races/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
       const race = await storage.getRace(id);
       if (!race) {
         return res.status(404).json({ message: "Race not found" });
+      }
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(race.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       res.json(race);
     } catch (error) {
@@ -1187,6 +1399,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/races", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const data = insertRaceSchema.parse(req.body);
+      // Verify project ownership before creating race
+      if (!(await verifyProjectOwnership(data.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const race = await storage.createRace(data);
       
       // Log activity
@@ -1207,6 +1423,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/races/:id", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get current race to verify ownership
+      const currentRace = await storage.getRace(id);
+      if (!currentRace) {
+        return res.status(404).json({ message: "Race not found" });
+      }
+      // Verify project ownership before allowing updates
+      if (!(await verifyProjectOwnership(currentRace.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
       const data = insertRaceSchema.partial().parse(req.body);
       const race = await storage.updateRace(id, data);
       if (!race) {
@@ -1237,6 +1464,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const race = await storage.getRace(id);
       if (!race) {
         return res.status(404).json({ message: "Race not found" });
+      }
+      // Verify project ownership before allowing deletion
+      if (!(await verifyProjectOwnership(race.projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
       }
       
       // Check if any characters are using this race
@@ -1280,9 +1511,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Stats
-  app.get("/api/projects/:projectId/stats", async (req, res) => {
+  app.get("/api/projects/:projectId/stats", authenticateUser, async (req: AuthenticatedRequest, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, req.userId!))) {
+        return res.status(403).json({ message: "Access denied" });
+      }
       const stats = await storage.getProjectStats(projectId);
       res.json(stats);
     } catch (error) {
