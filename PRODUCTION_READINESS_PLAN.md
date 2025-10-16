@@ -2,11 +2,44 @@
 
 **Date Created:** October 16, 2025  
 **Current Status:** Development - Multiple Critical Issues  
-**Target:** Production-Ready Application
+**Target:** Production-Ready Application on Cloudflare Workers
+
+---
+
+## 📖 WHAT THIS DOCUMENT IS FOR
+
+### Purpose
+This document is a comprehensive roadmap to fix all critical issues preventing **InkAlchemy** from being deployed to **Cloudflare Workers** as a production-ready application.
+
+### Deployment Target: Cloudflare Workers (NOT Replit Publishing)
+**IMPORTANT:** InkAlchemy is designed to be deployed on **Cloudflare Workers**, not through Replit's publishing system. All fixes and configurations in this plan are specifically tailored for Cloudflare Workers deployment.
+
+### Why These Fixes Are Critical for Cloudflare Workers
+The current codebase works partially in **development mode on Replit**, but will **completely fail** when deployed to Cloudflare Workers because:
+
+1. **Authentication is broken** - Cloudflare Workers require proper token-based auth; the current mock user system won't work
+2. **Worker endpoints are incomplete** - The Cloudflare Worker files (`server/worker.ts`, `server/worker-supabase.ts`) don't implement all necessary API routes
+3. **Database schema conflicts** - Unused tables and inconsistent user ID types will cause data corruption in production
+4. **No token transmission** - The frontend doesn't send authentication headers that Cloudflare Workers need to validate users
+
+### Current State
+- ✅ Works in Replit development environment (with mock authentication)
+- ❌ Will NOT work when deployed to Cloudflare Workers
+- ❌ Users cannot properly create or access their projects
+- ❌ All endpoints return errors or use fake user data
+
+### After Implementing This Plan
+- ✅ Fully functional on Cloudflare Workers
+- ✅ Real user authentication with Supabase
+- ✅ Proper data isolation (users only see their own projects)
+- ✅ Production-ready security and performance
+- ✅ Ready for public deployment
 
 ---
 
 ## 🚨 CRITICAL ISSUES IDENTIFIED
+
+**Note:** ALL of these issues MUST be fixed for Cloudflare Workers deployment to function correctly.
 
 ### Issue #1: Conflicting Authentication Architecture
 **Problem:** Three separate auth systems causing data disconnection
@@ -76,7 +109,9 @@
 
 ## 🏗️ PRODUCTION READINESS ROADMAP
 
-### Phase 1: Authentication & User Management (CRITICAL)
+**DEPLOYMENT TARGET:** All fixes in this roadmap are specifically designed for **Cloudflare Workers** deployment. These are NOT for Replit publishing - Cloudflare Workers require proper authentication, complete endpoint implementation, and production-ready configuration.
+
+### Phase 1: Authentication & User Management (CRITICAL FOR CLOUDFLARE WORKERS)
 
 #### Step 1.1: Remove Unused Database Tables
 **Goal:** Clean up conflicting schema
@@ -233,8 +268,10 @@ SELECT DISTINCT user_id FROM projects LIMIT 5;
 
 ### Phase 3: Cloudflare Worker Production Setup
 
+**CRITICAL:** This phase configures InkAlchemy for **Cloudflare Workers deployment ONLY**. Do NOT use Replit's publishing feature - it will not work correctly because the application requires Cloudflare Workers' specific runtime environment and configuration.
+
 #### Step 3.1: Choose Worker Strategy
-**Goal:** Decide on deployment approach
+**Goal:** Decide on Cloudflare Workers deployment approach
 
 **Options:**
 
