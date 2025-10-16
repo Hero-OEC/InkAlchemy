@@ -1722,6 +1722,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User profile endpoints
+  app.get("/api/user/me", authenticateUser, async (req: AuthenticatedRequest, res) => {
+    try {
+      if (!supabase) {
+        return res.status(500).json({ message: "Authentication service not configured" });
+      }
+
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ message: "No authorization token provided" });
+      }
+
+      const token = authHeader.substring(7);
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+
+      if (error || !user) {
+        return res.status(401).json({ message: "Invalid or expired token" });
+      }
+
+      res.json({
+        id: user.id,
+        email: user.email,
+        username: user.user_metadata?.username || user.email?.split('@')[0],
+        displayName: user.user_metadata?.display_name,
+        avatarUrl: user.user_metadata?.avatar_url,
+        createdAt: user.created_at,
+      });
+    } catch (error) {
+      console.error('Get user profile error:', error);
+      res.status(500).json({ message: "Failed to fetch user profile" });
+    }
+  });
+
+  app.patch("/api/user/profile", authenticateUser, async (req: AuthenticatedRequest, res) => {
+    try {
+      if (!supabase) {
+        return res.status(500).json({ message: "Authentication service not configured" });
+      }
+
+      const { username, displayName, avatarUrl } = req.body;
+
+      const updateData: any = {};
+      if (username !== undefined) updateData.username = username;
+      if (displayName !== undefined) updateData.display_name = displayName;
+      if (avatarUrl !== undefined) updateData.avatar_url = avatarUrl;
+
+      // Use admin API to update user metadata
+      const { data, error } = await supabase.auth.admin.updateUserById(
+        req.userId!,
+        { user_metadata: updateData }
+      );
+
+      if (error) {
+        console.error('Update user profile error:', error);
+        return res.status(400).json({ message: "Failed to update profile" });
+      }
+
+      res.json({
+        id: data.user.id,
+        email: data.user.email,
+        username: data.user.user_metadata?.username,
+        displayName: data.user.user_metadata?.display_name,
+        avatarUrl: data.user.user_metadata?.avatar_url,
+      });
+    } catch (error) {
+      console.error('Update profile error:', error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  app.post("/api/user/sync", authenticateUser, async (req: AuthenticatedRequest, res) => {
+    try {
+      if (!supabase) {
+        return res.status(500).json({ message: "Authentication service not configured" });
+      }
+
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ message: "No authorization token provided" });
+      }
+
+      const token = authHeader.substring(7);
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+
+      if (error || !user) {
+        return res.status(401).json({ message: "Invalid or expired token" });
+      }
+
+      // Check if user has any projects (to determine if first login)
+      const projects = await storage.getProjects();
+      const userProjects = projects.filter(p => p.userId === user.id);
+
+      res.json({
+        id: user.id,
+        email: user.email,
+        username: user.user_metadata?.username || user.email?.split('@')[0],
+        displayName: user.user_metadata?.display_name,
+        avatarUrl: user.user_metadata?.avatar_url,
+        isFirstLogin: userProjects.length === 0,
+        projectCount: userProjects.length,
+      });
+    } catch (error) {
+      console.error('User sync error:', error);
+      res.status(500).json({ message: "Failed to sync user" });
+    }
+  });
+
   // Password reset endpoints
   app.post("/api/auth/forgot-password", async (req, res) => {
     try {

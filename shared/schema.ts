@@ -2,24 +2,6 @@ import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizz
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Users table for authentication
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").unique().notNull(),
-  email: text("email").unique().notNull(),
-  passwordHash: text("password_hash").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// User sessions
-export const userSessions = pgTable("user_sessions", {
-  id: text("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
 // Projects table for managing multiple story worlds
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
@@ -335,23 +317,6 @@ export type InsertRelationship = z.infer<typeof insertRelationshipSchema>;
 
 export type Activity = typeof activities.$inferSelect;
 export type InsertActivity = z.infer<typeof insertActivitySchema>;
-
-// User authentication schemas
-export const insertUserSchema = createInsertSchema(users).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertSessionSchema = createInsertSchema(userSessions).omit({
-  createdAt: true,
-});
-
-// Authentication types
-export type User = typeof users.$inferSelect;
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type UserSession = typeof userSessions.$inferSelect;
-export type InsertUserSession = z.infer<typeof insertSessionSchema>;
 
 // Login/Register form schemas
 export const loginSchema = z.object({

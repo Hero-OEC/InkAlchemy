@@ -50,17 +50,7 @@ export async function authenticateUser(req: AuthenticatedRequest, res: Response,
   }
 }
 
-// For development/testing - allows requests without auth but validates if auth is present
+// Require authentication for all requests
 export function optionalAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  const authHeader = req.headers.authorization;
-  
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    // If auth is provided, validate it with real Supabase
-    return authenticateUser(req, res, next);
-  } else {
-    // No auth provided - for development only, use mock user
-    // In production, this should require authentication
-    req.userId = '00000000-0000-0000-0000-000000000001';
-    next();
-  }
+  return authenticateUser(req, res, next);
 }
