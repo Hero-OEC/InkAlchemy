@@ -95,6 +95,7 @@ export interface IStorage {
 
   // Relationships
   getRelationships(projectId: number): Promise<Relationship[]>;
+  getRelationship(id: number): Promise<Relationship | null>;
   getRelationshipsForElement(projectId: number, elementType: string, elementId: number): Promise<Relationship[]>;
   createRelationship(relationship: InsertRelationship): Promise<Relationship>;
   updateRelationship(id: number, relationship: Partial<InsertRelationship>): Promise<Relationship | undefined>;
@@ -1437,6 +1438,10 @@ export class MemStorage implements IStorage {
   // Relationships
   async getRelationships(projectId: number): Promise<Relationship[]> {
     return Array.from(this.relationships.values()).filter(r => r.projectId === projectId);
+  }
+
+  async getRelationship(id: number): Promise<Relationship | null> {
+    return this.relationships.get(id) ?? null;
   }
 
   async getRelationshipsForElement(projectId: number, elementType: string, elementId: number): Promise<Relationship[]> {

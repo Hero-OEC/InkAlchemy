@@ -138,6 +138,13 @@ async function withAuth(
   }
 }
 
+// Project ownership verification helper
+async function verifyProjectOwnership(projectId: number, userId: string, env: Env): Promise<boolean> {
+  const storage = new SupabaseStorage(createSupabaseClient(env));
+  const project = await storage.getProject(projectId);
+  return project !== undefined && project.userId === userId;
+}
+
 // ============================================================================
 // ROUTES
 // ============================================================================
@@ -289,19 +296,26 @@ router.register('GET', '/api/projects/:projectId/characters', async (request, en
 });
 
 router.register('GET', '/api/characters/:id', async (request, env, params) => {
-  try {
-    const id = parseInt(params.id);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const character = await storage.getCharacter(id);
-    
-    if (!character) {
-      return jsonResponse({ message: 'Character not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const id = parseInt(params.id);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const character = await storage.getCharacter(id);
+      
+      if (!character) {
+        return jsonResponse({ message: 'Character not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(character.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      return jsonResponse(character);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch character' }, 500);
     }
-    
-    return jsonResponse(character);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch character' }, 500);
-  }
+  });
 });
 
 router.register('POST', '/api/characters', async (request, env) => {
@@ -309,6 +323,11 @@ router.register('POST', '/api/characters', async (request, env) => {
     try {
       const body = await request.json();
       const data = insertCharacterSchema.parse(body);
+      
+      // Verify project ownership before creating character
+      if (!(await verifyProjectOwnership(data.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
       
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const character = await storage.createCharacter(data);
@@ -329,6 +348,11 @@ router.register('PATCH', '/api/characters/:id', async (request, env, params) => 
       
       if (!currentCharacter) {
         return jsonResponse({ message: 'Character not found' }, 404);
+      }
+      
+      // Verify project ownership before allowing updates
+      if (!(await verifyProjectOwnership(currentCharacter.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
       }
       
       const body = await request.json();
@@ -357,6 +381,11 @@ router.register('DELETE', '/api/characters/:id', async (request, env, params) =>
         return jsonResponse({ message: 'Character not found' }, 404);
       }
       
+      // Verify project ownership before allowing delete
+      if (!(await verifyProjectOwnership(character.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
       const deleted = await storage.deleteCharacter(id);
       
       if (!deleted) {
@@ -372,47 +401,87 @@ router.register('DELETE', '/api/characters/:id', async (request, env, params) =>
 
 // Character Spells
 router.register('GET', '/api/characters/:characterId/spells', async (request, env, params) => {
-  try {
-    const characterId = parseInt(params.characterId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const spells = await storage.getCharacterSpells(characterId);
-    return jsonResponse(spells);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch character spells' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const characterId = parseInt(params.characterId);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      
+      // Get character to verify ownership
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return jsonResponse({ message: 'Character not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(character.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const spells = await storage.getCharacterSpells(characterId);
+      return jsonResponse(spells);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch character spells' }, 500);
+    }
+  });
 });
 
 router.register('POST', '/api/characters/:characterId/spells', async (request, env, params) => {
-  try {
-    const characterId = parseInt(params.characterId);
-    const body = await request.json();
-    const data = insertCharacterSpellSchema.parse({ ...body, characterId });
-    
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const characterSpell = await storage.addCharacterSpell(data);
-    
-    return jsonResponse(characterSpell, 201);
-  } catch (error) {
-    return jsonResponse({ message: 'Invalid character spell data' }, 400);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const characterId = parseInt(params.characterId);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      
+      // Get character to verify ownership
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return jsonResponse({ message: 'Character not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(character.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const body = await request.json();
+      const data = insertCharacterSpellSchema.parse({ ...body, characterId });
+      const characterSpell = await storage.addCharacterSpell(data);
+      
+      return jsonResponse(characterSpell, 201);
+    } catch (error) {
+      return jsonResponse({ message: 'Invalid character spell data' }, 400);
+    }
+  });
 });
 
 router.register('DELETE', '/api/characters/:characterId/spells/:spellId', async (request, env, params) => {
-  try {
-    const characterId = parseInt(params.characterId);
-    const spellId = parseInt(params.spellId);
-    
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const deleted = await storage.removeCharacterSpell(characterId, spellId);
-    
-    if (!deleted) {
-      return jsonResponse({ message: 'Character spell not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const characterId = parseInt(params.characterId);
+      const spellId = parseInt(params.spellId);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      
+      // Get character to verify ownership
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return jsonResponse({ message: 'Character not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(character.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const deleted = await storage.removeCharacterSpell(characterId, spellId);
+      
+      if (!deleted) {
+        return jsonResponse({ message: 'Character spell not found' }, 404);
+      }
+      
+      return new Response(null, { status: 204 });
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to remove character spell' }, 500);
     }
-    
-    return new Response(null, { status: 204 });
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to remove character spell' }, 500);
-  }
+  });
 });
 
 // ============================================================================
@@ -420,30 +489,45 @@ router.register('DELETE', '/api/characters/:characterId/spells/:spellId', async 
 // ============================================================================
 
 router.register('GET', '/api/projects/:projectId/locations', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const locations = await storage.getLocations(projectId);
-    return jsonResponse(locations);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch locations' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const locations = await storage.getLocations(projectId);
+      return jsonResponse(locations);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch locations' }, 500);
+    }
+  });
 });
 
 router.register('GET', '/api/locations/:id', async (request, env, params) => {
-  try {
-    const id = parseInt(params.id);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const location = await storage.getLocation(id);
-    
-    if (!location) {
-      return jsonResponse({ message: 'Location not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const id = parseInt(params.id);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const location = await storage.getLocation(id);
+      
+      if (!location) {
+        return jsonResponse({ message: 'Location not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(location.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      return jsonResponse(location);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch location' }, 500);
     }
-    
-    return jsonResponse(location);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch location' }, 500);
-  }
+  });
 });
 
 router.register('POST', '/api/locations', async (request, env) => {
@@ -451,6 +535,11 @@ router.register('POST', '/api/locations', async (request, env) => {
     try {
       const body = await request.json();
       const data = insertLocationSchema.parse(body);
+      
+      // Verify project ownership before creating
+      if (!(await verifyProjectOwnership(data.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
       
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const location = await storage.createLocation(data);
@@ -471,6 +560,11 @@ router.register('PATCH', '/api/locations/:id', async (request, env, params) => {
       
       if (!currentLocation) {
         return jsonResponse({ message: 'Location not found' }, 404);
+      }
+      
+      // Verify project ownership before updating
+      if (!(await verifyProjectOwnership(currentLocation.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
       }
       
       const body = await request.json();
@@ -499,6 +593,11 @@ router.register('DELETE', '/api/locations/:id', async (request, env, params) => 
         return jsonResponse({ message: 'Location not found' }, 404);
       }
       
+      // Verify project ownership before deleting
+      if (!(await verifyProjectOwnership(location.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
       // Handle cascade: remove location reference from events
       const eventsWithLocation = await storage.getEventsByLocation(id);
       for (const event of eventsWithLocation) {
@@ -523,30 +622,45 @@ router.register('DELETE', '/api/locations/:id', async (request, env, params) => 
 // ============================================================================
 
 router.register('GET', '/api/projects/:projectId/events', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const events = await storage.getEvents(projectId);
-    return jsonResponse(events);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch events' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const events = await storage.getEvents(projectId);
+      return jsonResponse(events);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch events' }, 500);
+    }
+  });
 });
 
 router.register('GET', '/api/events/:id', async (request, env, params) => {
-  try {
-    const id = parseInt(params.id);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const event = await storage.getEvent(id);
-    
-    if (!event) {
-      return jsonResponse({ message: 'Event not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const id = parseInt(params.id);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const event = await storage.getEvent(id);
+      
+      if (!event) {
+        return jsonResponse({ message: 'Event not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(event.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      return jsonResponse(event);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch event' }, 500);
     }
-    
-    return jsonResponse(event);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch event' }, 500);
-  }
+  });
 });
 
 router.register('POST', '/api/events', async (request, env) => {
@@ -554,6 +668,11 @@ router.register('POST', '/api/events', async (request, env) => {
     try {
       const body = await request.json();
       const data = insertEventSchema.parse(body);
+      
+      // Verify project ownership before creating
+      if (!(await verifyProjectOwnership(data.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
       
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const event = await storage.createEvent(data);
@@ -574,6 +693,11 @@ router.register('PATCH', '/api/events/:id', async (request, env, params) => {
       
       if (!currentEvent) {
         return jsonResponse({ message: 'Event not found' }, 404);
+      }
+      
+      // Verify project ownership before updating
+      if (!(await verifyProjectOwnership(currentEvent.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
       }
       
       const body = await request.json();
@@ -602,6 +726,11 @@ router.register('DELETE', '/api/events/:id', async (request, env, params) => {
         return jsonResponse({ message: 'Event not found' }, 404);
       }
       
+      // Verify project ownership before deleting
+      if (!(await verifyProjectOwnership(event.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
       const deleted = await storage.deleteEvent(id);
       
       if (!deleted) {
@@ -620,30 +749,45 @@ router.register('DELETE', '/api/events/:id', async (request, env, params) => {
 // ============================================================================
 
 router.register('GET', '/api/projects/:projectId/magic-systems', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const magicSystems = await storage.getMagicSystems(projectId);
-    return jsonResponse(magicSystems);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch magic systems' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const magicSystems = await storage.getMagicSystems(projectId);
+      return jsonResponse(magicSystems);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch magic systems' }, 500);
+    }
+  });
 });
 
 router.register('GET', '/api/magic-systems/:id', async (request, env, params) => {
-  try {
-    const id = parseInt(params.id);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const magicSystem = await storage.getMagicSystem(id);
-    
-    if (!magicSystem) {
-      return jsonResponse({ message: 'Magic system not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const id = parseInt(params.id);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const magicSystem = await storage.getMagicSystem(id);
+      
+      if (!magicSystem) {
+        return jsonResponse({ message: 'Magic system not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(magicSystem.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      return jsonResponse(magicSystem);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch magic system' }, 500);
     }
-    
-    return jsonResponse(magicSystem);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch magic system' }, 500);
-  }
+  });
 });
 
 router.register('POST', '/api/magic-systems', async (request, env) => {
@@ -651,6 +795,11 @@ router.register('POST', '/api/magic-systems', async (request, env) => {
     try {
       const body = await request.json();
       const data = insertMagicSystemSchema.parse(body);
+      
+      // Verify project ownership before creating
+      if (!(await verifyProjectOwnership(data.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
       
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const magicSystem = await storage.createMagicSystem(data);
@@ -671,6 +820,11 @@ router.register('PATCH', '/api/magic-systems/:id', async (request, env, params) 
       
       if (!currentMagicSystem) {
         return jsonResponse({ message: 'Magic system not found' }, 404);
+      }
+      
+      // Verify project ownership before updating
+      if (!(await verifyProjectOwnership(currentMagicSystem.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
       }
       
       const body = await request.json();
@@ -699,6 +853,11 @@ router.register('DELETE', '/api/magic-systems/:id', async (request, env, params)
         return jsonResponse({ message: 'Magic system not found' }, 404);
       }
       
+      // Verify project ownership before deleting
+      if (!(await verifyProjectOwnership(magicSystem.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
       const deleted = await storage.deleteMagicSystem(id);
       
       if (!deleted) {
@@ -717,41 +876,76 @@ router.register('DELETE', '/api/magic-systems/:id', async (request, env, params)
 // ============================================================================
 
 router.register('GET', '/api/projects/:projectId/spells', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const spells = await storage.getAllSpellsForProject(projectId);
-    return jsonResponse(spells);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch spells' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const spells = await storage.getAllSpellsForProject(projectId);
+      return jsonResponse(spells);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch spells' }, 500);
+    }
+  });
 });
 
 router.register('GET', '/api/magic-systems/:magicSystemId/spells', async (request, env, params) => {
-  try {
-    const magicSystemId = parseInt(params.magicSystemId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const spells = await storage.getSpells(magicSystemId);
-    return jsonResponse(spells);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch spells' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const magicSystemId = parseInt(params.magicSystemId);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      
+      // Get magic system to verify ownership
+      const magicSystem = await storage.getMagicSystem(magicSystemId);
+      if (!magicSystem) {
+        return jsonResponse({ message: 'Magic system not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(magicSystem.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const spells = await storage.getSpells(magicSystemId);
+      return jsonResponse(spells);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch spells' }, 500);
+    }
+  });
 });
 
 router.register('GET', '/api/spells/:id', async (request, env, params) => {
-  try {
-    const id = parseInt(params.id);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const spell = await storage.getSpell(id);
-    
-    if (!spell) {
-      return jsonResponse({ message: 'Spell not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const id = parseInt(params.id);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const spell = await storage.getSpell(id);
+      
+      if (!spell) {
+        return jsonResponse({ message: 'Spell not found' }, 404);
+      }
+      
+      // Get magic system to verify ownership
+      const magicSystem = await storage.getMagicSystem(spell.magicSystemId);
+      if (!magicSystem) {
+        return jsonResponse({ message: 'Magic system not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(magicSystem.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      return jsonResponse(spell);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch spell' }, 500);
     }
-    
-    return jsonResponse(spell);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch spell' }, 500);
-  }
+  });
 });
 
 router.register('POST', '/api/spells', async (request, env) => {
@@ -759,8 +953,19 @@ router.register('POST', '/api/spells', async (request, env) => {
     try {
       const body = await request.json();
       const data = insertSpellSchema.parse(body);
-      
       const storage = new SupabaseStorage(createSupabaseClient(env));
+      
+      // Get magic system to verify ownership
+      const magicSystem = await storage.getMagicSystem(data.magicSystemId);
+      if (!magicSystem) {
+        return jsonResponse({ message: 'Magic system not found' }, 404);
+      }
+      
+      // Verify project ownership before creating
+      if (!(await verifyProjectOwnership(magicSystem.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
       const spell = await storage.createSpell(data);
       
       return jsonResponse(spell, 201);
@@ -779,6 +984,17 @@ router.register('PATCH', '/api/spells/:id', async (request, env, params) => {
       
       if (!currentSpell) {
         return jsonResponse({ message: 'Spell not found' }, 404);
+      }
+      
+      // Get magic system to verify ownership
+      const magicSystem = await storage.getMagicSystem(currentSpell.magicSystemId);
+      if (!magicSystem) {
+        return jsonResponse({ message: 'Magic system not found' }, 404);
+      }
+      
+      // Verify project ownership before updating
+      if (!(await verifyProjectOwnership(magicSystem.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
       }
       
       const body = await request.json();
@@ -807,6 +1023,17 @@ router.register('DELETE', '/api/spells/:id', async (request, env, params) => {
         return jsonResponse({ message: 'Spell not found' }, 404);
       }
       
+      // Get magic system to verify ownership
+      const magicSystem = await storage.getMagicSystem(spell.magicSystemId);
+      if (!magicSystem) {
+        return jsonResponse({ message: 'Magic system not found' }, 404);
+      }
+      
+      // Verify project ownership before deleting
+      if (!(await verifyProjectOwnership(magicSystem.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
       const deleted = await storage.deleteSpell(id);
       
       if (!deleted) {
@@ -821,25 +1048,53 @@ router.register('DELETE', '/api/spells/:id', async (request, env, params) => {
 });
 
 router.register('GET', '/api/spells/by-magic-system/:magicSystemId', async (request, env, params) => {
-  try {
-    const magicSystemId = parseInt(params.magicSystemId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const spells = await storage.getSpells(magicSystemId);
-    return jsonResponse(spells);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch spells' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const magicSystemId = parseInt(params.magicSystemId);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      
+      // Get magic system to verify ownership
+      const magicSystem = await storage.getMagicSystem(magicSystemId);
+      if (!magicSystem) {
+        return jsonResponse({ message: 'Magic system not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(magicSystem.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const spells = await storage.getSpells(magicSystemId);
+      return jsonResponse(spells);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch spells' }, 500);
+    }
+  });
 });
 
 router.register('GET', '/api/spells/by-character/:characterId', async (request, env, params) => {
-  try {
-    const characterId = parseInt(params.characterId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const spells = await storage.getCharacterSpells(characterId);
-    return jsonResponse(spells);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch character spells' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const characterId = parseInt(params.characterId);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      
+      // Get character to verify ownership
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return jsonResponse({ message: 'Character not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(character.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const spells = await storage.getCharacterSpells(characterId);
+      return jsonResponse(spells);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch character spells' }, 500);
+    }
+  });
 });
 
 // ============================================================================
@@ -847,30 +1102,45 @@ router.register('GET', '/api/spells/by-character/:characterId', async (request, 
 // ============================================================================
 
 router.register('GET', '/api/projects/:projectId/lore', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const loreEntries = await storage.getLoreEntries(projectId);
-    return jsonResponse(loreEntries);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch lore entries' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const loreEntries = await storage.getLoreEntries(projectId);
+      return jsonResponse(loreEntries);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch lore entries' }, 500);
+    }
+  });
 });
 
 router.register('GET', '/api/lore/:id', async (request, env, params) => {
-  try {
-    const id = parseInt(params.id);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const loreEntry = await storage.getLoreEntry(id);
-    
-    if (!loreEntry) {
-      return jsonResponse({ message: 'Lore entry not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const id = parseInt(params.id);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const loreEntry = await storage.getLoreEntry(id);
+      
+      if (!loreEntry) {
+        return jsonResponse({ message: 'Lore entry not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(loreEntry.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      return jsonResponse(loreEntry);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch lore entry' }, 500);
     }
-    
-    return jsonResponse(loreEntry);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch lore entry' }, 500);
-  }
+  });
 });
 
 router.register('POST', '/api/lore', async (request, env) => {
@@ -878,6 +1148,11 @@ router.register('POST', '/api/lore', async (request, env) => {
     try {
       const body = await request.json();
       const data = insertLoreEntrySchema.parse(body);
+      
+      // Verify project ownership before creating
+      if (!(await verifyProjectOwnership(data.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
       
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const loreEntry = await storage.createLoreEntry(data);
@@ -898,6 +1173,11 @@ router.register('PATCH', '/api/lore/:id', async (request, env, params) => {
       
       if (!currentLoreEntry) {
         return jsonResponse({ message: 'Lore entry not found' }, 404);
+      }
+      
+      // Verify project ownership before updating
+      if (!(await verifyProjectOwnership(currentLoreEntry.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
       }
       
       const body = await request.json();
@@ -926,6 +1206,11 @@ router.register('DELETE', '/api/lore/:id', async (request, env, params) => {
         return jsonResponse({ message: 'Lore entry not found' }, 404);
       }
       
+      // Verify project ownership before deleting
+      if (!(await verifyProjectOwnership(loreEntry.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
       const deleted = await storage.deleteLoreEntry(id);
       
       if (!deleted) {
@@ -944,30 +1229,45 @@ router.register('DELETE', '/api/lore/:id', async (request, env, params) => {
 // ============================================================================
 
 router.register('GET', '/api/projects/:projectId/notes', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const notes = await storage.getNotes(projectId);
-    return jsonResponse(notes);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch notes' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const notes = await storage.getNotes(projectId);
+      return jsonResponse(notes);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch notes' }, 500);
+    }
+  });
 });
 
 router.register('GET', '/api/notes/:id', async (request, env, params) => {
-  try {
-    const id = parseInt(params.id);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const note = await storage.getNote(id);
-    
-    if (!note) {
-      return jsonResponse({ message: 'Note not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const id = parseInt(params.id);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const note = await storage.getNote(id);
+      
+      if (!note) {
+        return jsonResponse({ message: 'Note not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(note.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      return jsonResponse(note);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch note' }, 500);
     }
-    
-    return jsonResponse(note);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch note' }, 500);
-  }
+  });
 });
 
 router.register('POST', '/api/notes', async (request, env) => {
@@ -975,6 +1275,11 @@ router.register('POST', '/api/notes', async (request, env) => {
     try {
       const body = await request.json();
       const data = insertNoteSchema.parse(body);
+      
+      // Verify project ownership before creating
+      if (!(await verifyProjectOwnership(data.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
       
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const note = await storage.createNote(data);
@@ -995,6 +1300,11 @@ router.register('PATCH', '/api/notes/:id', async (request, env, params) => {
       
       if (!currentNote) {
         return jsonResponse({ message: 'Note not found' }, 404);
+      }
+      
+      // Verify project ownership before updating
+      if (!(await verifyProjectOwnership(currentNote.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
       }
       
       const body = await request.json();
@@ -1023,6 +1333,11 @@ router.register('DELETE', '/api/notes/:id', async (request, env, params) => {
         return jsonResponse({ message: 'Note not found' }, 404);
       }
       
+      // Verify project ownership before deleting
+      if (!(await verifyProjectOwnership(note.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
       const deleted = await storage.deleteNote(id);
       
       if (!deleted) {
@@ -1041,30 +1356,45 @@ router.register('DELETE', '/api/notes/:id', async (request, env, params) => {
 // ============================================================================
 
 router.register('GET', '/api/projects/:projectId/races', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const races = await storage.getRaces(projectId);
-    return jsonResponse(races);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch races' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const races = await storage.getRaces(projectId);
+      return jsonResponse(races);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch races' }, 500);
+    }
+  });
 });
 
 router.register('GET', '/api/races/:id', async (request, env, params) => {
-  try {
-    const id = parseInt(params.id);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const race = await storage.getRace(id);
-    
-    if (!race) {
-      return jsonResponse({ message: 'Race not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const id = parseInt(params.id);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const race = await storage.getRace(id);
+      
+      if (!race) {
+        return jsonResponse({ message: 'Race not found' }, 404);
+      }
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(race.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      return jsonResponse(race);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch race' }, 500);
     }
-    
-    return jsonResponse(race);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch race' }, 500);
-  }
+  });
 });
 
 router.register('POST', '/api/races', async (request, env) => {
@@ -1074,6 +1404,11 @@ router.register('POST', '/api/races', async (request, env) => {
       console.log('📝 Creating race with data:', JSON.stringify(body, null, 2));
       
       const data = insertRaceSchema.parse(body);
+      
+      // Verify project ownership before creating
+      if (!(await verifyProjectOwnership(data.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
       
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const race = await storage.createRace(data);
@@ -1100,6 +1435,16 @@ router.register('PATCH', '/api/races/:id', async (request, env, params) => {
     try {
       const id = parseInt(params.id);
       const storage = new SupabaseStorage(createSupabaseClient(env));
+      const currentRace = await storage.getRace(id);
+      
+      if (!currentRace) {
+        return jsonResponse({ message: 'Race not found' }, 404);
+      }
+      
+      // Verify project ownership before updating
+      if (!(await verifyProjectOwnership(currentRace.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
       
       const body = await request.json();
       const data = insertRaceSchema.partial().parse(body);
@@ -1125,6 +1470,11 @@ router.register('DELETE', '/api/races/:id', async (request, env, params) => {
       
       if (!race) {
         return jsonResponse({ message: 'Race not found' }, 404);
+      }
+      
+      // Verify project ownership before deleting
+      if (!(await verifyProjectOwnership(race.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
       }
       
       // Check if any characters are using this race
@@ -1154,44 +1504,84 @@ router.register('DELETE', '/api/races/:id', async (request, env, params) => {
 // ============================================================================
 
 router.register('GET', '/api/projects/:projectId/relationships', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const relationships = await storage.getRelationships(projectId);
-    return jsonResponse(relationships);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch relationships' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const relationships = await storage.getRelationships(projectId);
+      return jsonResponse(relationships);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch relationships' }, 500);
+    }
+  });
 });
 
 router.register('POST', '/api/relationships', async (request, env) => {
-  try {
-    const body = await request.json();
-    const data = insertRelationshipSchema.parse(body);
-    
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const relationship = await storage.createRelationship(data);
-    
-    return jsonResponse(relationship, 201);
-  } catch (error) {
-    return jsonResponse({ message: 'Invalid relationship data' }, 400);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const body = await request.json();
+      const data = insertRelationshipSchema.parse(body);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      
+      // Get character1 to verify project ownership
+      const character1 = await storage.getCharacter(data.character1Id);
+      if (!character1) {
+        return jsonResponse({ message: 'Character not found' }, 404);
+      }
+      
+      // Verify project ownership before creating
+      if (!(await verifyProjectOwnership(character1.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const relationship = await storage.createRelationship(data);
+      
+      return jsonResponse(relationship, 201);
+    } catch (error) {
+      return jsonResponse({ message: 'Invalid relationship data' }, 400);
+    }
+  });
 });
 
 router.register('DELETE', '/api/relationships/:id', async (request, env, params) => {
-  try {
-    const id = parseInt(params.id);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const deleted = await storage.deleteRelationship(id);
-    
-    if (!deleted) {
-      return jsonResponse({ message: 'Relationship not found' }, 404);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const id = parseInt(params.id);
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const relationship = await storage.getRelationship(id);
+      
+      if (!relationship) {
+        return jsonResponse({ message: 'Relationship not found' }, 404);
+      }
+      
+      // Get character1 to verify project ownership
+      const character = await storage.getCharacter(relationship.character1Id);
+      if (!character) {
+        return jsonResponse({ message: 'Character not found' }, 404);
+      }
+      
+      // Verify project ownership before deleting
+      if (!(await verifyProjectOwnership(character.projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const deleted = await storage.deleteRelationship(id);
+      
+      if (!deleted) {
+        return jsonResponse({ message: 'Relationship not found' }, 404);
+      }
+      
+      return new Response(null, { status: 204 });
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to delete relationship' }, 500);
     }
-    
-    return new Response(null, { status: 204 });
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to delete relationship' }, 500);
-  }
+  });
 });
 
 // ============================================================================
@@ -1202,6 +1592,12 @@ router.register('GET', '/api/projects/:projectId/activities', async (request, en
   return withAuth(request, env, async (userId) => {
     try {
       const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
       const storage = new SupabaseStorage(createSupabaseClient(env));
       const activities = await storage.getProjectActivities(projectId);
       return jsonResponse(activities);
@@ -1212,14 +1608,22 @@ router.register('GET', '/api/projects/:projectId/activities', async (request, en
 });
 
 router.register('GET', '/api/projects/:projectId/stats', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const stats = await storage.getProjectStats(projectId);
-    return jsonResponse(stats);
-  } catch (error) {
-    return jsonResponse({ message: 'Failed to fetch project stats' }, 500);
-  }
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const stats = await storage.getProjectStats(projectId);
+      return jsonResponse(stats);
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch project stats' }, 500);
+    }
+  });
 });
 
 // ============================================================================
@@ -1227,21 +1631,29 @@ router.register('GET', '/api/projects/:projectId/stats', async (request, env, pa
 // ============================================================================
 
 router.register('GET', '/api/projects/:projectId/search', async (request, env, params) => {
-  try {
-    const projectId = parseInt(params.projectId);
-    const url = new URL(request.url);
-    const query = url.searchParams.get('q');
-    
-    if (!query) {
-      return jsonResponse({ message: 'Query parameter required' }, 400);
+  return withAuth(request, env, async (userId) => {
+    try {
+      const projectId = parseInt(params.projectId);
+      
+      // Verify project ownership
+      if (!(await verifyProjectOwnership(projectId, userId, env))) {
+        return jsonResponse({ message: 'Access denied' }, 403);
+      }
+      
+      const url = new URL(request.url);
+      const query = url.searchParams.get('q');
+      
+      if (!query) {
+        return jsonResponse({ message: 'Query parameter required' }, 400);
+      }
+      
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const results = await storage.searchElements(projectId, query);
+      return jsonResponse(results);
+    } catch (error) {
+      return jsonResponse({ message: 'Search failed' }, 500);
     }
-    
-    const storage = new SupabaseStorage(createSupabaseClient(env));
-    const results = await storage.searchElements(projectId, query);
-    return jsonResponse(results);
-  } catch (error) {
-    return jsonResponse({ message: 'Search failed' }, 500);
-  }
+  });
 });
 
 // ============================================================================
@@ -1316,6 +1728,62 @@ router.register('DELETE', '/api/delete-image', async (request, env) => {
 // USER MANAGEMENT
 // ============================================================================
 
+router.register('GET', '/api/user/me', async (request, env) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const supabase = createSupabaseClient(env);
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+
+      if (error || !user) {
+        return jsonResponse({ message: 'Invalid or expired token' }, 401);
+      }
+
+      return jsonResponse({
+        id: user.id,
+        email: user.email,
+        username: user.user_metadata?.username || user.user_metadata?.display_name || user.email?.split('@')[0] || 'User',
+        displayName: user.user_metadata?.display_name || user.user_metadata?.username || 'User',
+        avatarUrl: user.user_metadata?.avatar_url || null,
+        createdAt: user.created_at
+      });
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to fetch user' }, 500);
+    }
+  });
+});
+
+router.register('POST', '/api/user/sync', async (request, env) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const supabase = createSupabaseClient(env);
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+
+      if (error || !user) {
+        return jsonResponse({ message: 'Invalid or expired token' }, 401);
+      }
+
+      // Check if user has any projects (indicating they've been synced)
+      const storage = new SupabaseStorage(createSupabaseClient(env));
+      const projects = await storage.getProjects();
+      const userProjects = projects.filter(p => p.userId === userId);
+
+      // Return user profile with sync status
+      return jsonResponse({
+        id: user.id,
+        email: user.email,
+        username: user.user_metadata?.username || user.email?.split('@')[0] || 'User',
+        displayName: user.user_metadata?.display_name || user.user_metadata?.username || 'User',
+        avatarUrl: user.user_metadata?.avatar_url || null,
+        createdAt: user.created_at,
+        synced: true,
+        projectCount: userProjects.length
+      });
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to sync user' }, 500);
+    }
+  });
+});
+
 router.register('GET', '/api/user/profile', async (request, env) => {
   return withAuth(request, env, async (userId, token) => {
     try {
@@ -1348,6 +1816,39 @@ router.register('GET', '/api/user/profile', async (request, env) => {
       return jsonResponse(profile);
     } catch (error) {
       return jsonResponse({ message: 'Failed to fetch profile' }, 500);
+    }
+  });
+});
+
+router.register('PATCH', '/api/user/profile', async (request, env) => {
+  return withAuth(request, env, async (userId, token) => {
+    try {
+      const body = await request.json();
+      const { username, displayName, avatarUrl } = body;
+      
+      const supabase = createSupabaseClient(env);
+      
+      const updateData: any = {};
+      if (username !== undefined) updateData.username = username;
+      if (displayName !== undefined) updateData.display_name = displayName;
+      if (avatarUrl !== undefined) updateData.avatar_url = avatarUrl;
+
+      // Use admin API to update user metadata
+      const { data, error } = await supabase.auth.admin.updateUserById(
+        userId,
+        { user_metadata: updateData }
+      );
+
+      if (error) {
+        return jsonResponse({ message: 'Failed to update profile' }, 500);
+      }
+
+      return jsonResponse({
+        message: 'Profile updated successfully',
+        user: data.user
+      });
+    } catch (error) {
+      return jsonResponse({ message: 'Failed to update profile' }, 500);
     }
   });
 });

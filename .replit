@@ -47,10 +47,6 @@ externalPort = 3000
 localPort = 38089
 externalPort = 3001
 
-[[ports]]
-localPort = 41977
-externalPort = 3003
-
 [agent]
 integrations = ["javascript_log_in_with_replit==1.0.0", "javascript_supabase==1.0.0", "javascript_database==1.0.0"]
 expertMode = true

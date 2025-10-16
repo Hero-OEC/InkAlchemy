@@ -733,6 +733,17 @@ export class SupabaseStorage implements IStorage {
     return data || [];
   }
 
+  async getRelationship(id: number): Promise<Relationship | null> {
+    const { data, error } = await this.supabase
+      .from('relationships')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') throw error;
+    return data || null;
+  }
+
   async getRelationshipsForElement(projectId: number, elementType: string, elementId: number): Promise<Relationship[]> {
     const { data, error } = await this.supabase
       .from('relationships')
