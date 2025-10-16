@@ -1529,14 +1529,8 @@ router.register('POST', '/api/relationships', async (request, env) => {
       const data = insertRelationshipSchema.parse(body);
       const storage = new SupabaseStorage(createSupabaseClient(env));
       
-      // Get character1 to verify project ownership
-      const character1 = await storage.getCharacter(data.character1Id);
-      if (!character1) {
-        return jsonResponse({ message: 'Character not found' }, 404);
-      }
-      
       // Verify project ownership before creating
-      if (!(await verifyProjectOwnership(character1.projectId, userId, env))) {
+      if (!(await verifyProjectOwnership(data.projectId, userId, env))) {
         return jsonResponse({ message: 'Access denied' }, 403);
       }
       
@@ -1560,14 +1554,8 @@ router.register('DELETE', '/api/relationships/:id', async (request, env, params)
         return jsonResponse({ message: 'Relationship not found' }, 404);
       }
       
-      // Get character1 to verify project ownership
-      const character = await storage.getCharacter(relationship.character1Id);
-      if (!character) {
-        return jsonResponse({ message: 'Character not found' }, 404);
-      }
-      
       // Verify project ownership before deleting
-      if (!(await verifyProjectOwnership(character.projectId, userId, env))) {
+      if (!(await verifyProjectOwnership(relationship.projectId, userId, env))) {
         return jsonResponse({ message: 'Access denied' }, 403);
       }
       
