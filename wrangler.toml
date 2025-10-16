@@ -10,10 +10,48 @@ command = "node scripts/build-worker.js"
 [env.production]
 vars = { NODE_ENV = "production" }
 
-# Note: Secrets (DATABASE_URL, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY)
-# should be set using: wrangler secret put <SECRET_NAME>
-# or via the Cloudflare Workers dashboard
-
+# Assets configuration for serving the React frontend
 [assets]
 directory = "dist/public"
 not_found_handling = "single-page-application"
+
+# ============================================
+# DEPLOYMENT INSTRUCTIONS
+# ============================================
+#
+# 1. Build the worker bundle:
+#    npm run build:worker
+#
+# 2. Configure required secrets (run these commands):
+#    wrangler secret put DATABASE_URL
+#    wrangler secret put VITE_SUPABASE_URL
+#    wrangler secret put VITE_SUPABASE_ANON_KEY
+#    wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+#
+# 3. Deploy to Cloudflare Workers:
+#    npx wrangler deploy
+#
+# 4. For production environment:
+#    npx wrangler deploy --env production
+#
+# ============================================
+# CLOUDFLARE DASHBOARD SETUP
+# ============================================
+#
+# Alternative to CLI: Set secrets via Cloudflare Workers dashboard
+# https://dash.cloudflare.com > Workers & Pages > Your Worker > Settings > Variables and Secrets
+#
+# Required Environment Variables:
+# - DATABASE_URL: Your PostgreSQL connection string
+# - VITE_SUPABASE_URL: Your Supabase project URL
+# - VITE_SUPABASE_ANON_KEY: Your Supabase anonymous key
+# - SUPABASE_SERVICE_ROLE_KEY: Your Supabase service role key
+#
+# ============================================
+# NOTES
+# ============================================
+#
+# - CORS is configured in the worker code (allows all origins)
+# - Authentication uses Supabase Auth with JWT tokens
+# - All routes enforce project ownership verification
+# - Worker serves both API and frontend (SPA mode)
