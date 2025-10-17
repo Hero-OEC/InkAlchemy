@@ -1,8 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase configuration - these will be provided by the user after setting up Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
+// Get Supabase configuration from localStorage first, then fall back to env vars
+const getSupabaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('VITE_SUPABASE_URL');
+    if (stored) return stored;
+  }
+  return import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+};
+
+const getSupabaseKey = () => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('VITE_SUPABASE_ANON_KEY');
+    if (stored) return stored;
+  }
+  return import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
+};
+
+const supabaseUrl = getSupabaseUrl();
+const supabaseKey = getSupabaseKey();
 
 // Validate Supabase configuration
 const isValidConfig = supabaseUrl !== 'https://placeholder.supabase.co' && supabaseKey !== 'placeholder-key';

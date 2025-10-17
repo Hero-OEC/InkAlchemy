@@ -4,41 +4,95 @@ import { AuthProvider, useAuth } from "./contexts/auth-context";
 
 // Supabase Setup Check
 function SupabaseSetupCheck({ children }: { children: React.ReactNode }) {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
-  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
+  const [url, setUrl] = React.useState('');
+  const [anonKey, setAnonKey] = React.useState('');
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   
-  const isConfigured = supabaseUrl !== 'https://placeholder.supabase.co' && supabaseKey !== 'placeholder-key';
+  // Check if configured from env vars or localStorage
+  const envUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+  const envKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
+  const storageUrl = typeof window !== 'undefined' ? localStorage.getItem('VITE_SUPABASE_URL') : null;
+  const storageKey = typeof window !== 'undefined' ? localStorage.getItem('VITE_SUPABASE_ANON_KEY') : null;
+  
+  const finalUrl = storageUrl || envUrl;
+  const finalKey = storageKey || envKey;
+  
+  const isConfigured = finalUrl !== 'https://placeholder.supabase.co' && finalKey !== 'placeholder-key';
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Save to localStorage
+    localStorage.setItem('VITE_SUPABASE_URL', url);
+    localStorage.setItem('VITE_SUPABASE_ANON_KEY', anonKey);
+    
+    // Reload the page to reinitialize Supabase client
+    window.location.reload();
+  };
   
   if (!isConfigured) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-brand-100">
-        <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
-          <div className="mb-6">
+        <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg">
+          <div className="mb-6 text-center">
             <h1 className="text-2xl font-bold text-brand-900 mb-2">Setup Required</h1>
             <p className="text-brand-600">InkAlchemy needs to be connected to Supabase to work properly.</p>
           </div>
           
-          <div className="bg-brand-50 border border-brand-200 rounded-lg p-4 mb-6 text-left">
-            <h3 className="font-semibold text-brand-900 mb-2">Quick Setup:</h3>
-            <ol className="text-sm text-brand-700 space-y-2">
-              <li>1. Create a free Supabase project at <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">supabase.com</a></li>
-              <li>2. Get your project URL and anon key from Settings → API</li>
-              <li>3. Add them to your Replit Secrets:
-                <ul className="ml-4 mt-1 space-y-1">
-                  <li>• <code className="bg-brand-100 px-1 rounded">VITE_SUPABASE_URL</code></li>
-                  <li>• <code className="bg-brand-100 px-1 rounded">VITE_SUPABASE_ANON_KEY</code></li>
-                </ul>
-              </li>
-              <li>4. Refresh this page</li>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="supabase-url" className="block text-sm font-medium text-brand-900 mb-1">
+                Supabase URL
+              </label>
+              <input
+                id="supabase-url"
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://your-project.supabase.co"
+                className="w-full px-3 py-2 border border-brand-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                required
+                data-testid="input-supabase-url"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="supabase-anon-key" className="block text-sm font-medium text-brand-900 mb-1">
+                Supabase Anon Key
+              </label>
+              <input
+                id="supabase-anon-key"
+                type="text"
+                value={anonKey}
+                onChange={(e) => setAnonKey(e.target.value)}
+                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                className="w-full px-3 py-2 border border-brand-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                required
+                data-testid="input-supabase-anon-key"
+              />
+            </div>
+            
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              data-testid="button-submit-setup"
+            >
+              {isSubmitting ? 'Saving...' : 'Save & Continue'}
+            </button>
+          </form>
+          
+          <div className="mt-6 pt-6 border-t border-brand-200">
+            <p className="text-xs text-brand-600 text-center mb-2">
+              Don't have a Supabase project?
+            </p>
+            <ol className="text-xs text-brand-700 space-y-1">
+              <li>1. Create a free project at <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">supabase.com</a></li>
+              <li>2. Get your credentials from Settings → API</li>
+              <li>3. Enter them above</li>
             </ol>
           </div>
-          
-          <button 
-            onClick={() => window.location.reload()} 
-            className="px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700 transition-colors"
-          >
-            Check Again
-          </button>
         </div>
       </div>
     );
