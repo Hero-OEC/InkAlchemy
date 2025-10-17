@@ -1,4 +1,6 @@
 import type { Express } from "express";
+import { config } from "dotenv";
+config(); // Load environment variables from .env file
 import { createServer, type Server } from "http";
 import { storage } from "./db-storage";
 import { uploadImage, handleImageUpload, handleImageUploadByUrl } from "./image-upload";

@@ -1,4 +1,6 @@
 import { db } from "./db";
+import { config } from "dotenv";
+config(); // Load environment variables from .env file
 import { eq, and, inArray, desc } from "drizzle-orm";
 import { 
   projects, characters, locations, events, magicSystems, spells, loreEntries, notes, relationships, characterSpells, eventCharacters, races, activities,

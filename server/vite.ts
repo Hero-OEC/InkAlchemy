@@ -5,7 +5,8 @@ import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
 import { nanoid } from "nanoid";
-
+import { config } from "dotenv";
+config(); // Load environment variables from .env file
 const viteLogger = createLogger();
 
 export function log(message: string, source = "express") {

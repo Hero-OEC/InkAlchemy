@@ -1,7 +1,8 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@shared/schema";
-
+import { config } from "dotenv";
+config(); // Load environment variables from .env file
 // Use the DATABASE_URL from environment variables (Replit PostgreSQL)
 const databaseUrl = process.env.DATABASE_URL;
 

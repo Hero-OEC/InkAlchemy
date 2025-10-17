@@ -1,5 +1,6 @@
 import { supabase } from './auth-middleware';
-
+import { config } from "dotenv";
+config(); // Load environment variables from .env file
 export async function deleteImageFromStorage(imageUrl: string): Promise<boolean> {
   if (!imageUrl || !imageUrl.includes('supabase.co') || !supabase) {
     return false;

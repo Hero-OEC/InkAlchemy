@@ -1,4 +1,6 @@
 import { db } from "./db";
+import { config } from "dotenv";
+config(); // Load environment variables from .env file
 import { activities } from "@shared/schema";
 import type { InsertActivity } from "@shared/schema";
 
