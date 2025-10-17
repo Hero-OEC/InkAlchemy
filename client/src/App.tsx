@@ -19,6 +19,10 @@ function SupabaseSetupCheck({ children }: { children: React.ReactNode }) {
   
   const isConfigured = finalUrl !== 'https://placeholder.supabase.co' && finalKey !== 'placeholder-key';
   
+  // Allow access to /input page even if not configured
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+  const isInputPage = currentPath === '/input';
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -31,7 +35,7 @@ function SupabaseSetupCheck({ children }: { children: React.ReactNode }) {
     window.location.reload();
   };
   
-  if (!isConfigured) {
+  if (!isConfigured && !isInputPage) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-brand-100">
         <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg">
@@ -85,12 +89,15 @@ function SupabaseSetupCheck({ children }: { children: React.ReactNode }) {
           
           <div className="mt-6 pt-6 border-t border-brand-200">
             <p className="text-xs text-brand-600 text-center mb-2">
+              Or visit <a href="/input" className="text-brand-600 underline font-medium">/input</a> page anytime to configure Supabase
+            </p>
+            <p className="text-xs text-brand-600 text-center mb-2 mt-3">
               Don't have a Supabase project?
             </p>
             <ol className="text-xs text-brand-700 space-y-1">
               <li>1. Create a free project at <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">supabase.com</a></li>
               <li>2. Get your credentials from Settings → API</li>
-              <li>3. Enter them above</li>
+              <li>3. Enter them above or at <a href="/input" className="text-brand-600 underline">/input</a></li>
             </ol>
           </div>
         </div>
@@ -146,6 +153,7 @@ import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
+import SupabaseInput from "./pages/supabase-input";
 import Welcome from "./pages/welcome";
 import Dashboard from "./pages/dashboard";
 import Characters from "./pages/characters";
@@ -209,6 +217,7 @@ function AppRoutes() {
       <Route path="/register" component={RegisterPage} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
+      <Route path="/input" component={SupabaseInput} />
       <Route path="/" component={() => <ProtectedRoute component={Welcome} />} />
       <Route path="/projects/:projectId/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/projects/:projectId/characters" component={() => <ProtectedRoute component={Characters} />} />
