@@ -12,6 +12,7 @@ import {
 export interface Env {
   VITE_SUPABASE_URL: string;
   VITE_SUPABASE_ANON_KEY: string;
+  SUPABASE_SERVICE_ROLE_KEY: string;
 }
 
 // Basic types for Cloudflare Workers
@@ -24,13 +25,14 @@ interface ExportedHandler<Env = unknown> {
   fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response>;
 }
 
-// Helper to create Supabase client
+// Helper to create Supabase client for server-side authentication
 function createSupabaseClient(env: Env): SupabaseClient {
-  if (!env.VITE_SUPABASE_URL || !env.VITE_SUPABASE_ANON_KEY) {
-    throw new Error('Missing Supabase environment variables');
+  if (!env.VITE_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('Missing Supabase environment variables (URL or SERVICE_ROLE_KEY)');
   }
   
-  return createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY, {
+  // Use service role key for server-side authentication (can validate JWT tokens)
+  return createClient(env.VITE_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
