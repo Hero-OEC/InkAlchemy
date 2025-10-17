@@ -15,8 +15,8 @@ import type {
   Race, InsertRace,
   Activity
 } from "@shared/schema";
-import { config } from "dotenv";
-config(); // Load environment variables from .env file
+import "./env";
+
 export class SupabaseStorage implements IStorage {
   constructor(private supabase: SupabaseClient) {}
 

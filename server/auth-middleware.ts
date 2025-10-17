@@ -1,5 +1,4 @@
-import { config } from 'dotenv';
-config(); // Load environment variables
+import "./env";
 
 import { Request, Response, NextFunction } from 'express';
 import { createClient } from '@supabase/supabase-js';

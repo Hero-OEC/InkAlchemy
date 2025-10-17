@@ -12,8 +12,7 @@ import {
   insertCharacterSpellSchema, insertRaceSchema 
 } from "../shared/schema";
 import { ActivityLogger } from "./activity-logger";
-import { config } from "dotenv";
-config(); // Load environment variables from .env file
+import "./env";
 // Types for Workers environment
 export interface Env {
   DATABASE_URL: string;

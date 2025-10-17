@@ -14,8 +14,8 @@ import {
   type Race, type InsertRace,
   type Activity
 } from "@shared/schema";
-import { config } from "dotenv";
-config(); // Load environment variables from .env file
+import "./env";
+
 export interface IStorage {
   // Projects
   getProjects(): Promise<Project[]>;

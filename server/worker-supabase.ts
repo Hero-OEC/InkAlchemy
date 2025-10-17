@@ -7,8 +7,7 @@ import {
   insertLoreEntrySchema, insertNoteSchema, insertRelationshipSchema,
   insertCharacterSpellSchema, insertRaceSchema 
 } from '@shared/schema';
-import { config } from "dotenv";
-config(); // Load environment variables from .env file
+import "./env";
 // Types for Workers environment  
 export interface Env {
   VITE_SUPABASE_URL: string;
