@@ -63,6 +63,19 @@ The application features a comprehensive UI component library, a consistent ligh
   - Run `npx wrangler deploy` to publish
   - Test at https://inkalchemy.[subdomain].workers.dev
 
+### October 2025 - Supabase Configuration Improvements
+- **Dedicated /input Configuration Page**: Created a dedicated route at `/input` for Supabase setup
+  - Always accessible, even when Supabase is not configured
+  - Bypasses authentication to allow initial setup
+  - Stores credentials in browser localStorage for persistence
+  - Works in both development (`npm run dev`) and production (`npm start`) modes
+  - Includes clear setup instructions and configuration status
+  - Provides "Clear" functionality with confirmation dialog to reset credentials
+- **Improved User Experience**: Enhanced setup flow to eliminate need for server restarts
+  - Frontend reads credentials from localStorage first, then falls back to environment variables
+  - Automatic page reload after saving/clearing credentials to reinitialize Supabase client
+  - SupabaseSetupCheck component exempts `/input` route from blocking
+
 ### August 2025
 - **Database Cascade Deletion**: Fixed foreign key constraint violations in user account deletion by implementing proper deletion order for activities and junction tables
 - **Loading States**: Corrected DeleteConfirmation component prop from `isDeleting` to `isLoading` for proper loading indicators
